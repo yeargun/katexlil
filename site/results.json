@@ -1,0 +1,96 @@
+{
+  "pin": "katex@0.16.22",
+  "package": "@itslil/katex",
+  "file": "katex",
+  "lilExport": "renderToString",
+  "officialExport": "default",
+  "node": "v22.21.1",
+  "codec": "lilscript-codec gzip-9 / brotli-11",
+  "runtime": "Node v22.21.1",
+  "warmupDiscard": 3,
+  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild. LilScript is the compiled npm file. Closed is extern_fields=false.",
+  "spec": {
+    "total": 8,
+    "pass": 8,
+    "label": "subset tests"
+  },
+  "play": {
+    "kind": "tex-html",
+    "sample": "x^2 + \\frac{a}{b} = \\sqrt{\\alpha}",
+    "samples": [
+      {
+        "label": "frac",
+        "value": "x^2 + \\frac{a}{b} = \\sqrt{\\alpha}"
+      },
+      {
+        "label": "scripts",
+        "value": "e^{i\\pi} + 1 = 0"
+      }
+    ]
+  },
+  "size": [
+    {
+      "id": "official",
+      "name": "Official katex@0.16.22 graph",
+      "raw": 495869,
+      "gzip9": 103308,
+      "brotli11": 83118,
+      "note": "esbuild bundle of the published package plus runtime deps",
+      "diagnostic": false
+    },
+    {
+      "id": "official-terser-mangle",
+      "name": "Official · Terser mangle on",
+      "raw": 267050,
+      "gzip9": 76480,
+      "brotli11": 63044,
+      "note": "Terser compress of that graph, mangle: true",
+      "baseline": true
+    },
+    {
+      "id": "official-terser-nomangle",
+      "name": "Official · Terser mangle off",
+      "raw": 342634,
+      "gzip9": 84775,
+      "brotli11": 69566,
+      "note": "Terser compress of that graph, mangle: false"
+    },
+    {
+      "id": "official-esbuild",
+      "name": "Official · esbuild minify",
+      "raw": 271781,
+      "gzip9": 76693,
+      "brotli11": 63767,
+      "note": "esbuild minify of that graph"
+    },
+    {
+      "id": "itslil",
+      "name": "@itslil/katex · library",
+      "raw": 12210,
+      "gzip9": 4149,
+      "brotli11": 3654,
+      "note": "LilScript js-module, extern_fields true. The npm ESM.",
+      "primary": true
+    },
+    {
+      "id": "itslil-closed",
+      "name": "@itslil/katex · closed",
+      "raw": 12136,
+      "gzip9": 4095,
+      "brotli11": 3600,
+      "note": "Same source, extern_fields false"
+    }
+  ],
+  "throughput": [
+    {
+      "id": "official",
+      "name": "katex@0.16.22",
+      "documentMs": 3.971540999998979
+    },
+    {
+      "id": "itslil",
+      "name": "@itslil/katex",
+      "documentMs": 0.315416000001278
+    }
+  ]
+}
