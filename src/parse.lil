@@ -1,0 +1,482 @@
+import {
+  Node,
+  makeAtom,
+  makeList,
+  makeSupSub,
+  makeFrac,
+  makeSqrt,
+  makeMatrix,
+  makeSpace,
+  makeRoman
+} from "./ast.lil";
+import { commandGlyph, commandClass, commandItalic } from "./symbols.lil";
+
+class Parser {
+  string src;
+  int i;
+  int n;
+
+  init(string src) {
+    this.src = src;
+    this.i = 0;
+    this.n = src.length;
+  }
+
+  bool eof() {
+    return this.i >= this.n;
+  }
+
+  string peek() {
+    if (this.eof()) {
+      return "";
+    }
+    return this.src.charAt(this.i);
+  }
+
+  int code() {
+    if (this.eof()) {
+      return 0;
+    }
+    return this.src.charCodeAt(this.i);
+  }
+
+  void bump() {
+    if (!this.eof()) {
+      this.i += 1;
+    }
+  }
+
+  void skipSpaces() {
+    while (!this.eof()) {
+      int c = this.code();
+      if (c == 32 || c == 9 || c == 10 || c == 13) {
+        this.bump();
+      } else {
+        return;
+      }
+    }
+  }
+
+  bool isLetterCode(int c) {
+    return (c >= 65 && c <= 90) || (c >= 97 && c <= 122);
+  }
+
+  bool isDigitCode(int c) {
+    return c >= 48 && c <= 57;
+  }
+
+  string readCommandName() {
+    if (this.eof()) {
+      throw "KaTeX parse error: missing command name";
+    }
+    if (this.isLetterCode(this.code())) {
+      string name = "";
+      while (!this.eof() && this.isLetterCode(this.code())) {
+        name = name + this.peek();
+        this.bump();
+      }
+      return name;
+    }
+    string ch = this.peek();
+    this.bump();
+    return ch;
+  }
+
+  bool lookingAt(string name) {
+    int saved = this.i;
+    this.skipSpaces();
+    if (this.peek() != "\\") {
+      this.i = saved;
+      return false;
+    }
+    this.bump();
+    string cmd = this.readCommandName();
+    bool ok = cmd == name;
+    this.i = saved;
+    return ok;
+  }
+
+  bool lookingAtBreak() {
+    return this.lookingAt("\\");
+  }
+
+  void consumeCommand(string name) {
+    this.skipSpaces();
+    if (this.peek() != "\\") {
+      throw "KaTeX parse error: expected \\" + name;
+    }
+    this.bump();
+    string cmd = this.readCommandName();
+    if (cmd != name) {
+      throw "KaTeX parse error: expected \\" + name;
+    }
+  }
+
+  bool shouldStop(bool stopAlign) {
+    this.skipSpaces();
+    if (this.eof()) {
+      return true;
+    }
+    string ch = this.peek();
+    if (ch == "}") {
+      return true;
+    }
+    if (stopAlign && ch == "&") {
+      return true;
+    }
+    if (this.lookingAt("right") || this.lookingAt("end")) {
+      return true;
+    }
+    if (stopAlign && this.lookingAtBreak()) {
+      return true;
+    }
+    return false;
+  }
+
+  string readBraceName() {
+    this.skipSpaces();
+    if (this.peek() != "{") {
+      throw "KaTeX parse error: expected {";
+    }
+    this.bump();
+    string name = "";
+    while (!this.eof() && this.peek() != "}") {
+      name = name + this.peek();
+      this.bump();
+    }
+    if (this.peek() != "}") {
+      throw "KaTeX parse error: expected }";
+    }
+    this.bump();
+    return name;
+  }
+
+  string readTextGroup() {
+    this.skipSpaces();
+    if (this.peek() != "{") {
+      throw "KaTeX parse error: expected { after \\text";
+    }
+    this.bump();
+    string text = "";
+    int depth = 1;
+    while (!this.eof() && depth > 0) {
+      string ch = this.peek();
+      this.bump();
+      if (ch == "{") {
+        depth += 1;
+        text = text + ch;
+      } else if (ch == "}") {
+        depth -= 1;
+        if (depth > 0) {
+          text = text + ch;
+        }
+      } else {
+        text = text + ch;
+      }
+    }
+    if (depth != 0) {
+      throw "KaTeX parse error: unmatched { in \\text";
+    }
+    return text;
+  }
+
+  string readDelim() {
+    this.skipSpaces();
+    if (this.peek() == "\\") {
+      this.bump();
+      string cmd = this.readCommandName();
+      if (cmd == "{" || cmd == "}") {
+        return cmd;
+      }
+      if (cmd == ".") {
+        return "";
+      }
+      if (cmd == "|") {
+        return "∥";
+      }
+      throw "KaTeX parse error: unsupported delimiter \\" + cmd;
+    }
+    string ch = this.peek();
+    if (
+      ch == "("
+      || ch == ")"
+      || ch == "["
+      || ch == "]"
+      || ch == "|"
+      || ch == "."
+    ) {
+      this.bump();
+      if (ch == ".") {
+        return "";
+      }
+      return ch;
+    }
+    throw "KaTeX parse error: expected delimiter";
+  }
+
+  Node parseGroup() {
+    if (this.peek() != "{") {
+      throw "KaTeX parse error: expected {";
+    }
+    this.bump();
+    Node inner = this.parseExpr(false);
+    this.skipSpaces();
+    if (this.peek() != "}") {
+      throw "KaTeX parse error: expected }";
+    }
+    this.bump();
+    return inner;
+  }
+
+  Node parseGroupOrAtom() {
+    this.skipSpaces();
+    if (this.peek() == "{") {
+      return this.parseGroup();
+    }
+    return this.parsePrimary();
+  }
+
+  Node parseLeft() {
+    string open = this.readDelim();
+    Node body = this.parseExpr(false);
+    if (!this.lookingAt("right")) {
+      throw "KaTeX parse error: expected \\right";
+    }
+    this.consumeCommand("right");
+    string close = this.readDelim();
+    Node list = makeList();
+    if (open != "") {
+      list.kids.push(makeAtom("mopen", open, false));
+    }
+    list.kids.push(body);
+    if (close != "") {
+      list.kids.push(makeAtom("mclose", close, false));
+    }
+    return list;
+  }
+
+  Node parseBegin() {
+    string env = this.readBraceName();
+    if (env != "matrix" && env != "pmatrix" && env != "bmatrix") {
+      throw "KaTeX parse error: unsupported environment " + env;
+    }
+    Node[] rows = [];
+    Node row = makeList();
+    while (!this.eof()) {
+      this.skipSpaces();
+      if (this.lookingAt("end")) {
+        break;
+      }
+      if (this.lookingAtBreak()) {
+        this.consumeCommand("\\");
+        rows.push(row);
+        row = makeList();
+        continue;
+      }
+      Node cell = this.parseExpr(true);
+      row.kids.push(cell);
+      this.skipSpaces();
+      if (this.peek() == "&") {
+        this.bump();
+        continue;
+      }
+      if (this.lookingAtBreak()) {
+        this.consumeCommand("\\");
+        rows.push(row);
+        row = makeList();
+        continue;
+      }
+      if (this.lookingAt("end")) {
+        break;
+      }
+      if (this.eof()) {
+        throw "KaTeX parse error: expected \\end{" + env + "}";
+      }
+      throw "KaTeX parse error: unexpected token in matrix";
+    }
+    if (row.kids.length > 0) {
+      rows.push(row);
+    }
+    this.consumeCommand("end");
+    string endEnv = this.readBraceName();
+    if (endEnv != env) {
+      throw "KaTeX parse error: mismatched \\end{" + endEnv + "}";
+    }
+    string open = "";
+    string close = "";
+    if (env == "pmatrix") {
+      open = "(";
+      close = ")";
+    } else if (env == "bmatrix") {
+      open = "[";
+      close = "]";
+    }
+    return makeMatrix(rows, open, close);
+  }
+
+  Node parseCommand() {
+    string name = this.readCommandName();
+    if (name == ",") {
+      return makeSpace("0.1667em");
+    }
+    if (name == ";") {
+      return makeSpace("0.2778em");
+    }
+    if (name == "quad") {
+      return makeSpace("1em");
+    }
+    if (name == "left") {
+      return this.parseLeft();
+    }
+    if (name == "begin") {
+      return this.parseBegin();
+    }
+    if (name == "frac") {
+      Node num = this.parseGroupOrAtom();
+      Node den = this.parseGroupOrAtom();
+      return makeFrac(num, den);
+    }
+    if (name == "sqrt") {
+      return makeSqrt(this.parseGroupOrAtom());
+    }
+    if (name == "text") {
+      return makeAtom("mord", this.readTextGroup(), false);
+    }
+    if (name == "mathrm") {
+      Node body = this.parseGroupOrAtom();
+      makeRoman(body);
+      return body;
+    }
+    if (name == "{") {
+      return makeAtom("mopen", "{", false);
+    }
+    if (name == "}") {
+      return makeAtom("mclose", "}", false);
+    }
+    string glyph = commandGlyph(name);
+    if (glyph == "") {
+      throw "KaTeX parse error: unknown command: \\" + name;
+    }
+    return makeAtom(commandClass(name), glyph, commandItalic(name));
+  }
+
+  Node parsePrimary() {
+    this.skipSpaces();
+    if (this.eof()) {
+      throw "KaTeX parse error: unexpected end of input";
+    }
+    string ch = this.peek();
+    int c = this.code();
+    if (ch == "{") {
+      return this.parseGroup();
+    }
+    if (ch == "\\") {
+      this.bump();
+      return this.parseCommand();
+    }
+    if (this.isLetterCode(c)) {
+      this.bump();
+      return makeAtom("mord", ch, true);
+    }
+    if (this.isDigitCode(c) || ch == ".") {
+      string num = "";
+      if (ch == ".") {
+        int next = 0;
+        if (this.i + 1 < this.n) {
+          next = this.src.charCodeAt(this.i + 1);
+        }
+        if (!this.isDigitCode(next)) {
+          this.bump();
+          return makeAtom("mord", ".", false);
+        }
+      }
+      while (!this.eof() && this.isDigitCode(this.code())) {
+        num = num + this.peek();
+        this.bump();
+      }
+      if (this.peek() == ".") {
+        num = num + ".";
+        this.bump();
+        while (!this.eof() && this.isDigitCode(this.code())) {
+          num = num + this.peek();
+          this.bump();
+        }
+      }
+      return makeAtom("mord", num, false);
+    }
+    if (ch == "+" || ch == "-") {
+      this.bump();
+      return makeAtom("mbin", ch, false);
+    }
+    if (ch == "=" || ch == "<" || ch == ">") {
+      this.bump();
+      return makeAtom("mrel", ch, false);
+    }
+    if (ch == "/") {
+      this.bump();
+      return makeAtom("mord", "/", false);
+    }
+    if (ch == "(" || ch == "[") {
+      this.bump();
+      return makeAtom("mopen", ch, false);
+    }
+    if (ch == ")" || ch == "]") {
+      this.bump();
+      return makeAtom("mclose", ch, false);
+    }
+    if (ch == ",") {
+      this.bump();
+      return makeAtom("mpunct", ",", false);
+    }
+    throw "KaTeX parse error: unexpected character: " + ch;
+  }
+
+  Node parseSupSub() {
+    Node base = this.parsePrimary();
+    Node? sup = null;
+    Node? sub = null;
+    while (true) {
+      this.skipSpaces();
+      string ch = this.peek();
+      if (ch == "^") {
+        this.bump();
+        if (sup != null) {
+          throw "KaTeX parse error: double superscript";
+        }
+        this.skipSpaces();
+        sup = this.parseGroupOrAtom();
+      } else if (ch == "_") {
+        this.bump();
+        if (sub != null) {
+          throw "KaTeX parse error: double subscript";
+        }
+        this.skipSpaces();
+        sub = this.parseGroupOrAtom();
+      } else {
+        break;
+      }
+    }
+    if (sup == null && sub == null) {
+      return base;
+    }
+    return makeSupSub(base, sup, sub);
+  }
+
+  Node parseExpr(bool stopAlign) {
+    Node list = makeList();
+    while (!this.shouldStop(stopAlign)) {
+      list.kids.push(this.parseSupSub());
+    }
+    return list;
+  }
+}
+
+export Node parseTex(string tex) {
+  Parser parser = new Parser(tex);
+  Node root = parser.parseExpr(false);
+  parser.skipSpaces();
+  if (!parser.eof()) {
+    throw "KaTeX parse error: unexpected character: " + parser.peek();
+  }
+  return root;
+}

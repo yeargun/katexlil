@@ -1,0 +1,67 @@
+{
+  "name": "@itslil/katex",
+  "version": "0.16.22",
+  "description": "KaTeX reimplemented in LilScript",
+  "keywords": [
+    "katex",
+    "latex",
+    "math",
+    "tex",
+    "lilscript",
+    "itslil"
+  ],
+  "homepage": "https://yeargun.github.io/katexlil/",
+  "bugs": "https://github.com/yeargun/katexlil/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeargun/katexlil.git"
+  },
+  "license": "MIT",
+  "author": "yeargun",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "./dist/katex.cjs",
+  "module": "./dist/katex.esm.js",
+  "types": "./dist/katex.d.ts",
+  "unpkg": "./dist/katex.umd.js",
+  "jsdelivr": "./dist/katex.umd.js",
+  "exports": {
+    ".": {
+      "types": "./dist/katex.d.ts",
+      "import": "./dist/katex.esm.js",
+      "require": "./dist/katex.cjs",
+      "default": "./dist/katex.esm.js"
+    },
+    "./closed": "./dist/katex.closed.js",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "dist/katex.esm.js",
+    "dist/katex.cjs",
+    "dist/katex.umd.js",
+    "dist/katex.closed.js",
+    "dist/katex.d.ts",
+    "LICENSE",
+    "NOTICE.md",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs --compile",
+    "build:site": "node scripts/build-site.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check:site": "npm run build:site && node --test test/site.test.mjs",
+    "check:pack": "node scripts/check-pack.mjs",
+    "prepublishOnly": "npm test && npm run check:pack && npm run check:site"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.1"
+  }
+}

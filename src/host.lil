@@ -1,0 +1,9 @@
+export extern class KatexOptions {
+  JsValue displayMode;
+  JsValue throwOnError;
+  JsValue errorColor;
+}
+
+export extern class Element {
+  string innerHTML;
+}

@@ -1,0 +1,241 @@
+export string commandGlyph(string name) {
+  if (name == "alpha") {
+    return "α";
+  }
+  if (name == "beta") {
+    return "β";
+  }
+  if (name == "gamma") {
+    return "γ";
+  }
+  if (name == "delta") {
+    return "δ";
+  }
+  if (name == "epsilon") {
+    return "ε";
+  }
+  if (name == "zeta") {
+    return "ζ";
+  }
+  if (name == "eta") {
+    return "η";
+  }
+  if (name == "theta") {
+    return "θ";
+  }
+  if (name == "iota") {
+    return "ι";
+  }
+  if (name == "kappa") {
+    return "κ";
+  }
+  if (name == "lambda") {
+    return "λ";
+  }
+  if (name == "mu") {
+    return "μ";
+  }
+  if (name == "nu") {
+    return "ν";
+  }
+  if (name == "xi") {
+    return "ξ";
+  }
+  if (name == "omicron") {
+    return "ο";
+  }
+  if (name == "pi") {
+    return "π";
+  }
+  if (name == "rho") {
+    return "ρ";
+  }
+  if (name == "sigma") {
+    return "σ";
+  }
+  if (name == "tau") {
+    return "τ";
+  }
+  if (name == "upsilon") {
+    return "υ";
+  }
+  if (name == "phi") {
+    return "φ";
+  }
+  if (name == "chi") {
+    return "χ";
+  }
+  if (name == "psi") {
+    return "ψ";
+  }
+  if (name == "omega") {
+    return "ω";
+  }
+  if (name == "Gamma") {
+    return "Γ";
+  }
+  if (name == "Delta") {
+    return "Δ";
+  }
+  if (name == "Theta") {
+    return "Θ";
+  }
+  if (name == "Lambda") {
+    return "Λ";
+  }
+  if (name == "Xi") {
+    return "Ξ";
+  }
+  if (name == "Pi") {
+    return "Π";
+  }
+  if (name == "Sigma") {
+    return "Σ";
+  }
+  if (name == "Upsilon") {
+    return "Υ";
+  }
+  if (name == "Phi") {
+    return "Φ";
+  }
+  if (name == "Psi") {
+    return "Ψ";
+  }
+  if (name == "Omega") {
+    return "Ω";
+  }
+  if (name == "cdot") {
+    return "⋅";
+  }
+  if (name == "times") {
+    return "×";
+  }
+  if (name == "div") {
+    return "÷";
+  }
+  if (name == "pm") {
+    return "±";
+  }
+  if (name == "infty") {
+    return "∞";
+  }
+  if (name == "sum") {
+    return "∑";
+  }
+  if (name == "prod") {
+    return "∏";
+  }
+  if (name == "int") {
+    return "∫";
+  }
+  if (name == "neq") {
+    return "≠";
+  }
+  if (name == "leq") {
+    return "≤";
+  }
+  if (name == "geq") {
+    return "≥";
+  }
+  if (name == "approx") {
+    return "≈";
+  }
+  if (name == "in") {
+    return "∈";
+  }
+  if (name == "to") {
+    return "→";
+  }
+  if (name == "rightarrow") {
+    return "→";
+  }
+  if (name == "ldots") {
+    return "…";
+  }
+  if (name == "sin") {
+    return "sin";
+  }
+  if (name == "cos") {
+    return "cos";
+  }
+  if (name == "tan") {
+    return "tan";
+  }
+  if (name == "log") {
+    return "log";
+  }
+  if (name == "ln") {
+    return "ln";
+  }
+  return "";
+}
+
+export string commandClass(string name) {
+  if (
+    name == "cdot"
+    || name == "times"
+    || name == "div"
+    || name == "pm"
+  ) {
+    return "mbin";
+  }
+  if (
+    name == "neq"
+    || name == "leq"
+    || name == "geq"
+    || name == "approx"
+    || name == "in"
+    || name == "to"
+    || name == "rightarrow"
+  ) {
+    return "mrel";
+  }
+  if (name == "ldots") {
+    return "minner";
+  }
+  if (
+    name == "sin"
+    || name == "cos"
+    || name == "tan"
+    || name == "log"
+    || name == "ln"
+    || name == "sum"
+    || name == "prod"
+    || name == "int"
+  ) {
+    return "mop";
+  }
+  return "mord";
+}
+
+export bool commandItalic(string name) {
+  if (
+    name == "alpha"
+    || name == "beta"
+    || name == "gamma"
+    || name == "delta"
+    || name == "epsilon"
+    || name == "zeta"
+    || name == "eta"
+    || name == "theta"
+    || name == "iota"
+    || name == "kappa"
+    || name == "lambda"
+    || name == "mu"
+    || name == "nu"
+    || name == "xi"
+    || name == "omicron"
+    || name == "pi"
+    || name == "rho"
+    || name == "sigma"
+    || name == "tau"
+    || name == "upsilon"
+    || name == "phi"
+    || name == "chi"
+    || name == "psi"
+    || name == "omega"
+  ) {
+    return true;
+  }
+  return false;
+}

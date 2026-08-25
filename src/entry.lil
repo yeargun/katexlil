@@ -1,0 +1,32 @@
+import { KatexOptions, Element } from "./host.lil";
+import { renderTex } from "./html.lil";
+
+export string renderToString(string tex, JsValue? options = null) {
+  bool displayMode = false;
+  bool throwOnError = true;
+  string errorColor = "#cc0000";
+  if (options != null && !JS.isNullish(options)) {
+    KatexOptions opts = JS.assume(options);
+    JsValue displayValue = opts.displayMode;
+    if (displayValue is bool) {
+      displayMode = displayValue;
+    }
+    JsValue throwValue = opts.throwOnError;
+    if (throwValue is bool) {
+      throwOnError = throwValue;
+    }
+    JsValue colorValue = opts.errorColor;
+    if (colorValue is string) {
+      errorColor = colorValue;
+    }
+  }
+  return renderTex(tex, displayMode, throwOnError, errorColor);
+}
+
+export void render(string tex, JsValue element, JsValue? options = null) {
+  Element el = JS.assume(element);
+  el.innerHTML = renderToString(tex, options);
+}
+
+JsValue katexApi = JS.object("renderToString", renderToString, "render", render);
+export { katexApi as default };
