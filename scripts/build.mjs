@@ -87,38 +87,30 @@ if (existsSync(closedRaw)) {
   writeFileSync(closedRaw, sanitizeCompiled(readFileSync(closedRaw, "utf8")))
 }
 
-await esbuild({
-  absWorkingDir: dist,
-  entryPoints: [rawPath],
-  outfile: resolve(dist, `${file}.esm.js`),
-  bundle: true,
-  format: "esm",
-  platform: "neutral",
-  legalComments: "none",
-  minifyWhitespace: false,
-  minifyIdentifiers: false,
-  minifySyntax: false,
-  banner: { js: banner },
-  logLevel: "error",
-})
+function stitchData(compiled) {
+  const metrics = readFileSync(resolve(dist, "fontMetricsData.js"), "utf8")
+    .replace(/\bexport\s*\{[^}]*\}/g, "")
+    .replace(/\bexport\s+default\s+/, "var fontMetricsData=")
+    .replace(/\bvar e=/, "var fontMetricsData=")
+    .trim()
+  const symbols = readFileSync(resolve(dist, "unicodeSymbols.js"), "utf8")
+    .replace(/\bexport\s*\{[^}]*\}/g, "")
+    .replace(/\bexport\s+default\s+\w+;?/g, "")
+    .trim()
+  const body = compiled.replace(
+    /import\{getFontMetricsData,getUnicodeSymbols\}from"\.\/data-host\.js";/,
+    "",
+  )
+  const host =
+    "function getFontMetricsData(){return fontMetricsData}function getUnicodeSymbols(){return unicodeSymbols}"
+  return `${metrics}\n${symbols}\n${host};${body}`
+}
+
+writeFileSync(resolve(dist, `${file}.esm.js`), `${banner}${stitchData(readFileSync(rawPath, "utf8")).trimEnd()}\n`)
 
 const closedPath = resolve(dist, `${file}.closed.js`)
 if (existsSync(closedPath) && readFileSync(closedPath, "utf8").includes("data-host.js")) {
-  const closedBundled = resolve(dist, `${file}.closed.bundled.js`)
-  await esbuild({
-    absWorkingDir: dist,
-    entryPoints: [closedPath],
-    outfile: closedBundled,
-    bundle: true,
-    format: "esm",
-    platform: "neutral",
-    legalComments: "none",
-    minifyWhitespace: false,
-    minifyIdentifiers: false,
-    minifySyntax: false,
-    logLevel: "error",
-  })
-  writeFileSync(closedPath, `${banner}${readFileSync(closedBundled, "utf8").trimEnd()}\n`)
+  writeFileSync(closedPath, `${banner}${stitchData(readFileSync(closedPath, "utf8")).trimEnd()}\n`)
 }
 
 await esbuild({

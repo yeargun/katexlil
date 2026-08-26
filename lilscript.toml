@@ -1,7 +1,7 @@
 # reusable ESM — host-visible names stay
 [javascript]
 priority = "size-first"
-optimization_level = 6
+optimization_level = 12
 cost_model = "brotli"
 assume_pristine_builtins = true
 strip_console = true
@@ -15,4 +15,4 @@ identifiers = true
 properties = true
 exports = false
 extern_fields = true
-pool_strings = true
+pool_strings = false
