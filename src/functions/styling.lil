@@ -1,0 +1,83 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { Style } from "../Style.lil";
+import { sizingGroup } from "./sizing.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue styleMap = undef();
+
+JsValue o1 = emptyObject();
+o1["display"] = Style["DISPLAY"];
+o1["text"] = Style["TEXT"];
+o1["script"] = Style["SCRIPT"];
+o1["scriptscript"] = Style["SCRIPTSCRIPT"];
+styleMap = o1;
+JsValue o2 = emptyObject();
+o2["type"] = "styling";
+JsValue a3 = newArray();
+JS.push(a3, "\\displaystyle");
+JS.push(a3, "\\textstyle");
+JS.push(a3, "\\scriptstyle");
+JS.push(a3, "\\scriptscriptstyle");
+o2["names"] = a3;
+JsValue o4 = emptyObject();
+o4["numArgs"] = 0;
+o4["allowedInText"] = true;
+o4["primitive"] = true;
+o2["props"] = o4;
+o2["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue breakOnTokenText = op6["breakOnTokenText"];
+  JsValue funcName = op6["funcName"];
+  JsValue parser = op6["parser"];
+  JsValue body = JS.invoke(parser, "parseExpression", true, breakOnTokenText);
+  JsValue style = JS.invoke(funcName, "slice", 1, (toNum(funcName["length"]) - toNum(5)));
+  JsValue o7 = emptyObject();
+  o7["type"] = "styling";
+  o7["mode"] = parser["mode"];
+  o7["style"] = style;
+  o7["body"] = body;
+  return o7;
+  return undef();
+});
+o2["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue newStyle = styleMap[group["style"]];
+  JsValue newOptions = JS.invoke(JS.invoke(options, "havingStyle", newStyle), "withFont", "");
+  return JS.call(sizingGroup, undef(), group["body"], newOptions, options);
+  return undef();
+});
+o2["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue newStyle = styleMap[group["style"]];
+  JsValue newOptions = JS.invoke(options, "havingStyle", newStyle);
+  JsValue inner = JS.invoke(mml, "buildExpression", group["body"], newOptions);
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JsValue o8 = emptyObject();
+  JsValue a9 = newArray();
+  JS.push(a9, "0");
+  JS.push(a9, "true");
+  o8["display"] = a9;
+  JsValue a10 = newArray();
+  JS.push(a10, "0");
+  JS.push(a10, "false");
+  o8["text"] = a10;
+  JsValue a11 = newArray();
+  JS.push(a11, "1");
+  JS.push(a11, "false");
+  o8["script"] = a11;
+  JsValue a12 = newArray();
+  JS.push(a12, "2");
+  JS.push(a12, "false");
+  o8["scriptscript"] = a12;
+  JsValue styleAttributes = o8;
+  JsValue attr = styleAttributes[group["style"]];
+  JS.invoke(node, "setAttribute", "scriptlevel", attr[0]);
+  JS.invoke(node, "setAttribute", "displaystyle", attr[1]);
+  return node;
+  return undef();
+});
+JS.call(defineFunction, undef(), o2);
+JsValue __star = emptyObject();
+
+export { __star };

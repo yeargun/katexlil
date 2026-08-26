@@ -1,0 +1,66 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { Style } from "../Style.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue chooseMathStyle = undef();
+
+chooseMathStyle = (JsValue group, JsValue options) => {
+  JsValue sw1 = options["style"]["size"];
+  if (JS.strictEqual(sw1, Style["DISPLAY"]["size"])) {
+    return group["display"];
+  }
+  else if (JS.strictEqual(sw1, Style["TEXT"]["size"])) {
+    return group["text"];
+  }
+  else if (JS.strictEqual(sw1, Style["SCRIPT"]["size"])) {
+    return group["script"];
+  }
+  else if (JS.strictEqual(sw1, Style["SCRIPTSCRIPT"]["size"])) {
+    return group["scriptscript"];
+  }
+  else {
+    return group["text"];
+  }
+  return undef();
+};
+JsValue o2 = emptyObject();
+o2["type"] = "mathchoice";
+JsValue a3 = newArray();
+JS.push(a3, "\\mathchoice");
+o2["names"] = a3;
+JsValue o4 = emptyObject();
+o4["numArgs"] = 4;
+o4["primitive"] = true;
+o2["props"] = o4;
+o2["handler"] = (JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue o7 = emptyObject();
+  o7["type"] = "mathchoice";
+  o7["mode"] = parser["mode"];
+  o7["display"] = JS.call(ordargument, undef(), args[0]);
+  o7["text"] = JS.call(ordargument, undef(), args[1]);
+  o7["script"] = JS.call(ordargument, undef(), args[2]);
+  o7["scriptscript"] = JS.call(ordargument, undef(), args[3]);
+  return o7;
+  return undef();
+};
+o2["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue body = JS.call(chooseMathStyle, undef(), group, options);
+  JsValue elements = JS.invoke(html, "buildExpression", body, options, false);
+  return JS.invoke(buildCommon, "makeFragment", elements);
+  return undef();
+};
+o2["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue body = JS.call(chooseMathStyle, undef(), group, options);
+  return JS.invoke(mml, "buildExpressionRow", body, options);
+  return undef();
+};
+JS.call(defineFunction, undef(), o2);
+JsValue __star = emptyObject();
+
+export { __star };

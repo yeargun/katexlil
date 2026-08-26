@@ -1,0 +1,92 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { buildCommon } from "../buildCommon.lil";
+import { defineFunction } from "../defineFunction.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { makeEm } from "../units.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue sizingGroup = undef();
+JsValue sizeFuncs = undef();
+JsValue htmlBuilder = undef();
+
+sizingGroup = (JsValue value, JsValue options, JsValue baseOptions) => {
+  JsValue inner = JS.invoke(html, "buildExpression", value, options, false);
+  JsValue multiplier = (toNum(options["sizeMultiplier"]) / toNum(baseOptions["sizeMultiplier"]));
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, inner["length"])) {
+      JsValue pos = JS.invoke(inner[i]["classes"], "indexOf", "sizing");
+      if (JS.lessThan(pos, 0)) {
+        apply(Array["prototype"]["push"], inner[i]["classes"], JS.invoke(options, "sizingClasses", baseOptions));
+      } else {
+        if (JS.strictEqual(inner[i]["classes"][JS.add(pos, 1)], JS.add("reset-size", options["size"]))) {
+          inner[i]["classes"][JS.add(pos, 1)] = JS.add("reset-size", baseOptions["size"]);
+        }
+      }
+      JsValue as1 = inner[i]["height"];
+      inner[i]["height"] = (toNum(as1) * toNum(multiplier));
+      JsValue as2 = inner[i]["depth"];
+      inner[i]["depth"] = (toNum(as2) * toNum(multiplier));
+      JsValue u3 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return JS.invoke(buildCommon, "makeFragment", inner);
+  return undef();
+};
+JsValue a4 = newArray();
+JS.push(a4, "\\tiny");
+JS.push(a4, "\\sixptsize");
+JS.push(a4, "\\scriptsize");
+JS.push(a4, "\\footnotesize");
+JS.push(a4, "\\small");
+JS.push(a4, "\\normalsize");
+JS.push(a4, "\\large");
+JS.push(a4, "\\Large");
+JS.push(a4, "\\LARGE");
+JS.push(a4, "\\huge");
+JS.push(a4, "\\Huge");
+sizeFuncs = a4;
+htmlBuilder = (JsValue group, JsValue options) => {
+  JsValue newOptions = JS.invoke(options, "havingSize", group["size"]);
+  return JS.call(sizingGroup, undef(), group["body"], newOptions, options);
+  return undef();
+};
+JsValue o5 = emptyObject();
+o5["type"] = "sizing";
+o5["names"] = sizeFuncs;
+JsValue o6 = emptyObject();
+o6["numArgs"] = 0;
+o6["allowedInText"] = true;
+o5["props"] = o6;
+o5["handler"] = (JsValue p7, JsValue args) => {
+  JsValue op8 = p7;
+  JsValue breakOnTokenText = op8["breakOnTokenText"];
+  JsValue funcName = op8["funcName"];
+  JsValue parser = op8["parser"];
+  JsValue body = JS.invoke(parser, "parseExpression", false, breakOnTokenText);
+  JsValue o9 = emptyObject();
+  o9["type"] = "sizing";
+  o9["mode"] = parser["mode"];
+  o9["size"] = JS.add(JS.invoke(sizeFuncs, "indexOf", funcName), 1);
+  o9["body"] = body;
+  return o9;
+  return undef();
+};
+o5["htmlBuilder"] = htmlBuilder;
+o5["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue newOptions = JS.invoke(options, "havingSize", group["size"]);
+  JsValue inner = JS.invoke(mml, "buildExpression", group["body"], newOptions);
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JS.invoke(node, "setAttribute", "mathsize", JS.call(makeEm, undef(), newOptions["sizeMultiplier"]));
+  return node;
+  return undef();
+};
+JS.call(defineFunction, undef(), o5);
+JsValue __star = emptyObject();
+__star["sizingGroup"] = sizingGroup;
+__star["htmlBuilder"] = htmlBuilder;
+
+export { __star, sizingGroup, htmlBuilder };

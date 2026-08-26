@@ -1,0 +1,43 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { Parser } from "./Parser.lil";
+import { ParseError } from "./ParseError.lil";
+import { Token } from "./Token.lil";
+
+JsValue parseTree = undef();
+
+parseTree = (JsValue toParse, JsValue settings) => {
+  if (!((JS.strictEqual(JS.typeOf(toParse), "string")) || (instanceOf(toParse, String)))) {
+    throw makeTypeError(toStr("KaTeX can only parse string typed expression"));
+  }
+  JsValue parser = JS.construct(Parser, toParse, settings);
+  deleteKey(parser["gullet"]["macros"]["current"], "\\df@tag");
+  true;
+  JsValue tree = JS.invoke(parser, "parse");
+  deleteKey(parser["gullet"]["macros"]["current"], "\\current@color");
+  true;
+  deleteKey(parser["gullet"]["macros"]["current"], "\\color");
+  true;
+  if (JS.invoke(parser["gullet"]["macros"], "get", "\\df@tag").truthy()) {
+    if (!(settings["displayMode"].truthy())) {
+      throw JS.construct(ParseError, "\\tag works only in display equations");
+    }
+    JsValue a1 = newArray();
+    JsValue o2 = emptyObject();
+    o2["type"] = "tag";
+    o2["mode"] = "text";
+    o2["body"] = tree;
+    JsValue a3 = newArray();
+    JS.push(a3, JS.construct(Token, "\\df@tag"));
+    o2["tag"] = JS.invoke(parser, "subparse", a3);
+    JS.push(a1, o2);
+    tree = a1;
+  }
+  return tree;
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["default"] = parseTree;
+__star["parseTree"] = parseTree;
+
+export { __star, parseTree as parseTree };

@@ -1,0 +1,423 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN, pushAll, spliceSpread } from "./host.lil";
+
+import { functions } from "./functions.lil";
+import { symbols } from "./symbols.lil";
+import { Lexer } from "./Lexer.lil";
+import { Token } from "./Token.lil";
+import { ParseError } from "./ParseError.lil";
+import { Namespace } from "./Namespace.lil";
+import { macros } from "./macros.lil";
+
+JsValue implicitCommands = undef();
+JsValue MacroExpander = undef();
+
+JsValue o1 = emptyObject();
+o1["^"] = true;
+o1["_"] = true;
+o1["\\limits"] = true;
+o1["\\nolimits"] = true;
+implicitCommands = o1;
+MacroExpander = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue input = argv[0];
+  JsValue settings = argv[1];
+  JsValue mode = argv[2];
+  self["settings"] = settings;
+  self["expansionCount"] = 0;
+  JS.invoke(self, "feed", input);
+  self["macros"] = JS.construct(Namespace, macros, settings["macros"]);
+  self["mode"] = mode;
+  JsValue a2 = newArray();
+  self["stack"] = a2;
+  return self;
+});
+MacroExpander["prototype"]["feed"] = JS.method1((JsValue self, JsValue input) => {
+  self["lexer"] = JS.construct(Lexer, input, self["settings"]);
+  return undef();
+});
+MacroExpander["prototype"]["switchMode"] = JS.method1((JsValue self, JsValue newMode) => {
+  self["mode"] = newMode;
+  return undef();
+});
+MacroExpander["prototype"]["beginGroup"] = JS.method0((JsValue self) => {
+  JS.invoke(self["macros"], "beginGroup");
+  return undef();
+});
+MacroExpander["prototype"]["endGroup"] = JS.method0((JsValue self) => {
+  JS.invoke(self["macros"], "endGroup");
+  return undef();
+});
+MacroExpander["prototype"]["endGroups"] = JS.method0((JsValue self) => {
+  JS.invoke(self["macros"], "endGroups");
+  return undef();
+});
+MacroExpander["prototype"]["future"] = JS.method0((JsValue self) => {
+  if (JS.strictEqual(self["stack"]["length"], 0)) {
+    JS.invoke(self, "pushToken", JS.invoke(self["lexer"], "lex"));
+  }
+  return self["stack"][(toNum(self["stack"]["length"]) - toNum(1))];
+  return undef();
+});
+MacroExpander["prototype"]["popToken"] = JS.method0((JsValue self) => {
+  JS.invoke(self, "future");
+  return JS.invoke(self["stack"], "pop");
+  return undef();
+});
+MacroExpander["prototype"]["pushToken"] = JS.method1((JsValue self, JsValue token) => {
+  JS.invoke(self["stack"], "push", token);
+  return undef();
+});
+MacroExpander["prototype"]["pushTokens"] = JS.method1((JsValue self, JsValue tokens) => {
+  pushAll(self["stack"], tokens);
+  return undef();
+});
+MacroExpander["prototype"]["scanArgument"] = JS.method1((JsValue self, JsValue isOptional) => {
+  JsValue start = undef();
+  JsValue end = undef();
+  JsValue tokens = undef();
+  if (isOptional.truthy()) {
+    JS.invoke(self, "consumeSpaces");
+    if (JS.strictNotEqual(JS.invoke(self, "future")["text"], "[")) {
+      return null;
+    }
+    start = JS.invoke(self, "popToken");
+    JsValue delims = newArray();
+    JS.push(delims, "]");
+    JsValue optionalArg = JS.invoke(self, "consumeArg", delims);
+    tokens = optionalArg["tokens"];
+    end = optionalArg["end"];
+  } else {
+    JsValue requiredArg = JS.invoke(self, "consumeArg");
+    tokens = requiredArg["tokens"];
+    start = requiredArg["start"];
+    end = requiredArg["end"];
+  }
+  JS.invoke(self, "pushToken", JS.construct(Token, "EOF", end["loc"]));
+  JS.invoke(self, "pushTokens", tokens);
+  return JS.invoke(start, "range", end, "");
+});
+MacroExpander["prototype"]["consumeSpaces"] = JS.method0((JsValue self) => {
+  {
+    while (true) {
+      JsValue token = JS.invoke(self, "future");
+      if (JS.strictEqual(token["text"], " ")) {
+        JS.invoke(self["stack"], "pop");
+      } else {
+        break;
+      }
+    }
+  }
+  return undef();
+});
+MacroExpander["prototype"]["consumeArg"] = JS.method1((JsValue self, JsValue delims) => {
+  JsValue a4 = newArray();
+  JsValue tokens = a4;
+  JsValue and5 = delims;
+  if (and5.truthy()) {
+    and5 = JS.greaterThan(delims["length"], 0);
+  }
+  JsValue isDelimited = and5;
+  if (!(isDelimited.truthy())) {
+    JS.invoke(self, "consumeSpaces");
+  }
+  JsValue start = JS.invoke(self, "future");
+  JsValue tok = undef();
+  JsValue depth = 0;
+  JsValue matched = 0;
+  while (true) {
+    tok = JS.invoke(self, "popToken");
+    JS.invoke(tokens, "push", tok);
+    if (JS.strictEqual(tok["text"], "{")) {
+      depth = JS.add(depth, 1);
+    } else {
+      if (JS.strictEqual(tok["text"], "}")) {
+        depth = JS.add(depth, -1);
+        if (JS.strictEqual(depth, JS.number(0) - toNum(1))) {
+          throw JS.construct(ParseError, "Extra }", tok);
+        }
+      } else {
+        if (JS.strictEqual(tok["text"], "EOF")) {
+          JsValue c8 = undef();
+          if ((delims.truthy()) && (isDelimited.truthy())) {
+            c8 = delims[matched];
+          } else {
+            c8 = "}";
+          }
+          throw JS.construct(ParseError, JS.add(JS.add(JS.add("Unexpected end of input in a macro argument", ", expected '"), c8), "'"), tok);
+        }
+      }
+    }
+    if ((delims.truthy()) && (isDelimited.truthy())) {
+      if (((JS.strictEqual(depth, 0)) || ((JS.strictEqual(depth, 1)) && (JS.strictEqual(delims[matched], "{")))) && (JS.strictEqual(tok["text"], delims[matched]))) {
+        matched = JS.add(matched, 1);
+        if (JS.strictEqual(matched, delims["length"])) {
+          JS.invoke(tokens, "splice", JS.number(0) - toNum(matched), matched);
+          break;
+        }
+      } else {
+        matched = 0;
+      }
+    }
+    if (!((JS.strictNotEqual(depth, 0)) || (isDelimited.truthy()))) {
+      break;
+    }
+  }
+  if ((JS.strictEqual(start["text"], "{")) && (JS.strictEqual(tokens[(toNum(tokens["length"]) - toNum(1))]["text"], "}"))) {
+    JS.invoke(tokens, "pop");
+    JS.invoke(tokens, "shift");
+  }
+  JS.invoke(tokens, "reverse");
+  JsValue o10 = emptyObject();
+  o10["tokens"] = tokens;
+  o10["start"] = start;
+  o10["end"] = tok;
+  return o10;
+  return undef();
+});
+MacroExpander["prototype"]["consumeArgs"] = JS.method2((JsValue self, JsValue numArgs, JsValue delimiters) => {
+  if (delimiters.truthy()) {
+    if (JS.strictNotEqual(delimiters["length"], JS.add(numArgs, 1))) {
+      throw JS.construct(ParseError, "The length of delimiters doesn't match the number of args!");
+    }
+    JsValue delims = delimiters[0];
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, delims["length"])) {
+        JsValue tok = JS.invoke(self, "popToken");
+        if (JS.strictNotEqual(delims[i], tok["text"])) {
+          throw JS.construct(ParseError, "Use of the macro doesn't match its definition", tok);
+        }
+        JsValue u11 = i;
+        i = JS.add(i, 1);
+      }
+    }
+  }
+  JsValue a12 = newArray();
+  JsValue args = a12;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, numArgs)) {
+      JsValue and13 = delimiters;
+      if (and13.truthy()) {
+        and13 = delimiters[JS.add(i, 1)];
+      }
+      JS.invoke(args, "push", JS.invoke(self, "consumeArg", and13)["tokens"]);
+      JsValue u14 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return args;
+  return undef();
+});
+MacroExpander["prototype"]["countExpansion"] = JS.method1((JsValue self, JsValue amount) => {
+  JsValue as15 = self["expansionCount"];
+  self["expansionCount"] = JS.add(as15, amount);
+  if (JS.greaterThan(self["expansionCount"], self["settings"]["maxExpand"])) {
+    throw JS.construct(ParseError, JS.add("Too many expansions: infinite loop or ", "need to increase maxExpand setting"));
+  }
+  return undef();
+});
+MacroExpander["prototype"]["expandOnce"] = JS.method1((JsValue self, JsValue expandableOnly) => {
+  JsValue topToken = JS.invoke(self, "popToken");
+  JsValue name = topToken["text"];
+  JsValue c16 = undef();
+  if (!(topToken["noexpand"].truthy())) {
+    c16 = JS.invoke(self, "_getExpansion", name);
+  } else {
+    c16 = null;
+  }
+  JsValue expansion = c16;
+  if ((isNullish(expansion)) || ((expandableOnly.truthy()) && (expansion["unexpandable"].truthy()))) {
+    if ((((expandableOnly.truthy()) && (isNullish(expansion))) && (JS.strictEqual(name[0], "\\"))) && (!(JS.invoke(self, "isDefined", name).truthy()))) {
+      throw JS.construct(ParseError, JS.add("Undefined control sequence: ", name));
+    }
+    JS.invoke(self, "pushToken", topToken);
+    return false;
+  }
+  JS.invoke(self, "countExpansion", 1);
+  JsValue tokens = expansion["tokens"];
+  JsValue args = JS.invoke(self, "consumeArgs", expansion["numArgs"], expansion["delimiters"]);
+  if (expansion["numArgs"].truthy()) {
+    tokens = JS.invoke(tokens, "slice");
+    {
+      JsValue i = (toNum(tokens["length"]) - toNum(1));
+      while (JS.greaterThanOrEqual(i, 0)) {
+        JsValue tok = tokens[i];
+        if (JS.strictEqual(tok["text"], "#")) {
+          if (JS.strictEqual(i, 0)) {
+            throw JS.construct(ParseError, "Incomplete placeholder at end of macro body", tok);
+          }
+          i = JS.add(i, -1);
+          tok = tokens[i];
+          if (JS.strictEqual(tok["text"], "#")) {
+            JS.invoke(tokens, "splice", JS.add(i, 1), 1);
+          } else {
+            if (JS.invoke(JS.construct(RegExp, "^[1-9]$", ""), "test", tok["text"]).truthy()) {
+              spliceSpread(tokens, i, 2, args[(toNum(tok["text"]) - toNum(1))]);
+            } else {
+              throw JS.construct(ParseError, "Not a valid argument number", tok);
+            }
+          }
+        }
+        i = JS.add(i, -1);
+      }
+    }
+  }
+  JS.invoke(self, "pushTokens", tokens);
+  return tokens["length"];
+  return undef();
+});
+MacroExpander["prototype"]["expandAfterFuture"] = JS.method0((JsValue self) => {
+  JS.invoke(self, "expandOnce");
+  return JS.invoke(self, "future");
+  return undef();
+});
+MacroExpander["prototype"]["expandNextToken"] = JS.method0((JsValue self) => {
+  {
+    while (true) {
+      if (JS.strictEqual(JS.invoke(self, "expandOnce"), false)) {
+        JsValue token = JS.invoke(self["stack"], "pop");
+        if (token["treatAsRelax"].truthy()) {
+          token["text"] = "\\relax";
+        }
+        return token;
+      }
+    }
+  }
+  throw makeError(toStr(""));
+  return undef();
+});
+MacroExpander["prototype"]["expandMacro"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue c19 = undef();
+  if (JS.invoke(self["macros"], "has", name).truthy()) {
+    JsValue a20 = newArray();
+    JS.push(a20, JS.construct(Token, name));
+    c19 = JS.invoke(self, "expandTokens", a20);
+  } else {
+    c19 = undef();
+  }
+  return c19;
+  return undef();
+});
+MacroExpander["prototype"]["expandTokens"] = JS.method1((JsValue self, JsValue tokens) => {
+  JsValue a21 = newArray();
+  JsValue output = a21;
+  JsValue oldStackLength = self["stack"]["length"];
+  JS.invoke(self, "pushTokens", tokens);
+  while (JS.greaterThan(self["stack"]["length"], oldStackLength)) {
+    if (JS.strictEqual(JS.invoke(self, "expandOnce", true), false)) {
+      JsValue token = JS.invoke(self["stack"], "pop");
+      if (token["treatAsRelax"].truthy()) {
+        token["noexpand"] = false;
+        token["treatAsRelax"] = false;
+      }
+      JS.invoke(output, "push", token);
+    }
+  }
+  JS.invoke(self, "countExpansion", output["length"]);
+  return output;
+  return undef();
+});
+MacroExpander["prototype"]["expandMacroAsText"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue tokens = JS.invoke(self, "expandMacro", name);
+  if (tokens.truthy()) {
+    return JS.invoke(JS.invoke(tokens, "map", (JsValue token) => {
+  return token["text"];
+    }), "join", "");
+  } else {
+    return tokens;
+  }
+  return undef();
+});
+MacroExpander["prototype"]["_getExpansion"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue definition = JS.invoke(self["macros"], "get", name);
+  if (isNullish(definition)) {
+    return definition;
+  }
+  if (JS.strictEqual(name["length"], 1)) {
+    JsValue catcode = self["lexer"]["catcodes"][name];
+    if ((!isNullish(catcode)) && (JS.strictNotEqual(catcode, 13))) {
+      return undef();
+    }
+  }
+  JsValue c22 = undef();
+  if (JS.strictEqual(JS.typeOf(definition), "function")) {
+    c22 = JS.call(definition, undef(), self);
+  } else {
+    c22 = definition;
+  }
+  JsValue expansion = c22;
+  if (JS.strictEqual(JS.typeOf(expansion), "string")) {
+    JsValue numArgs = 0;
+    if (JS.strictNotEqual(JS.invoke(expansion, "indexOf", "#"), JS.number(0) - toNum(1))) {
+      JsValue stripped = JS.invoke(expansion, "replace", JS.construct(RegExp, "##", "g"), "");
+      while (JS.strictNotEqual(JS.invoke(stripped, "indexOf", JS.add("#", JS.add(numArgs, 1))), JS.number(0) - toNum(1))) {
+        numArgs = JS.add(numArgs, 1);
+      }
+    }
+    JsValue bodyLexer = JS.construct(Lexer, expansion, self["settings"]);
+    JsValue a24 = newArray();
+    JsValue tokens = a24;
+    JsValue tok = JS.invoke(bodyLexer, "lex");
+    while (JS.strictNotEqual(tok["text"], "EOF")) {
+      JS.invoke(tokens, "push", tok);
+      tok = JS.invoke(bodyLexer, "lex");
+    }
+    JS.invoke(tokens, "reverse");
+    JsValue o25 = emptyObject();
+    o25["tokens"] = tokens;
+    o25["numArgs"] = numArgs;
+    JsValue expanded = o25;
+    return expanded;
+  }
+  return expansion;
+  return undef();
+});
+MacroExpander["prototype"]["isDefined"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue or26 = JS.invoke(self["macros"], "has", name);
+  if (!(or26.truthy())) {
+    or26 = hasOwn(functions, name);
+  }
+  JsValue or27 = or26;
+  if (!(or27.truthy())) {
+    or27 = hasOwn(symbols["math"], name);
+  }
+  JsValue or28 = or27;
+  if (!(or28.truthy())) {
+    or28 = hasOwn(symbols["text"], name);
+  }
+  JsValue or29 = or28;
+  if (!(or29.truthy())) {
+    or29 = hasOwn(implicitCommands, name);
+  }
+  return or29;
+  return undef();
+});
+MacroExpander["prototype"]["isExpandable"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue macro = JS.invoke(self["macros"], "get", name);
+  JsValue c30 = undef();
+  if (!isNullish(macro)) {
+    JsValue or31 = JS.strictEqual(JS.typeOf(macro), "string");
+    if (!(or31.truthy())) {
+      or31 = JS.strictEqual(JS.typeOf(macro), "function");
+    }
+    JsValue or32 = or31;
+    if (!(or32.truthy())) {
+      or32 = !(macro["unexpandable"].truthy());
+    }
+    c30 = or32;
+  } else {
+    JsValue and33 = hasOwn(functions, name);
+    if (and33.truthy()) {
+      and33 = !(functions[name]["primitive"].truthy());
+    }
+    c30 = and33;
+  }
+  return c30;
+  return undef();
+});
+JsValue __star = emptyObject();
+__star["implicitCommands"] = implicitCommands;
+__star["default"] = MacroExpander;
+__star["MacroExpander"] = MacroExpander;
+
+export { __star, implicitCommands, MacroExpander as MacroExpander };

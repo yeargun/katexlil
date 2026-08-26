@@ -1,0 +1,57 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { Token } from "./Token.lil";
+
+JsValue ParseError = undef();
+
+ParseError = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue message = argv[0];
+  JsValue token = argv[1];
+  JsValue error = JS.add("KaTeX parse error: ", message);
+  JsValue start = undef();
+  JsValue end = undef();
+  JsValue and1 = token;
+  if (and1.truthy()) {
+    and1 = token["loc"];
+  }
+  JsValue loc = and1;
+  if ((loc.truthy()) && (JS.lessThanOrEqual(loc["start"], loc["end"]))) {
+    JsValue input = loc["lexer"]["input"];
+    start = loc["start"];
+    end = loc["end"];
+    if (JS.strictEqual(start, input["length"])) {
+      error = JS.add(error, " at end of input: ");
+    } else {
+      error = JS.add(error, JS.add(JS.add(" at position ", JS.add(start, 1)), ": "));
+    }
+    JsValue underlined = JS.invoke(JS.invoke(input, "slice", start, end), "replace", JS.construct(RegExp, "[^]", "g"), "$&̲");
+    JsValue left = undef();
+    if (JS.greaterThan(start, 15)) {
+      left = JS.add("…", JS.invoke(input, "slice", (toNum(start) - toNum(15)), start));
+    } else {
+      left = JS.invoke(input, "slice", 0, start);
+    }
+    JsValue right = undef();
+    if (JS.lessThan(JS.add(end, 15), input["length"])) {
+      right = JS.add(JS.invoke(input, "slice", end, JS.add(end, 15)), "…");
+    } else {
+      right = JS.invoke(input, "slice", end);
+    }
+    error = JS.add(error, JS.add(JS.add(left, underlined), right));
+  }
+  JsValue selfRet = makeError(toStr(error));
+  selfRet["name"] = "ParseError";
+  selfRet["__proto__"] = ParseError["prototype"];
+  selfRet["position"] = start;
+  if ((!isNullish(start)) && (!isNullish(end))) {
+    selfRet["length"] = (toNum(end) - toNum(start));
+  }
+  selfRet["rawMessage"] = message;
+  return selfRet;
+});
+ParseError["prototype"]["__proto__"] = Error["prototype"];
+JsValue __star = emptyObject();
+__star["default"] = ParseError;
+__star["ParseError"] = ParseError;
+
+export { __star, ParseError as ParseError };

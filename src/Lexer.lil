@@ -1,0 +1,86 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { ParseError } from "./ParseError.lil";
+import { SourceLocation } from "./SourceLocation.lil";
+import { Token } from "./Token.lil";
+
+JsValue spaceRegexString = undef();
+JsValue controlWordRegexString = undef();
+JsValue controlSymbolRegexString = undef();
+JsValue controlWordWhitespaceRegexString = undef();
+JsValue controlSpaceRegexString = undef();
+JsValue combiningDiacriticalMarkString = undef();
+JsValue combiningDiacriticalMarksEndRegex = undef();
+JsValue tokenRegexString = undef();
+JsValue Lexer = undef();
+
+spaceRegexString = "[ \r\n\t]";
+controlWordRegexString = "\\\\[a-zA-Z@]+";
+controlSymbolRegexString = "\\\\[^\ud800-\udfff]";
+controlWordWhitespaceRegexString = "(" + toStr(controlWordRegexString) + ")" + toStr(spaceRegexString) + "*";
+controlSpaceRegexString = "\\\\(\n|[ \r\t]+\n?)[ \r\t]*";
+combiningDiacriticalMarkString = "[̀-ͯ]";
+combiningDiacriticalMarksEndRegex = JS.construct(RegExp, toStr(combiningDiacriticalMarkString) + "+$");
+tokenRegexString = JS.add(JS.add(JS.add(JS.add(JS.add(JS.add(JS.add(JS.add(JS.add("(" + toStr(spaceRegexString) + "+)|", toStr(controlSpaceRegexString) + "|"), "([!-\\[\\]-‧‪-퟿豈-￿]"), toStr(combiningDiacriticalMarkString) + "*"), "|[\ud800-\udbff][\udc00-\udfff]"), toStr(combiningDiacriticalMarkString) + "*"), "|\\\\verb\\*([^]).*?\\4"), "|\\\\verb([^*a-zA-Z]).*?\\5"), "|" + toStr(controlWordWhitespaceRegexString)), "|" + toStr(controlSymbolRegexString) + ")");
+Lexer = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue input = argv[0];
+  JsValue settings = argv[1];
+  self["input"] = input;
+  self["settings"] = settings;
+  self["tokenRegex"] = JS.construct(RegExp, tokenRegexString, "g");
+  JsValue o1 = emptyObject();
+  o1["%"] = 14;
+  o1["~"] = 13;
+  self["catcodes"] = o1;
+  return self;
+});
+JsValue lexTextFromMatch(JsValue matched) {
+  JsValue group6 = matched[6];
+  if (!isUndef(group6) && !isNullish(group6) && JS.strictNotEqual(group6, "")) {
+    return group6;
+  }
+  JsValue group3 = matched[3];
+  if (!isUndef(group3) && !isNullish(group3) && JS.strictNotEqual(group3, "")) {
+    return group3;
+  }
+  JsValue group2 = matched[2];
+  if (!isUndef(group2) && !isNullish(group2) && JS.strictNotEqual(group2, "")) {
+    return "\\ ";
+  }
+  return " ";
+}
+
+Lexer["prototype"]["setCatcode"] = JS.method2((JsValue self, JsValue char, JsValue code) => {
+  self["catcodes"][char] = code;
+  return undef();
+});
+Lexer["prototype"]["lex"] = JS.method0((JsValue self) => {
+  JsValue input = self["input"];
+  JsValue pos = self["tokenRegex"]["lastIndex"];
+  if (JS.strictEqual(pos, input["length"])) {
+    return JS.construct(Token, "EOF", JS.construct(SourceLocation, self, pos, pos));
+  }
+  JsValue matched = JS.invoke(self["tokenRegex"], "exec", input);
+  if ((JS.strictEqual(matched, null)) || (JS.strictNotEqual(matched["index"], pos))) {
+    throw JS.construct(ParseError, "Unexpected character: '" + toStr(input[pos]) + "'", JS.construct(Token, input[pos], JS.construct(SourceLocation, self, pos, JS.add(pos, 1))));
+  }
+  JsValue text = lexTextFromMatch(matched);
+  if (JS.strictEqual(self["catcodes"][text], 14)) {
+    JsValue nlIndex = JS.invoke(input, "indexOf", "\n", self["tokenRegex"]["lastIndex"]);
+    if (JS.strictEqual(nlIndex, JS.number(0) - toNum(1))) {
+      self["tokenRegex"]["lastIndex"] = input["length"];
+      JS.invoke(self["settings"], "reportNonstrict", "commentAtEnd", JS.add("% comment has no terminating newline; LaTeX would ", "fail because of commenting the end of math mode (e.g. $)"));
+    } else {
+      self["tokenRegex"]["lastIndex"] = JS.add(nlIndex, 1);
+    }
+    return JS.invoke(self, "lex");
+  }
+  return JS.construct(Token, text, JS.construct(SourceLocation, self, pos, self["tokenRegex"]["lastIndex"]));
+  return undef();
+});
+JsValue __star = emptyObject();
+__star["combiningDiacriticalMarksEndRegex"] = combiningDiacriticalMarksEndRegex;
+__star["default"] = Lexer;
+__star["Lexer"] = Lexer;
+
+export { __star, combiningDiacriticalMarksEndRegex, Lexer as Lexer };

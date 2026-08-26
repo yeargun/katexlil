@@ -1,0 +1,40 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "htmlmathml";
+JsValue a2 = newArray();
+JS.push(a2, "\\html@mathml");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 2;
+o3["allowedInText"] = true;
+o1["props"] = o3;
+o1["handler"] = (JsValue p4, JsValue args) => {
+  JsValue op5 = p4;
+  JsValue parser = op5["parser"];
+  JsValue o6 = emptyObject();
+  o6["type"] = "htmlmathml";
+  o6["mode"] = parser["mode"];
+  o6["html"] = JS.call(ordargument, undef(), args[0]);
+  o6["mathml"] = JS.call(ordargument, undef(), args[1]);
+  return o6;
+  return undef();
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue elements = JS.invoke(html, "buildExpression", group["html"], options, false);
+  return JS.invoke(buildCommon, "makeFragment", elements);
+  return undef();
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  return JS.invoke(mml, "buildExpressionRow", group["mathml"], options);
+  return undef();
+};
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

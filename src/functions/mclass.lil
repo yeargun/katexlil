@@ -1,0 +1,203 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { utils } from "../utils.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue makeSpan = undef();
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+JsValue binrelClass = undef();
+
+makeSpan = buildCommon["makeSpan"];
+htmlBuilder = (JsValue group, JsValue options) => {
+  JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, true);
+  JsValue a1 = newArray();
+  JS.push(a1, group["mclass"]);
+  return JS.call(makeSpan, undef(), a1, elements, options);
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue node = undef();
+  JsValue inner = JS.invoke(mml, "buildExpression", group["body"], options);
+  if (JS.strictEqual(group["mclass"], "minner")) {
+    node = JS.construct(mathMLTree["MathNode"], "mpadded", inner);
+  } else {
+    if (JS.strictEqual(group["mclass"], "mord")) {
+      if (group["isCharacterBox"].truthy()) {
+        node = inner[0];
+        node["type"] = "mi";
+      } else {
+        node = JS.construct(mathMLTree["MathNode"], "mi", inner);
+      }
+    } else {
+      if (group["isCharacterBox"].truthy()) {
+        node = inner[0];
+        node["type"] = "mo";
+      } else {
+        node = JS.construct(mathMLTree["MathNode"], "mo", inner);
+      }
+      if (JS.strictEqual(group["mclass"], "mbin")) {
+        node["attributes"]["lspace"] = "0.22em";
+        node["attributes"]["rspace"] = "0.22em";
+      } else {
+        if (JS.strictEqual(group["mclass"], "mpunct")) {
+          node["attributes"]["lspace"] = "0em";
+          node["attributes"]["rspace"] = "0.17em";
+        } else {
+          if ((JS.strictEqual(group["mclass"], "mopen")) || (JS.strictEqual(group["mclass"], "mclose"))) {
+            node["attributes"]["lspace"] = "0em";
+            node["attributes"]["rspace"] = "0em";
+          } else {
+            if (JS.strictEqual(group["mclass"], "minner")) {
+              node["attributes"]["lspace"] = "0.0556em";
+              node["attributes"]["width"] = "+0.1111em";
+            }
+          }
+        }
+      }
+    }
+  }
+  return node;
+  return undef();
+};
+JsValue o2 = emptyObject();
+o2["type"] = "mclass";
+JsValue a3 = newArray();
+JS.push(a3, "\\mathord");
+JS.push(a3, "\\mathbin");
+JS.push(a3, "\\mathrel");
+JS.push(a3, "\\mathopen");
+JS.push(a3, "\\mathclose");
+JS.push(a3, "\\mathpunct");
+JS.push(a3, "\\mathinner");
+o2["names"] = a3;
+JsValue o4 = emptyObject();
+o4["numArgs"] = 1;
+o4["primitive"] = true;
+o2["props"] = o4;
+o2["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue funcName = op6["funcName"];
+  JsValue body = args[0];
+  JsValue o7 = emptyObject();
+  o7["type"] = "mclass";
+  o7["mode"] = parser["mode"];
+  o7["mclass"] = JS.add("m", JS.invoke(funcName, "slice", 5));
+  o7["body"] = JS.call(ordargument, undef(), body);
+  o7["isCharacterBox"] = JS.invoke(utils, "isCharacterBox", body);
+  return o7;
+  return undef();
+});
+o2["htmlBuilder"] = htmlBuilder;
+o2["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o2);
+binrelClass = (JsValue arg) => {
+  JsValue c8 = undef();
+  if ((JS.strictEqual(arg["type"], "ordgroup")) && (arg["body"]["length"].truthy())) {
+    c8 = arg["body"][0];
+  } else {
+    c8 = arg;
+  }
+  JsValue atom = c8;
+  if ((JS.strictEqual(atom["type"], "atom")) && ((JS.strictEqual(atom["family"], "bin")) || (JS.strictEqual(atom["family"], "rel")))) {
+    return JS.add("m", atom["family"]);
+  } else {
+    return "mord";
+  }
+  return undef();
+};
+JsValue o9 = emptyObject();
+o9["type"] = "mclass";
+JsValue a10 = newArray();
+JS.push(a10, "\\@binrel");
+o9["names"] = a10;
+JsValue o11 = emptyObject();
+o11["numArgs"] = 2;
+o9["props"] = o11;
+o9["handler"] = JS.method2((JsValue self, JsValue p12, JsValue args) => {
+  JsValue op13 = p12;
+  JsValue parser = op13["parser"];
+  JsValue o14 = emptyObject();
+  o14["type"] = "mclass";
+  o14["mode"] = parser["mode"];
+  o14["mclass"] = JS.call(binrelClass, undef(), args[0]);
+  o14["body"] = JS.call(ordargument, undef(), args[1]);
+  o14["isCharacterBox"] = JS.invoke(utils, "isCharacterBox", args[1]);
+  return o14;
+  return undef();
+});
+JS.call(defineFunction, undef(), o9);
+JsValue o15 = emptyObject();
+o15["type"] = "mclass";
+JsValue a16 = newArray();
+JS.push(a16, "\\stackrel");
+JS.push(a16, "\\overset");
+JS.push(a16, "\\underset");
+o15["names"] = a16;
+JsValue o17 = emptyObject();
+o17["numArgs"] = 2;
+o15["props"] = o17;
+o15["handler"] = JS.method2((JsValue self, JsValue p18, JsValue args) => {
+  JsValue op19 = p18;
+  JsValue parser = op19["parser"];
+  JsValue funcName = op19["funcName"];
+  JsValue baseArg = args[1];
+  JsValue shiftedArg = args[0];
+  JsValue mclass = undef();
+  if (JS.strictNotEqual(funcName, "\\stackrel")) {
+    mclass = JS.call(binrelClass, undef(), baseArg);
+  } else {
+    mclass = "mrel";
+  }
+  JsValue o20 = emptyObject();
+  o20["type"] = "op";
+  o20["mode"] = baseArg["mode"];
+  o20["limits"] = true;
+  o20["alwaysHandleSupSub"] = true;
+  o20["parentIsSupSub"] = false;
+  o20["symbol"] = false;
+  o20["suppressBaseShift"] = JS.strictNotEqual(funcName, "\\stackrel");
+  o20["body"] = JS.call(ordargument, undef(), baseArg);
+  JsValue baseOp = o20;
+  JsValue o21 = emptyObject();
+  o21["type"] = "supsub";
+  o21["mode"] = shiftedArg["mode"];
+  o21["base"] = baseOp;
+  JsValue c22 = undef();
+  if (JS.strictEqual(funcName, "\\underset")) {
+    c22 = null;
+  } else {
+    c22 = shiftedArg;
+  }
+  o21["sup"] = c22;
+  JsValue c23 = undef();
+  if (JS.strictEqual(funcName, "\\underset")) {
+    c23 = shiftedArg;
+  } else {
+    c23 = null;
+  }
+  o21["sub"] = c23;
+  JsValue supsub = o21;
+  JsValue o24 = emptyObject();
+  o24["type"] = "mclass";
+  o24["mode"] = parser["mode"];
+  o24["mclass"] = mclass;
+  JsValue a25 = newArray();
+  JS.push(a25, supsub);
+  o24["body"] = a25;
+  o24["isCharacterBox"] = JS.invoke(utils, "isCharacterBox", supsub);
+  return o24;
+  return undef();
+});
+o15["htmlBuilder"] = htmlBuilder;
+o15["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o15);
+JsValue __star = emptyObject();
+__star["binrelClass"] = binrelClass;
+
+export { __star, binrelClass };

@@ -1,0 +1,427 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { SymbolNode } from "../domTree.lil";
+import { utils } from "../utils.lil";
+import { Style } from "../Style.lil";
+import { assembleSupSub } from "./utils/assembleSupSub.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { makeEm } from "../units.lil";
+import { __star as mathMLTree } from "../mathMLTree.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue noSuccessor = undef();
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+JsValue singleCharBigOps = undef();
+JsValue singleCharIntegrals = undef();
+
+JsValue a1 = newArray();
+JS.push(a1, "\\smallint");
+noSuccessor = a1;
+htmlBuilder = (JsValue grp, JsValue options) => {
+  JsValue supGroup = undef();
+  JsValue subGroup = undef();
+  JsValue hasLimits = false;
+  JsValue group = undef();
+  if (JS.strictEqual(grp["type"], "supsub")) {
+    supGroup = grp["sup"];
+    subGroup = grp["sub"];
+    group = JS.call(assertNodeType, undef(), grp["base"], "op");
+    hasLimits = true;
+  } else {
+    group = JS.call(assertNodeType, undef(), grp, "op");
+  }
+  JsValue style = options["style"];
+  JsValue large = false;
+  if (((JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) && (group["symbol"].truthy())) && (!(JS.invoke(utils, "contains", noSuccessor, group["name"]).truthy()))) {
+    large = true;
+  }
+  JsValue base = undef();
+  if (group["symbol"].truthy()) {
+    JsValue c2 = undef();
+    if (large.truthy()) {
+      c2 = "Size2-Regular";
+    } else {
+      c2 = "Size1-Regular";
+    }
+    JsValue fontName = c2;
+    JsValue stash = "";
+    if ((JS.strictEqual(group["name"], "\\oiint")) || (JS.strictEqual(group["name"], "\\oiiint"))) {
+      stash = JS.invoke(group["name"], "slice", 1);
+      JsValue c3 = undef();
+      if (JS.strictEqual(stash, "oiint")) {
+        c3 = "\\iint";
+      } else {
+        c3 = "\\iiint";
+      }
+      group["name"] = c3;
+    }
+    JsValue a4 = newArray();
+    JS.push(a4, "mop");
+    JS.push(a4, "op-symbol");
+    JsValue c5 = undef();
+    if (large.truthy()) {
+      c5 = "large-op";
+    } else {
+      c5 = "small-op";
+    }
+    JS.push(a4, c5);
+    base = JS.invoke(buildCommon, "makeSymbol", group["name"], fontName, "math", options, a4);
+    if (JS.greaterThan(stash["length"], 0)) {
+      JsValue italic = base["italic"];
+      JsValue c6 = undef();
+      if (large.truthy()) {
+        c6 = "2";
+      } else {
+        c6 = "1";
+      }
+      JsValue oval = JS.invoke(buildCommon, "staticSvg", JS.add(JS.add(stash, "Size"), c6), options);
+      JsValue o7 = emptyObject();
+      o7["positionType"] = "individualShift";
+      JsValue a8 = newArray();
+      JsValue o9 = emptyObject();
+      o9["type"] = "elem";
+      o9["elem"] = base;
+      o9["shift"] = 0;
+      JS.push(a8, o9);
+      JsValue o10 = emptyObject();
+      o10["type"] = "elem";
+      o10["elem"] = oval;
+      JsValue c11 = undef();
+      if (large.truthy()) {
+        c11 = 0.08;
+      } else {
+        c11 = 0;
+      }
+      o10["shift"] = c11;
+      JS.push(a8, o10);
+      o7["children"] = a8;
+      base = JS.invoke(buildCommon, "makeVList", o7, options);
+      group["name"] = JS.add("\\", stash);
+      JS.invoke(base["classes"], "unshift", "mop");
+      base["italic"] = italic;
+    }
+  } else {
+    if (group["body"].truthy()) {
+      JsValue inner = JS.invoke(html, "buildExpression", group["body"], options, true);
+      if ((JS.strictEqual(inner["length"], 1)) && (instanceOf(inner[0], SymbolNode))) {
+        base = inner[0];
+        base["classes"][0] = "mop";
+      } else {
+        JsValue a12 = newArray();
+        JS.push(a12, "mop");
+        base = JS.invoke(buildCommon, "makeSpan", a12, inner, options);
+      }
+    } else {
+      JsValue a13 = newArray();
+      JsValue output = a13;
+      {
+        JsValue i = 1;
+        while (JS.lessThan(i, group["name"]["length"])) {
+          JS.invoke(output, "push", JS.invoke(buildCommon, "mathsym", group["name"][i], group["mode"], options));
+          JsValue u14 = i;
+          i = JS.add(i, 1);
+        }
+      }
+      JsValue a15 = newArray();
+      JS.push(a15, "mop");
+      base = JS.invoke(buildCommon, "makeSpan", a15, output, options);
+    }
+  }
+  JsValue baseShift = 0;
+  JsValue slant = 0;
+  if ((((instanceOf(base, SymbolNode)) || (JS.strictEqual(group["name"], "\\oiint"))) || (JS.strictEqual(group["name"], "\\oiiint"))) && (!(group["suppressBaseShift"].truthy()))) {
+    baseShift = (toNum((toNum((toNum(base["height"]) - toNum(base["depth"]))) / toNum(2))) - toNum(JS.invoke(options, "fontMetrics")["axisHeight"]));
+    slant = base["italic"];
+  }
+  if (hasLimits.truthy()) {
+    JsValue ca16 = newArray();
+    JS.push(ca16, base);
+    JS.push(ca16, supGroup);
+    JS.push(ca16, subGroup);
+    JS.push(ca16, options);
+    JS.push(ca16, style);
+    JS.push(ca16, slant);
+    JS.push(ca16, baseShift);
+    return apply(assembleSupSub, undef(), ca16);
+  } else {
+    if (baseShift.truthy()) {
+      base["style"]["position"] = "relative";
+      base["style"]["top"] = JS.call(makeEm, undef(), baseShift);
+    }
+    return base;
+  }
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue node = undef();
+  if (group["symbol"].truthy()) {
+    JsValue a17 = newArray();
+    JS.push(a17, JS.invoke(mml, "makeText", group["name"], group["mode"]));
+    node = JS.construct(mathMLTree["MathNode"], "mo", a17);
+    if (JS.invoke(utils, "contains", noSuccessor, group["name"]).truthy()) {
+      JS.invoke(node, "setAttribute", "largeop", "false");
+    }
+  } else {
+    if (group["body"].truthy()) {
+      node = JS.construct(mathMLTree["MathNode"], "mo", JS.invoke(mml, "buildExpression", group["body"], options));
+    } else {
+      JsValue a18 = newArray();
+      JS.push(a18, JS.construct(mathMLTree["TextNode"], JS.invoke(group["name"], "slice", 1)));
+      node = JS.construct(mathMLTree["MathNode"], "mi", a18);
+      JsValue a19 = newArray();
+      JS.push(a19, JS.invoke(mml, "makeText", "⁡", "text"));
+      JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a19);
+      if (group["parentIsSupSub"].truthy()) {
+        JsValue a20 = newArray();
+        JS.push(a20, node);
+        JS.push(a20, operator);
+        node = JS.construct(mathMLTree["MathNode"], "mrow", a20);
+      } else {
+        JsValue a21 = newArray();
+        JS.push(a21, node);
+        JS.push(a21, operator);
+        node = JS.invoke(mathMLTree, "newDocumentFragment", a21);
+      }
+    }
+  }
+  return node;
+  return undef();
+};
+JsValue o22 = emptyObject();
+o22["∏"] = "\\prod";
+o22["∐"] = "\\coprod";
+o22["∑"] = "\\sum";
+o22["⋀"] = "\\bigwedge";
+o22["⋁"] = "\\bigvee";
+o22["⋂"] = "\\bigcap";
+o22["⋃"] = "\\bigcup";
+o22["⨀"] = "\\bigodot";
+o22["⨁"] = "\\bigoplus";
+o22["⨂"] = "\\bigotimes";
+o22["⨄"] = "\\biguplus";
+o22["⨆"] = "\\bigsqcup";
+singleCharBigOps = o22;
+JsValue o23 = emptyObject();
+o23["type"] = "op";
+JsValue a24 = newArray();
+JS.push(a24, "\\coprod");
+JS.push(a24, "\\bigvee");
+JS.push(a24, "\\bigwedge");
+JS.push(a24, "\\biguplus");
+JS.push(a24, "\\bigcap");
+JS.push(a24, "\\bigcup");
+JS.push(a24, "\\intop");
+JS.push(a24, "\\prod");
+JS.push(a24, "\\sum");
+JS.push(a24, "\\bigotimes");
+JS.push(a24, "\\bigoplus");
+JS.push(a24, "\\bigodot");
+JS.push(a24, "\\bigsqcup");
+JS.push(a24, "\\smallint");
+JS.push(a24, "∏");
+JS.push(a24, "∐");
+JS.push(a24, "∑");
+JS.push(a24, "⋀");
+JS.push(a24, "⋁");
+JS.push(a24, "⋂");
+JS.push(a24, "⋃");
+JS.push(a24, "⨀");
+JS.push(a24, "⨁");
+JS.push(a24, "⨂");
+JS.push(a24, "⨄");
+JS.push(a24, "⨆");
+o23["names"] = a24;
+JsValue o25 = emptyObject();
+o25["numArgs"] = 0;
+o23["props"] = o25;
+o23["handler"] = (JsValue p26, JsValue args) => {
+  JsValue op27 = p26;
+  JsValue parser = op27["parser"];
+  JsValue funcName = op27["funcName"];
+  JsValue fName = funcName;
+  if (JS.strictEqual(fName["length"], 1)) {
+    fName = singleCharBigOps[fName];
+  }
+  JsValue o28 = emptyObject();
+  o28["type"] = "op";
+  o28["mode"] = parser["mode"];
+  o28["limits"] = true;
+  o28["parentIsSupSub"] = false;
+  o28["symbol"] = true;
+  o28["name"] = fName;
+  return o28;
+  return undef();
+};
+o23["htmlBuilder"] = htmlBuilder;
+o23["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o23);
+JsValue o29 = emptyObject();
+o29["type"] = "op";
+JsValue a30 = newArray();
+JS.push(a30, "\\mathop");
+o29["names"] = a30;
+JsValue o31 = emptyObject();
+o31["numArgs"] = 1;
+o31["primitive"] = true;
+o29["props"] = o31;
+o29["handler"] = (JsValue p32, JsValue args) => {
+  JsValue op33 = p32;
+  JsValue parser = op33["parser"];
+  JsValue body = args[0];
+  JsValue o34 = emptyObject();
+  o34["type"] = "op";
+  o34["mode"] = parser["mode"];
+  o34["limits"] = false;
+  o34["parentIsSupSub"] = false;
+  o34["symbol"] = false;
+  o34["body"] = JS.call(ordargument, undef(), body);
+  return o34;
+  return undef();
+};
+o29["htmlBuilder"] = htmlBuilder;
+o29["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o29);
+JsValue o35 = emptyObject();
+o35["∫"] = "\\int";
+o35["∬"] = "\\iint";
+o35["∭"] = "\\iiint";
+o35["∮"] = "\\oint";
+o35["∯"] = "\\oiint";
+o35["∰"] = "\\oiiint";
+singleCharIntegrals = o35;
+JsValue o36 = emptyObject();
+o36["type"] = "op";
+JsValue a37 = newArray();
+JS.push(a37, "\\arcsin");
+JS.push(a37, "\\arccos");
+JS.push(a37, "\\arctan");
+JS.push(a37, "\\arctg");
+JS.push(a37, "\\arcctg");
+JS.push(a37, "\\arg");
+JS.push(a37, "\\ch");
+JS.push(a37, "\\cos");
+JS.push(a37, "\\cosec");
+JS.push(a37, "\\cosh");
+JS.push(a37, "\\cot");
+JS.push(a37, "\\cotg");
+JS.push(a37, "\\coth");
+JS.push(a37, "\\csc");
+JS.push(a37, "\\ctg");
+JS.push(a37, "\\cth");
+JS.push(a37, "\\deg");
+JS.push(a37, "\\dim");
+JS.push(a37, "\\exp");
+JS.push(a37, "\\hom");
+JS.push(a37, "\\ker");
+JS.push(a37, "\\lg");
+JS.push(a37, "\\ln");
+JS.push(a37, "\\log");
+JS.push(a37, "\\sec");
+JS.push(a37, "\\sin");
+JS.push(a37, "\\sinh");
+JS.push(a37, "\\sh");
+JS.push(a37, "\\tan");
+JS.push(a37, "\\tanh");
+JS.push(a37, "\\tg");
+JS.push(a37, "\\th");
+o36["names"] = a37;
+JsValue o38 = emptyObject();
+o38["numArgs"] = 0;
+o36["props"] = o38;
+o36["handler"] = JS.method1((JsValue self, JsValue p39) => {
+  JsValue op40 = p39;
+  JsValue parser = op40["parser"];
+  JsValue funcName = op40["funcName"];
+  JsValue o41 = emptyObject();
+  o41["type"] = "op";
+  o41["mode"] = parser["mode"];
+  o41["limits"] = false;
+  o41["parentIsSupSub"] = false;
+  o41["symbol"] = false;
+  o41["name"] = funcName;
+  return o41;
+  return undef();
+});
+o36["htmlBuilder"] = htmlBuilder;
+o36["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o36);
+JsValue o42 = emptyObject();
+o42["type"] = "op";
+JsValue a43 = newArray();
+JS.push(a43, "\\det");
+JS.push(a43, "\\gcd");
+JS.push(a43, "\\inf");
+JS.push(a43, "\\lim");
+JS.push(a43, "\\max");
+JS.push(a43, "\\min");
+JS.push(a43, "\\Pr");
+JS.push(a43, "\\sup");
+o42["names"] = a43;
+JsValue o44 = emptyObject();
+o44["numArgs"] = 0;
+o42["props"] = o44;
+o42["handler"] = JS.method1((JsValue self, JsValue p45) => {
+  JsValue op46 = p45;
+  JsValue parser = op46["parser"];
+  JsValue funcName = op46["funcName"];
+  JsValue o47 = emptyObject();
+  o47["type"] = "op";
+  o47["mode"] = parser["mode"];
+  o47["limits"] = true;
+  o47["parentIsSupSub"] = false;
+  o47["symbol"] = false;
+  o47["name"] = funcName;
+  return o47;
+  return undef();
+});
+o42["htmlBuilder"] = htmlBuilder;
+o42["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o42);
+JsValue o48 = emptyObject();
+o48["type"] = "op";
+JsValue a49 = newArray();
+JS.push(a49, "\\int");
+JS.push(a49, "\\iint");
+JS.push(a49, "\\iiint");
+JS.push(a49, "\\oint");
+JS.push(a49, "\\oiint");
+JS.push(a49, "\\oiiint");
+JS.push(a49, "∫");
+JS.push(a49, "∬");
+JS.push(a49, "∭");
+JS.push(a49, "∮");
+JS.push(a49, "∯");
+JS.push(a49, "∰");
+o48["names"] = a49;
+JsValue o50 = emptyObject();
+o50["numArgs"] = 0;
+o48["props"] = o50;
+o48["handler"] = JS.method1((JsValue self, JsValue p51) => {
+  JsValue op52 = p51;
+  JsValue parser = op52["parser"];
+  JsValue funcName = op52["funcName"];
+  JsValue fName = funcName;
+  if (JS.strictEqual(fName["length"], 1)) {
+    fName = singleCharIntegrals[fName];
+  }
+  JsValue o53 = emptyObject();
+  o53["type"] = "op";
+  o53["mode"] = parser["mode"];
+  o53["limits"] = false;
+  o53["parentIsSupSub"] = false;
+  o53["symbol"] = true;
+  o53["name"] = fName;
+  return o53;
+  return undef();
+});
+o48["htmlBuilder"] = htmlBuilder;
+o48["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o48);
+JsValue __star = emptyObject();
+__star["htmlBuilder"] = htmlBuilder;
+
+export { __star, htmlBuilder };

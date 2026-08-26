@@ -1,0 +1,109 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { ParseError } from "./ParseError.lil";
+
+JsValue Namespace = undef();
+
+Namespace = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue builtins = argv[0];
+  if (isUndef(builtins)) {
+    JsValue o1 = emptyObject();
+    builtins = o1;
+  }
+  JsValue globalMacros = argv[1];
+  if (isUndef(globalMacros)) {
+    JsValue o2 = emptyObject();
+    globalMacros = o2;
+  }
+  self["current"] = globalMacros;
+  self["builtins"] = builtins;
+  JsValue a3 = newArray();
+  self["undefStack"] = a3;
+  return self;
+});
+Namespace["prototype"]["beginGroup"] = JS.method0((JsValue self) => {
+  JsValue o4 = emptyObject();
+  JS.invoke(self["undefStack"], "push", o4);
+  return undef();
+});
+Namespace["prototype"]["endGroup"] = JS.method0((JsValue self) => {
+  if (JS.strictEqual(self["undefStack"]["length"], 0)) {
+    throw JS.construct(ParseError, JS.add("Unbalanced namespace destruction: attempt ", "to pop global namespace; please report this as a bug"));
+  }
+  JsValue undefs = JS.invoke(self["undefStack"], "pop");
+  JsValue obj5 = undefs;
+  JsValue keys6 = objectKeys(obj5);
+  int ki7 = 0;
+  int kn8 = len(keys6);
+  while (ki7 < kn8) {
+    JsValue undef = keys6[ki7];
+    if (hasOwn(undefs, undef)) {
+      if (isNullish(undefs[undef])) {
+        deleteKey(self["current"], undef);
+        true;
+      } else {
+        self["current"][undef] = undefs[undef];
+      }
+    }
+    ki7 = ki7 + 1;
+  }
+  return undef();
+});
+Namespace["prototype"]["endGroups"] = JS.method0((JsValue self) => {
+  while (JS.greaterThan(self["undefStack"]["length"], 0)) {
+    JS.invoke(self, "endGroup");
+  }
+  return undef();
+});
+Namespace["prototype"]["has"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue or9 = hasOwn(self["current"], name);
+  if (!(or9.truthy())) {
+    or9 = hasOwn(self["builtins"], name);
+  }
+  return or9;
+  return undef();
+});
+Namespace["prototype"]["get"] = JS.method1((JsValue self, JsValue name) => {
+  if (hasOwn(self["current"], name)) {
+    return self["current"][name];
+  } else {
+    return self["builtins"][name];
+  }
+  return undef();
+});
+Namespace["prototype"]["set"] = JS.method3((JsValue self, JsValue name, JsValue value, JsValue global) => {
+  if (isUndef(global)) {
+    global = false;
+  }
+  if (global.truthy()) {
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, self["undefStack"]["length"])) {
+        deleteKey(self["undefStack"][i], name);
+        true;
+        JsValue u10 = i;
+        i = JS.add(i, 1);
+      }
+    }
+    if (JS.greaterThan(self["undefStack"]["length"], 0)) {
+      self["undefStack"][(toNum(self["undefStack"]["length"]) - toNum(1))][name] = value;
+    }
+  } else {
+    JsValue top = self["undefStack"][(toNum(self["undefStack"]["length"]) - toNum(1))];
+    if ((top.truthy()) && (!(hasOwn(top, name)))) {
+      top[name] = self["current"][name];
+    }
+  }
+  if (isNullish(value)) {
+    deleteKey(self["current"], name);
+    true;
+  } else {
+    self["current"][name] = value;
+  }
+  return undef();
+});
+JsValue __star = emptyObject();
+__star["default"] = Namespace;
+__star["Namespace"] = Namespace;
+
+export { __star, Namespace as Namespace };

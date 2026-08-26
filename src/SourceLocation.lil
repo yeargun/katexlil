@@ -1,0 +1,34 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+JsValue SourceLocation = undef();
+
+SourceLocation = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue lexer = argv[0];
+  JsValue start = argv[1];
+  JsValue end = argv[2];
+  self["lexer"] = lexer;
+  self["start"] = start;
+  self["end"] = end;
+  return self;
+});
+SourceLocation["range"] = (JsValue first, JsValue second) => {
+  if (!(second.truthy())) {
+    JsValue and1 = first;
+    if (and1.truthy()) {
+      and1 = first["loc"];
+    }
+    return and1;
+  } else {
+    if ((((!(first.truthy())) || (!(first["loc"].truthy()))) || (!(second["loc"].truthy()))) || (JS.strictNotEqual(first["loc"]["lexer"], second["loc"]["lexer"]))) {
+      return null;
+    } else {
+      return JS.construct(SourceLocation, first["loc"]["lexer"], first["loc"]["start"], second["loc"]["end"]);
+    }
+  }
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["default"] = SourceLocation;
+__star["SourceLocation"] = SourceLocation;
+
+export { __star, SourceLocation as SourceLocation };

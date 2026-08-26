@@ -1,0 +1,60 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { ParseError } from "../ParseError.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "styling";
+JsValue a2 = newArray();
+JS.push(a2, "\\(");
+JS.push(a2, "$");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 0;
+o3["allowedInText"] = true;
+o3["allowedInMath"] = false;
+o1["props"] = o3;
+o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
+  JsValue op5 = p4;
+  JsValue funcName = op5["funcName"];
+  JsValue parser = op5["parser"];
+  JsValue outerMode = parser["mode"];
+  JS.invoke(parser, "switchMode", "math");
+  JsValue c6 = undef();
+  if (JS.strictEqual(funcName, "\\(")) {
+    c6 = "\\)";
+  } else {
+    c6 = "$";
+  }
+  JsValue close = c6;
+  JsValue body = JS.invoke(parser, "parseExpression", false, close);
+  JS.invoke(parser, "expect", close);
+  JS.invoke(parser, "switchMode", outerMode);
+  JsValue o7 = emptyObject();
+  o7["type"] = "styling";
+  o7["mode"] = parser["mode"];
+  o7["style"] = "text";
+  o7["body"] = body;
+  return o7;
+  return undef();
+});
+JS.call(defineFunction, undef(), o1);
+JsValue o8 = emptyObject();
+o8["type"] = "text";
+JsValue a9 = newArray();
+JS.push(a9, "\\)");
+JS.push(a9, "\\]");
+o8["names"] = a9;
+JsValue o10 = emptyObject();
+o10["numArgs"] = 0;
+o10["allowedInText"] = true;
+o10["allowedInMath"] = false;
+o8["props"] = o10;
+o8["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
+  throw JS.construct(ParseError, "Mismatched " + toStr(context["funcName"]));
+  return undef();
+});
+JS.call(defineFunction, undef(), o8);
+JsValue __star = emptyObject();
+
+export { __star };

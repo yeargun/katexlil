@@ -1,0 +1,13 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { _environments } from "./defineEnvironment.lil";
+import "./environments/array.lil";
+
+JsValue environments = undef();
+
+environments = _environments;
+JsValue __star = emptyObject();
+__star["default"] = environments;
+__star["environments"] = environments;
+
+export { __star, environments as environments };

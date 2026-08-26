@@ -1,0 +1,122 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+JsValue contains = undef();
+JsValue deflt = undef();
+JsValue uppercase = undef();
+JsValue hyphenate = undef();
+JsValue ESCAPE_LOOKUP = undef();
+JsValue ESCAPE_REGEX = undef();
+JsValue escape = undef();
+JsValue getBaseElem = undef();
+JsValue isCharacterBox = undef();
+JsValue assert = undef();
+JsValue protocolFromUrl = undef();
+
+contains = (JsValue list, JsValue elem) => {
+  return JS.strictNotEqual(JS.invoke(list, "indexOf", elem), JS.number(0) - toNum(1));
+  return undef();
+};
+deflt = (JsValue setting, JsValue defaultIfUndefined) => {
+  JsValue c1 = undef();
+  if (JS.strictEqual(setting, undef())) {
+    c1 = defaultIfUndefined;
+  } else {
+    c1 = setting;
+  }
+  return c1;
+  return undef();
+};
+uppercase = JS.construct(RegExp, "([A-Z])", "g");
+hyphenate = (JsValue str) => {
+  return JS.invoke(JS.invoke(str, "replace", uppercase, "-$1"), "toLowerCase");
+  return undef();
+};
+JsValue o2 = emptyObject();
+o2["&"] = "&amp;";
+o2[">"] = "&gt;";
+o2["<"] = "&lt;";
+o2["\""] = "&quot;";
+o2["'"] = "&#x27;";
+ESCAPE_LOOKUP = o2;
+ESCAPE_REGEX = JS.construct(RegExp, "[&><\"']", "g");
+escape = (JsValue text) => {
+  return JS.invoke(toStr(text), "replace", ESCAPE_REGEX, (JsValue matched) => {
+  return ESCAPE_LOOKUP[matched];
+  });
+  return undef();
+};
+getBaseElem = (JsValue group) => {
+  if (JS.strictEqual(group["type"], "ordgroup")) {
+    if (JS.strictEqual(group["body"]["length"], 1)) {
+      return JS.call(getBaseElem, undef(), group["body"][0]);
+    } else {
+      return group;
+    }
+  } else {
+    if (JS.strictEqual(group["type"], "color")) {
+      if (JS.strictEqual(group["body"]["length"], 1)) {
+        return JS.call(getBaseElem, undef(), group["body"][0]);
+      } else {
+        return group;
+      }
+    } else {
+      if (JS.strictEqual(group["type"], "font")) {
+        return JS.call(getBaseElem, undef(), group["body"]);
+      } else {
+        return group;
+      }
+    }
+  }
+  return undef();
+};
+isCharacterBox = (JsValue group) => {
+  JsValue baseElem = JS.call(getBaseElem, undef(), group);
+  JsValue or3 = JS.strictEqual(baseElem["type"], "mathord");
+  if (!(or3.truthy())) {
+    or3 = JS.strictEqual(baseElem["type"], "textord");
+  }
+  JsValue or4 = or3;
+  if (!(or4.truthy())) {
+    or4 = JS.strictEqual(baseElem["type"], "atom");
+  }
+  return or4;
+  return undef();
+};
+assert = (JsValue value) => {
+  if (!(value.truthy())) {
+    throw makeError(toStr(JS.add("Expected non-null, but got ", toStr(value))));
+  }
+  return value;
+  return undef();
+};
+protocolFromUrl = (JsValue url) => {
+  JsValue protocol = JS.invoke(JS.construct(RegExp, "^[\\x00-\\x20]*([^\\\\/#?]*?)(:|&#0*58|&#x0*3a|&colon)", "i"), "exec", url);
+  if (!(protocol.truthy())) {
+    return "_relative";
+  }
+  if (JS.strictNotEqual(protocol[2], ":")) {
+    return null;
+  }
+  if (!(JS.invoke(JS.construct(RegExp, "^[a-zA-Z][a-zA-Z0-9+\\-.]*$", ""), "test", protocol[1]).truthy())) {
+    return null;
+  }
+  return JS.invoke(protocol[1], "toLowerCase");
+  return undef();
+};
+JsValue o5 = emptyObject();
+o5["contains"] = contains;
+o5["deflt"] = deflt;
+o5["escape"] = escape;
+o5["hyphenate"] = hyphenate;
+o5["getBaseElem"] = getBaseElem;
+o5["isCharacterBox"] = isCharacterBox;
+o5["protocolFromUrl"] = protocolFromUrl;
+JsValue utils = undef();
+utils = o5;
+JsValue __star = emptyObject();
+__star["assert"] = assert;
+__star["protocolFromUrl"] = protocolFromUrl;
+__star["default"] = utils;
+__star["utils"] = utils;
+
+export { __star, assert, protocolFromUrl, utils as utils };

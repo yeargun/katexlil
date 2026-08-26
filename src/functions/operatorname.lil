@@ -1,0 +1,169 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { defineMacro } from "../defineMacro.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { SymbolNode } from "../domTree.lil";
+import { assembleSupSub } from "./utils/assembleSupSub.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+
+htmlBuilder = (JsValue grp, JsValue options) => {
+  JsValue supGroup = undef();
+  JsValue subGroup = undef();
+  JsValue hasLimits = false;
+  JsValue group = undef();
+  if (JS.strictEqual(grp["type"], "supsub")) {
+    supGroup = grp["sup"];
+    subGroup = grp["sub"];
+    group = JS.call(assertNodeType, undef(), grp["base"], "operatorname");
+    hasLimits = true;
+  } else {
+    group = JS.call(assertNodeType, undef(), grp, "operatorname");
+  }
+  JsValue base = undef();
+  if (JS.greaterThan(group["body"]["length"], 0)) {
+    JsValue body = JS.invoke(group["body"], "map", (JsValue child) => {
+  JsValue childText = child["text"];
+  if (JS.strictEqual(JS.typeOf(childText), "string")) {
+    JsValue o1 = emptyObject();
+    o1["type"] = "textord";
+    o1["mode"] = child["mode"];
+    o1["text"] = childText;
+    return o1;
+  } else {
+    return child;
+  }
+  return undef();
+    });
+    JsValue expression = JS.invoke(html, "buildExpression", body, JS.invoke(options, "withFont", "mathrm"), true);
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, expression["length"])) {
+        JsValue child = expression[i];
+        if (instanceOf(child, SymbolNode)) {
+          child["text"] = JS.invoke(JS.invoke(child["text"], "replace", JS.construct(RegExp, "\\u2212", ""), "-"), "replace", JS.construct(RegExp, "\\u2217", ""), "*");
+        }
+        JsValue u2 = i;
+        i = JS.add(i, 1);
+      }
+    }
+    JsValue a3 = newArray();
+    JS.push(a3, "mop");
+    base = JS.invoke(buildCommon, "makeSpan", a3, expression, options);
+  } else {
+    JsValue a4 = newArray();
+    JS.push(a4, "mop");
+    JsValue a5 = newArray();
+    base = JS.invoke(buildCommon, "makeSpan", a4, a5, options);
+  }
+  if (hasLimits.truthy()) {
+    JsValue ca6 = newArray();
+    JS.push(ca6, base);
+    JS.push(ca6, supGroup);
+    JS.push(ca6, subGroup);
+    JS.push(ca6, options);
+    JS.push(ca6, options["style"]);
+    JS.push(ca6, 0);
+    JS.push(ca6, 0);
+    return apply(assembleSupSub, undef(), ca6);
+  } else {
+    return base;
+  }
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue expression = JS.invoke(mml, "buildExpression", group["body"], JS.invoke(options, "withFont", "mathrm"));
+  JsValue isAllString = true;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, expression["length"])) {
+      JsValue node = expression[i];
+      if (instanceOf(node, mathMLTree["SpaceNode"])) {
+      } else {
+        if (instanceOf(node, mathMLTree["MathNode"])) {
+          JsValue sw7 = node["type"];
+          if (JS.strictEqual(sw7, "mi") || JS.strictEqual(sw7, "mn") || JS.strictEqual(sw7, "ms") || JS.strictEqual(sw7, "mspace") || JS.strictEqual(sw7, "mtext")) {
+          }
+          else if (JS.strictEqual(sw7, "mo")) {
+            JsValue child = node["children"][0];
+            if ((JS.strictEqual(node["children"]["length"], 1)) && (instanceOf(child, mathMLTree["TextNode"]))) {
+              child["text"] = JS.invoke(JS.invoke(child["text"], "replace", JS.construct(RegExp, "\\u2212", ""), "-"), "replace", JS.construct(RegExp, "\\u2217", ""), "*");
+            } else {
+              isAllString = false;
+            }
+          }
+          else {
+            isAllString = false;
+          }
+        } else {
+          isAllString = false;
+        }
+      }
+      JsValue u8 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  if (isAllString.truthy()) {
+    JsValue word = JS.invoke(JS.invoke(expression, "map", (JsValue node) => {
+  return JS.invoke(node, "toText");
+    }), "join", "");
+    JsValue a9 = newArray();
+    JS.push(a9, JS.construct(mathMLTree["TextNode"], word));
+    expression = a9;
+  }
+  JsValue identifier = JS.construct(mathMLTree["MathNode"], "mi", expression);
+  JS.invoke(identifier, "setAttribute", "mathvariant", "normal");
+  JsValue a10 = newArray();
+  JS.push(a10, JS.invoke(mml, "makeText", "⁡", "text"));
+  JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a10);
+  if (group["parentIsSupSub"].truthy()) {
+    JsValue a11 = newArray();
+    JS.push(a11, identifier);
+    JS.push(a11, operator);
+    return JS.construct(mathMLTree["MathNode"], "mrow", a11);
+  } else {
+    JsValue a12 = newArray();
+    JS.push(a12, identifier);
+    JS.push(a12, operator);
+    return JS.invoke(mathMLTree, "newDocumentFragment", a12);
+  }
+  return undef();
+};
+JsValue o13 = emptyObject();
+o13["type"] = "operatorname";
+JsValue a14 = newArray();
+JS.push(a14, "\\operatorname@");
+JS.push(a14, "\\operatornamewithlimits");
+o13["names"] = a14;
+JsValue o15 = emptyObject();
+o15["numArgs"] = 1;
+o13["props"] = o15;
+o13["handler"] = (JsValue p16, JsValue args) => {
+  JsValue op17 = p16;
+  JsValue parser = op17["parser"];
+  JsValue funcName = op17["funcName"];
+  JsValue body = args[0];
+  JsValue o18 = emptyObject();
+  o18["type"] = "operatorname";
+  o18["mode"] = parser["mode"];
+  o18["body"] = JS.call(ordargument, undef(), body);
+  o18["alwaysHandleSupSub"] = JS.strictEqual(funcName, "\\operatornamewithlimits");
+  o18["limits"] = false;
+  o18["parentIsSupSub"] = false;
+  return o18;
+  return undef();
+};
+o13["htmlBuilder"] = htmlBuilder;
+o13["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o13);
+JS.call(defineMacro, undef(), "\\operatorname", "\\@ifstar\\operatornamewithlimits\\operatorname@");
+JsValue __star = emptyObject();
+__star["htmlBuilder"] = htmlBuilder;
+
+export { __star, htmlBuilder };

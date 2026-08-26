@@ -1,0 +1,88 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { stretchy } from "../stretchy.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "accentUnder";
+JsValue a2 = newArray();
+JS.push(a2, "\\underleftarrow");
+JS.push(a2, "\\underrightarrow");
+JS.push(a2, "\\underleftrightarrow");
+JS.push(a2, "\\undergroup");
+JS.push(a2, "\\underlinesegment");
+JS.push(a2, "\\utilde");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 1;
+o1["props"] = o3;
+o1["handler"] = (JsValue p4, JsValue args) => {
+  JsValue op5 = p4;
+  JsValue parser = op5["parser"];
+  JsValue funcName = op5["funcName"];
+  JsValue base = args[0];
+  JsValue o6 = emptyObject();
+  o6["type"] = "accentUnder";
+  o6["mode"] = parser["mode"];
+  o6["label"] = funcName;
+  o6["base"] = base;
+  return o6;
+  return undef();
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue innerGroup = JS.invoke(html, "buildGroup", group["base"], options);
+  JsValue accentBody = JS.invoke(stretchy, "svgSpan", group, options);
+  JsValue c7 = undef();
+  if (JS.strictEqual(group["label"], "\\utilde")) {
+    c7 = 0.12;
+  } else {
+    c7 = 0;
+  }
+  JsValue kern = c7;
+  JsValue o8 = emptyObject();
+  o8["positionType"] = "top";
+  o8["positionData"] = innerGroup["height"];
+  JsValue a9 = newArray();
+  JsValue o10 = emptyObject();
+  o10["type"] = "elem";
+  o10["elem"] = accentBody;
+  JsValue a11 = newArray();
+  JS.push(a11, "svg-align");
+  o10["wrapperClasses"] = a11;
+  JS.push(a9, o10);
+  JsValue o12 = emptyObject();
+  o12["type"] = "kern";
+  o12["size"] = kern;
+  JS.push(a9, o12);
+  JsValue o13 = emptyObject();
+  o13["type"] = "elem";
+  o13["elem"] = innerGroup;
+  JS.push(a9, o13);
+  o8["children"] = a9;
+  JsValue vlist = JS.invoke(buildCommon, "makeVList", o8, options);
+  JsValue a14 = newArray();
+  JS.push(a14, "mord");
+  JS.push(a14, "accentunder");
+  JsValue a15 = newArray();
+  JS.push(a15, vlist);
+  return JS.invoke(buildCommon, "makeSpan", a14, a15, options);
+  return undef();
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue accentNode = JS.invoke(stretchy, "mathMLnode", group["label"]);
+  JsValue a16 = newArray();
+  JS.push(a16, JS.invoke(mml, "buildGroup", group["base"], options));
+  JS.push(a16, accentNode);
+  JsValue node = JS.construct(mathMLTree["MathNode"], "munder", a16);
+  JS.invoke(node, "setAttribute", "accentunder", "true");
+  return node;
+  return undef();
+};
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

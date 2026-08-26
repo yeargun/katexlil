@@ -1,0 +1,354 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { buildCommon } from "../buildCommon.lil";
+import { defineFunction } from "../defineFunction.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { assertSymbolNodeType } from "../parseNode.lil";
+import { ParseError } from "../ParseError.lil";
+import { makeEm } from "../units.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue cdArrowFunctionName = undef();
+JsValue newCell = undef();
+JsValue isStartOfArrow = undef();
+JsValue isLabelEnd = undef();
+JsValue cdArrow = undef();
+JsValue parseCD = undef();
+
+JsValue o1 = emptyObject();
+o1[">"] = "\\\\cdrightarrow";
+o1["<"] = "\\\\cdleftarrow";
+o1["="] = "\\\\cdlongequal";
+o1["A"] = "\\uparrow";
+o1["V"] = "\\downarrow";
+o1["|"] = "\\Vert";
+o1["."] = "no arrow";
+cdArrowFunctionName = o1;
+newCell = () => {
+  JsValue o2 = emptyObject();
+  o2["type"] = "styling";
+  JsValue a3 = newArray();
+  o2["body"] = a3;
+  o2["mode"] = "math";
+  o2["style"] = "display";
+  return o2;
+  return undef();
+};
+isStartOfArrow = (JsValue node) => {
+  JsValue and4 = JS.strictEqual(node["type"], "textord");
+  if (and4.truthy()) {
+    and4 = JS.strictEqual(node["text"], "@");
+  }
+  return and4;
+  return undef();
+};
+isLabelEnd = (JsValue node, JsValue endChar) => {
+  JsValue or5 = JS.strictEqual(node["type"], "mathord");
+  if (!(or5.truthy())) {
+    or5 = JS.strictEqual(node["type"], "atom");
+  }
+  JsValue and6 = or5;
+  if (and6.truthy()) {
+    and6 = JS.strictEqual(node["text"], endChar);
+  }
+  return and6;
+  return undef();
+};
+cdArrow = (JsValue arrowChar, JsValue labels, JsValue parser) => {
+  JsValue funcName = cdArrowFunctionName[arrowChar];
+  JsValue sw7 = funcName;
+  if (JS.strictEqual(sw7, "\\\\cdrightarrow") || JS.strictEqual(sw7, "\\\\cdleftarrow")) {
+    JsValue a8 = newArray();
+    JS.push(a8, labels[0]);
+    JsValue a9 = newArray();
+    JS.push(a9, labels[1]);
+    return JS.invoke(parser, "callFunction", funcName, a8, a9);
+  }
+  else if (JS.strictEqual(sw7, "\\uparrow") || JS.strictEqual(sw7, "\\downarrow")) {
+    JsValue a10 = newArray();
+    JS.push(a10, labels[0]);
+    JsValue a11 = newArray();
+    JsValue leftLabel = JS.invoke(parser, "callFunction", "\\\\cdleft", a10, a11);
+    JsValue o12 = emptyObject();
+    o12["type"] = "atom";
+    o12["text"] = funcName;
+    o12["mode"] = "math";
+    o12["family"] = "rel";
+    JsValue bareArrow = o12;
+    JsValue a13 = newArray();
+    JS.push(a13, bareArrow);
+    JsValue a14 = newArray();
+    JsValue sizedArrow = JS.invoke(parser, "callFunction", "\\Big", a13, a14);
+    JsValue a15 = newArray();
+    JS.push(a15, labels[1]);
+    JsValue a16 = newArray();
+    JsValue rightLabel = JS.invoke(parser, "callFunction", "\\\\cdright", a15, a16);
+    JsValue o17 = emptyObject();
+    o17["type"] = "ordgroup";
+    o17["mode"] = "math";
+    JsValue a18 = newArray();
+    JS.push(a18, leftLabel);
+    JS.push(a18, sizedArrow);
+    JS.push(a18, rightLabel);
+    o17["body"] = a18;
+    JsValue arrowGroup = o17;
+    JsValue a19 = newArray();
+    JS.push(a19, arrowGroup);
+    JsValue a20 = newArray();
+    return JS.invoke(parser, "callFunction", "\\\\cdparent", a19, a20);
+  }
+  else if (JS.strictEqual(sw7, "\\\\cdlongequal")) {
+    JsValue a21 = newArray();
+    JsValue a22 = newArray();
+    return JS.invoke(parser, "callFunction", "\\\\cdlongequal", a21, a22);
+  }
+  else if (JS.strictEqual(sw7, "\\Vert")) {
+    JsValue o23 = emptyObject();
+    o23["type"] = "textord";
+    o23["text"] = "\\Vert";
+    o23["mode"] = "math";
+    JsValue arrow = o23;
+    JsValue a24 = newArray();
+    JS.push(a24, arrow);
+    JsValue a25 = newArray();
+    return JS.invoke(parser, "callFunction", "\\Big", a24, a25);
+  }
+  else {
+    JsValue o26 = emptyObject();
+    o26["type"] = "textord";
+    o26["text"] = " ";
+    o26["mode"] = "math";
+    return o26;
+  }
+  return undef();
+};
+parseCD = (JsValue parser) => {
+  JsValue a27 = newArray();
+  JsValue parsedRows = a27;
+  JS.invoke(parser["gullet"], "beginGroup");
+  JS.invoke(parser["gullet"]["macros"], "set", "\\cr", "\\\\\\relax");
+  JS.invoke(parser["gullet"], "beginGroup");
+  while (true) {
+    JS.invoke(parsedRows, "push", JS.invoke(parser, "parseExpression", false, "\\\\"));
+    JS.invoke(parser["gullet"], "endGroup");
+    JS.invoke(parser["gullet"], "beginGroup");
+    JsValue next = JS.invoke(parser, "fetch")["text"];
+    if ((JS.strictEqual(next, "&")) || (JS.strictEqual(next, "\\\\"))) {
+      JS.invoke(parser, "consume");
+    } else {
+      if (JS.strictEqual(next, "\\end")) {
+        if (JS.strictEqual(parsedRows[(toNum(parsedRows["length"]) - toNum(1))]["length"], 0)) {
+          JS.invoke(parsedRows, "pop");
+        }
+        break;
+      } else {
+        throw JS.construct(ParseError, "Expected \\\\ or \\cr or \\end", parser["nextToken"]);
+      }
+    }
+  }
+  JsValue a28 = newArray();
+  JsValue row = a28;
+  JsValue a29 = newArray();
+  JS.push(a29, row);
+  JsValue body = a29;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, parsedRows["length"])) {
+      JsValue rowNodes = parsedRows[i];
+      JsValue cell = JS.call(newCell, undef());
+      {
+        JsValue j = 0;
+        while (JS.lessThan(j, rowNodes["length"])) {
+          if (!(JS.call(isStartOfArrow, undef(), rowNodes[j]).truthy())) {
+            JS.invoke(cell["body"], "push", rowNodes[j]);
+          } else {
+            JS.invoke(row, "push", cell);
+            j = JS.add(j, 1);
+            JsValue arrowChar = JS.call(assertSymbolNodeType, undef(), rowNodes[j])["text"];
+            JsValue labels = JS.construct(Array, 2);
+            JsValue o30 = emptyObject();
+            o30["type"] = "ordgroup";
+            o30["mode"] = "math";
+            JsValue a31 = newArray();
+            o30["body"] = a31;
+            labels[0] = o30;
+            JsValue o32 = emptyObject();
+            o32["type"] = "ordgroup";
+            o32["mode"] = "math";
+            JsValue a33 = newArray();
+            o32["body"] = a33;
+            labels[1] = o32;
+            if (JS.greaterThan(JS.invoke("=|.", "indexOf", arrowChar), JS.number(0) - toNum(1))) {
+            } else {
+              if (JS.greaterThan(JS.invoke("<>AV", "indexOf", arrowChar), JS.number(0) - toNum(1))) {
+                {
+                  JsValue labelNum = 0;
+                  while (JS.lessThan(labelNum, 2)) {
+                    JsValue inLabel = true;
+                    {
+                      JsValue k = JS.add(j, 1);
+                      while (JS.lessThan(k, rowNodes["length"])) {
+                        if (JS.call(isLabelEnd, undef(), rowNodes[k], arrowChar).truthy()) {
+                          inLabel = false;
+                          j = k;
+                          break;
+                        }
+                        if (JS.call(isStartOfArrow, undef(), rowNodes[k]).truthy()) {
+                          throw JS.construct(ParseError, JS.add(JS.add("Missing a ", arrowChar), " character to complete a CD arrow."), rowNodes[k]);
+                        }
+                        JS.invoke(labels[labelNum]["body"], "push", rowNodes[k]);
+                        JsValue u34 = k;
+                        k = JS.add(k, 1);
+                      }
+                    }
+                    if (inLabel.truthy()) {
+                      throw JS.construct(ParseError, JS.add(JS.add("Missing a ", arrowChar), " character to complete a CD arrow."), rowNodes[j]);
+                    }
+                    JsValue u35 = labelNum;
+                    labelNum = JS.add(labelNum, 1);
+                  }
+                }
+              } else {
+                throw JS.construct(ParseError, "Expected one of \"<>AV=|.\" after @", rowNodes[j]);
+              }
+            }
+            JsValue arrow = JS.call(cdArrow, undef(), arrowChar, labels, parser);
+            JsValue o36 = emptyObject();
+            o36["type"] = "styling";
+            JsValue a37 = newArray();
+            JS.push(a37, arrow);
+            o36["body"] = a37;
+            o36["mode"] = "math";
+            o36["style"] = "display";
+            JsValue wrappedArrow = o36;
+            JS.invoke(row, "push", wrappedArrow);
+            cell = JS.call(newCell, undef());
+          }
+          JsValue u38 = j;
+          j = JS.add(j, 1);
+        }
+      }
+      if (JS.strictEqual(JS.mod(i, 2), 0)) {
+        JS.invoke(row, "push", cell);
+      } else {
+        JS.invoke(row, "shift");
+      }
+      JsValue a39 = newArray();
+      row = a39;
+      JS.invoke(body, "push", row);
+      JsValue u40 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  JS.invoke(parser["gullet"], "endGroup");
+  JS.invoke(parser["gullet"], "endGroup");
+  JsValue o41 = emptyObject();
+  o41["type"] = "align";
+  o41["align"] = "c";
+  o41["pregap"] = 0.25;
+  o41["postgap"] = 0.25;
+  JsValue cols = JS.invoke(JS.construct(Array, body[0]["length"]), "fill", o41);
+  JsValue o42 = emptyObject();
+  o42["type"] = "array";
+  o42["mode"] = "math";
+  o42["body"] = body;
+  o42["arraystretch"] = 1;
+  o42["addJot"] = true;
+  JsValue a43 = newArray();
+  JS.push(a43, null);
+  o42["rowGaps"] = a43;
+  o42["cols"] = cols;
+  o42["colSeparationType"] = "CD";
+  JsValue a44 = newArray();
+  o42["hLinesBeforeRow"] = JS.invoke(JS.construct(Array, JS.add(body["length"], 1)), "fill", a44);
+  return o42;
+  return undef();
+};
+JsValue o45 = emptyObject();
+o45["type"] = "cdlabel";
+JsValue a46 = newArray();
+JS.push(a46, "\\\\cdleft");
+JS.push(a46, "\\\\cdright");
+o45["names"] = a46;
+JsValue o47 = emptyObject();
+o47["numArgs"] = 1;
+o45["props"] = o47;
+o45["handler"] = JS.method2((JsValue self, JsValue p48, JsValue args) => {
+  JsValue op49 = p48;
+  JsValue parser = op49["parser"];
+  JsValue funcName = op49["funcName"];
+  JsValue o50 = emptyObject();
+  o50["type"] = "cdlabel";
+  o50["mode"] = parser["mode"];
+  o50["side"] = JS.invoke(funcName, "slice", 4);
+  o50["label"] = args[0];
+  return o50;
+  return undef();
+});
+o45["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "sup"));
+  JsValue label = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["label"], newOptions, options), options);
+  JS.invoke(label["classes"], "push", JS.add("cd-label-", group["side"]));
+  label["style"]["bottom"] = JS.call(makeEm, undef(), (toNum(0.8) - toNum(label["depth"])));
+  label["height"] = 0;
+  label["depth"] = 0;
+  return label;
+  return undef();
+});
+o45["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a51 = newArray();
+  JS.push(a51, JS.invoke(mml, "buildGroup", group["label"], options));
+  JsValue label = JS.construct(mathMLTree["MathNode"], "mrow", a51);
+  JsValue a52 = newArray();
+  JS.push(a52, label);
+  label = JS.construct(mathMLTree["MathNode"], "mpadded", a52);
+  JS.invoke(label, "setAttribute", "width", "0");
+  if (JS.strictEqual(group["side"], "left")) {
+    JS.invoke(label, "setAttribute", "lspace", "-1width");
+  }
+  JS.invoke(label, "setAttribute", "voffset", "0.7em");
+  JsValue a53 = newArray();
+  JS.push(a53, label);
+  label = JS.construct(mathMLTree["MathNode"], "mstyle", a53);
+  JS.invoke(label, "setAttribute", "displaystyle", "false");
+  JS.invoke(label, "setAttribute", "scriptlevel", "1");
+  return label;
+  return undef();
+});
+JS.call(defineFunction, undef(), o45);
+JsValue o54 = emptyObject();
+o54["type"] = "cdlabelparent";
+JsValue a55 = newArray();
+JS.push(a55, "\\\\cdparent");
+o54["names"] = a55;
+JsValue o56 = emptyObject();
+o56["numArgs"] = 1;
+o54["props"] = o56;
+o54["handler"] = JS.method2((JsValue self, JsValue p57, JsValue args) => {
+  JsValue op58 = p57;
+  JsValue parser = op58["parser"];
+  JsValue o59 = emptyObject();
+  o59["type"] = "cdlabelparent";
+  o59["mode"] = parser["mode"];
+  o59["fragment"] = args[0];
+  return o59;
+  return undef();
+});
+o54["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue parent = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["fragment"], options), options);
+  JS.invoke(parent["classes"], "push", "cd-vert-arrow");
+  return parent;
+  return undef();
+});
+o54["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a60 = newArray();
+  JS.push(a60, JS.invoke(mml, "buildGroup", group["fragment"], options));
+  return JS.construct(mathMLTree["MathNode"], "mrow", a60);
+  return undef();
+});
+JS.call(defineFunction, undef(), o54);
+JsValue __star = emptyObject();
+__star["parseCD"] = parseCD;
+
+export { __star, parseCD };

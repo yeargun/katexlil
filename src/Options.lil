@@ -1,0 +1,307 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { getGlobalMetrics } from "./fontMetrics.lil";
+
+JsValue sizeStyleMap = undef();
+JsValue sizeMultipliers = undef();
+JsValue sizeAtStyle = undef();
+JsValue Options = undef();
+
+JsValue a1 = newArray();
+JsValue a2 = newArray();
+JS.push(a2, 1);
+JS.push(a2, 1);
+JS.push(a2, 1);
+JS.push(a1, a2);
+JsValue a3 = newArray();
+JS.push(a3, 2);
+JS.push(a3, 1);
+JS.push(a3, 1);
+JS.push(a1, a3);
+JsValue a4 = newArray();
+JS.push(a4, 3);
+JS.push(a4, 1);
+JS.push(a4, 1);
+JS.push(a1, a4);
+JsValue a5 = newArray();
+JS.push(a5, 4);
+JS.push(a5, 2);
+JS.push(a5, 1);
+JS.push(a1, a5);
+JsValue a6 = newArray();
+JS.push(a6, 5);
+JS.push(a6, 2);
+JS.push(a6, 1);
+JS.push(a1, a6);
+JsValue a7 = newArray();
+JS.push(a7, 6);
+JS.push(a7, 3);
+JS.push(a7, 1);
+JS.push(a1, a7);
+JsValue a8 = newArray();
+JS.push(a8, 7);
+JS.push(a8, 4);
+JS.push(a8, 2);
+JS.push(a1, a8);
+JsValue a9 = newArray();
+JS.push(a9, 8);
+JS.push(a9, 6);
+JS.push(a9, 3);
+JS.push(a1, a9);
+JsValue a10 = newArray();
+JS.push(a10, 9);
+JS.push(a10, 7);
+JS.push(a10, 6);
+JS.push(a1, a10);
+JsValue a11 = newArray();
+JS.push(a11, 10);
+JS.push(a11, 8);
+JS.push(a11, 7);
+JS.push(a1, a11);
+JsValue a12 = newArray();
+JS.push(a12, 11);
+JS.push(a12, 10);
+JS.push(a12, 9);
+JS.push(a1, a12);
+sizeStyleMap = a1;
+JsValue a13 = newArray();
+JS.push(a13, 0.5);
+JS.push(a13, 0.6);
+JS.push(a13, 0.7);
+JS.push(a13, 0.8);
+JS.push(a13, 0.9);
+JS.push(a13, 1);
+JS.push(a13, 1.2);
+JS.push(a13, 1.44);
+JS.push(a13, 1.728);
+JS.push(a13, 2.074);
+JS.push(a13, 2.488);
+sizeMultipliers = a13;
+sizeAtStyle = (JsValue size, JsValue style) => {
+  JsValue c14 = undef();
+  if (JS.lessThan(style["size"], 2)) {
+    c14 = size;
+  } else {
+    c14 = sizeStyleMap[(toNum(size) - toNum(1))][(toNum(style["size"]) - toNum(1))];
+  }
+  return c14;
+  return undef();
+};
+Options = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue data = argv[0];
+  self["style"] = data["style"];
+  self["color"] = data["color"];
+  JsValue or15 = data["size"];
+  if (!(or15.truthy())) {
+    or15 = Options["BASESIZE"];
+  }
+  self["size"] = or15;
+  JsValue or16 = data["textSize"];
+  if (!(or16.truthy())) {
+    or16 = self["size"];
+  }
+  self["textSize"] = or16;
+  self["phantom"] = !(!(data["phantom"].truthy()));
+  JsValue or17 = data["font"];
+  if (!(or17.truthy())) {
+    or17 = "";
+  }
+  self["font"] = or17;
+  JsValue or18 = data["fontFamily"];
+  if (!(or18.truthy())) {
+    or18 = "";
+  }
+  self["fontFamily"] = or18;
+  JsValue or19 = data["fontWeight"];
+  if (!(or19.truthy())) {
+    or19 = "";
+  }
+  self["fontWeight"] = or19;
+  JsValue or20 = data["fontShape"];
+  if (!(or20.truthy())) {
+    or20 = "";
+  }
+  self["fontShape"] = or20;
+  self["sizeMultiplier"] = sizeMultipliers[(toNum(self["size"]) - toNum(1))];
+  self["maxSize"] = data["maxSize"];
+  self["minRuleThickness"] = data["minRuleThickness"];
+  self["_fontMetrics"] = undef();
+  return self;
+});
+Options["prototype"]["extend"] = JS.method1((JsValue self, JsValue extension) => {
+  JsValue o21 = emptyObject();
+  o21["style"] = self["style"];
+  o21["size"] = self["size"];
+  o21["textSize"] = self["textSize"];
+  o21["color"] = self["color"];
+  o21["phantom"] = self["phantom"];
+  o21["font"] = self["font"];
+  o21["fontFamily"] = self["fontFamily"];
+  o21["fontWeight"] = self["fontWeight"];
+  o21["fontShape"] = self["fontShape"];
+  o21["maxSize"] = self["maxSize"];
+  o21["minRuleThickness"] = self["minRuleThickness"];
+  JsValue data = o21;
+  JsValue obj22 = extension;
+  JsValue keys23 = objectKeys(obj22);
+  int ki24 = 0;
+  int kn25 = len(keys23);
+  while (ki24 < kn25) {
+    JsValue key = keys23[ki24];
+    if (hasOwn(extension, key)) {
+      data[key] = extension[key];
+    }
+    ki24 = ki24 + 1;
+  }
+  return JS.construct(Options, data);
+  return undef();
+});
+Options["prototype"]["havingStyle"] = JS.method1((JsValue self, JsValue style) => {
+  if (JS.strictEqual(self["style"], style)) {
+    return self;
+  } else {
+    JsValue o26 = emptyObject();
+    o26["style"] = style;
+    o26["size"] = JS.call(sizeAtStyle, undef(), self["textSize"], style);
+    return JS.invoke(self, "extend", o26);
+  }
+  return undef();
+});
+Options["prototype"]["havingCrampedStyle"] = JS.method0((JsValue self) => {
+  return JS.invoke(self, "havingStyle", JS.invoke(self["style"], "cramp"));
+  return undef();
+});
+Options["prototype"]["havingSize"] = JS.method1((JsValue self, JsValue size) => {
+  if ((JS.strictEqual(self["size"], size)) && (JS.strictEqual(self["textSize"], size))) {
+    return self;
+  } else {
+    JsValue o27 = emptyObject();
+    o27["style"] = JS.invoke(self["style"], "text");
+    o27["size"] = size;
+    o27["textSize"] = size;
+    o27["sizeMultiplier"] = sizeMultipliers[(toNum(size) - toNum(1))];
+    return JS.invoke(self, "extend", o27);
+  }
+  return undef();
+});
+Options["prototype"]["havingBaseStyle"] = JS.method1((JsValue self, JsValue style) => {
+  JsValue or28 = style;
+  if (!(or28.truthy())) {
+    or28 = JS.invoke(self["style"], "text");
+  }
+  style = or28;
+  JsValue wantSize = JS.call(sizeAtStyle, undef(), Options["BASESIZE"], style);
+  if (((JS.strictEqual(self["size"], wantSize)) && (JS.strictEqual(self["textSize"], Options["BASESIZE"]))) && (JS.strictEqual(self["style"], style))) {
+    return self;
+  } else {
+    JsValue o29 = emptyObject();
+    o29["style"] = style;
+    o29["size"] = wantSize;
+    return JS.invoke(self, "extend", o29);
+  }
+  return undef();
+});
+Options["prototype"]["havingBaseSizing"] = JS.method0((JsValue self) => {
+  JsValue size = undef();
+  JsValue sw30 = self["style"]["id"];
+  if (JS.strictEqual(sw30, 4) || JS.strictEqual(sw30, 5)) {
+    size = 3;
+  }
+  else if (JS.strictEqual(sw30, 6) || JS.strictEqual(sw30, 7)) {
+    size = 1;
+  }
+  else {
+    size = 6;
+  }
+  JsValue o31 = emptyObject();
+  o31["style"] = JS.invoke(self["style"], "text");
+  o31["size"] = size;
+  return JS.invoke(self, "extend", o31);
+  return undef();
+});
+Options["prototype"]["withColor"] = JS.method1((JsValue self, JsValue color) => {
+  JsValue o32 = emptyObject();
+  o32["color"] = color;
+  return JS.invoke(self, "extend", o32);
+  return undef();
+});
+Options["prototype"]["withPhantom"] = JS.method0((JsValue self) => {
+  JsValue o33 = emptyObject();
+  o33["phantom"] = true;
+  return JS.invoke(self, "extend", o33);
+  return undef();
+});
+Options["prototype"]["withFont"] = JS.method1((JsValue self, JsValue font) => {
+  JsValue o34 = emptyObject();
+  o34["font"] = font;
+  return JS.invoke(self, "extend", o34);
+  return undef();
+});
+Options["prototype"]["withTextFontFamily"] = JS.method1((JsValue self, JsValue fontFamily) => {
+  JsValue o35 = emptyObject();
+  o35["fontFamily"] = fontFamily;
+  o35["font"] = "";
+  return JS.invoke(self, "extend", o35);
+  return undef();
+});
+Options["prototype"]["withTextFontWeight"] = JS.method1((JsValue self, JsValue fontWeight) => {
+  JsValue o36 = emptyObject();
+  o36["fontWeight"] = fontWeight;
+  o36["font"] = "";
+  return JS.invoke(self, "extend", o36);
+  return undef();
+});
+Options["prototype"]["withTextFontShape"] = JS.method1((JsValue self, JsValue fontShape) => {
+  JsValue o37 = emptyObject();
+  o37["fontShape"] = fontShape;
+  o37["font"] = "";
+  return JS.invoke(self, "extend", o37);
+  return undef();
+});
+Options["prototype"]["sizingClasses"] = JS.method1((JsValue self, JsValue oldOptions) => {
+  if (JS.strictNotEqual(oldOptions["size"], self["size"])) {
+    JsValue a38 = newArray();
+    JS.push(a38, "sizing");
+    JS.push(a38, JS.add("reset-size", oldOptions["size"]));
+    JS.push(a38, JS.add("size", self["size"]));
+    return a38;
+  } else {
+    JsValue a39 = newArray();
+    return a39;
+  }
+  return undef();
+});
+Options["prototype"]["baseSizingClasses"] = JS.method0((JsValue self) => {
+  if (JS.strictNotEqual(self["size"], Options["BASESIZE"])) {
+    JsValue a40 = newArray();
+    JS.push(a40, "sizing");
+    JS.push(a40, JS.add("reset-size", self["size"]));
+    JS.push(a40, JS.add("size", Options["BASESIZE"]));
+    return a40;
+  } else {
+    JsValue a41 = newArray();
+    return a41;
+  }
+  return undef();
+});
+Options["prototype"]["fontMetrics"] = JS.method0((JsValue self) => {
+  if (!(self["_fontMetrics"].truthy())) {
+    self["_fontMetrics"] = JS.call(getGlobalMetrics, undef(), self["size"]);
+  }
+  return self["_fontMetrics"];
+  return undef();
+});
+Options["prototype"]["getColor"] = JS.method0((JsValue self) => {
+  if (self["phantom"].truthy()) {
+    return "transparent";
+  } else {
+    return self["color"];
+  }
+  return undef();
+});
+Options["BASESIZE"] = 6;
+JsValue __star = emptyObject();
+__star["default"] = Options;
+__star["Options"] = Options;
+
+export { __star, Options as Options };

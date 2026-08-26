@@ -1,0 +1,90 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { buildHTML } from "./buildHTML.lil";
+import { buildMathML } from "./buildMathML.lil";
+import { buildCommon } from "./buildCommon.lil";
+import { Options } from "./Options.lil";
+import { Settings } from "./Settings.lil";
+import { Style } from "./Style.lil";
+
+JsValue optionsFromSettings = undef();
+JsValue displayWrap = undef();
+JsValue buildTree = undef();
+JsValue buildHTMLTree = undef();
+
+optionsFromSettings = (JsValue settings) => {
+  JsValue o1 = emptyObject();
+  JsValue c2 = undef();
+  if (settings["displayMode"].truthy()) {
+    c2 = Style["DISPLAY"];
+  } else {
+    c2 = Style["TEXT"];
+  }
+  o1["style"] = c2;
+  o1["maxSize"] = settings["maxSize"];
+  o1["minRuleThickness"] = settings["minRuleThickness"];
+  return JS.construct(Options, o1);
+  return undef();
+};
+displayWrap = (JsValue node, JsValue settings) => {
+  if (settings["displayMode"].truthy()) {
+    JsValue a3 = newArray();
+    JS.push(a3, "katex-display");
+    JsValue classes = a3;
+    if (settings["leqno"].truthy()) {
+      JS.invoke(classes, "push", "leqno");
+    }
+    if (settings["fleqn"].truthy()) {
+      JS.invoke(classes, "push", "fleqn");
+    }
+    JsValue a4 = newArray();
+    JS.push(a4, node);
+    node = JS.invoke(buildCommon, "makeSpan", classes, a4);
+  }
+  return node;
+  return undef();
+};
+buildTree = (JsValue tree, JsValue expression, JsValue settings) => {
+  JsValue options = JS.call(optionsFromSettings, undef(), settings);
+  JsValue katexNode = undef();
+  if (JS.strictEqual(settings["output"], "mathml")) {
+    return JS.call(buildMathML, undef(), tree, expression, options, settings["displayMode"], true);
+  } else {
+    if (JS.strictEqual(settings["output"], "html")) {
+      JsValue htmlNode = JS.call(buildHTML, undef(), tree, options);
+      JsValue a5 = newArray();
+      JS.push(a5, "katex");
+      JsValue a6 = newArray();
+      JS.push(a6, htmlNode);
+      katexNode = JS.invoke(buildCommon, "makeSpan", a5, a6);
+    } else {
+      JsValue mathMLNode = JS.call(buildMathML, undef(), tree, expression, options, settings["displayMode"], false);
+      JsValue htmlNode = JS.call(buildHTML, undef(), tree, options);
+      JsValue a7 = newArray();
+      JS.push(a7, "katex");
+      JsValue a8 = newArray();
+      JS.push(a8, mathMLNode);
+      JS.push(a8, htmlNode);
+      katexNode = JS.invoke(buildCommon, "makeSpan", a7, a8);
+    }
+  }
+  return JS.call(displayWrap, undef(), katexNode, settings);
+  return undef();
+};
+buildHTMLTree = (JsValue tree, JsValue expression, JsValue settings) => {
+  JsValue options = JS.call(optionsFromSettings, undef(), settings);
+  JsValue htmlNode = JS.call(buildHTML, undef(), tree, options);
+  JsValue a9 = newArray();
+  JS.push(a9, "katex");
+  JsValue a10 = newArray();
+  JS.push(a10, htmlNode);
+  JsValue katexNode = JS.invoke(buildCommon, "makeSpan", a9, a10);
+  return JS.call(displayWrap, undef(), katexNode, settings);
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["buildTree"] = buildTree;
+__star["buildHTMLTree"] = buildHTMLTree;
+__star["default"] = buildTree;
+
+export { __star, buildTree, buildHTMLTree };

@@ -1,0 +1,131 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "smash";
+JsValue a2 = newArray();
+JS.push(a2, "\\smash");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 1;
+o3["numOptionalArgs"] = 1;
+o3["allowedInText"] = true;
+o1["props"] = o3;
+o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
+  JsValue op5 = p4;
+  JsValue parser = op5["parser"];
+  JsValue smashHeight = false;
+  JsValue smashDepth = false;
+  JsValue and6 = optArgs[0];
+  if (and6.truthy()) {
+    and6 = JS.call(assertNodeType, undef(), optArgs[0], "ordgroup");
+  }
+  JsValue tbArg = and6;
+  if (tbArg.truthy()) {
+    JsValue letter = "";
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, tbArg["body"]["length"])) {
+        JsValue node = tbArg["body"][i];
+        letter = node["text"];
+        if (JS.strictEqual(letter, "t")) {
+          smashHeight = true;
+        } else {
+          if (JS.strictEqual(letter, "b")) {
+            smashDepth = true;
+          } else {
+            smashHeight = false;
+            smashDepth = false;
+            break;
+          }
+        }
+        i = JS.add(i, 1);
+      }
+    }
+  } else {
+    smashHeight = true;
+    smashDepth = true;
+  }
+  JsValue body = args[0];
+  JsValue o8 = emptyObject();
+  o8["type"] = "smash";
+  o8["mode"] = parser["mode"];
+  o8["body"] = body;
+  o8["smashHeight"] = smashHeight;
+  o8["smashDepth"] = smashDepth;
+  return o8;
+  return undef();
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue a9 = newArray();
+  JsValue a10 = newArray();
+  JS.push(a10, JS.invoke(html, "buildGroup", group["body"], options));
+  JsValue node = JS.invoke(buildCommon, "makeSpan", a9, a10);
+  if ((!(group["smashHeight"].truthy())) && (!(group["smashDepth"].truthy()))) {
+    return node;
+  }
+  if (group["smashHeight"].truthy()) {
+    node["height"] = 0;
+    if (node["children"].truthy()) {
+      {
+        JsValue i = 0;
+        while (JS.lessThan(i, node["children"]["length"])) {
+          node["children"][i]["height"] = 0;
+          JsValue u11 = i;
+          i = JS.add(i, 1);
+        }
+      }
+    }
+  }
+  if (group["smashDepth"].truthy()) {
+    node["depth"] = 0;
+    if (node["children"].truthy()) {
+      {
+        JsValue i = 0;
+        while (JS.lessThan(i, node["children"]["length"])) {
+          node["children"][i]["depth"] = 0;
+          JsValue u12 = i;
+          i = JS.add(i, 1);
+        }
+      }
+    }
+  }
+  JsValue o13 = emptyObject();
+  o13["positionType"] = "firstBaseline";
+  JsValue a14 = newArray();
+  JsValue o15 = emptyObject();
+  o15["type"] = "elem";
+  o15["elem"] = node;
+  JS.push(a14, o15);
+  o13["children"] = a14;
+  JsValue smashedNode = JS.invoke(buildCommon, "makeVList", o13, options);
+  JsValue a16 = newArray();
+  JS.push(a16, "mord");
+  JsValue a17 = newArray();
+  JS.push(a17, smashedNode);
+  return JS.invoke(buildCommon, "makeSpan", a16, a17, options);
+  return undef();
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue a18 = newArray();
+  JS.push(a18, JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a18);
+  if (group["smashHeight"].truthy()) {
+    JS.invoke(node, "setAttribute", "height", "0px");
+  }
+  if (group["smashDepth"].truthy()) {
+    JS.invoke(node, "setAttribute", "depth", "0px");
+  }
+  return node;
+  return undef();
+};
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

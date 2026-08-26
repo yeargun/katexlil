@@ -1,0 +1,165 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { calculateSize, validUnit, makeEm } from "../units.lil";
+import { ParseError } from "../ParseError.lil";
+import { Img } from "../domTree.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { assertNodeType } from "../parseNode.lil";
+
+JsValue sizeData = undef();
+
+sizeData = (JsValue str) => {
+  if (JS.invoke(JS.construct(RegExp, "^[-+]? *(\\d+(\\.\\d*)?|\\.\\d+)$", ""), "test", str).truthy()) {
+    JsValue o1 = emptyObject();
+    o1["number"] = toNum(str);
+    o1["unit"] = "bp";
+    return o1;
+  } else {
+    JsValue matched = JS.invoke(JS.construct(RegExp, "([-+]?) *(\\d+(?:\\.\\d*)?|\\.\\d+) *([a-z]{2})", ""), "exec", str);
+    if (!(matched.truthy())) {
+      throw JS.construct(ParseError, JS.add(JS.add("Invalid size: '", str), "' in \\includegraphics"));
+    }
+    JsValue o2 = emptyObject();
+    o2["number"] = toNum(JS.add(matched[1], matched[2]));
+    o2["unit"] = matched[3];
+    JsValue data = o2;
+    if (!(JS.call(validUnit, undef(), data).truthy())) {
+      throw JS.construct(ParseError, JS.add(JS.add("Invalid unit: '", data["unit"]), "' in \\includegraphics."));
+    }
+    return data;
+  }
+  return undef();
+};
+JsValue o3 = emptyObject();
+o3["type"] = "includegraphics";
+JsValue a4 = newArray();
+JS.push(a4, "\\includegraphics");
+o3["names"] = a4;
+JsValue o5 = emptyObject();
+o5["numArgs"] = 1;
+o5["numOptionalArgs"] = 1;
+JsValue a6 = newArray();
+JS.push(a6, "raw");
+JS.push(a6, "url");
+o5["argTypes"] = a6;
+o5["allowedInText"] = false;
+o3["props"] = o5;
+o3["handler"] = (JsValue p7, JsValue args, JsValue optArgs) => {
+  JsValue op8 = p7;
+  JsValue parser = op8["parser"];
+  JsValue o9 = emptyObject();
+  o9["number"] = 0;
+  o9["unit"] = "em";
+  JsValue width = o9;
+  JsValue o10 = emptyObject();
+  o10["number"] = 0.9;
+  o10["unit"] = "em";
+  JsValue height = o10;
+  JsValue o11 = emptyObject();
+  o11["number"] = 0;
+  o11["unit"] = "em";
+  JsValue totalheight = o11;
+  JsValue alt = "";
+  if (optArgs[0].truthy()) {
+    JsValue attributeStr = JS.call(assertNodeType, undef(), optArgs[0], "raw")["string"];
+    JsValue attributes = JS.invoke(attributeStr, "split", ",");
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, attributes["length"])) {
+        JsValue keyVal = JS.invoke(attributes[i], "split", "=");
+        if (JS.strictEqual(keyVal["length"], 2)) {
+          JsValue str = JS.invoke(keyVal[1], "trim");
+          JsValue sw12 = JS.invoke(keyVal[0], "trim");
+          if (JS.strictEqual(sw12, "alt")) {
+            alt = str;
+          }
+          else if (JS.strictEqual(sw12, "width")) {
+            width = JS.call(sizeData, undef(), str);
+          }
+          else if (JS.strictEqual(sw12, "height")) {
+            height = JS.call(sizeData, undef(), str);
+          }
+          else if (JS.strictEqual(sw12, "totalheight")) {
+            totalheight = JS.call(sizeData, undef(), str);
+          }
+          else {
+            throw JS.construct(ParseError, JS.add(JS.add("Invalid key: '", keyVal[0]), "' in \\includegraphics."));
+          }
+        }
+        JsValue u13 = i;
+        i = JS.add(i, 1);
+      }
+    }
+  }
+  JsValue src = JS.call(assertNodeType, undef(), args[0], "url")["url"];
+  if (JS.strictEqual(alt, "")) {
+    alt = src;
+    alt = JS.invoke(alt, "replace", JS.construct(RegExp, "^.*[\\\\/]", ""), "");
+    alt = JS.invoke(alt, "substring", 0, JS.invoke(alt, "lastIndexOf", "."));
+  }
+  JsValue o14 = emptyObject();
+  o14["command"] = "\\includegraphics";
+  o14["url"] = src;
+  if (!(JS.invoke(parser["settings"], "isTrusted", o14).truthy())) {
+    return JS.invoke(parser, "formatUnsupportedCmd", "\\includegraphics");
+  }
+  JsValue o15 = emptyObject();
+  o15["type"] = "includegraphics";
+  o15["mode"] = parser["mode"];
+  o15["alt"] = alt;
+  o15["width"] = width;
+  o15["height"] = height;
+  o15["totalheight"] = totalheight;
+  o15["src"] = src;
+  return o15;
+  return undef();
+};
+o3["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue height = JS.call(calculateSize, undef(), group["height"], options);
+  JsValue depth = 0;
+  if (JS.greaterThan(group["totalheight"]["number"], 0)) {
+    depth = (toNum(JS.call(calculateSize, undef(), group["totalheight"], options)) - toNum(height));
+  }
+  JsValue width = 0;
+  if (JS.greaterThan(group["width"]["number"], 0)) {
+    width = JS.call(calculateSize, undef(), group["width"], options);
+  }
+  JsValue o16 = emptyObject();
+  o16["height"] = JS.call(makeEm, undef(), JS.add(height, depth));
+  JsValue style = o16;
+  if (JS.greaterThan(width, 0)) {
+    style["width"] = JS.call(makeEm, undef(), width);
+  }
+  if (JS.greaterThan(depth, 0)) {
+    style["verticalAlign"] = JS.call(makeEm, undef(), JS.number(0) - toNum(depth));
+  }
+  JsValue node = JS.construct(Img, group["src"], group["alt"], style);
+  node["height"] = height;
+  node["depth"] = depth;
+  return node;
+  return undef();
+};
+o3["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue a17 = newArray();
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mglyph", a17);
+  JS.invoke(node, "setAttribute", "alt", group["alt"]);
+  JsValue height = JS.call(calculateSize, undef(), group["height"], options);
+  JsValue depth = 0;
+  if (JS.greaterThan(group["totalheight"]["number"], 0)) {
+    depth = (toNum(JS.call(calculateSize, undef(), group["totalheight"], options)) - toNum(height));
+    JS.invoke(node, "setAttribute", "valign", JS.call(makeEm, undef(), JS.number(0) - toNum(depth)));
+  }
+  JS.invoke(node, "setAttribute", "height", JS.call(makeEm, undef(), JS.add(height, depth)));
+  if (JS.greaterThan(group["width"]["number"], 0)) {
+    JsValue width = JS.call(calculateSize, undef(), group["width"], options);
+    JS.invoke(node, "setAttribute", "width", JS.call(makeEm, undef(), width));
+  }
+  JS.invoke(node, "setAttribute", "src", group["src"]);
+  return node;
+  return undef();
+};
+JS.call(defineFunction, undef(), o3);
+JsValue __star = emptyObject();
+
+export { __star };

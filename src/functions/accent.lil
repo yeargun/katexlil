@@ -1,0 +1,290 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, normalizeArgument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { utils } from "../utils.lil";
+import { stretchy } from "../stretchy.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { assertSpan, assertSymbolDomNode } from "../domTree.lil";
+import { makeEm } from "../units.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+JsValue NON_STRETCHY_ACCENT_REGEX = undef();
+
+htmlBuilder = (JsValue grp, JsValue options) => {
+  JsValue base = undef();
+  JsValue group = undef();
+  JsValue supSubGroup = undef();
+  if ((grp.truthy()) && (JS.strictEqual(grp["type"], "supsub"))) {
+    group = JS.call(assertNodeType, undef(), grp["base"], "accent");
+    base = group["base"];
+    grp["base"] = base;
+    supSubGroup = JS.call(assertSpan, undef(), JS.invoke(html, "buildGroup", grp, options));
+    grp["base"] = group;
+  } else {
+    group = JS.call(assertNodeType, undef(), grp, "accent");
+    base = group["base"];
+  }
+  JsValue body = JS.invoke(html, "buildGroup", base, JS.invoke(options, "havingCrampedStyle"));
+  JsValue and1 = group["isShifty"];
+  if (and1.truthy()) {
+    and1 = JS.invoke(utils, "isCharacterBox", base);
+  }
+  JsValue mustShift = and1;
+  JsValue skew = 0;
+  if (mustShift.truthy()) {
+    JsValue baseChar = JS.invoke(utils, "getBaseElem", base);
+    JsValue baseGroup = JS.invoke(html, "buildGroup", baseChar, JS.invoke(options, "havingCrampedStyle"));
+    skew = JS.call(assertSymbolDomNode, undef(), baseGroup)["skew"];
+  }
+  JsValue accentBelow = JS.strictEqual(group["label"], "\\c");
+  JsValue c2 = undef();
+  if (accentBelow.truthy()) {
+    c2 = JS.add(body["height"], body["depth"]);
+  } else {
+    c2 = JS.invoke(Math, "min", body["height"], JS.invoke(options, "fontMetrics")["xHeight"]);
+  }
+  JsValue clearance = c2;
+  JsValue accentBody = undef();
+  if (!(group["isStretchy"].truthy())) {
+    JsValue accent = undef();
+    JsValue width = undef();
+    if (JS.strictEqual(group["label"], "\\vec")) {
+      accent = JS.invoke(buildCommon, "staticSvg", "vec", options);
+      width = buildCommon["svgData"]["vec"][1];
+    } else {
+      JsValue o3 = emptyObject();
+      o3["mode"] = group["mode"];
+      o3["text"] = group["label"];
+      accent = JS.invoke(buildCommon, "makeOrd", o3, options, "textord");
+      accent = JS.call(assertSymbolDomNode, undef(), accent);
+      accent["italic"] = 0;
+      width = accent["width"];
+      if (accentBelow.truthy()) {
+        clearance = JS.add(clearance, accent["depth"]);
+      }
+    }
+    JsValue a4 = newArray();
+    JS.push(a4, "accent-body");
+    JsValue a5 = newArray();
+    JS.push(a5, accent);
+    accentBody = JS.invoke(buildCommon, "makeSpan", a4, a5);
+    JsValue accentFull = JS.strictEqual(group["label"], "\\textcircled");
+    if (accentFull.truthy()) {
+      JS.invoke(accentBody["classes"], "push", "accent-full");
+      clearance = body["height"];
+    }
+    JsValue left = skew;
+    if (!(accentFull.truthy())) {
+      left = (toNum(left) - toNum((toNum(width) / toNum(2))));
+    }
+    accentBody["style"]["left"] = JS.call(makeEm, undef(), left);
+    if (JS.strictEqual(group["label"], "\\textcircled")) {
+      accentBody["style"]["top"] = ".2em";
+    }
+    JsValue o6 = emptyObject();
+    o6["positionType"] = "firstBaseline";
+    JsValue a7 = newArray();
+    JsValue o8 = emptyObject();
+    o8["type"] = "elem";
+    o8["elem"] = body;
+    JS.push(a7, o8);
+    JsValue o9 = emptyObject();
+    o9["type"] = "kern";
+    o9["size"] = JS.number(0) - toNum(clearance);
+    JS.push(a7, o9);
+    JsValue o10 = emptyObject();
+    o10["type"] = "elem";
+    o10["elem"] = accentBody;
+    JS.push(a7, o10);
+    o6["children"] = a7;
+    accentBody = JS.invoke(buildCommon, "makeVList", o6, options);
+  } else {
+    accentBody = JS.invoke(stretchy, "svgSpan", group, options);
+    JsValue o11 = emptyObject();
+    o11["positionType"] = "firstBaseline";
+    JsValue a12 = newArray();
+    JsValue o13 = emptyObject();
+    o13["type"] = "elem";
+    o13["elem"] = body;
+    JS.push(a12, o13);
+    JsValue o14 = emptyObject();
+    o14["type"] = "elem";
+    o14["elem"] = accentBody;
+    JsValue a15 = newArray();
+    JS.push(a15, "svg-align");
+    o14["wrapperClasses"] = a15;
+    JsValue c16 = undef();
+    if (JS.greaterThan(skew, 0)) {
+      JsValue o17 = emptyObject();
+      o17["width"] = "calc(100% - " + toStr(JS.call(makeEm, undef(), (toNum(2) * toNum(skew)))) + ")";
+      o17["marginLeft"] = JS.call(makeEm, undef(), (toNum(2) * toNum(skew)));
+      c16 = o17;
+    } else {
+      c16 = undef();
+    }
+    o14["wrapperStyle"] = c16;
+    JS.push(a12, o14);
+    o11["children"] = a12;
+    accentBody = JS.invoke(buildCommon, "makeVList", o11, options);
+  }
+  JsValue a18 = newArray();
+  JS.push(a18, "mord");
+  JS.push(a18, "accent");
+  JsValue a19 = newArray();
+  JS.push(a19, accentBody);
+  JsValue accentWrap = JS.invoke(buildCommon, "makeSpan", a18, a19, options);
+  if (supSubGroup.truthy()) {
+    supSubGroup["children"][0] = accentWrap;
+    supSubGroup["height"] = JS.invoke(Math, "max", accentWrap["height"], supSubGroup["height"]);
+    supSubGroup["classes"][0] = "mord";
+    return supSubGroup;
+  } else {
+    return accentWrap;
+  }
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue c20 = undef();
+  if (group["isStretchy"].truthy()) {
+    c20 = JS.invoke(stretchy, "mathMLnode", group["label"]);
+  } else {
+    JsValue a21 = newArray();
+    JS.push(a21, JS.invoke(mml, "makeText", group["label"], group["mode"]));
+    c20 = JS.construct(mathMLTree["MathNode"], "mo", a21);
+  }
+  JsValue accentNode = c20;
+  JsValue a22 = newArray();
+  JS.push(a22, JS.invoke(mml, "buildGroup", group["base"], options));
+  JS.push(a22, accentNode);
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mover", a22);
+  JS.invoke(node, "setAttribute", "accent", "true");
+  return node;
+  return undef();
+};
+JsValue a23 = newArray();
+JS.push(a23, "\\acute");
+JS.push(a23, "\\grave");
+JS.push(a23, "\\ddot");
+JS.push(a23, "\\tilde");
+JS.push(a23, "\\bar");
+JS.push(a23, "\\breve");
+JS.push(a23, "\\check");
+JS.push(a23, "\\hat");
+JS.push(a23, "\\vec");
+JS.push(a23, "\\dot");
+JS.push(a23, "\\mathring");
+NON_STRETCHY_ACCENT_REGEX = JS.construct(RegExp, JS.invoke(JS.invoke(a23, "map", (JsValue accent) => {
+  return "\\" + toStr(accent);
+}), "join", "|"));
+JsValue o24 = emptyObject();
+o24["type"] = "accent";
+JsValue a25 = newArray();
+JS.push(a25, "\\acute");
+JS.push(a25, "\\grave");
+JS.push(a25, "\\ddot");
+JS.push(a25, "\\tilde");
+JS.push(a25, "\\bar");
+JS.push(a25, "\\breve");
+JS.push(a25, "\\check");
+JS.push(a25, "\\hat");
+JS.push(a25, "\\vec");
+JS.push(a25, "\\dot");
+JS.push(a25, "\\mathring");
+JS.push(a25, "\\widecheck");
+JS.push(a25, "\\widehat");
+JS.push(a25, "\\widetilde");
+JS.push(a25, "\\overrightarrow");
+JS.push(a25, "\\overleftarrow");
+JS.push(a25, "\\Overrightarrow");
+JS.push(a25, "\\overleftrightarrow");
+JS.push(a25, "\\overgroup");
+JS.push(a25, "\\overlinesegment");
+JS.push(a25, "\\overleftharpoon");
+JS.push(a25, "\\overrightharpoon");
+o24["names"] = a25;
+JsValue o26 = emptyObject();
+o26["numArgs"] = 1;
+o24["props"] = o26;
+o24["handler"] = (JsValue context, JsValue args) => {
+  JsValue base = JS.call(normalizeArgument, undef(), args[0]);
+  JsValue isStretchy = !(JS.invoke(NON_STRETCHY_ACCENT_REGEX, "test", context["funcName"]).truthy());
+  JsValue or27 = !(isStretchy.truthy());
+  if (!(or27.truthy())) {
+    or27 = JS.strictEqual(context["funcName"], "\\widehat");
+  }
+  JsValue or28 = or27;
+  if (!(or28.truthy())) {
+    or28 = JS.strictEqual(context["funcName"], "\\widetilde");
+  }
+  JsValue or29 = or28;
+  if (!(or29.truthy())) {
+    or29 = JS.strictEqual(context["funcName"], "\\widecheck");
+  }
+  JsValue isShifty = or29;
+  JsValue o30 = emptyObject();
+  o30["type"] = "accent";
+  o30["mode"] = context["parser"]["mode"];
+  o30["label"] = context["funcName"];
+  o30["isStretchy"] = isStretchy;
+  o30["isShifty"] = isShifty;
+  o30["base"] = base;
+  return o30;
+  return undef();
+};
+o24["htmlBuilder"] = htmlBuilder;
+o24["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o24);
+JsValue o31 = emptyObject();
+o31["type"] = "accent";
+JsValue a32 = newArray();
+JS.push(a32, "\\'");
+JS.push(a32, "\\`");
+JS.push(a32, "\\^");
+JS.push(a32, "\\~");
+JS.push(a32, "\\=");
+JS.push(a32, "\\u");
+JS.push(a32, "\\.");
+JS.push(a32, "\\\"");
+JS.push(a32, "\\c");
+JS.push(a32, "\\r");
+JS.push(a32, "\\H");
+JS.push(a32, "\\v");
+JS.push(a32, "\\textcircled");
+o31["names"] = a32;
+JsValue o33 = emptyObject();
+o33["numArgs"] = 1;
+o33["allowedInText"] = true;
+o33["allowedInMath"] = true;
+JsValue a34 = newArray();
+JS.push(a34, "primitive");
+o33["argTypes"] = a34;
+o31["props"] = o33;
+o31["handler"] = (JsValue context, JsValue args) => {
+  JsValue base = args[0];
+  JsValue mode = context["parser"]["mode"];
+  if (JS.strictEqual(mode, "math")) {
+    JS.invoke(context["parser"]["settings"], "reportNonstrict", "mathVsTextAccents", "LaTeX's accent " + toStr(context["funcName"]) + " works only in text mode");
+    mode = "text";
+  }
+  JsValue o35 = emptyObject();
+  o35["type"] = "accent";
+  o35["mode"] = mode;
+  o35["label"] = context["funcName"];
+  o35["isStretchy"] = false;
+  o35["isShifty"] = true;
+  o35["base"] = base;
+  return o35;
+  return undef();
+};
+o31["htmlBuilder"] = htmlBuilder;
+o31["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o31);
+JsValue __star = emptyObject();
+__star["htmlBuilder"] = htmlBuilder;
+
+export { __star, htmlBuilder };

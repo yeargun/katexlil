@@ -1,0 +1,117 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "href";
+JsValue a2 = newArray();
+JS.push(a2, "\\href");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 2;
+JsValue a4 = newArray();
+JS.push(a4, "url");
+JS.push(a4, "original");
+o3["argTypes"] = a4;
+o3["allowedInText"] = true;
+o1["props"] = o3;
+o1["handler"] = (JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue body = args[1];
+  JsValue href = JS.call(assertNodeType, undef(), args[0], "url")["url"];
+  JsValue o7 = emptyObject();
+  o7["command"] = "\\href";
+  o7["url"] = href;
+  if (!(JS.invoke(parser["settings"], "isTrusted", o7).truthy())) {
+    return JS.invoke(parser, "formatUnsupportedCmd", "\\href");
+  }
+  JsValue o8 = emptyObject();
+  o8["type"] = "href";
+  o8["mode"] = parser["mode"];
+  o8["href"] = href;
+  o8["body"] = JS.call(ordargument, undef(), body);
+  return o8;
+  return undef();
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, false);
+  JsValue a9 = newArray();
+  return JS.invoke(buildCommon, "makeAnchor", group["href"], a9, elements, options);
+  return undef();
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue math = JS.invoke(mml, "buildExpressionRow", group["body"], options);
+  if (!(instanceOf(math, MathNode))) {
+    JsValue a10 = newArray();
+    JS.push(a10, math);
+    math = JS.construct(MathNode, "mrow", a10);
+  }
+  JS.invoke(math, "setAttribute", "href", group["href"]);
+  return math;
+  return undef();
+};
+JS.call(defineFunction, undef(), o1);
+JsValue o11 = emptyObject();
+o11["type"] = "href";
+JsValue a12 = newArray();
+JS.push(a12, "\\url");
+o11["names"] = a12;
+JsValue o13 = emptyObject();
+o13["numArgs"] = 1;
+JsValue a14 = newArray();
+JS.push(a14, "url");
+o13["argTypes"] = a14;
+o13["allowedInText"] = true;
+o11["props"] = o13;
+o11["handler"] = (JsValue p15, JsValue args) => {
+  JsValue op16 = p15;
+  JsValue parser = op16["parser"];
+  JsValue href = JS.call(assertNodeType, undef(), args[0], "url")["url"];
+  JsValue o17 = emptyObject();
+  o17["command"] = "\\url";
+  o17["url"] = href;
+  if (!(JS.invoke(parser["settings"], "isTrusted", o17).truthy())) {
+    return JS.invoke(parser, "formatUnsupportedCmd", "\\url");
+  }
+  JsValue a18 = newArray();
+  JsValue chars = a18;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, href["length"])) {
+      JsValue c = href[i];
+      if (JS.strictEqual(c, "~")) {
+        c = "\\textasciitilde";
+      }
+      JsValue o19 = emptyObject();
+      o19["type"] = "textord";
+      o19["mode"] = "text";
+      o19["text"] = c;
+      JS.invoke(chars, "push", o19);
+      JsValue u20 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  JsValue o21 = emptyObject();
+  o21["type"] = "text";
+  o21["mode"] = parser["mode"];
+  o21["font"] = "\\texttt";
+  o21["body"] = chars;
+  JsValue body = o21;
+  JsValue o22 = emptyObject();
+  o22["type"] = "href";
+  o22["mode"] = parser["mode"];
+  o22["href"] = href;
+  o22["body"] = JS.call(ordargument, undef(), body);
+  return o22;
+  return undef();
+};
+JS.call(defineFunction, undef(), o11);
+JsValue __star = emptyObject();
+
+export { __star };

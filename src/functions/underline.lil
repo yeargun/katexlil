@@ -1,0 +1,78 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "underline";
+JsValue a2 = newArray();
+JS.push(a2, "\\underline");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 1;
+o3["allowedInText"] = true;
+o1["props"] = o3;
+o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
+  JsValue op5 = p4;
+  JsValue parser = op5["parser"];
+  JsValue o6 = emptyObject();
+  o6["type"] = "underline";
+  o6["mode"] = parser["mode"];
+  o6["body"] = args[0];
+  return o6;
+  return undef();
+});
+o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue innerGroup = JS.invoke(html, "buildGroup", group["body"], options);
+  JsValue line = JS.invoke(buildCommon, "makeLineSpan", "underline-line", options);
+  JsValue defaultRuleThickness = JS.invoke(options, "fontMetrics")["defaultRuleThickness"];
+  JsValue o7 = emptyObject();
+  o7["positionType"] = "top";
+  o7["positionData"] = innerGroup["height"];
+  JsValue a8 = newArray();
+  JsValue o9 = emptyObject();
+  o9["type"] = "kern";
+  o9["size"] = defaultRuleThickness;
+  JS.push(a8, o9);
+  JsValue o10 = emptyObject();
+  o10["type"] = "elem";
+  o10["elem"] = line;
+  JS.push(a8, o10);
+  JsValue o11 = emptyObject();
+  o11["type"] = "kern";
+  o11["size"] = (toNum(3) * toNum(defaultRuleThickness));
+  JS.push(a8, o11);
+  JsValue o12 = emptyObject();
+  o12["type"] = "elem";
+  o12["elem"] = innerGroup;
+  JS.push(a8, o12);
+  o7["children"] = a8;
+  JsValue vlist = JS.invoke(buildCommon, "makeVList", o7, options);
+  JsValue a13 = newArray();
+  JS.push(a13, "mord");
+  JS.push(a13, "underline");
+  JsValue a14 = newArray();
+  JS.push(a14, vlist);
+  return JS.invoke(buildCommon, "makeSpan", a13, a14, options);
+  return undef();
+});
+o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a15 = newArray();
+  JS.push(a15, JS.construct(mathMLTree["TextNode"], "‾"));
+  JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a15);
+  JS.invoke(operator, "setAttribute", "stretchy", "true");
+  JsValue a16 = newArray();
+  JS.push(a16, JS.invoke(mml, "buildGroup", group["body"], options));
+  JS.push(a16, operator);
+  JsValue node = JS.construct(mathMLTree["MathNode"], "munder", a16);
+  JS.invoke(node, "setAttribute", "accentunder", "true");
+  return node;
+  return undef();
+});
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

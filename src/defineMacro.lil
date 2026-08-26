@@ -1,0 +1,19 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { Token } from "./Token.lil";
+
+JsValue _macros = undef();
+JsValue defineMacro = undef();
+
+JsValue o1 = emptyObject();
+_macros = o1;
+defineMacro = (JsValue name, JsValue body) => {
+  _macros[name] = body;
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["_macros"] = _macros;
+__star["default"] = defineMacro;
+__star["defineMacro"] = defineMacro;
+
+export { __star, _macros, defineMacro as defineMacro };

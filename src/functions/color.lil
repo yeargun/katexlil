@@ -1,0 +1,86 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+
+htmlBuilder = (JsValue group, JsValue options) => {
+  JsValue elements = JS.invoke(html, "buildExpression", group["body"], JS.invoke(options, "withColor", group["color"]), false);
+  return JS.invoke(buildCommon, "makeFragment", elements);
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue inner = JS.invoke(mml, "buildExpression", group["body"], JS.invoke(options, "withColor", group["color"]));
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JS.invoke(node, "setAttribute", "mathcolor", group["color"]);
+  return node;
+  return undef();
+};
+JsValue o1 = emptyObject();
+o1["type"] = "color";
+JsValue a2 = newArray();
+JS.push(a2, "\\textcolor");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 2;
+o3["allowedInText"] = true;
+JsValue a4 = newArray();
+JS.push(a4, "color");
+JS.push(a4, "original");
+o3["argTypes"] = a4;
+o1["props"] = o3;
+o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue color = JS.call(assertNodeType, undef(), args[0], "color-token")["color"];
+  JsValue body = args[1];
+  JsValue o7 = emptyObject();
+  o7["type"] = "color";
+  o7["mode"] = parser["mode"];
+  o7["color"] = color;
+  o7["body"] = JS.call(ordargument, undef(), body);
+  return o7;
+  return undef();
+});
+o1["htmlBuilder"] = htmlBuilder;
+o1["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o1);
+JsValue o8 = emptyObject();
+o8["type"] = "color";
+JsValue a9 = newArray();
+JS.push(a9, "\\color");
+o8["names"] = a9;
+JsValue o10 = emptyObject();
+o10["numArgs"] = 1;
+o10["allowedInText"] = true;
+JsValue a11 = newArray();
+JS.push(a11, "color");
+o10["argTypes"] = a11;
+o8["props"] = o10;
+o8["handler"] = JS.method2((JsValue self, JsValue p12, JsValue args) => {
+  JsValue op13 = p12;
+  JsValue parser = op13["parser"];
+  JsValue breakOnTokenText = op13["breakOnTokenText"];
+  JsValue color = JS.call(assertNodeType, undef(), args[0], "color-token")["color"];
+  JS.invoke(parser["gullet"]["macros"], "set", "\\current@color", color);
+  JsValue body = JS.invoke(parser, "parseExpression", true, breakOnTokenText);
+  JsValue o14 = emptyObject();
+  o14["type"] = "color";
+  o14["mode"] = parser["mode"];
+  o14["color"] = color;
+  o14["body"] = body;
+  return o14;
+  return undef();
+});
+o8["htmlBuilder"] = htmlBuilder;
+o8["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o8);
+JsValue __star = emptyObject();
+
+export { __star };

@@ -1,0 +1,756 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, consoleLog, consoleError, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { defineMacro, _macros } from "./defineMacro.lil";
+import { fontMetricsData } from "./data.lil";
+import { functions } from "./functions.lil";
+import { symbols } from "./symbols.lil";
+import { utils } from "./utils.lil";
+import { makeEm } from "./units.lil";
+import { ParseError } from "./ParseError.lil";
+
+JsValue macros = undef();
+JsValue digitToNumber = undef();
+JsValue newcommand = undef();
+JsValue dotsByToken = undef();
+JsValue spaceAfterDots = undef();
+JsValue latexRaiseA = undef();
+JsValue braketHelper = undef();
+
+macros = _macros;
+JS.call(defineMacro, undef(), "\\noexpand", (JsValue context) => {
+  JsValue t = JS.invoke(context, "popToken");
+  if (JS.invoke(context, "isExpandable", t["text"]).truthy()) {
+    t["noexpand"] = true;
+    t["treatAsRelax"] = true;
+  }
+  JsValue o1 = emptyObject();
+  JsValue a2 = newArray();
+  JS.push(a2, t);
+  o1["tokens"] = a2;
+  o1["numArgs"] = 0;
+  return o1;
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\expandafter", (JsValue context) => {
+  JsValue t = JS.invoke(context, "popToken");
+  JS.invoke(context, "expandOnce", true);
+  JsValue o3 = emptyObject();
+  JsValue a4 = newArray();
+  JS.push(a4, t);
+  o3["tokens"] = a4;
+  o3["numArgs"] = 0;
+  return o3;
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\@firstoftwo", (JsValue context) => {
+  JsValue args = JS.invoke(context, "consumeArgs", 2);
+  JsValue o5 = emptyObject();
+  o5["tokens"] = args[0];
+  o5["numArgs"] = 0;
+  return o5;
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\@secondoftwo", (JsValue context) => {
+  JsValue args = JS.invoke(context, "consumeArgs", 2);
+  JsValue o6 = emptyObject();
+  o6["tokens"] = args[1];
+  o6["numArgs"] = 0;
+  return o6;
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\@ifnextchar", (JsValue context) => {
+  JsValue args = JS.invoke(context, "consumeArgs", 3);
+  JS.invoke(context, "consumeSpaces");
+  JsValue nextToken = JS.invoke(context, "future");
+  if ((JS.strictEqual(args[0]["length"], 1)) && (JS.strictEqual(args[0][0]["text"], nextToken["text"]))) {
+    JsValue o7 = emptyObject();
+    o7["tokens"] = args[1];
+    o7["numArgs"] = 0;
+    return o7;
+  } else {
+    JsValue o8 = emptyObject();
+    o8["tokens"] = args[2];
+    o8["numArgs"] = 0;
+    return o8;
+  }
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\@ifstar", "\\@ifnextchar *{\\@firstoftwo{#1}}");
+JS.call(defineMacro, undef(), "\\TextOrMath", (JsValue context) => {
+  JsValue args = JS.invoke(context, "consumeArgs", 2);
+  if (JS.strictEqual(context["mode"], "text")) {
+    JsValue o9 = emptyObject();
+    o9["tokens"] = args[0];
+    o9["numArgs"] = 0;
+    return o9;
+  } else {
+    JsValue o10 = emptyObject();
+    o10["tokens"] = args[1];
+    o10["numArgs"] = 0;
+    return o10;
+  }
+  return undef();
+});
+JsValue o11 = emptyObject();
+o11["0"] = 0;
+o11["1"] = 1;
+o11["2"] = 2;
+o11["3"] = 3;
+o11["4"] = 4;
+o11["5"] = 5;
+o11["6"] = 6;
+o11["7"] = 7;
+o11["8"] = 8;
+o11["9"] = 9;
+o11["a"] = 10;
+o11["A"] = 10;
+o11["b"] = 11;
+o11["B"] = 11;
+o11["c"] = 12;
+o11["C"] = 12;
+o11["d"] = 13;
+o11["D"] = 13;
+o11["e"] = 14;
+o11["E"] = 14;
+o11["f"] = 15;
+o11["F"] = 15;
+digitToNumber = o11;
+JS.call(defineMacro, undef(), "\\char", (JsValue context) => {
+  JsValue token = JS.invoke(context, "popToken");
+  JsValue base = undef();
+  JsValue numberVal = "";
+  if (JS.strictEqual(token["text"], "'")) {
+    base = 8;
+    token = JS.invoke(context, "popToken");
+  } else {
+    if (JS.strictEqual(token["text"], "\"")) {
+      base = 16;
+      token = JS.invoke(context, "popToken");
+    } else {
+      if (JS.strictEqual(token["text"], "`")) {
+        token = JS.invoke(context, "popToken");
+        if (JS.strictEqual(token["text"][0], "\\")) {
+          numberVal = JS.invoke(token["text"], "charCodeAt", 1);
+        } else {
+          if (JS.strictEqual(token["text"], "EOF")) {
+            throw JS.construct(ParseError, "\\char` missing argument");
+          } else {
+            numberVal = JS.invoke(token["text"], "charCodeAt", 0);
+          }
+        }
+      } else {
+        base = 10;
+      }
+    }
+  }
+  if (base.truthy()) {
+    numberVal = digitToNumber[token["text"]];
+    if ((isNullish(numberVal)) || (JS.greaterThanOrEqual(numberVal, base))) {
+      throw JS.construct(ParseError, "Invalid base-" + toStr(base) + " digit " + toStr(token["text"]));
+    }
+    JsValue digit = undef();
+    digit = digitToNumber[JS.invoke(context, "future")["text"]];
+    while ((!isNullish(digit)) && (JS.lessThan(digit, base))) {
+      numberVal = (toNum(numberVal) * toNum(base));
+      numberVal = JS.add(numberVal, digit);
+      JS.invoke(context, "popToken");
+      digit = digitToNumber[JS.invoke(context, "future")["text"]];
+    }
+  }
+  return "\\@char{" + toStr(numberVal) + "}";
+  return undef();
+});
+newcommand = (JsValue context, JsValue existsOK, JsValue nonexistsOK, JsValue skipIfExists) => {
+  JsValue arg = JS.invoke(context, "consumeArg")["tokens"];
+  if (JS.strictNotEqual(arg["length"], 1)) {
+    throw JS.construct(ParseError, "\\newcommand's first argument must be a macro name");
+  }
+  JsValue name = arg[0]["text"];
+  JsValue exists = JS.invoke(context, "isDefined", name);
+  if ((exists.truthy()) && (!(existsOK.truthy()))) {
+    throw JS.construct(ParseError, JS.add("\\newcommand{" + toStr(name) + "} attempting to redefine ", toStr(name) + "; use \\renewcommand"));
+  }
+  if ((!(exists.truthy())) && (!(nonexistsOK.truthy()))) {
+    throw JS.construct(ParseError, JS.add("\\renewcommand{" + toStr(name) + "} when command " + toStr(name) + " ", "does not yet exist; use \\newcommand"));
+  }
+  JsValue numArgs = 0;
+  arg = JS.invoke(context, "consumeArg")["tokens"];
+  if ((JS.strictEqual(arg["length"], 1)) && (JS.strictEqual(arg[0]["text"], "["))) {
+    JsValue argText = "";
+    JsValue token = JS.invoke(context, "expandNextToken");
+    while ((JS.strictNotEqual(token["text"], "]")) && (JS.strictNotEqual(token["text"], "EOF"))) {
+      argText = JS.add(argText, token["text"]);
+      token = JS.invoke(context, "expandNextToken");
+    }
+    if (!(JS.invoke(argText, "match", JS.construct(RegExp, "^\\s*[0-9]+\\s*$", "")).truthy())) {
+      throw JS.construct(ParseError, "Invalid number of arguments: " + toStr(argText));
+    }
+    numArgs = hostParseInt(argText);
+    arg = JS.invoke(context, "consumeArg")["tokens"];
+  }
+  if (!((exists.truthy()) && (skipIfExists.truthy()))) {
+    JsValue o12 = emptyObject();
+    o12["tokens"] = arg;
+    o12["numArgs"] = numArgs;
+    JS.invoke(context["macros"], "set", name, o12);
+  }
+  return "";
+  return undef();
+};
+JS.call(defineMacro, undef(), "\\newcommand", (JsValue context) => {
+  return JS.call(newcommand, undef(), context, false, true, false);
+});
+JS.call(defineMacro, undef(), "\\renewcommand", (JsValue context) => {
+  return JS.call(newcommand, undef(), context, true, false, false);
+});
+JS.call(defineMacro, undef(), "\\providecommand", (JsValue context) => {
+  return JS.call(newcommand, undef(), context, true, true, true);
+});
+JS.call(defineMacro, undef(), "\\message", (JsValue context) => {
+  JsValue arg = JS.invoke(context, "consumeArgs", 1)[0];
+  consoleLog(JS.invoke(JS.invoke(JS.invoke(arg, "reverse"), "map", (JsValue token) => {
+  return token["text"];
+  }), "join", ""));
+  return "";
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\errmessage", (JsValue context) => {
+  JsValue arg = JS.invoke(context, "consumeArgs", 1)[0];
+  consoleError(JS.invoke(JS.invoke(JS.invoke(arg, "reverse"), "map", (JsValue token) => {
+  return token["text"];
+  }), "join", ""));
+  return "";
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\show", (JsValue context) => {
+  JsValue tok = JS.invoke(context, "popToken");
+  JsValue name = tok["text"];
+  JsValue cons = getConsole();
+  if (!isUndef(cons) && !isNullish(cons)) {
+    JS.invoke(cons, "log", tok, JS.invoke(context["macros"], "get", name), functions[name], symbols["math"][name], symbols["text"][name]);
+  }
+  return "";
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\bgroup", "{");
+JS.call(defineMacro, undef(), "\\egroup", "}");
+JS.call(defineMacro, undef(), "~", "\\nobreakspace");
+JS.call(defineMacro, undef(), "\\lq", "`");
+JS.call(defineMacro, undef(), "\\rq", "'");
+JS.call(defineMacro, undef(), "\\aa", "\\r a");
+JS.call(defineMacro, undef(), "\\AA", "\\r A");
+JS.call(defineMacro, undef(), "\\textcopyright", "\\html@mathml{\\textcircled{c}}{\\char`©}");
+JS.call(defineMacro, undef(), "\\copyright", "\\TextOrMath{\\textcopyright}{\\text{\\textcopyright}}");
+JS.call(defineMacro, undef(), "\\textregistered", "\\html@mathml{\\textcircled{\\scriptsize R}}{\\char`®}");
+JS.call(defineMacro, undef(), "ℬ", "\\mathscr{B}");
+JS.call(defineMacro, undef(), "ℰ", "\\mathscr{E}");
+JS.call(defineMacro, undef(), "ℱ", "\\mathscr{F}");
+JS.call(defineMacro, undef(), "ℋ", "\\mathscr{H}");
+JS.call(defineMacro, undef(), "ℐ", "\\mathscr{I}");
+JS.call(defineMacro, undef(), "ℒ", "\\mathscr{L}");
+JS.call(defineMacro, undef(), "ℳ", "\\mathscr{M}");
+JS.call(defineMacro, undef(), "ℛ", "\\mathscr{R}");
+JS.call(defineMacro, undef(), "ℭ", "\\mathfrak{C}");
+JS.call(defineMacro, undef(), "ℌ", "\\mathfrak{H}");
+JS.call(defineMacro, undef(), "ℨ", "\\mathfrak{Z}");
+JS.call(defineMacro, undef(), "\\Bbbk", "\\Bbb{k}");
+JS.call(defineMacro, undef(), "·", "\\cdotp");
+JS.call(defineMacro, undef(), "\\llap", "\\mathllap{\\textrm{#1}}");
+JS.call(defineMacro, undef(), "\\rlap", "\\mathrlap{\\textrm{#1}}");
+JS.call(defineMacro, undef(), "\\clap", "\\mathclap{\\textrm{#1}}");
+JS.call(defineMacro, undef(), "\\mathstrut", "\\vphantom{(}");
+JS.call(defineMacro, undef(), "\\underbar", "\\underline{\\text{#1}}");
+JS.call(defineMacro, undef(), "\\not", "\\html@mathml{\\mathrel{\\mathrlap\\@not}}{\\char\"338}");
+JS.call(defineMacro, undef(), "\\neq", "\\html@mathml{\\mathrel{\\not=}}{\\mathrel{\\char`≠}}");
+JS.call(defineMacro, undef(), "\\ne", "\\neq");
+JS.call(defineMacro, undef(), "≠", "\\neq");
+JS.call(defineMacro, undef(), "\\notin", JS.add("\\html@mathml{\\mathrel{{\\in}\\mathllap{/\\mskip1mu}}}", "{\\mathrel{\\char`∉}}"));
+JS.call(defineMacro, undef(), "∉", "\\notin");
+JS.call(defineMacro, undef(), "≘", JS.add(JS.add("\\html@mathml{", "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}"), "}{\\mathrel{\\char`≘}}"));
+JS.call(defineMacro, undef(), "≙", "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\\char`≘}}");
+JS.call(defineMacro, undef(), "≚", "\\html@mathml{\\stackrel{\\tiny\\vee}{=}}{\\mathrel{\\char`≚}}");
+JS.call(defineMacro, undef(), "≛", JS.add("\\html@mathml{\\stackrel{\\scriptsize\\star}{=}}", "{\\mathrel{\\char`≛}}"));
+JS.call(defineMacro, undef(), "≝", JS.add("\\html@mathml{\\stackrel{\\tiny\\mathrm{def}}{=}}", "{\\mathrel{\\char`≝}}"));
+JS.call(defineMacro, undef(), "≞", JS.add("\\html@mathml{\\stackrel{\\tiny\\mathrm{m}}{=}}", "{\\mathrel{\\char`≞}}"));
+JS.call(defineMacro, undef(), "≟", "\\html@mathml{\\stackrel{\\tiny?}{=}}{\\mathrel{\\char`≟}}");
+JS.call(defineMacro, undef(), "⟂", "\\perp");
+JS.call(defineMacro, undef(), "‼", "\\mathclose{!\\mkern-0.8mu!}");
+JS.call(defineMacro, undef(), "∌", "\\notni");
+JS.call(defineMacro, undef(), "⌜", "\\ulcorner");
+JS.call(defineMacro, undef(), "⌝", "\\urcorner");
+JS.call(defineMacro, undef(), "⌞", "\\llcorner");
+JS.call(defineMacro, undef(), "⌟", "\\lrcorner");
+JS.call(defineMacro, undef(), "©", "\\copyright");
+JS.call(defineMacro, undef(), "®", "\\textregistered");
+JS.call(defineMacro, undef(), "️", "\\textregistered");
+JS.call(defineMacro, undef(), "\\ulcorner", "\\html@mathml{\\@ulcorner}{\\mathop{\\char\"231c}}");
+JS.call(defineMacro, undef(), "\\urcorner", "\\html@mathml{\\@urcorner}{\\mathop{\\char\"231d}}");
+JS.call(defineMacro, undef(), "\\llcorner", "\\html@mathml{\\@llcorner}{\\mathop{\\char\"231e}}");
+JS.call(defineMacro, undef(), "\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
+JS.call(defineMacro, undef(), "\\vdots", "{\\varvdots\\rule{0pt}{15pt}}");
+JS.call(defineMacro, undef(), "⋮", "\\vdots");
+JS.call(defineMacro, undef(), "\\varGamma", "\\mathit{\\Gamma}");
+JS.call(defineMacro, undef(), "\\varDelta", "\\mathit{\\Delta}");
+JS.call(defineMacro, undef(), "\\varTheta", "\\mathit{\\Theta}");
+JS.call(defineMacro, undef(), "\\varLambda", "\\mathit{\\Lambda}");
+JS.call(defineMacro, undef(), "\\varXi", "\\mathit{\\Xi}");
+JS.call(defineMacro, undef(), "\\varPi", "\\mathit{\\Pi}");
+JS.call(defineMacro, undef(), "\\varSigma", "\\mathit{\\Sigma}");
+JS.call(defineMacro, undef(), "\\varUpsilon", "\\mathit{\\Upsilon}");
+JS.call(defineMacro, undef(), "\\varPhi", "\\mathit{\\Phi}");
+JS.call(defineMacro, undef(), "\\varPsi", "\\mathit{\\Psi}");
+JS.call(defineMacro, undef(), "\\varOmega", "\\mathit{\\Omega}");
+JS.call(defineMacro, undef(), "\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
+JS.call(defineMacro, undef(), "\\colon", JS.add("\\nobreak\\mskip2mu\\mathpunct{}", "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu\\relax"));
+JS.call(defineMacro, undef(), "\\boxed", "\\fbox{$\\displaystyle{#1}$}");
+JS.call(defineMacro, undef(), "\\iff", "\\DOTSB\\;\\Longleftrightarrow\\;");
+JS.call(defineMacro, undef(), "\\implies", "\\DOTSB\\;\\Longrightarrow\\;");
+JS.call(defineMacro, undef(), "\\impliedby", "\\DOTSB\\;\\Longleftarrow\\;");
+JS.call(defineMacro, undef(), "\\dddot", "{\\overset{\\raisebox{-0.1ex}{\\normalsize ...}}{#1}}");
+JS.call(defineMacro, undef(), "\\ddddot", "{\\overset{\\raisebox{-0.1ex}{\\normalsize ....}}{#1}}");
+JsValue o13 = emptyObject();
+o13[","] = "\\dotsc";
+o13["\\not"] = "\\dotsb";
+o13["+"] = "\\dotsb";
+o13["="] = "\\dotsb";
+o13["<"] = "\\dotsb";
+o13[">"] = "\\dotsb";
+o13["-"] = "\\dotsb";
+o13["*"] = "\\dotsb";
+o13[":"] = "\\dotsb";
+o13["\\DOTSB"] = "\\dotsb";
+o13["\\coprod"] = "\\dotsb";
+o13["\\bigvee"] = "\\dotsb";
+o13["\\bigwedge"] = "\\dotsb";
+o13["\\biguplus"] = "\\dotsb";
+o13["\\bigcap"] = "\\dotsb";
+o13["\\bigcup"] = "\\dotsb";
+o13["\\prod"] = "\\dotsb";
+o13["\\sum"] = "\\dotsb";
+o13["\\bigotimes"] = "\\dotsb";
+o13["\\bigoplus"] = "\\dotsb";
+o13["\\bigodot"] = "\\dotsb";
+o13["\\bigsqcup"] = "\\dotsb";
+o13["\\And"] = "\\dotsb";
+o13["\\longrightarrow"] = "\\dotsb";
+o13["\\Longrightarrow"] = "\\dotsb";
+o13["\\longleftarrow"] = "\\dotsb";
+o13["\\Longleftarrow"] = "\\dotsb";
+o13["\\longleftrightarrow"] = "\\dotsb";
+o13["\\Longleftrightarrow"] = "\\dotsb";
+o13["\\mapsto"] = "\\dotsb";
+o13["\\longmapsto"] = "\\dotsb";
+o13["\\hookrightarrow"] = "\\dotsb";
+o13["\\doteq"] = "\\dotsb";
+o13["\\mathbin"] = "\\dotsb";
+o13["\\mathrel"] = "\\dotsb";
+o13["\\relbar"] = "\\dotsb";
+o13["\\Relbar"] = "\\dotsb";
+o13["\\xrightarrow"] = "\\dotsb";
+o13["\\xleftarrow"] = "\\dotsb";
+o13["\\DOTSI"] = "\\dotsi";
+o13["\\int"] = "\\dotsi";
+o13["\\oint"] = "\\dotsi";
+o13["\\iint"] = "\\dotsi";
+o13["\\iiint"] = "\\dotsi";
+o13["\\iiiint"] = "\\dotsi";
+o13["\\idotsint"] = "\\dotsi";
+o13["\\DOTSX"] = "\\dotsx";
+dotsByToken = o13;
+JS.call(defineMacro, undef(), "\\dots", (JsValue context) => {
+  JsValue thedots = "\\dotso";
+  JsValue next = JS.invoke(context, "expandAfterFuture")["text"];
+  if (inOp(next, dotsByToken)) {
+    thedots = dotsByToken[next];
+  } else {
+    if (JS.strictEqual(JS.invoke(next, "slice", 0, 4), "\\not")) {
+      thedots = "\\dotsb";
+    } else {
+      if (inOp(next, symbols["math"])) {
+        JsValue a14 = newArray();
+        JS.push(a14, "bin");
+        JS.push(a14, "rel");
+        if (JS.invoke(utils, "contains", a14, symbols["math"][next]["group"]).truthy()) {
+          thedots = "\\dotsb";
+        }
+      }
+    }
+  }
+  return thedots;
+  return undef();
+});
+JsValue o15 = emptyObject();
+o15[")"] = true;
+o15["]"] = true;
+o15["\\rbrack"] = true;
+o15["\\}"] = true;
+o15["\\rbrace"] = true;
+o15["\\rangle"] = true;
+o15["\\rceil"] = true;
+o15["\\rfloor"] = true;
+o15["\\rgroup"] = true;
+o15["\\rmoustache"] = true;
+o15["\\right"] = true;
+o15["\\bigr"] = true;
+o15["\\biggr"] = true;
+o15["\\Bigr"] = true;
+o15["\\Biggr"] = true;
+o15["$"] = true;
+o15[";"] = true;
+o15["."] = true;
+o15[","] = true;
+spaceAfterDots = o15;
+JS.call(defineMacro, undef(), "\\dotso", (JsValue context) => {
+  JsValue next = JS.invoke(context, "future")["text"];
+  if (inOp(next, spaceAfterDots)) {
+    return "\\ldots\\,";
+  } else {
+    return "\\ldots";
+  }
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\dotsc", (JsValue context) => {
+  JsValue next = JS.invoke(context, "future")["text"];
+  if ((inOp(next, spaceAfterDots)) && (JS.strictNotEqual(next, ","))) {
+    return "\\ldots\\,";
+  } else {
+    return "\\ldots";
+  }
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\cdots", (JsValue context) => {
+  JsValue next = JS.invoke(context, "future")["text"];
+  if (inOp(next, spaceAfterDots)) {
+    return "\\@cdots\\,";
+  } else {
+    return "\\@cdots";
+  }
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\dotsb", "\\cdots");
+JS.call(defineMacro, undef(), "\\dotsm", "\\cdots");
+JS.call(defineMacro, undef(), "\\dotsi", "\\!\\cdots");
+JS.call(defineMacro, undef(), "\\dotsx", "\\ldots\\,");
+JS.call(defineMacro, undef(), "\\DOTSI", "\\relax");
+JS.call(defineMacro, undef(), "\\DOTSB", "\\relax");
+JS.call(defineMacro, undef(), "\\DOTSX", "\\relax");
+JS.call(defineMacro, undef(), "\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
+JS.call(defineMacro, undef(), "\\,", "\\tmspace+{3mu}{.1667em}");
+JS.call(defineMacro, undef(), "\\thinspace", "\\,");
+JS.call(defineMacro, undef(), "\\>", "\\mskip{4mu}");
+JS.call(defineMacro, undef(), "\\:", "\\tmspace+{4mu}{.2222em}");
+JS.call(defineMacro, undef(), "\\medspace", "\\:");
+JS.call(defineMacro, undef(), "\\;", "\\tmspace+{5mu}{.2777em}");
+JS.call(defineMacro, undef(), "\\thickspace", "\\;");
+JS.call(defineMacro, undef(), "\\!", "\\tmspace-{3mu}{.1667em}");
+JS.call(defineMacro, undef(), "\\negthinspace", "\\!");
+JS.call(defineMacro, undef(), "\\negmedspace", "\\tmspace-{4mu}{.2222em}");
+JS.call(defineMacro, undef(), "\\negthickspace", "\\tmspace-{5mu}{.277em}");
+JS.call(defineMacro, undef(), "\\enspace", "\\kern.5em ");
+JS.call(defineMacro, undef(), "\\enskip", "\\hskip.5em\\relax");
+JS.call(defineMacro, undef(), "\\quad", "\\hskip1em\\relax");
+JS.call(defineMacro, undef(), "\\qquad", "\\hskip2em\\relax");
+JS.call(defineMacro, undef(), "\\tag", "\\@ifstar\\tag@literal\\tag@paren");
+JS.call(defineMacro, undef(), "\\tag@paren", "\\tag@literal{({#1})}");
+JS.call(defineMacro, undef(), "\\tag@literal", (JsValue context) => {
+  if (JS.invoke(context["macros"], "get", "\\df@tag").truthy()) {
+    throw JS.construct(ParseError, "Multiple \\tag");
+  }
+  return "\\gdef\\df@tag{\\text{#1}}";
+  return undef();
+});
+JS.call(defineMacro, undef(), "\\bmod", JS.add(JS.add("\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}", "\\mathbin{\\rm mod}"), "\\mathchoice{\\mskip1mu}{\\mskip1mu}{\\mskip5mu}{\\mskip5mu}"));
+JS.call(defineMacro, undef(), "\\pod", JS.add("\\allowbreak", "\\mathchoice{\\mkern18mu}{\\mkern8mu}{\\mkern8mu}{\\mkern8mu}(#1)"));
+JS.call(defineMacro, undef(), "\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
+JS.call(defineMacro, undef(), "\\mod", JS.add(JS.add("\\allowbreak", "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}"), "{\\rm mod}\\,\\,#1"));
+JS.call(defineMacro, undef(), "\\newline", "\\\\\\relax");
+JS.call(defineMacro, undef(), "\\TeX", JS.add(JS.add("\\textrm{\\html@mathml{", "T\\kern-.1667em\\raisebox{-.5ex}{E}\\kern-.125emX"), "}{TeX}}"));
+latexRaiseA = JS.call(makeEm, undef(), (toNum(fontMetricsData["Main-Regular"][JS.invoke("T", "charCodeAt", 0)][1]) - toNum((toNum(0.7) * toNum(fontMetricsData["Main-Regular"][JS.invoke("A", "charCodeAt", 0)][1])))));
+JS.call(defineMacro, undef(), "\\LaTeX", JS.add(JS.add("\\textrm{\\html@mathml{", "L\\kern-.36em\\raisebox{" + toStr(latexRaiseA) + "}{\\scriptstyle A}"), "\\kern-.15em\\TeX}{LaTeX}}"));
+JS.call(defineMacro, undef(), "\\KaTeX", JS.add(JS.add("\\textrm{\\html@mathml{", "K\\kern-.17em\\raisebox{" + toStr(latexRaiseA) + "}{\\scriptstyle A}"), "\\kern-.15em\\TeX}{KaTeX}}"));
+JS.call(defineMacro, undef(), "\\hspace", "\\@ifstar\\@hspacer\\@hspace");
+JS.call(defineMacro, undef(), "\\@hspace", "\\hskip #1\\relax");
+JS.call(defineMacro, undef(), "\\@hspacer", "\\rule{0pt}{0pt}\\hskip #1\\relax");
+JS.call(defineMacro, undef(), "\\ordinarycolon", ":");
+JS.call(defineMacro, undef(), "\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
+JS.call(defineMacro, undef(), "\\dblcolon", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon}}"), "{\\mathop{\\char\"2237}}"));
+JS.call(defineMacro, undef(), "\\coloneqq", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}=}}"), "{\\mathop{\\char\"2254}}"));
+JS.call(defineMacro, undef(), "\\Coloneqq", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}=}}"), "{\\mathop{\\char\"2237\\char\"3d}}"));
+JS.call(defineMacro, undef(), "\\coloneq", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}}"), "{\\mathop{\\char\"3a\\char\"2212}}"));
+JS.call(defineMacro, undef(), "\\Coloneq", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}}}"), "{\\mathop{\\char\"2237\\char\"2212}}"));
+JS.call(defineMacro, undef(), "\\eqqcolon", JS.add(JS.add("\\html@mathml{", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\vcentcolon}}"), "{\\mathop{\\char\"2255}}"));
+JS.call(defineMacro, undef(), "\\Eqqcolon", JS.add(JS.add("\\html@mathml{", "\\mathrel{=\\mathrel{\\mkern-1.2mu}\\dblcolon}}"), "{\\mathop{\\char\"3d\\char\"2237}}"));
+JS.call(defineMacro, undef(), "\\eqcolon", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon}}"), "{\\mathop{\\char\"2239}}"));
+JS.call(defineMacro, undef(), "\\Eqcolon", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon}}"), "{\\mathop{\\char\"2212\\char\"2237}}"));
+JS.call(defineMacro, undef(), "\\colonapprox", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx}}"), "{\\mathop{\\char\"3a\\char\"2248}}"));
+JS.call(defineMacro, undef(), "\\Colonapprox", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx}}"), "{\\mathop{\\char\"2237\\char\"2248}}"));
+JS.call(defineMacro, undef(), "\\colonsim", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim}}"), "{\\mathop{\\char\"3a\\char\"223c}}"));
+JS.call(defineMacro, undef(), "\\Colonsim", JS.add(JS.add("\\html@mathml{", "\\mathrel{\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim}}"), "{\\mathop{\\char\"2237\\char\"223c}}"));
+JS.call(defineMacro, undef(), "∷", "\\dblcolon");
+JS.call(defineMacro, undef(), "∹", "\\eqcolon");
+JS.call(defineMacro, undef(), "≔", "\\coloneqq");
+JS.call(defineMacro, undef(), "≕", "\\eqqcolon");
+JS.call(defineMacro, undef(), "⩴", "\\Coloneqq");
+JS.call(defineMacro, undef(), "\\ratio", "\\vcentcolon");
+JS.call(defineMacro, undef(), "\\coloncolon", "\\dblcolon");
+JS.call(defineMacro, undef(), "\\colonequals", "\\coloneqq");
+JS.call(defineMacro, undef(), "\\coloncolonequals", "\\Coloneqq");
+JS.call(defineMacro, undef(), "\\equalscolon", "\\eqqcolon");
+JS.call(defineMacro, undef(), "\\equalscoloncolon", "\\Eqqcolon");
+JS.call(defineMacro, undef(), "\\colonminus", "\\coloneq");
+JS.call(defineMacro, undef(), "\\coloncolonminus", "\\Coloneq");
+JS.call(defineMacro, undef(), "\\minuscolon", "\\eqcolon");
+JS.call(defineMacro, undef(), "\\minuscoloncolon", "\\Eqcolon");
+JS.call(defineMacro, undef(), "\\coloncolonapprox", "\\Colonapprox");
+JS.call(defineMacro, undef(), "\\coloncolonsim", "\\Colonsim");
+JS.call(defineMacro, undef(), "\\simcolon", "\\mathrel{\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+JS.call(defineMacro, undef(), "\\simcoloncolon", "\\mathrel{\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon}");
+JS.call(defineMacro, undef(), "\\approxcolon", "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon}");
+JS.call(defineMacro, undef(), "\\approxcoloncolon", "\\mathrel{\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon}");
+JS.call(defineMacro, undef(), "\\notni", "\\html@mathml{\\not\\ni}{\\mathrel{\\char`∌}}");
+JS.call(defineMacro, undef(), "\\limsup", "\\DOTSB\\operatorname*{lim\\,sup}");
+JS.call(defineMacro, undef(), "\\liminf", "\\DOTSB\\operatorname*{lim\\,inf}");
+JS.call(defineMacro, undef(), "\\injlim", "\\DOTSB\\operatorname*{inj\\,lim}");
+JS.call(defineMacro, undef(), "\\projlim", "\\DOTSB\\operatorname*{proj\\,lim}");
+JS.call(defineMacro, undef(), "\\varlimsup", "\\DOTSB\\operatorname*{\\overline{lim}}");
+JS.call(defineMacro, undef(), "\\varliminf", "\\DOTSB\\operatorname*{\\underline{lim}}");
+JS.call(defineMacro, undef(), "\\varinjlim", "\\DOTSB\\operatorname*{\\underrightarrow{lim}}");
+JS.call(defineMacro, undef(), "\\varprojlim", "\\DOTSB\\operatorname*{\\underleftarrow{lim}}");
+JS.call(defineMacro, undef(), "\\gvertneqq", "\\html@mathml{\\@gvertneqq}{≩}");
+JS.call(defineMacro, undef(), "\\lvertneqq", "\\html@mathml{\\@lvertneqq}{≨}");
+JS.call(defineMacro, undef(), "\\ngeqq", "\\html@mathml{\\@ngeqq}{≱}");
+JS.call(defineMacro, undef(), "\\ngeqslant", "\\html@mathml{\\@ngeqslant}{≱}");
+JS.call(defineMacro, undef(), "\\nleqq", "\\html@mathml{\\@nleqq}{≰}");
+JS.call(defineMacro, undef(), "\\nleqslant", "\\html@mathml{\\@nleqslant}{≰}");
+JS.call(defineMacro, undef(), "\\nshortmid", "\\html@mathml{\\@nshortmid}{∤}");
+JS.call(defineMacro, undef(), "\\nshortparallel", "\\html@mathml{\\@nshortparallel}{∦}");
+JS.call(defineMacro, undef(), "\\nsubseteqq", "\\html@mathml{\\@nsubseteqq}{⊈}");
+JS.call(defineMacro, undef(), "\\nsupseteqq", "\\html@mathml{\\@nsupseteqq}{⊉}");
+JS.call(defineMacro, undef(), "\\varsubsetneq", "\\html@mathml{\\@varsubsetneq}{⊊}");
+JS.call(defineMacro, undef(), "\\varsubsetneqq", "\\html@mathml{\\@varsubsetneqq}{⫋}");
+JS.call(defineMacro, undef(), "\\varsupsetneq", "\\html@mathml{\\@varsupsetneq}{⊋}");
+JS.call(defineMacro, undef(), "\\varsupsetneqq", "\\html@mathml{\\@varsupsetneqq}{⫌}");
+JS.call(defineMacro, undef(), "\\imath", "\\html@mathml{\\@imath}{ı}");
+JS.call(defineMacro, undef(), "\\jmath", "\\html@mathml{\\@jmath}{ȷ}");
+JS.call(defineMacro, undef(), "\\llbracket", JS.add(JS.add("\\html@mathml{", "\\mathopen{[\\mkern-3.2mu[}}"), "{\\mathopen{\\char`⟦}}"));
+JS.call(defineMacro, undef(), "\\rrbracket", JS.add(JS.add("\\html@mathml{", "\\mathclose{]\\mkern-3.2mu]}}"), "{\\mathclose{\\char`⟧}}"));
+JS.call(defineMacro, undef(), "⟦", "\\llbracket");
+JS.call(defineMacro, undef(), "⟧", "\\rrbracket");
+JS.call(defineMacro, undef(), "\\lBrace", JS.add(JS.add("\\html@mathml{", "\\mathopen{\\{\\mkern-3.2mu[}}"), "{\\mathopen{\\char`⦃}}"));
+JS.call(defineMacro, undef(), "\\rBrace", JS.add(JS.add("\\html@mathml{", "\\mathclose{]\\mkern-3.2mu\\}}}"), "{\\mathclose{\\char`⦄}}"));
+JS.call(defineMacro, undef(), "⦃", "\\lBrace");
+JS.call(defineMacro, undef(), "⦄", "\\rBrace");
+JS.call(defineMacro, undef(), "\\minuso", JS.add(JS.add(JS.add("\\mathbin{\\html@mathml{", "{\\mathrlap{\\mathchoice{\\kern{0.145em}}{\\kern{0.145em}}"), "{\\kern{0.1015em}}{\\kern{0.0725em}}\\circ}{-}}}"), "{\\char`⦵}}"));
+JS.call(defineMacro, undef(), "⦵", "\\minuso");
+JS.call(defineMacro, undef(), "\\darr", "\\downarrow");
+JS.call(defineMacro, undef(), "\\dArr", "\\Downarrow");
+JS.call(defineMacro, undef(), "\\Darr", "\\Downarrow");
+JS.call(defineMacro, undef(), "\\lang", "\\langle");
+JS.call(defineMacro, undef(), "\\rang", "\\rangle");
+JS.call(defineMacro, undef(), "\\uarr", "\\uparrow");
+JS.call(defineMacro, undef(), "\\uArr", "\\Uparrow");
+JS.call(defineMacro, undef(), "\\Uarr", "\\Uparrow");
+JS.call(defineMacro, undef(), "\\N", "\\mathbb{N}");
+JS.call(defineMacro, undef(), "\\R", "\\mathbb{R}");
+JS.call(defineMacro, undef(), "\\Z", "\\mathbb{Z}");
+JS.call(defineMacro, undef(), "\\alef", "\\aleph");
+JS.call(defineMacro, undef(), "\\alefsym", "\\aleph");
+JS.call(defineMacro, undef(), "\\Alpha", "\\mathrm{A}");
+JS.call(defineMacro, undef(), "\\Beta", "\\mathrm{B}");
+JS.call(defineMacro, undef(), "\\bull", "\\bullet");
+JS.call(defineMacro, undef(), "\\Chi", "\\mathrm{X}");
+JS.call(defineMacro, undef(), "\\clubs", "\\clubsuit");
+JS.call(defineMacro, undef(), "\\cnums", "\\mathbb{C}");
+JS.call(defineMacro, undef(), "\\Complex", "\\mathbb{C}");
+JS.call(defineMacro, undef(), "\\Dagger", "\\ddagger");
+JS.call(defineMacro, undef(), "\\diamonds", "\\diamondsuit");
+JS.call(defineMacro, undef(), "\\empty", "\\emptyset");
+JS.call(defineMacro, undef(), "\\Epsilon", "\\mathrm{E}");
+JS.call(defineMacro, undef(), "\\Eta", "\\mathrm{H}");
+JS.call(defineMacro, undef(), "\\exist", "\\exists");
+JS.call(defineMacro, undef(), "\\harr", "\\leftrightarrow");
+JS.call(defineMacro, undef(), "\\hArr", "\\Leftrightarrow");
+JS.call(defineMacro, undef(), "\\Harr", "\\Leftrightarrow");
+JS.call(defineMacro, undef(), "\\hearts", "\\heartsuit");
+JS.call(defineMacro, undef(), "\\image", "\\Im");
+JS.call(defineMacro, undef(), "\\infin", "\\infty");
+JS.call(defineMacro, undef(), "\\Iota", "\\mathrm{I}");
+JS.call(defineMacro, undef(), "\\isin", "\\in");
+JS.call(defineMacro, undef(), "\\Kappa", "\\mathrm{K}");
+JS.call(defineMacro, undef(), "\\larr", "\\leftarrow");
+JS.call(defineMacro, undef(), "\\lArr", "\\Leftarrow");
+JS.call(defineMacro, undef(), "\\Larr", "\\Leftarrow");
+JS.call(defineMacro, undef(), "\\lrarr", "\\leftrightarrow");
+JS.call(defineMacro, undef(), "\\lrArr", "\\Leftrightarrow");
+JS.call(defineMacro, undef(), "\\Lrarr", "\\Leftrightarrow");
+JS.call(defineMacro, undef(), "\\Mu", "\\mathrm{M}");
+JS.call(defineMacro, undef(), "\\natnums", "\\mathbb{N}");
+JS.call(defineMacro, undef(), "\\Nu", "\\mathrm{N}");
+JS.call(defineMacro, undef(), "\\Omicron", "\\mathrm{O}");
+JS.call(defineMacro, undef(), "\\plusmn", "\\pm");
+JS.call(defineMacro, undef(), "\\rarr", "\\rightarrow");
+JS.call(defineMacro, undef(), "\\rArr", "\\Rightarrow");
+JS.call(defineMacro, undef(), "\\Rarr", "\\Rightarrow");
+JS.call(defineMacro, undef(), "\\real", "\\Re");
+JS.call(defineMacro, undef(), "\\reals", "\\mathbb{R}");
+JS.call(defineMacro, undef(), "\\Reals", "\\mathbb{R}");
+JS.call(defineMacro, undef(), "\\Rho", "\\mathrm{P}");
+JS.call(defineMacro, undef(), "\\sdot", "\\cdot");
+JS.call(defineMacro, undef(), "\\sect", "\\S");
+JS.call(defineMacro, undef(), "\\spades", "\\spadesuit");
+JS.call(defineMacro, undef(), "\\sub", "\\subset");
+JS.call(defineMacro, undef(), "\\sube", "\\subseteq");
+JS.call(defineMacro, undef(), "\\supe", "\\supseteq");
+JS.call(defineMacro, undef(), "\\Tau", "\\mathrm{T}");
+JS.call(defineMacro, undef(), "\\thetasym", "\\vartheta");
+JS.call(defineMacro, undef(), "\\weierp", "\\wp");
+JS.call(defineMacro, undef(), "\\Zeta", "\\mathrm{Z}");
+JS.call(defineMacro, undef(), "\\argmin", "\\DOTSB\\operatorname*{arg\\,min}");
+JS.call(defineMacro, undef(), "\\argmax", "\\DOTSB\\operatorname*{arg\\,max}");
+JS.call(defineMacro, undef(), "\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
+JS.call(defineMacro, undef(), "\\bra", "\\mathinner{\\langle{#1}|}");
+JS.call(defineMacro, undef(), "\\ket", "\\mathinner{|{#1}\\rangle}");
+JS.call(defineMacro, undef(), "\\braket", "\\mathinner{\\langle{#1}\\rangle}");
+JS.call(defineMacro, undef(), "\\Bra", "\\left\\langle#1\\right|");
+JS.call(defineMacro, undef(), "\\Ket", "\\left|#1\\right\\rangle");
+braketHelper = (JsValue one) => {
+  return (JsValue context) => {
+  JsValue left = JS.invoke(context, "consumeArg")["tokens"];
+  JsValue middle = JS.invoke(context, "consumeArg")["tokens"];
+  JsValue middleDouble = JS.invoke(context, "consumeArg")["tokens"];
+  JsValue right = JS.invoke(context, "consumeArg")["tokens"];
+  JsValue oldMiddle = JS.invoke(context["macros"], "get", "|");
+  JsValue oldMiddleDouble = JS.invoke(context["macros"], "get", "\\|");
+  JS.invoke(context["macros"], "beginGroup");
+  JsValue midMacro = (JsValue double) => {
+  return (JsValue context) => {
+  if (one.truthy()) {
+    JS.invoke(context["macros"], "set", "|", oldMiddle);
+    if (middleDouble["length"].truthy()) {
+      JS.invoke(context["macros"], "set", "\\|", oldMiddleDouble);
+    }
+  }
+  JsValue doubled = double;
+  if ((!(double.truthy())) && (middleDouble["length"].truthy())) {
+    JsValue nextToken = JS.invoke(context, "future");
+    if (JS.strictEqual(nextToken["text"], "|")) {
+      JS.invoke(context, "popToken");
+      doubled = true;
+    }
+  }
+  JsValue o16 = emptyObject();
+  JsValue c17 = undef();
+  if (doubled.truthy()) {
+    c17 = middleDouble;
+  } else {
+    c17 = middle;
+  }
+  o16["tokens"] = c17;
+  o16["numArgs"] = 0;
+  return o16;
+  return undef();
+  };
+  };
+  JS.invoke(context["macros"], "set", "|", JS.call(midMacro, undef(), false));
+  if (middleDouble["length"].truthy()) {
+    JS.invoke(context["macros"], "set", "\\|", JS.call(midMacro, undef(), true));
+  }
+  JsValue arg = JS.invoke(context, "consumeArg")["tokens"];
+  JsValue a18 = newArray();
+  JsValue ss21 = right;
+  int si19 = 0;
+  int sn20 = len(ss21);
+  while (si19 < sn20) {
+    JS.push(a18, ss21[si19]);
+    si19 = si19 + 1;
+  }
+  JsValue ss24 = arg;
+  int si22 = 0;
+  int sn23 = len(ss24);
+  while (si22 < sn23) {
+    JS.push(a18, ss24[si22]);
+    si22 = si22 + 1;
+  }
+  JsValue ss27 = left;
+  int si25 = 0;
+  int sn26 = len(ss27);
+  while (si25 < sn26) {
+    JS.push(a18, ss27[si25]);
+    si25 = si25 + 1;
+  }
+  JsValue expanded = JS.invoke(context, "expandTokens", a18);
+  JS.invoke(context["macros"], "endGroup");
+  JsValue o28 = emptyObject();
+  o28["tokens"] = JS.invoke(expanded, "reverse");
+  o28["numArgs"] = 0;
+  return o28;
+  return undef();
+  };
+};
+JS.call(defineMacro, undef(), "\\bra@ket", JS.call(braketHelper, undef(), false));
+JS.call(defineMacro, undef(), "\\bra@set", JS.call(braketHelper, undef(), true));
+JS.call(defineMacro, undef(), "\\Braket", JS.add("\\bra@ket{\\left\\langle}", "{\\,\\middle\\vert\\,}{\\,\\middle\\vert\\,}{\\right\\rangle}"));
+JS.call(defineMacro, undef(), "\\Set", JS.add("\\bra@set{\\left\\{\\:}", "{\\;\\middle\\vert\\;}{\\;\\middle\\Vert\\;}{\\:\\right\\}}"));
+JS.call(defineMacro, undef(), "\\set", "\\bra@set{\\{\\,}{\\mid}{}{\\,\\}}");
+JS.call(defineMacro, undef(), "\\angln", "{\\angl n}");
+JS.call(defineMacro, undef(), "\\blue", "\\textcolor{##6495ed}{#1}");
+JS.call(defineMacro, undef(), "\\orange", "\\textcolor{##ffa500}{#1}");
+JS.call(defineMacro, undef(), "\\pink", "\\textcolor{##ff00af}{#1}");
+JS.call(defineMacro, undef(), "\\red", "\\textcolor{##df0030}{#1}");
+JS.call(defineMacro, undef(), "\\green", "\\textcolor{##28ae7b}{#1}");
+JS.call(defineMacro, undef(), "\\gray", "\\textcolor{gray}{#1}");
+JS.call(defineMacro, undef(), "\\purple", "\\textcolor{##9d38bd}{#1}");
+JS.call(defineMacro, undef(), "\\blueA", "\\textcolor{##ccfaff}{#1}");
+JS.call(defineMacro, undef(), "\\blueB", "\\textcolor{##80f6ff}{#1}");
+JS.call(defineMacro, undef(), "\\blueC", "\\textcolor{##63d9ea}{#1}");
+JS.call(defineMacro, undef(), "\\blueD", "\\textcolor{##11accd}{#1}");
+JS.call(defineMacro, undef(), "\\blueE", "\\textcolor{##0c7f99}{#1}");
+JS.call(defineMacro, undef(), "\\tealA", "\\textcolor{##94fff5}{#1}");
+JS.call(defineMacro, undef(), "\\tealB", "\\textcolor{##26edd5}{#1}");
+JS.call(defineMacro, undef(), "\\tealC", "\\textcolor{##01d1c1}{#1}");
+JS.call(defineMacro, undef(), "\\tealD", "\\textcolor{##01a995}{#1}");
+JS.call(defineMacro, undef(), "\\tealE", "\\textcolor{##208170}{#1}");
+JS.call(defineMacro, undef(), "\\greenA", "\\textcolor{##b6ffb0}{#1}");
+JS.call(defineMacro, undef(), "\\greenB", "\\textcolor{##8af281}{#1}");
+JS.call(defineMacro, undef(), "\\greenC", "\\textcolor{##74cf70}{#1}");
+JS.call(defineMacro, undef(), "\\greenD", "\\textcolor{##1fab54}{#1}");
+JS.call(defineMacro, undef(), "\\greenE", "\\textcolor{##0d923f}{#1}");
+JS.call(defineMacro, undef(), "\\goldA", "\\textcolor{##ffd0a9}{#1}");
+JS.call(defineMacro, undef(), "\\goldB", "\\textcolor{##ffbb71}{#1}");
+JS.call(defineMacro, undef(), "\\goldC", "\\textcolor{##ff9c39}{#1}");
+JS.call(defineMacro, undef(), "\\goldD", "\\textcolor{##e07d10}{#1}");
+JS.call(defineMacro, undef(), "\\goldE", "\\textcolor{##a75a05}{#1}");
+JS.call(defineMacro, undef(), "\\redA", "\\textcolor{##fca9a9}{#1}");
+JS.call(defineMacro, undef(), "\\redB", "\\textcolor{##ff8482}{#1}");
+JS.call(defineMacro, undef(), "\\redC", "\\textcolor{##f9685d}{#1}");
+JS.call(defineMacro, undef(), "\\redD", "\\textcolor{##e84d39}{#1}");
+JS.call(defineMacro, undef(), "\\redE", "\\textcolor{##bc2612}{#1}");
+JS.call(defineMacro, undef(), "\\maroonA", "\\textcolor{##ffbde0}{#1}");
+JS.call(defineMacro, undef(), "\\maroonB", "\\textcolor{##ff92c6}{#1}");
+JS.call(defineMacro, undef(), "\\maroonC", "\\textcolor{##ed5fa6}{#1}");
+JS.call(defineMacro, undef(), "\\maroonD", "\\textcolor{##ca337c}{#1}");
+JS.call(defineMacro, undef(), "\\maroonE", "\\textcolor{##9e034e}{#1}");
+JS.call(defineMacro, undef(), "\\purpleA", "\\textcolor{##ddd7ff}{#1}");
+JS.call(defineMacro, undef(), "\\purpleB", "\\textcolor{##c6b9fc}{#1}");
+JS.call(defineMacro, undef(), "\\purpleC", "\\textcolor{##aa87ff}{#1}");
+JS.call(defineMacro, undef(), "\\purpleD", "\\textcolor{##7854ab}{#1}");
+JS.call(defineMacro, undef(), "\\purpleE", "\\textcolor{##543b78}{#1}");
+JS.call(defineMacro, undef(), "\\mintA", "\\textcolor{##f5f9e8}{#1}");
+JS.call(defineMacro, undef(), "\\mintB", "\\textcolor{##edf2df}{#1}");
+JS.call(defineMacro, undef(), "\\mintC", "\\textcolor{##e0e5cc}{#1}");
+JS.call(defineMacro, undef(), "\\grayA", "\\textcolor{##f6f7f7}{#1}");
+JS.call(defineMacro, undef(), "\\grayB", "\\textcolor{##f0f1f2}{#1}");
+JS.call(defineMacro, undef(), "\\grayC", "\\textcolor{##e3e5e6}{#1}");
+JS.call(defineMacro, undef(), "\\grayD", "\\textcolor{##d6d8da}{#1}");
+JS.call(defineMacro, undef(), "\\grayE", "\\textcolor{##babec2}{#1}");
+JS.call(defineMacro, undef(), "\\grayF", "\\textcolor{##888d93}{#1}");
+JS.call(defineMacro, undef(), "\\grayG", "\\textcolor{##626569}{#1}");
+JS.call(defineMacro, undef(), "\\grayH", "\\textcolor{##3b3e40}{#1}");
+JS.call(defineMacro, undef(), "\\grayI", "\\textcolor{##21242c}{#1}");
+JS.call(defineMacro, undef(), "\\kaBlue", "\\textcolor{##314453}{#1}");
+JS.call(defineMacro, undef(), "\\kaGreen", "\\textcolor{##71B307}{#1}");
+JsValue __star = emptyObject();
+__star["default"] = macros;
+__star["macros"] = macros;
+
+export { __star, macros as macros };

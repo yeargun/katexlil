@@ -1,6 +1,6 @@
 # @itslil/katex
 
-KaTeX reimplemented in LilScript. This is **not** the official [`katex`](https://github.com/KaTeX/KaTeX) package.
+Official [`katex@0.16.22`](https://github.com/KaTeX/KaTeX) algorithms rewritten in LilScript. Official Jest suite 1013/1013. Not affiliated with upstream.
 
 **Site:** [yeargun.github.io/katexlil/](https://yeargun.github.io/katexlil/)
 

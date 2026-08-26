@@ -16,7 +16,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const lilscriptRoot = process.env.LILSCRIPT_ROOT ?? resolve(root, "..", "lilscript")
 const dist = resolve(root, "dist")
 const file = "katex"
-const banner = "/*! @itslil/katex 0.16.22 | LilScript reimplementation of katex | MIT */\n"
+const banner = "/*! @itslil/katex 0.16.23 | LilScript reimplementation of katex | MIT */\n"
 
 function compilerPath() {
   const candidates = [
@@ -71,7 +71,55 @@ if (!existsSync(rawPath)) {
   throw new Error(`dist/${file}.raw.js is missing. Run with --compile after building LilScript.`)
 }
 
-writeFileSync(resolve(dist, `${file}.esm.js`), `${banner}${readFileSync(rawPath, "utf8").trimEnd()}\n`)
+for (const name of ["data-host.js", "fontMetricsData.js", "unicodeSymbols.js"]) {
+  copyFileSync(resolve(root, "src", name), resolve(dist, name))
+}
+
+function sanitizeCompiled(source) {
+  return source
+    .replace(/\b(\d+)\s*\*\*\s*(\d+)/g, (_, a, b) => String(Number(a) ** Number(b)))
+    .replace(/:==(\w+)&&\((\w+)=(\w+)\)/g, ":$2===$1?$3:$2")
+}
+
+writeFileSync(rawPath, sanitizeCompiled(readFileSync(rawPath, "utf8")))
+const closedRaw = resolve(dist, `${file}.closed.js`)
+if (existsSync(closedRaw)) {
+  writeFileSync(closedRaw, sanitizeCompiled(readFileSync(closedRaw, "utf8")))
+}
+
+await esbuild({
+  absWorkingDir: dist,
+  entryPoints: [rawPath],
+  outfile: resolve(dist, `${file}.esm.js`),
+  bundle: true,
+  format: "esm",
+  platform: "neutral",
+  legalComments: "none",
+  minifyWhitespace: false,
+  minifyIdentifiers: false,
+  minifySyntax: false,
+  banner: { js: banner },
+  logLevel: "error",
+})
+
+const closedPath = resolve(dist, `${file}.closed.js`)
+if (existsSync(closedPath) && readFileSync(closedPath, "utf8").includes("data-host.js")) {
+  const closedBundled = resolve(dist, `${file}.closed.bundled.js`)
+  await esbuild({
+    absWorkingDir: dist,
+    entryPoints: [closedPath],
+    outfile: closedBundled,
+    bundle: true,
+    format: "esm",
+    platform: "neutral",
+    legalComments: "none",
+    minifyWhitespace: false,
+    minifyIdentifiers: false,
+    minifySyntax: false,
+    logLevel: "error",
+  })
+  writeFileSync(closedPath, `${banner}${readFileSync(closedBundled, "utf8").trimEnd()}\n`)
+}
 
 await esbuild({
   absWorkingDir: dist,

@@ -1,0 +1,319 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunctionBuilders } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { SymbolNode } from "../domTree.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { utils } from "../utils.lil";
+import { makeEm } from "../units.lil";
+import { Style } from "../Style.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+import { __star as accent } from "./accent.lil";
+import { __star as horizBrace } from "./horizBrace.lil";
+import { __star as op } from "./op.lil";
+import { __star as operatorname } from "./operatorname.lil";
+
+JsValue htmlBuilderDelegate = undef();
+
+htmlBuilderDelegate = (JsValue group, JsValue options) => {
+  JsValue base = group["base"];
+  if (!(base.truthy())) {
+    return null;
+  } else {
+    if (JS.strictEqual(base["type"], "op")) {
+      JsValue and1 = base["limits"];
+      if (and1.truthy()) {
+        JsValue or2 = JS.strictEqual(options["style"]["size"], Style["DISPLAY"]["size"]);
+        if (!(or2.truthy())) {
+          or2 = base["alwaysHandleSupSub"];
+        }
+        and1 = or2;
+      }
+      JsValue delegate = and1;
+      JsValue c3 = undef();
+      if (delegate.truthy()) {
+        c3 = op["htmlBuilder"];
+      } else {
+        c3 = null;
+      }
+      return c3;
+    } else {
+      if (JS.strictEqual(base["type"], "operatorname")) {
+        JsValue and4 = base["alwaysHandleSupSub"];
+        if (and4.truthy()) {
+          JsValue or5 = JS.strictEqual(options["style"]["size"], Style["DISPLAY"]["size"]);
+          if (!(or5.truthy())) {
+            or5 = base["limits"];
+          }
+          and4 = or5;
+        }
+        JsValue delegate = and4;
+        JsValue c6 = undef();
+        if (delegate.truthy()) {
+          c6 = operatorname["htmlBuilder"];
+        } else {
+          c6 = null;
+        }
+        return c6;
+      } else {
+        if (JS.strictEqual(base["type"], "accent")) {
+          JsValue c7 = undef();
+          if (JS.invoke(utils, "isCharacterBox", base["base"]).truthy()) {
+            c7 = accent["htmlBuilder"];
+          } else {
+            c7 = null;
+          }
+          return c7;
+        } else {
+          if (JS.strictEqual(base["type"], "horizBrace")) {
+            JsValue isSup = !(group["sub"].truthy());
+            JsValue c8 = undef();
+            if (JS.strictEqual(isSup, base["isOver"])) {
+              c8 = horizBrace["htmlBuilder"];
+            } else {
+              c8 = null;
+            }
+            return c8;
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+  }
+  return undef();
+};
+JsValue o9 = emptyObject();
+o9["type"] = "supsub";
+o9["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue builderDelegate = JS.call(htmlBuilderDelegate, undef(), group, options);
+  if (builderDelegate.truthy()) {
+    return JS.call(builderDelegate, undef(), group, options);
+  }
+  JsValue op10 = group;
+  JsValue valueBase = op10["base"];
+  JsValue valueSup = op10["sup"];
+  JsValue valueSub = op10["sub"];
+  JsValue base = JS.invoke(html, "buildGroup", valueBase, options);
+  JsValue supm = undef();
+  JsValue subm = undef();
+  JsValue metrics = JS.invoke(options, "fontMetrics");
+  JsValue supShift = 0;
+  JsValue subShift = 0;
+  JsValue and11 = valueBase;
+  if (and11.truthy()) {
+    and11 = JS.invoke(utils, "isCharacterBox", valueBase);
+  }
+  JsValue isCharacterBox = and11;
+  if (valueSup.truthy()) {
+    JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "sup"));
+    supm = JS.invoke(html, "buildGroup", valueSup, newOptions, options);
+    if (!(isCharacterBox.truthy())) {
+      supShift = (toNum(base["height"]) - toNum((toNum((toNum(JS.invoke(newOptions, "fontMetrics")["supDrop"]) * toNum(newOptions["sizeMultiplier"]))) / toNum(options["sizeMultiplier"]))));
+    }
+  }
+  if (valueSub.truthy()) {
+    JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "sub"));
+    subm = JS.invoke(html, "buildGroup", valueSub, newOptions, options);
+    if (!(isCharacterBox.truthy())) {
+      subShift = JS.add(base["depth"], (toNum((toNum(JS.invoke(newOptions, "fontMetrics")["subDrop"]) * toNum(newOptions["sizeMultiplier"]))) / toNum(options["sizeMultiplier"])));
+    }
+  }
+  JsValue minSupShift = undef();
+  if (JS.strictEqual(options["style"], Style["DISPLAY"])) {
+    minSupShift = metrics["sup1"];
+  } else {
+    if (options["style"]["cramped"].truthy()) {
+      minSupShift = metrics["sup3"];
+    } else {
+      minSupShift = metrics["sup2"];
+    }
+  }
+  JsValue multiplier = options["sizeMultiplier"];
+  JsValue marginRight = JS.call(makeEm, undef(), (toNum((toNum(0.5) / toNum(metrics["ptPerEm"]))) / toNum(multiplier)));
+  JsValue marginLeft = null;
+  if (subm.truthy()) {
+    JsValue and12 = group["base"];
+    if (and12.truthy()) {
+      and12 = JS.strictEqual(group["base"]["type"], "op");
+    }
+    JsValue and13 = and12;
+    if (and13.truthy()) {
+      and13 = group["base"]["name"];
+    }
+    JsValue and14 = and13;
+    if (and14.truthy()) {
+      JsValue or15 = JS.strictEqual(group["base"]["name"], "\\oiint");
+      if (!(or15.truthy())) {
+        or15 = JS.strictEqual(group["base"]["name"], "\\oiiint");
+      }
+      and14 = or15;
+    }
+    JsValue isOiint = and14;
+    if ((instanceOf(base, SymbolNode)) || (isOiint.truthy())) {
+      marginLeft = JS.call(makeEm, undef(), JS.number(0) - toNum(base["italic"]));
+    }
+  }
+  JsValue supsub = undef();
+  if ((supm.truthy()) && (subm.truthy())) {
+    supShift = JS.invoke(Math, "max", supShift, minSupShift, JS.add(supm["depth"], (toNum(0.25) * toNum(metrics["xHeight"]))));
+    subShift = JS.invoke(Math, "max", subShift, metrics["sub2"]);
+    JsValue ruleWidth = metrics["defaultRuleThickness"];
+    JsValue maxWidth = (toNum(4) * toNum(ruleWidth));
+    if (JS.lessThan((toNum((toNum(supShift) - toNum(supm["depth"]))) - toNum((toNum(subm["height"]) - toNum(subShift)))), maxWidth)) {
+      subShift = JS.add((toNum(maxWidth) - toNum((toNum(supShift) - toNum(supm["depth"])))), subm["height"]);
+      JsValue psi = (toNum((toNum(0.8) * toNum(metrics["xHeight"]))) - toNum((toNum(supShift) - toNum(supm["depth"]))));
+      if (JS.greaterThan(psi, 0)) {
+        supShift = JS.add(supShift, psi);
+        subShift = (toNum(subShift) - toNum(psi));
+      }
+    }
+    JsValue a16 = newArray();
+    JsValue o17 = emptyObject();
+    o17["type"] = "elem";
+    o17["elem"] = subm;
+    o17["shift"] = subShift;
+    o17["marginRight"] = marginRight;
+    o17["marginLeft"] = marginLeft;
+    JS.push(a16, o17);
+    JsValue o18 = emptyObject();
+    o18["type"] = "elem";
+    o18["elem"] = supm;
+    o18["shift"] = JS.number(0) - toNum(supShift);
+    o18["marginRight"] = marginRight;
+    JS.push(a16, o18);
+    JsValue vlistElem = a16;
+    JsValue o19 = emptyObject();
+    o19["positionType"] = "individualShift";
+    o19["children"] = vlistElem;
+    supsub = JS.invoke(buildCommon, "makeVList", o19, options);
+  } else {
+    if (subm.truthy()) {
+      subShift = JS.invoke(Math, "max", subShift, metrics["sub1"], (toNum(subm["height"]) - toNum((toNum(0.8) * toNum(metrics["xHeight"])))));
+      JsValue a20 = newArray();
+      JsValue o21 = emptyObject();
+      o21["type"] = "elem";
+      o21["elem"] = subm;
+      o21["marginLeft"] = marginLeft;
+      o21["marginRight"] = marginRight;
+      JS.push(a20, o21);
+      JsValue vlistElem = a20;
+      JsValue o22 = emptyObject();
+      o22["positionType"] = "shift";
+      o22["positionData"] = subShift;
+      o22["children"] = vlistElem;
+      supsub = JS.invoke(buildCommon, "makeVList", o22, options);
+    } else {
+      if (supm.truthy()) {
+        supShift = JS.invoke(Math, "max", supShift, minSupShift, JS.add(supm["depth"], (toNum(0.25) * toNum(metrics["xHeight"]))));
+        JsValue o23 = emptyObject();
+        o23["positionType"] = "shift";
+        o23["positionData"] = JS.number(0) - toNum(supShift);
+        JsValue a24 = newArray();
+        JsValue o25 = emptyObject();
+        o25["type"] = "elem";
+        o25["elem"] = supm;
+        o25["marginRight"] = marginRight;
+        JS.push(a24, o25);
+        o23["children"] = a24;
+        supsub = JS.invoke(buildCommon, "makeVList", o23, options);
+      } else {
+        throw makeError(toStr("supsub must have either sup or sub."));
+      }
+    }
+  }
+  JsValue or26 = JS.invoke(html, "getTypeOfDomTree", base, "right");
+  if (!(or26.truthy())) {
+    or26 = "mord";
+  }
+  JsValue mclass = or26;
+  JsValue a27 = newArray();
+  JS.push(a27, mclass);
+  JsValue a28 = newArray();
+  JS.push(a28, base);
+  JsValue a29 = newArray();
+  JS.push(a29, "msupsub");
+  JsValue a30 = newArray();
+  JS.push(a30, supsub);
+  JS.push(a28, JS.invoke(buildCommon, "makeSpan", a29, a30));
+  return JS.invoke(buildCommon, "makeSpan", a27, a28, options);
+  return undef();
+});
+o9["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue isBrace = false;
+  JsValue isOver = undef();
+  JsValue isSup = undef();
+  if ((group["base"].truthy()) && (JS.strictEqual(group["base"]["type"], "horizBrace"))) {
+    isSup = !(!(group["sup"].truthy()));
+    if (JS.strictEqual(isSup, group["base"]["isOver"])) {
+      isBrace = true;
+      isOver = group["base"]["isOver"];
+    }
+  }
+  if ((group["base"].truthy()) && ((JS.strictEqual(group["base"]["type"], "op")) || (JS.strictEqual(group["base"]["type"], "operatorname")))) {
+    group["base"]["parentIsSupSub"] = true;
+  }
+  JsValue a31 = newArray();
+  JS.push(a31, JS.invoke(mml, "buildGroup", group["base"], options));
+  JsValue children = a31;
+  if (group["sub"].truthy()) {
+    JS.invoke(children, "push", JS.invoke(mml, "buildGroup", group["sub"], options));
+  }
+  if (group["sup"].truthy()) {
+    JS.invoke(children, "push", JS.invoke(mml, "buildGroup", group["sup"], options));
+  }
+  JsValue nodeType = undef();
+  if (isBrace.truthy()) {
+    JsValue c32 = undef();
+    if (isOver.truthy()) {
+      c32 = "mover";
+    } else {
+      c32 = "munder";
+    }
+    nodeType = c32;
+  } else {
+    if (!(group["sub"].truthy())) {
+      JsValue base = group["base"];
+      if ((((base.truthy()) && (JS.strictEqual(base["type"], "op"))) && (base["limits"].truthy())) && ((JS.strictEqual(options["style"], Style["DISPLAY"])) || (base["alwaysHandleSupSub"].truthy()))) {
+        nodeType = "mover";
+      } else {
+        if ((((base.truthy()) && (JS.strictEqual(base["type"], "operatorname"))) && (base["alwaysHandleSupSub"].truthy())) && ((base["limits"].truthy()) || (JS.strictEqual(options["style"], Style["DISPLAY"])))) {
+          nodeType = "mover";
+        } else {
+          nodeType = "msup";
+        }
+      }
+    } else {
+      if (!(group["sup"].truthy())) {
+        JsValue base = group["base"];
+        if ((((base.truthy()) && (JS.strictEqual(base["type"], "op"))) && (base["limits"].truthy())) && ((JS.strictEqual(options["style"], Style["DISPLAY"])) || (base["alwaysHandleSupSub"].truthy()))) {
+          nodeType = "munder";
+        } else {
+          if ((((base.truthy()) && (JS.strictEqual(base["type"], "operatorname"))) && (base["alwaysHandleSupSub"].truthy())) && ((base["limits"].truthy()) || (JS.strictEqual(options["style"], Style["DISPLAY"])))) {
+            nodeType = "munder";
+          } else {
+            nodeType = "msub";
+          }
+        }
+      } else {
+        JsValue base = group["base"];
+        if ((((base.truthy()) && (JS.strictEqual(base["type"], "op"))) && (base["limits"].truthy())) && (JS.strictEqual(options["style"], Style["DISPLAY"]))) {
+          nodeType = "munderover";
+        } else {
+          if ((((base.truthy()) && (JS.strictEqual(base["type"], "operatorname"))) && (base["alwaysHandleSupSub"].truthy())) && ((JS.strictEqual(options["style"], Style["DISPLAY"])) || (base["limits"].truthy()))) {
+            nodeType = "munderover";
+          } else {
+            nodeType = "msubsup";
+          }
+        }
+      }
+    }
+  }
+  return JS.construct(mathMLTree["MathNode"], nodeType, children);
+  return undef();
+});
+JS.call(defineFunctionBuilders, undef(), o9);
+JsValue __star = emptyObject();
+
+export { __star };

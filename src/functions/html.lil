@@ -1,0 +1,124 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN, pushAll } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { ParseError } from "../ParseError.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "html";
+JsValue a2 = newArray();
+JS.push(a2, "\\htmlClass");
+JS.push(a2, "\\htmlId");
+JS.push(a2, "\\htmlStyle");
+JS.push(a2, "\\htmlData");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 2;
+JsValue a4 = newArray();
+JS.push(a4, "raw");
+JS.push(a4, "original");
+o3["argTypes"] = a4;
+o3["allowedInText"] = true;
+o1["props"] = o3;
+o1["handler"] = (JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue funcName = op6["funcName"];
+  JsValue token = op6["token"];
+  JsValue value = JS.call(assertNodeType, undef(), args[0], "raw")["string"];
+  JsValue body = args[1];
+  if (parser["settings"]["strict"].truthy()) {
+    JS.invoke(parser["settings"], "reportNonstrict", "htmlExtension", "HTML extension is disabled on strict mode");
+  }
+  JsValue trustContext = undef();
+  JsValue o7 = emptyObject();
+  JsValue attributes = o7;
+  JsValue sw8 = funcName;
+  if (JS.strictEqual(sw8, "\\htmlClass")) {
+    attributes["class"] = value;
+    JsValue o9 = emptyObject();
+    o9["command"] = "\\htmlClass";
+    o9["class"] = value;
+    trustContext = o9;
+  }
+  else if (JS.strictEqual(sw8, "\\htmlId")) {
+    attributes["id"] = value;
+    JsValue o10 = emptyObject();
+    o10["command"] = "\\htmlId";
+    o10["id"] = value;
+    trustContext = o10;
+  }
+  else if (JS.strictEqual(sw8, "\\htmlStyle")) {
+    attributes["style"] = value;
+    JsValue o11 = emptyObject();
+    o11["command"] = "\\htmlStyle";
+    o11["style"] = value;
+    trustContext = o11;
+  }
+  else if (JS.strictEqual(sw8, "\\htmlData")) {
+    JsValue data = JS.invoke(value, "split", ",");
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, data["length"])) {
+        JsValue keyVal = JS.invoke(data[i], "split", "=");
+        if (JS.strictNotEqual(keyVal["length"], 2)) {
+          throw JS.construct(ParseError, "Error parsing key-value for \\htmlData");
+        }
+        attributes[JS.add("data-", JS.invoke(keyVal[0], "trim"))] = JS.invoke(keyVal[1], "trim");
+        JsValue u12 = i;
+        i = JS.add(i, 1);
+      }
+    }
+    JsValue o13 = emptyObject();
+    o13["command"] = "\\htmlData";
+    o13["attributes"] = attributes;
+    trustContext = o13;
+  }
+  else {
+    throw makeError(toStr("Unrecognized html command"));
+  }
+  if (!(JS.invoke(parser["settings"], "isTrusted", trustContext).truthy())) {
+    return JS.invoke(parser, "formatUnsupportedCmd", funcName);
+  }
+  JsValue o14 = emptyObject();
+  o14["type"] = "html";
+  o14["mode"] = parser["mode"];
+  o14["attributes"] = attributes;
+  o14["body"] = JS.call(ordargument, undef(), body);
+  return o14;
+  return undef();
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, false);
+  JsValue a15 = newArray();
+  JS.push(a15, "enclosing");
+  JsValue classes = a15;
+  if (group["attributes"]["class"].truthy()) {
+    pushAll(classes, JS.invoke(JS.invoke(group["attributes"]["class"], "trim"), "split", JS.construct(RegExp, "\\s+", "")));
+  }
+  JsValue span = JS.invoke(buildCommon, "makeSpan", classes, elements, options);
+  JsValue obj16 = group["attributes"];
+  JsValue keys17 = objectKeys(obj16);
+  int ki18 = 0;
+  int kn19 = len(keys17);
+  while (ki18 < kn19) {
+    JsValue attr = keys17[ki18];
+    if ((JS.strictNotEqual(attr, "class")) && (hasOwn(group["attributes"], attr))) {
+      JS.invoke(span, "setAttribute", attr, group["attributes"][attr]);
+    }
+    ki18 = ki18 + 1;
+  }
+  return span;
+  return undef();
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  return JS.invoke(mml, "buildExpressionRow", group["body"], options);
+  return undef();
+};
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

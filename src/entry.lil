@@ -1,32 +1,118 @@
-import { KatexOptions, Element } from "./host.lil";
-import { renderTex } from "./html.lil";
+import { ParseError } from "./ParseError.lil";
+import { Settings, SETTINGS_SCHEMA } from "./Settings.lil";
+import { buildTree, buildHTMLTree } from "./buildTree.lil";
+import { parseTree } from "./parseTree.lil";
+import { buildCommon } from "./buildCommon.lil";
+import { Span, Anchor, SymbolNode, SvgNode, PathNode, LineNode } from "./domTree.lil";
+import { defineSymbol, symbols } from "./symbols.lil";
+import { defineFunction } from "./defineFunction.lil";
+import { defineMacro } from "./defineMacro.lil";
+import { setFontMetrics } from "./fontMetrics.lil";
+import { Style } from "./Style.lil";
+import { Options } from "./Options.lil";
+import { buildMathML } from "./buildMathML.lil";
+import { macros } from "./macros.lil";
+import { Lexer } from "./Lexer.lil";
+import { scriptFromCodepoint, supportedCodepoint } from "./unicodeScripts.lil";
+import "./functions.lil";
+import "./environments.lil";
 
-export string renderToString(string tex, JsValue? options = null) {
-  bool displayMode = false;
-  bool throwOnError = true;
-  string errorColor = "#cc0000";
-  if (options != null && !JS.isNullish(options)) {
-    KatexOptions opts = JS.assume(options);
-    JsValue displayValue = opts.displayMode;
-    if (displayValue is bool) {
-      displayMode = displayValue;
-    }
-    JsValue throwValue = opts.throwOnError;
-    if (throwValue is bool) {
-      throwOnError = throwValue;
-    }
-    JsValue colorValue = opts.errorColor;
-    if (colorValue is string) {
-      errorColor = colorValue;
+import { emptyObject, getDocument, isUndef, instanceOf, isNullish } from "./host.lil";
+
+string version = "0.16.22";
+
+JsValue renderToDomTree(JsValue expression, JsValue options) {
+  JsValue settings = JS.construct(Settings, options);
+  try {
+    JsValue tree = JS.call(parseTree, JS.undefined(), expression, settings);
+    return JS.call(buildTree, JS.undefined(), tree, expression, settings);
+  } catch (JsValue error) {
+    return renderError(error, expression, settings);
+  }
+}
+
+JsValue renderToHTMLTree(JsValue expression, JsValue options) {
+  JsValue settings = JS.construct(Settings, options);
+  try {
+    JsValue tree = JS.call(parseTree, JS.undefined(), expression, settings);
+    return JS.call(buildHTMLTree, JS.undefined(), tree, expression, settings);
+  } catch (JsValue error) {
+    return renderError(error, expression, settings);
+  }
+}
+
+JsValue renderError(JsValue error, JsValue expression, JsValue options) {
+  if (options["throwOnError"].truthy() || !instanceOf(error, ParseError)) {
+    throw error;
+  }
+  JsValue kids = JS.array();
+  JS.push(kids, JS.construct(SymbolNode, expression));
+  JsValue classes = JS.array();
+  JS.push(classes, "katex-error");
+  JsValue node = JS.invoke(buildCommon, "makeSpan", classes, kids);
+  JS.invoke(node, "setAttribute", "title", JS.invoke(error, "toString"));
+  JS.invoke(node, "setAttribute", "style", JS.add("color:", options["errorColor"]));
+  return node;
+}
+
+export void render(JsValue expression, JsValue baseNode, JsValue? options = null) {
+  JsValue doc = getDocument();
+  if (!isUndef(doc) && !isNullish(doc)) {
+    if (JS.strictNotEqual(doc["compatMode"], "CSS1Compat")) {
+      throw JS.construct(ParseError, "KaTeX doesn't work in quirks mode.");
     }
   }
-  return renderTex(tex, displayMode, throwOnError, errorColor);
+  baseNode["textContent"] = "";
+  JsValue tree = renderToDomTree(expression, options);
+  JS.invoke(baseNode, "appendChild", JS.invoke(tree, "toNode"));
 }
 
-export void render(string tex, JsValue element, JsValue? options = null) {
-  Element el = JS.assume(element);
-  el.innerHTML = renderToString(tex, options);
+export string renderToString(JsValue expression, JsValue? options = null) {
+  JsValue tree = renderToDomTree(expression, options);
+  return JS.string(JS.invoke(tree, "toMarkup"));
 }
 
-JsValue katexApi = JS.object("renderToString", renderToString, "render", render);
+export JsValue __parse(JsValue expression, JsValue? options = null) {
+  JsValue settings = JS.construct(Settings, options);
+  return JS.call(parseTree, JS.undefined(), expression, settings);
+}
+
+export JsValue __renderToDomTree(JsValue expression, JsValue? options = null) {
+  return renderToDomTree(expression, options);
+}
+
+export JsValue __renderToHTMLTree(JsValue expression, JsValue? options = null) {
+  return renderToHTMLTree(expression, options);
+}
+
+JsValue __domTree = emptyObject();
+__domTree["Span"] = Span;
+__domTree["Anchor"] = Anchor;
+__domTree["SymbolNode"] = SymbolNode;
+__domTree["SvgNode"] = SvgNode;
+__domTree["PathNode"] = PathNode;
+__domTree["LineNode"] = LineNode;
+
+JsValue katexApi = emptyObject();
+katexApi["version"] = version;
+katexApi["render"] = render;
+katexApi["renderToString"] = renderToString;
+katexApi["ParseError"] = ParseError;
+katexApi["SETTINGS_SCHEMA"] = SETTINGS_SCHEMA;
+katexApi["__parse"] = __parse;
+katexApi["__renderToDomTree"] = __renderToDomTree;
+katexApi["__renderToHTMLTree"] = __renderToHTMLTree;
+katexApi["__setFontMetrics"] = setFontMetrics;
+katexApi["__defineSymbol"] = defineSymbol;
+katexApi["__defineFunction"] = defineFunction;
+katexApi["__defineMacro"] = defineMacro;
+katexApi["__domTree"] = __domTree;
+
+export JsValue __setFontMetrics = setFontMetrics;
+export JsValue __defineSymbol = defineSymbol;
+export JsValue __defineFunction = defineFunction;
+export JsValue __defineMacro = defineMacro;
+export { version, ParseError, SETTINGS_SCHEMA, __domTree };
+export { parseTree, Settings, Options, Style, buildTree, buildMathML, symbols, macros, Lexer };
+export { scriptFromCodepoint, supportedCodepoint };
 export { katexApi as default };

@@ -1,0 +1,455 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { buildCommon } from "../buildCommon.lil";
+import { defineFunction } from "../defineFunction.lil";
+import { delimiter } from "../delimiter.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { ParseError } from "../ParseError.lil";
+import { utils } from "../utils.lil";
+import { assertNodeType, checkSymbolNodeType } from "../parseNode.lil";
+import { makeEm } from "../units.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue delimiterSizes = undef();
+JsValue delimiters = undef();
+JsValue checkDelimiter = undef();
+JsValue assertParsed = undef();
+
+JsValue o1 = emptyObject();
+JsValue o2 = emptyObject();
+o2["mclass"] = "mopen";
+o2["size"] = 1;
+o1["\\bigl"] = o2;
+JsValue o3 = emptyObject();
+o3["mclass"] = "mopen";
+o3["size"] = 2;
+o1["\\Bigl"] = o3;
+JsValue o4 = emptyObject();
+o4["mclass"] = "mopen";
+o4["size"] = 3;
+o1["\\biggl"] = o4;
+JsValue o5 = emptyObject();
+o5["mclass"] = "mopen";
+o5["size"] = 4;
+o1["\\Biggl"] = o5;
+JsValue o6 = emptyObject();
+o6["mclass"] = "mclose";
+o6["size"] = 1;
+o1["\\bigr"] = o6;
+JsValue o7 = emptyObject();
+o7["mclass"] = "mclose";
+o7["size"] = 2;
+o1["\\Bigr"] = o7;
+JsValue o8 = emptyObject();
+o8["mclass"] = "mclose";
+o8["size"] = 3;
+o1["\\biggr"] = o8;
+JsValue o9 = emptyObject();
+o9["mclass"] = "mclose";
+o9["size"] = 4;
+o1["\\Biggr"] = o9;
+JsValue o10 = emptyObject();
+o10["mclass"] = "mrel";
+o10["size"] = 1;
+o1["\\bigm"] = o10;
+JsValue o11 = emptyObject();
+o11["mclass"] = "mrel";
+o11["size"] = 2;
+o1["\\Bigm"] = o11;
+JsValue o12 = emptyObject();
+o12["mclass"] = "mrel";
+o12["size"] = 3;
+o1["\\biggm"] = o12;
+JsValue o13 = emptyObject();
+o13["mclass"] = "mrel";
+o13["size"] = 4;
+o1["\\Biggm"] = o13;
+JsValue o14 = emptyObject();
+o14["mclass"] = "mord";
+o14["size"] = 1;
+o1["\\big"] = o14;
+JsValue o15 = emptyObject();
+o15["mclass"] = "mord";
+o15["size"] = 2;
+o1["\\Big"] = o15;
+JsValue o16 = emptyObject();
+o16["mclass"] = "mord";
+o16["size"] = 3;
+o1["\\bigg"] = o16;
+JsValue o17 = emptyObject();
+o17["mclass"] = "mord";
+o17["size"] = 4;
+o1["\\Bigg"] = o17;
+delimiterSizes = o1;
+JsValue a18 = newArray();
+JS.push(a18, "(");
+JS.push(a18, "\\lparen");
+JS.push(a18, ")");
+JS.push(a18, "\\rparen");
+JS.push(a18, "[");
+JS.push(a18, "\\lbrack");
+JS.push(a18, "]");
+JS.push(a18, "\\rbrack");
+JS.push(a18, "\\{");
+JS.push(a18, "\\lbrace");
+JS.push(a18, "\\}");
+JS.push(a18, "\\rbrace");
+JS.push(a18, "\\lfloor");
+JS.push(a18, "\\rfloor");
+JS.push(a18, "⌊");
+JS.push(a18, "⌋");
+JS.push(a18, "\\lceil");
+JS.push(a18, "\\rceil");
+JS.push(a18, "⌈");
+JS.push(a18, "⌉");
+JS.push(a18, "<");
+JS.push(a18, ">");
+JS.push(a18, "\\langle");
+JS.push(a18, "⟨");
+JS.push(a18, "\\rangle");
+JS.push(a18, "⟩");
+JS.push(a18, "\\lt");
+JS.push(a18, "\\gt");
+JS.push(a18, "\\lvert");
+JS.push(a18, "\\rvert");
+JS.push(a18, "\\lVert");
+JS.push(a18, "\\rVert");
+JS.push(a18, "\\lgroup");
+JS.push(a18, "\\rgroup");
+JS.push(a18, "⟮");
+JS.push(a18, "⟯");
+JS.push(a18, "\\lmoustache");
+JS.push(a18, "\\rmoustache");
+JS.push(a18, "⎰");
+JS.push(a18, "⎱");
+JS.push(a18, "/");
+JS.push(a18, "\\backslash");
+JS.push(a18, "|");
+JS.push(a18, "\\vert");
+JS.push(a18, "\\|");
+JS.push(a18, "\\Vert");
+JS.push(a18, "\\uparrow");
+JS.push(a18, "\\Uparrow");
+JS.push(a18, "\\downarrow");
+JS.push(a18, "\\Downarrow");
+JS.push(a18, "\\updownarrow");
+JS.push(a18, "\\Updownarrow");
+JS.push(a18, ".");
+delimiters = a18;
+checkDelimiter = (JsValue delim, JsValue context) => {
+  JsValue symDelim = JS.call(checkSymbolNodeType, undef(), delim);
+  if ((symDelim.truthy()) && (JS.invoke(utils, "contains", delimiters, symDelim["text"]).truthy())) {
+    return symDelim;
+  } else {
+    if (symDelim.truthy()) {
+      throw JS.construct(ParseError, "Invalid delimiter '" + toStr(symDelim["text"]) + "' after '" + toStr(context["funcName"]) + "'", delim);
+    } else {
+      throw JS.construct(ParseError, "Invalid delimiter type '" + toStr(delim["type"]) + "'", delim);
+    }
+  }
+  return undef();
+};
+JsValue o19 = emptyObject();
+o19["type"] = "delimsizing";
+JsValue a20 = newArray();
+JS.push(a20, "\\bigl");
+JS.push(a20, "\\Bigl");
+JS.push(a20, "\\biggl");
+JS.push(a20, "\\Biggl");
+JS.push(a20, "\\bigr");
+JS.push(a20, "\\Bigr");
+JS.push(a20, "\\biggr");
+JS.push(a20, "\\Biggr");
+JS.push(a20, "\\bigm");
+JS.push(a20, "\\Bigm");
+JS.push(a20, "\\biggm");
+JS.push(a20, "\\Biggm");
+JS.push(a20, "\\big");
+JS.push(a20, "\\Big");
+JS.push(a20, "\\bigg");
+JS.push(a20, "\\Bigg");
+o19["names"] = a20;
+JsValue o21 = emptyObject();
+o21["numArgs"] = 1;
+JsValue a22 = newArray();
+JS.push(a22, "primitive");
+o21["argTypes"] = a22;
+o19["props"] = o21;
+o19["handler"] = (JsValue context, JsValue args) => {
+  JsValue delim = JS.call(checkDelimiter, undef(), args[0], context);
+  JsValue o23 = emptyObject();
+  o23["type"] = "delimsizing";
+  o23["mode"] = context["parser"]["mode"];
+  o23["size"] = delimiterSizes[context["funcName"]]["size"];
+  o23["mclass"] = delimiterSizes[context["funcName"]]["mclass"];
+  o23["delim"] = delim["text"];
+  return o23;
+  return undef();
+};
+o19["htmlBuilder"] = (JsValue group, JsValue options) => {
+  if (JS.strictEqual(group["delim"], ".")) {
+    JsValue a24 = newArray();
+    JS.push(a24, group["mclass"]);
+    return JS.invoke(buildCommon, "makeSpan", a24);
+  }
+  JsValue a25 = newArray();
+  JS.push(a25, group["mclass"]);
+  return JS.invoke(delimiter, "sizedDelim", group["delim"], group["size"], options, group["mode"], a25);
+  return undef();
+};
+o19["mathmlBuilder"] = (JsValue group) => {
+  JsValue a26 = newArray();
+  JsValue children = a26;
+  if (JS.strictNotEqual(group["delim"], ".")) {
+    JS.invoke(children, "push", JS.invoke(mml, "makeText", group["delim"], group["mode"]));
+  }
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mo", children);
+  if ((JS.strictEqual(group["mclass"], "mopen")) || (JS.strictEqual(group["mclass"], "mclose"))) {
+    JS.invoke(node, "setAttribute", "fence", "true");
+  } else {
+    JS.invoke(node, "setAttribute", "fence", "false");
+  }
+  JS.invoke(node, "setAttribute", "stretchy", "true");
+  JsValue size = JS.call(makeEm, undef(), delimiter["sizeToMaxHeight"][group["size"]]);
+  JS.invoke(node, "setAttribute", "minsize", size);
+  JS.invoke(node, "setAttribute", "maxsize", size);
+  return node;
+  return undef();
+};
+JS.call(defineFunction, undef(), o19);
+assertParsed = (JsValue group) => {
+  if (!(group["body"].truthy())) {
+    throw makeError(toStr("Bug: The leftright ParseNode wasn't fully parsed."));
+  }
+  return undef();
+};
+JsValue o27 = emptyObject();
+o27["type"] = "leftright-right";
+JsValue a28 = newArray();
+JS.push(a28, "\\right");
+o27["names"] = a28;
+JsValue o29 = emptyObject();
+o29["numArgs"] = 1;
+o29["primitive"] = true;
+o27["props"] = o29;
+o27["handler"] = (JsValue context, JsValue args) => {
+  JsValue color = JS.invoke(context["parser"]["gullet"]["macros"], "get", "\\current@color");
+  if ((color.truthy()) && (JS.strictNotEqual(JS.typeOf(color), "string"))) {
+    throw JS.construct(ParseError, "\\current@color set to non-string in \\right");
+  }
+  JsValue o30 = emptyObject();
+  o30["type"] = "leftright-right";
+  o30["mode"] = context["parser"]["mode"];
+  o30["delim"] = JS.call(checkDelimiter, undef(), args[0], context)["text"];
+  o30["color"] = color;
+  return o30;
+  return undef();
+};
+JS.call(defineFunction, undef(), o27);
+JsValue o31 = emptyObject();
+o31["type"] = "leftright";
+JsValue a32 = newArray();
+JS.push(a32, "\\left");
+o31["names"] = a32;
+JsValue o33 = emptyObject();
+o33["numArgs"] = 1;
+o33["primitive"] = true;
+o31["props"] = o33;
+o31["handler"] = (JsValue context, JsValue args) => {
+  JsValue delim = JS.call(checkDelimiter, undef(), args[0], context);
+  JsValue parser = context["parser"];
+  JsValue u34 = parser["leftrightDepth"];
+  parser["leftrightDepth"] = JS.add(u34, 1);
+  JsValue body = JS.invoke(parser, "parseExpression", false);
+  JsValue u35 = parser["leftrightDepth"];
+  parser["leftrightDepth"] = JS.add(u35, -1);
+  JS.invoke(parser, "expect", "\\right", false);
+  JsValue right = JS.call(assertNodeType, undef(), JS.invoke(parser, "parseFunction"), "leftright-right");
+  JsValue o36 = emptyObject();
+  o36["type"] = "leftright";
+  o36["mode"] = parser["mode"];
+  o36["body"] = body;
+  o36["left"] = delim["text"];
+  o36["right"] = right["delim"];
+  o36["rightColor"] = right["color"];
+  return o36;
+  return undef();
+};
+o31["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JS.call(assertParsed, undef(), group);
+  JsValue a37 = newArray();
+  JS.push(a37, "mopen");
+  JS.push(a37, "mclose");
+  JsValue inner = JS.invoke(html, "buildExpression", group["body"], options, true, a37);
+  JsValue innerHeight = 0;
+  JsValue innerDepth = 0;
+  JsValue hadMiddle = false;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, inner["length"])) {
+      if (inner[i]["isMiddle"].truthy()) {
+        hadMiddle = true;
+      } else {
+        innerHeight = JS.invoke(Math, "max", inner[i]["height"], innerHeight);
+        innerDepth = JS.invoke(Math, "max", inner[i]["depth"], innerDepth);
+      }
+      JsValue u38 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  innerHeight = (toNum(innerHeight) * toNum(options["sizeMultiplier"]));
+  innerDepth = (toNum(innerDepth) * toNum(options["sizeMultiplier"]));
+  JsValue leftDelim = undef();
+  if (JS.strictEqual(group["left"], ".")) {
+    JsValue a39 = newArray();
+    JS.push(a39, "mopen");
+    leftDelim = JS.invoke(html, "makeNullDelimiter", options, a39);
+  } else {
+    JsValue a40 = newArray();
+    JS.push(a40, "mopen");
+    JsValue ia41 = newArray();
+    JS.push(ia41, group["left"]);
+    JS.push(ia41, innerHeight);
+    JS.push(ia41, innerDepth);
+    JS.push(ia41, options);
+    JS.push(ia41, group["mode"]);
+    JS.push(ia41, a40);
+    leftDelim = apply(delimiter["leftRightDelim"], delimiter, ia41);
+  }
+  JS.invoke(inner, "unshift", leftDelim);
+  if (hadMiddle.truthy()) {
+    {
+      JsValue i = 1;
+      while (JS.lessThan(i, inner["length"])) {
+        JsValue middleDelim = inner[i];
+        JsValue isMiddle = middleDelim["isMiddle"];
+        if (isMiddle.truthy()) {
+          JsValue a42 = newArray();
+          JsValue ia43 = newArray();
+          JS.push(ia43, isMiddle["delim"]);
+          JS.push(ia43, innerHeight);
+          JS.push(ia43, innerDepth);
+          JS.push(ia43, isMiddle["options"]);
+          JS.push(ia43, group["mode"]);
+          JS.push(ia43, a42);
+          inner[i] = apply(delimiter["leftRightDelim"], delimiter, ia43);
+        }
+        JsValue u44 = i;
+        i = JS.add(i, 1);
+      }
+    }
+  }
+  JsValue rightDelim = undef();
+  if (JS.strictEqual(group["right"], ".")) {
+    JsValue a45 = newArray();
+    JS.push(a45, "mclose");
+    rightDelim = JS.invoke(html, "makeNullDelimiter", options, a45);
+  } else {
+    JsValue c46 = undef();
+    if (group["rightColor"].truthy()) {
+      c46 = JS.invoke(options, "withColor", group["rightColor"]);
+    } else {
+      c46 = options;
+    }
+    JsValue colorOptions = c46;
+    JsValue a47 = newArray();
+    JS.push(a47, "mclose");
+    JsValue ia48 = newArray();
+    JS.push(ia48, group["right"]);
+    JS.push(ia48, innerHeight);
+    JS.push(ia48, innerDepth);
+    JS.push(ia48, colorOptions);
+    JS.push(ia48, group["mode"]);
+    JS.push(ia48, a47);
+    rightDelim = apply(delimiter["leftRightDelim"], delimiter, ia48);
+  }
+  JS.invoke(inner, "push", rightDelim);
+  JsValue a49 = newArray();
+  JS.push(a49, "minner");
+  return JS.invoke(buildCommon, "makeSpan", a49, inner, options);
+  return undef();
+};
+o31["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JS.call(assertParsed, undef(), group);
+  JsValue inner = JS.invoke(mml, "buildExpression", group["body"], options);
+  if (JS.strictNotEqual(group["left"], ".")) {
+    JsValue a50 = newArray();
+    JS.push(a50, JS.invoke(mml, "makeText", group["left"], group["mode"]));
+    JsValue leftNode = JS.construct(mathMLTree["MathNode"], "mo", a50);
+    JS.invoke(leftNode, "setAttribute", "fence", "true");
+    JS.invoke(inner, "unshift", leftNode);
+  }
+  if (JS.strictNotEqual(group["right"], ".")) {
+    JsValue a51 = newArray();
+    JS.push(a51, JS.invoke(mml, "makeText", group["right"], group["mode"]));
+    JsValue rightNode = JS.construct(mathMLTree["MathNode"], "mo", a51);
+    JS.invoke(rightNode, "setAttribute", "fence", "true");
+    if (group["rightColor"].truthy()) {
+      JS.invoke(rightNode, "setAttribute", "mathcolor", group["rightColor"]);
+    }
+    JS.invoke(inner, "push", rightNode);
+  }
+  return JS.invoke(mml, "makeRow", inner);
+  return undef();
+};
+JS.call(defineFunction, undef(), o31);
+JsValue o52 = emptyObject();
+o52["type"] = "middle";
+JsValue a53 = newArray();
+JS.push(a53, "\\middle");
+o52["names"] = a53;
+JsValue o54 = emptyObject();
+o54["numArgs"] = 1;
+o54["primitive"] = true;
+o52["props"] = o54;
+o52["handler"] = (JsValue context, JsValue args) => {
+  JsValue delim = JS.call(checkDelimiter, undef(), args[0], context);
+  if (!(context["parser"]["leftrightDepth"].truthy())) {
+    throw JS.construct(ParseError, "\\middle without preceding \\left", delim);
+  }
+  JsValue o55 = emptyObject();
+  o55["type"] = "middle";
+  o55["mode"] = context["parser"]["mode"];
+  o55["delim"] = delim["text"];
+  return o55;
+  return undef();
+};
+o52["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue middleDelim = undef();
+  if (JS.strictEqual(group["delim"], ".")) {
+    JsValue a56 = newArray();
+    middleDelim = JS.invoke(html, "makeNullDelimiter", options, a56);
+  } else {
+    JsValue a57 = newArray();
+    middleDelim = JS.invoke(delimiter, "sizedDelim", group["delim"], 1, options, group["mode"], a57);
+    JsValue o58 = emptyObject();
+    o58["delim"] = group["delim"];
+    o58["options"] = options;
+    JsValue isMiddle = o58;
+    middleDelim["isMiddle"] = isMiddle;
+  }
+  return middleDelim;
+  return undef();
+};
+o52["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue c59 = undef();
+  if ((JS.strictEqual(group["delim"], "\\vert")) || (JS.strictEqual(group["delim"], "|"))) {
+    c59 = JS.invoke(mml, "makeText", "|", "text");
+  } else {
+    c59 = JS.invoke(mml, "makeText", group["delim"], group["mode"]);
+  }
+  JsValue textNode = c59;
+  JsValue a60 = newArray();
+  JS.push(a60, textNode);
+  JsValue middleNode = JS.construct(mathMLTree["MathNode"], "mo", a60);
+  JS.invoke(middleNode, "setAttribute", "fence", "true");
+  JS.invoke(middleNode, "setAttribute", "lspace", "0.05em");
+  JS.invoke(middleNode, "setAttribute", "rspace", "0.05em");
+  return middleNode;
+  return undef();
+};
+JS.call(defineFunction, undef(), o52);
+JsValue __star = emptyObject();
+
+export { __star };

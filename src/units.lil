@@ -1,0 +1,86 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { ParseError } from "./ParseError.lil";
+import { Options } from "./Options.lil";
+
+JsValue ptPerUnit = undef();
+JsValue relativeUnit = undef();
+JsValue validUnit = undef();
+JsValue calculateSize = undef();
+JsValue makeEm = undef();
+
+JsValue o1 = emptyObject();
+o1["pt"] = 1;
+o1["mm"] = (toNum(7227) / toNum(2540));
+o1["cm"] = (toNum(7227) / toNum(254));
+o1["in"] = 72.27;
+o1["bp"] = (toNum(803) / toNum(800));
+o1["pc"] = 12;
+o1["dd"] = (toNum(1238) / toNum(1157));
+o1["cc"] = (toNum(14856) / toNum(1157));
+o1["nd"] = (toNum(685) / toNum(642));
+o1["nc"] = (toNum(1370) / toNum(107));
+o1["sp"] = (toNum(1) / toNum(65536));
+o1["px"] = (toNum(803) / toNum(800));
+ptPerUnit = o1;
+JsValue o2 = emptyObject();
+o2["ex"] = true;
+o2["em"] = true;
+o2["mu"] = true;
+relativeUnit = o2;
+validUnit = (JsValue unit) => {
+  if (JS.strictNotEqual(JS.typeOf(unit), "string")) {
+    unit = unit["unit"];
+  }
+  JsValue or3 = inOp(unit, ptPerUnit);
+  if (!(or3.truthy())) {
+    or3 = inOp(unit, relativeUnit);
+  }
+  JsValue or4 = or3;
+  if (!(or4.truthy())) {
+    or4 = JS.strictEqual(unit, "ex");
+  }
+  return or4;
+  return undef();
+};
+calculateSize = (JsValue sizeValue, JsValue options) => {
+  JsValue scale = undef();
+  if (inOp(sizeValue["unit"], ptPerUnit)) {
+    scale = (toNum((toNum(ptPerUnit[sizeValue["unit"]]) / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]))) / toNum(options["sizeMultiplier"]));
+  } else {
+    if (JS.strictEqual(sizeValue["unit"], "mu")) {
+      scale = JS.invoke(options, "fontMetrics")["cssEmPerMu"];
+    } else {
+      JsValue unitOptions = undef();
+      if (JS.invoke(options["style"], "isTight").truthy()) {
+        unitOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "text"));
+      } else {
+        unitOptions = options;
+      }
+      if (JS.strictEqual(sizeValue["unit"], "ex")) {
+        scale = JS.invoke(unitOptions, "fontMetrics")["xHeight"];
+      } else {
+        if (JS.strictEqual(sizeValue["unit"], "em")) {
+          scale = JS.invoke(unitOptions, "fontMetrics")["quad"];
+        } else {
+          throw JS.construct(ParseError, JS.add(JS.add("Invalid unit: '", sizeValue["unit"]), "'"));
+        }
+      }
+      if (JS.strictNotEqual(unitOptions, options)) {
+        scale = (toNum(scale) * toNum((toNum(unitOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]))));
+      }
+    }
+  }
+  return JS.invoke(Math, "min", (toNum(sizeValue["number"]) * toNum(scale)), options["maxSize"]);
+  return undef();
+};
+makeEm = (JsValue n) => {
+  return JS.add(toNum(JS.invoke(n, "toFixed", 4)), "em");
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["validUnit"] = validUnit;
+__star["calculateSize"] = calculateSize;
+__star["makeEm"] = makeEm;
+
+export { __star, validUnit, calculateSize, makeEm };

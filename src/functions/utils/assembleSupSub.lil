@@ -1,0 +1,152 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../../host.lil";
+
+import { buildCommon } from "../../buildCommon.lil";
+import { utils } from "../../utils.lil";
+import { makeEm } from "../../units.lil";
+import { __star as html } from "../../buildHTML.lil";
+
+JsValue assembleSupSub = undef();
+
+assembleSupSub = (JsValue base, JsValue supGroup, JsValue subGroup, JsValue options, JsValue style, JsValue slant, JsValue baseShift) => {
+  JsValue a1 = newArray();
+  JsValue a2 = newArray();
+  JS.push(a2, base);
+  base = JS.invoke(buildCommon, "makeSpan", a1, a2);
+  JsValue and3 = subGroup;
+  if (and3.truthy()) {
+    and3 = JS.invoke(utils, "isCharacterBox", subGroup);
+  }
+  JsValue subIsSingleCharacter = and3;
+  JsValue sub = undef();
+  JsValue sup = undef();
+  if (supGroup.truthy()) {
+    JsValue elem = JS.invoke(html, "buildGroup", supGroup, JS.invoke(options, "havingStyle", JS.invoke(style, "sup")), options);
+    JsValue o4 = emptyObject();
+    o4["elem"] = elem;
+    o4["kern"] = JS.invoke(Math, "max", JS.invoke(options, "fontMetrics")["bigOpSpacing1"], (toNum(JS.invoke(options, "fontMetrics")["bigOpSpacing3"]) - toNum(elem["depth"])));
+    sup = o4;
+  }
+  if (subGroup.truthy()) {
+    JsValue elem = JS.invoke(html, "buildGroup", subGroup, JS.invoke(options, "havingStyle", JS.invoke(style, "sub")), options);
+    JsValue o5 = emptyObject();
+    o5["elem"] = elem;
+    o5["kern"] = JS.invoke(Math, "max", JS.invoke(options, "fontMetrics")["bigOpSpacing2"], (toNum(JS.invoke(options, "fontMetrics")["bigOpSpacing4"]) - toNum(elem["height"])));
+    sub = o5;
+  }
+  JsValue finalGroup = undef();
+  if ((sup.truthy()) && (sub.truthy())) {
+    JsValue bottom = JS.add(JS.add(JS.add(JS.add(JS.add(JS.invoke(options, "fontMetrics")["bigOpSpacing5"], sub["elem"]["height"]), sub["elem"]["depth"]), sub["kern"]), base["depth"]), baseShift);
+    JsValue o6 = emptyObject();
+    o6["positionType"] = "bottom";
+    o6["positionData"] = bottom;
+    JsValue a7 = newArray();
+    JsValue o8 = emptyObject();
+    o8["type"] = "kern";
+    o8["size"] = JS.invoke(options, "fontMetrics")["bigOpSpacing5"];
+    JS.push(a7, o8);
+    JsValue o9 = emptyObject();
+    o9["type"] = "elem";
+    o9["elem"] = sub["elem"];
+    o9["marginLeft"] = JS.call(makeEm, undef(), JS.number(0) - toNum(slant));
+    JS.push(a7, o9);
+    JsValue o10 = emptyObject();
+    o10["type"] = "kern";
+    o10["size"] = sub["kern"];
+    JS.push(a7, o10);
+    JsValue o11 = emptyObject();
+    o11["type"] = "elem";
+    o11["elem"] = base;
+    JS.push(a7, o11);
+    JsValue o12 = emptyObject();
+    o12["type"] = "kern";
+    o12["size"] = sup["kern"];
+    JS.push(a7, o12);
+    JsValue o13 = emptyObject();
+    o13["type"] = "elem";
+    o13["elem"] = sup["elem"];
+    o13["marginLeft"] = JS.call(makeEm, undef(), slant);
+    JS.push(a7, o13);
+    JsValue o14 = emptyObject();
+    o14["type"] = "kern";
+    o14["size"] = JS.invoke(options, "fontMetrics")["bigOpSpacing5"];
+    JS.push(a7, o14);
+    o6["children"] = a7;
+    finalGroup = JS.invoke(buildCommon, "makeVList", o6, options);
+  } else {
+    if (sub.truthy()) {
+      JsValue top = (toNum(base["height"]) - toNum(baseShift));
+      JsValue o15 = emptyObject();
+      o15["positionType"] = "top";
+      o15["positionData"] = top;
+      JsValue a16 = newArray();
+      JsValue o17 = emptyObject();
+      o17["type"] = "kern";
+      o17["size"] = JS.invoke(options, "fontMetrics")["bigOpSpacing5"];
+      JS.push(a16, o17);
+      JsValue o18 = emptyObject();
+      o18["type"] = "elem";
+      o18["elem"] = sub["elem"];
+      o18["marginLeft"] = JS.call(makeEm, undef(), JS.number(0) - toNum(slant));
+      JS.push(a16, o18);
+      JsValue o19 = emptyObject();
+      o19["type"] = "kern";
+      o19["size"] = sub["kern"];
+      JS.push(a16, o19);
+      JsValue o20 = emptyObject();
+      o20["type"] = "elem";
+      o20["elem"] = base;
+      JS.push(a16, o20);
+      o15["children"] = a16;
+      finalGroup = JS.invoke(buildCommon, "makeVList", o15, options);
+    } else {
+      if (sup.truthy()) {
+        JsValue bottom = JS.add(base["depth"], baseShift);
+        JsValue o21 = emptyObject();
+        o21["positionType"] = "bottom";
+        o21["positionData"] = bottom;
+        JsValue a22 = newArray();
+        JsValue o23 = emptyObject();
+        o23["type"] = "elem";
+        o23["elem"] = base;
+        JS.push(a22, o23);
+        JsValue o24 = emptyObject();
+        o24["type"] = "kern";
+        o24["size"] = sup["kern"];
+        JS.push(a22, o24);
+        JsValue o25 = emptyObject();
+        o25["type"] = "elem";
+        o25["elem"] = sup["elem"];
+        o25["marginLeft"] = JS.call(makeEm, undef(), slant);
+        JS.push(a22, o25);
+        JsValue o26 = emptyObject();
+        o26["type"] = "kern";
+        o26["size"] = JS.invoke(options, "fontMetrics")["bigOpSpacing5"];
+        JS.push(a22, o26);
+        o21["children"] = a22;
+        finalGroup = JS.invoke(buildCommon, "makeVList", o21, options);
+      } else {
+        return base;
+      }
+    }
+  }
+  JsValue a27 = newArray();
+  JS.push(a27, finalGroup);
+  JsValue parts = a27;
+  if (((sub.truthy()) && (JS.strictNotEqual(slant, 0))) && (!(subIsSingleCharacter.truthy()))) {
+    JsValue a28 = newArray();
+    JS.push(a28, "mspace");
+    JsValue a29 = newArray();
+    JsValue spacer = JS.invoke(buildCommon, "makeSpan", a28, a29, options);
+    spacer["style"]["marginRight"] = JS.call(makeEm, undef(), slant);
+    JS.invoke(parts, "unshift", spacer);
+  }
+  JsValue a30 = newArray();
+  JS.push(a30, "mop");
+  JS.push(a30, "op-limits");
+  return JS.invoke(buildCommon, "makeSpan", a30, parts, options);
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["assembleSupSub"] = assembleSupSub;
+
+export { __star, assembleSupSub };

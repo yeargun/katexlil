@@ -1,0 +1,375 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN, pushAll } from "./host.lil";
+
+import { ParseError } from "./ParseError.lil";
+import { Style } from "./Style.lil";
+import { buildCommon } from "./buildCommon.lil";
+import { Span, Anchor } from "./domTree.lil";
+import { utils } from "./utils.lil";
+import { makeEm } from "./units.lil";
+import { spacings, tightSpacings } from "./spacingData.lil";
+import { _htmlGroupBuilders as groupBuilders } from "./defineFunction.lil";
+import { DocumentFragment } from "./tree.lil";
+
+JsValue makeSpan = undef();
+JsValue binLeftCanceller = undef();
+JsValue binRightCanceller = undef();
+JsValue styleMap = undef();
+JsValue DomEnum = undef();
+JsValue buildExpression = undef();
+JsValue traverseNonSpaceNodes = undef();
+JsValue checkPartialGroup = undef();
+JsValue getOutermostNode = undef();
+JsValue getTypeOfDomTree = undef();
+JsValue makeNullDelimiter = undef();
+JsValue buildGroup = undef();
+JsValue buildHTMLUnbreakable = undef();
+JsValue buildHTML = undef();
+
+makeSpan = buildCommon["makeSpan"];
+JsValue a1 = newArray();
+JS.push(a1, "leftmost");
+JS.push(a1, "mbin");
+JS.push(a1, "mopen");
+JS.push(a1, "mrel");
+JS.push(a1, "mop");
+JS.push(a1, "mpunct");
+binLeftCanceller = a1;
+JsValue a2 = newArray();
+JS.push(a2, "rightmost");
+JS.push(a2, "mrel");
+JS.push(a2, "mclose");
+JS.push(a2, "mpunct");
+binRightCanceller = a2;
+JsValue o3 = emptyObject();
+o3["display"] = Style["DISPLAY"];
+o3["text"] = Style["TEXT"];
+o3["script"] = Style["SCRIPT"];
+o3["scriptscript"] = Style["SCRIPTSCRIPT"];
+styleMap = o3;
+JsValue o4 = emptyObject();
+o4["mord"] = "mord";
+o4["mop"] = "mop";
+o4["mbin"] = "mbin";
+o4["mrel"] = "mrel";
+o4["mopen"] = "mopen";
+o4["mclose"] = "mclose";
+o4["mpunct"] = "mpunct";
+o4["minner"] = "minner";
+DomEnum = o4;
+buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsValue surrounding) => {
+  if (isUndef(surrounding)) {
+    JsValue a5 = newArray();
+    JS.push(a5, null);
+    JS.push(a5, null);
+    surrounding = a5;
+  }
+  JsValue a6 = newArray();
+  JsValue groups = a6;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, expression["length"])) {
+      JsValue output = JS.call(buildGroup, undef(), expression[i], options);
+      if (instanceOf(output, DocumentFragment)) {
+        JsValue children = output["children"];
+        pushAll(groups, children);
+      } else {
+        JS.invoke(groups, "push", output);
+      }
+      JsValue u7 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  JS.invoke(buildCommon, "tryCombineChars", groups);
+  if (!(isRealGroup.truthy())) {
+    return groups;
+  }
+  JsValue glueOptions = options;
+  if (JS.strictEqual(expression["length"], 1)) {
+    JsValue node = expression[0];
+    if (JS.strictEqual(node["type"], "sizing")) {
+      glueOptions = JS.invoke(options, "havingSize", node["size"]);
+    } else {
+      if (JS.strictEqual(node["type"], "styling")) {
+        glueOptions = JS.invoke(options, "havingStyle", styleMap[node["style"]]);
+      }
+    }
+  }
+  JsValue a8 = newArray();
+  JsValue or9 = surrounding[0];
+  if (!(or9.truthy())) {
+    or9 = "leftmost";
+  }
+  JS.push(a8, or9);
+  JsValue a10 = newArray();
+  JsValue dummyPrev = JS.call(makeSpan, undef(), a8, a10, options);
+  JsValue a11 = newArray();
+  JsValue or12 = surrounding[1];
+  if (!(or12.truthy())) {
+    or12 = "rightmost";
+  }
+  JS.push(a11, or12);
+  JsValue a13 = newArray();
+  JsValue dummyNext = JS.call(makeSpan, undef(), a11, a13, options);
+  JsValue isRoot = JS.strictEqual(isRealGroup, "root");
+  JsValue o14 = emptyObject();
+  o14["node"] = dummyPrev;
+  JS.call(traverseNonSpaceNodes, undef(), groups, (JsValue node, JsValue prev) => {
+  JsValue prevType = prev["classes"][0];
+  JsValue type = node["classes"][0];
+  if ((JS.strictEqual(prevType, "mbin")) && (JS.invoke(utils, "contains", binRightCanceller, type).truthy())) {
+    prev["classes"][0] = "mord";
+  } else {
+    if ((JS.strictEqual(type, "mbin")) && (JS.invoke(utils, "contains", binLeftCanceller, prevType).truthy())) {
+      node["classes"][0] = "mord";
+    }
+  }
+  return undef();
+  }, o14, dummyNext, isRoot);
+  JsValue o17 = emptyObject();
+  o17["node"] = dummyPrev;
+  JS.call(traverseNonSpaceNodes, undef(), groups, (JsValue node, JsValue prev) => {
+  JsValue prevType = JS.call(getTypeOfDomTree, undef(), prev);
+  JsValue type = JS.call(getTypeOfDomTree, undef(), node);
+  JsValue c15 = undef();
+  if ((prevType.truthy()) && (type.truthy())) {
+    JsValue c16 = undef();
+    if (JS.invoke(node, "hasClass", "mtight").truthy()) {
+      c16 = tightSpacings[prevType][type];
+    } else {
+      c16 = spacings[prevType][type];
+    }
+    c15 = c16;
+  } else {
+    c15 = null;
+  }
+  JsValue space = c15;
+  if (space.truthy()) {
+    return JS.invoke(buildCommon, "makeGlue", space, glueOptions);
+  }
+  return undef();
+  }, o17, dummyNext, isRoot);
+  return groups;
+  return undef();
+};
+traverseNonSpaceNodes = (JsValue nodes, JsValue callback, JsValue prev, JsValue next, JsValue isRoot) => {
+  if (next.truthy()) {
+    JS.invoke(nodes, "push", next);
+  }
+  JsValue i = 0;
+  {
+    while (JS.lessThan(i, nodes["length"])) {
+      JsValue node = nodes[i];
+      JsValue partialGroup = JS.call(checkPartialGroup, undef(), node);
+      if (partialGroup.truthy()) {
+        JS.call(traverseNonSpaceNodes, undef(), partialGroup["children"], callback, prev, null, isRoot);
+        i = JS.add(i, 1);
+        continue;
+      }
+      JsValue nonspace = !(JS.invoke(node, "hasClass", "mspace").truthy());
+      if (nonspace.truthy()) {
+        JsValue result = JS.call(callback, undef(), node, prev["node"]);
+        if (result.truthy()) {
+          if (prev["insertAfter"].truthy()) {
+            JS.invoke(prev, "insertAfter", result);
+          } else {
+            JS.invoke(nodes, "unshift", result);
+            JsValue u18 = i;
+            i = JS.add(i, 1);
+          }
+        }
+      }
+      if (nonspace.truthy()) {
+        prev["node"] = node;
+      } else {
+        if ((isRoot.truthy()) && (JS.invoke(node, "hasClass", "newline").truthy())) {
+          JsValue a19 = newArray();
+          JS.push(a19, "leftmost");
+          prev["node"] = JS.call(makeSpan, undef(), a19);
+        }
+      }
+      prev["insertAfter"] = JS.call((JsValue index) => {
+  return (JsValue n) => {
+  JS.invoke(nodes, "splice", JS.add(index, 1), 0, n);
+  JsValue u20 = i;
+  i = JS.add(i, 1);
+  return undef();
+  };
+      }, undef(), i);
+      JsValue u21 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  if (next.truthy()) {
+    JS.invoke(nodes, "pop");
+  }
+  return undef();
+};
+checkPartialGroup = (JsValue node) => {
+  if (((instanceOf(node, DocumentFragment)) || (instanceOf(node, Anchor))) || ((instanceOf(node, Span)) && (JS.invoke(node, "hasClass", "enclosing").truthy()))) {
+    return node;
+  }
+  return null;
+  return undef();
+};
+getOutermostNode = (JsValue node, JsValue side) => {
+  JsValue partialGroup = JS.call(checkPartialGroup, undef(), node);
+  if (partialGroup.truthy()) {
+    JsValue children = partialGroup["children"];
+    if (children["length"].truthy()) {
+      if (JS.strictEqual(side, "right")) {
+        return JS.call(getOutermostNode, undef(), children[(toNum(children["length"]) - toNum(1))], "right");
+      } else {
+        if (JS.strictEqual(side, "left")) {
+          return JS.call(getOutermostNode, undef(), children[0], "left");
+        }
+      }
+    }
+  }
+  return node;
+  return undef();
+};
+getTypeOfDomTree = (JsValue node, JsValue side) => {
+  if (!(node.truthy())) {
+    return null;
+  }
+  if (side.truthy()) {
+    node = JS.call(getOutermostNode, undef(), node, side);
+  }
+  JsValue or22 = DomEnum[node["classes"][0]];
+  if (!(or22.truthy())) {
+    or22 = null;
+  }
+  return or22;
+  return undef();
+};
+makeNullDelimiter = (JsValue options, JsValue classes) => {
+  JsValue a23 = newArray();
+  JS.push(a23, "nulldelimiter");
+  JsValue moreClasses = JS.invoke(a23, "concat", JS.invoke(options, "baseSizingClasses"));
+  return JS.call(makeSpan, undef(), JS.invoke(classes, "concat", moreClasses));
+  return undef();
+};
+buildGroup = (JsValue group, JsValue options, JsValue baseOptions) => {
+  if (!(group.truthy())) {
+    return JS.call(makeSpan, undef());
+  }
+  if (groupBuilders[group["type"]].truthy()) {
+    JsValue groupNode = JS.call(groupBuilders[group["type"]], groupBuilders, group, options);
+    if ((baseOptions.truthy()) && (JS.strictNotEqual(options["size"], baseOptions["size"]))) {
+      JsValue a24 = newArray();
+      JS.push(a24, groupNode);
+      groupNode = JS.call(makeSpan, undef(), JS.invoke(options, "sizingClasses", baseOptions), a24, options);
+      JsValue multiplier = (toNum(options["sizeMultiplier"]) / toNum(baseOptions["sizeMultiplier"]));
+      JsValue as25 = groupNode["height"];
+      groupNode["height"] = (toNum(as25) * toNum(multiplier));
+      JsValue as26 = groupNode["depth"];
+      groupNode["depth"] = (toNum(as26) * toNum(multiplier));
+    }
+    return groupNode;
+  } else {
+    throw JS.construct(ParseError, JS.add(JS.add("Got group of unknown type: '", group["type"]), "'"));
+  }
+  return undef();
+};
+buildHTMLUnbreakable = (JsValue children, JsValue options) => {
+  JsValue a27 = newArray();
+  JS.push(a27, "base");
+  JsValue body = JS.call(makeSpan, undef(), a27, children, options);
+  JsValue a28 = newArray();
+  JS.push(a28, "strut");
+  JsValue strut = JS.call(makeSpan, undef(), a28);
+  strut["style"]["height"] = JS.call(makeEm, undef(), JS.add(body["height"], body["depth"]));
+  if (body["depth"].truthy()) {
+    strut["style"]["verticalAlign"] = JS.call(makeEm, undef(), JS.number(0) - toNum(body["depth"]));
+  }
+  JS.invoke(body["children"], "unshift", strut);
+  return body;
+  return undef();
+};
+buildHTML = (JsValue tree, JsValue options) => {
+  JsValue tag = null;
+  if ((JS.strictEqual(tree["length"], 1)) && (JS.strictEqual(tree[0]["type"], "tag"))) {
+    tag = tree[0]["tag"];
+    tree = tree[0]["body"];
+  }
+  JsValue expression = JS.call(buildExpression, undef(), tree, options, "root");
+  JsValue eqnNum = undef();
+  if ((JS.strictEqual(expression["length"], 2)) && (JS.invoke(expression[1], "hasClass", "tag").truthy())) {
+    eqnNum = JS.invoke(expression, "pop");
+  }
+  JsValue a29 = newArray();
+  JsValue children = a29;
+  JsValue a30 = newArray();
+  JsValue parts = a30;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, expression["length"])) {
+      JS.invoke(parts, "push", expression[i]);
+      if (((JS.invoke(expression[i], "hasClass", "mbin").truthy()) || (JS.invoke(expression[i], "hasClass", "mrel").truthy())) || (JS.invoke(expression[i], "hasClass", "allowbreak").truthy())) {
+        JsValue nobreak = false;
+        while (((JS.lessThan(i, (toNum(expression["length"]) - toNum(1)))) && (JS.invoke(expression[JS.add(i, 1)], "hasClass", "mspace").truthy())) && (!(JS.invoke(expression[JS.add(i, 1)], "hasClass", "newline").truthy()))) {
+          JsValue u31 = i;
+          i = JS.add(i, 1);
+          JS.invoke(parts, "push", expression[i]);
+          if (JS.invoke(expression[i], "hasClass", "nobreak").truthy()) {
+            nobreak = true;
+          }
+        }
+        if (!(nobreak.truthy())) {
+          JS.invoke(children, "push", JS.call(buildHTMLUnbreakable, undef(), parts, options));
+          JsValue a32 = newArray();
+          parts = a32;
+        }
+      } else {
+        if (JS.invoke(expression[i], "hasClass", "newline").truthy()) {
+          JS.invoke(parts, "pop");
+          if (JS.greaterThan(parts["length"], 0)) {
+            JS.invoke(children, "push", JS.call(buildHTMLUnbreakable, undef(), parts, options));
+            JsValue a33 = newArray();
+            parts = a33;
+          }
+          JS.invoke(children, "push", expression[i]);
+        }
+      }
+      JsValue u34 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  if (JS.greaterThan(parts["length"], 0)) {
+    JS.invoke(children, "push", JS.call(buildHTMLUnbreakable, undef(), parts, options));
+  }
+  JsValue tagChild = undef();
+  if (tag.truthy()) {
+    tagChild = JS.call(buildHTMLUnbreakable, undef(), JS.call(buildExpression, undef(), tag, options, true));
+    JsValue a35 = newArray();
+    JS.push(a35, "tag");
+    tagChild["classes"] = a35;
+    JS.invoke(children, "push", tagChild);
+  } else {
+    if (eqnNum.truthy()) {
+      JS.invoke(children, "push", eqnNum);
+    }
+  }
+  JsValue a36 = newArray();
+  JS.push(a36, "katex-html");
+  JsValue htmlNode = JS.call(makeSpan, undef(), a36, children);
+  JS.invoke(htmlNode, "setAttribute", "aria-hidden", "true");
+  if (tagChild.truthy()) {
+    JsValue strut = tagChild["children"][0];
+    strut["style"]["height"] = JS.call(makeEm, undef(), JS.add(htmlNode["height"], htmlNode["depth"]));
+    if (htmlNode["depth"].truthy()) {
+      strut["style"]["verticalAlign"] = JS.call(makeEm, undef(), JS.number(0) - toNum(htmlNode["depth"]));
+    }
+  }
+  return htmlNode;
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["buildExpression"] = buildExpression;
+__star["getTypeOfDomTree"] = getTypeOfDomTree;
+__star["makeNullDelimiter"] = makeNullDelimiter;
+__star["buildGroup"] = buildGroup;
+__star["default"] = buildHTML;
+__star["buildHTML"] = buildHTML;
+
+export { __star, buildExpression, getTypeOfDomTree, makeNullDelimiter, buildGroup, buildHTML as buildHTML };

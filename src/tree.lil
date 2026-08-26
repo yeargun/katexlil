@@ -1,0 +1,59 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { utils } from "./utils.lil";
+
+JsValue DocumentFragment = undef();
+
+DocumentFragment = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue children = argv[0];
+  self["children"] = children;
+  JsValue a1 = newArray();
+  self["classes"] = a1;
+  self["height"] = 0;
+  self["depth"] = 0;
+  self["maxFontSize"] = 0;
+  JsValue o2 = emptyObject();
+  self["style"] = o2;
+  return self;
+});
+DocumentFragment["prototype"]["hasClass"] = JS.method1((JsValue self, JsValue className) => {
+  return JS.invoke(utils, "contains", self["classes"], className);
+  return undef();
+});
+DocumentFragment["prototype"]["toNode"] = JS.method0((JsValue self) => {
+  JsValue frag = JS.invoke(getDocument(), "createDocumentFragment");
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, self["children"]["length"])) {
+      JS.invoke(frag, "appendChild", JS.invoke(self["children"][i], "toNode"));
+      JsValue u3 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return frag;
+  return undef();
+});
+DocumentFragment["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
+  JsValue markup = "";
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, self["children"]["length"])) {
+      markup = JS.add(markup, JS.invoke(self["children"][i], "toMarkup"));
+      JsValue u4 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return markup;
+  return undef();
+});
+DocumentFragment["prototype"]["toText"] = JS.method0((JsValue self) => {
+  JsValue toText = (JsValue child) => {
+  return JS.invoke(child, "toText");
+  };
+  return JS.invoke(JS.invoke(self["children"], "map", toText), "join", "");
+  return undef();
+});
+JsValue __star = emptyObject();
+__star["DocumentFragment"] = DocumentFragment;
+
+export { __star, DocumentFragment };

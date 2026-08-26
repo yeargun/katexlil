@@ -1,9 +1,343 @@
+extern JsValue Object;
+extern JsValue Array;
+extern JsValue Function;
+extern JsValue Error;
+extern JsValue TypeError;
+extern JsValue String;
+extern JsValue Number;
+extern JsValue Math;
+extern JsValue RegExp;
+extern JsValue JSON;
+extern JsValue Infinity;
+extern JsValue NaN;
+extern JsValue parseInt;
+extern JsValue parseFloat;
+extern JsValue isNaN;
+extern JsValue isFinite;
+extern JsValue globalThis;
+extern JsValue undefined;
+
 export extern class KatexOptions {
   JsValue displayMode;
+  JsValue output;
+  JsValue leqno;
+  JsValue fleqn;
   JsValue throwOnError;
   JsValue errorColor;
+  JsValue macros;
+  JsValue minRuleThickness;
+  JsValue colorIsTextColor;
+  JsValue strict;
+  JsValue trust;
+  JsValue maxSize;
+  JsValue maxExpand;
+  JsValue globalGroup;
 }
 
 export extern class Element {
   string innerHTML;
+  string textContent;
+  void appendChild(JsValue node);
 }
+
+export JsValue undef() {
+  return JS.undefined();
+}
+
+export bool isUndef(JsValue value) {
+  return JS.isUndefined(value);
+}
+
+export bool isNullish(JsValue value) {
+  return JS.isNullish(value);
+}
+
+export bool isFn(JsValue value) {
+  return JS.typeOf(value) == "function";
+}
+
+export bool isStr(JsValue value) {
+  return JS.typeOf(value) == "string";
+}
+
+export bool isNum(JsValue value) {
+  return JS.typeOf(value) == "number";
+}
+
+export bool isBool(JsValue value) {
+  return JS.typeOf(value) == "boolean";
+}
+
+export bool isObj(JsValue value) {
+  return !JS.isNullish(value) && JS.typeOf(value) == "object";
+}
+
+export bool isArr(JsValue value) {
+  return JS.isArray(value);
+}
+
+export string toStr(JsValue value) {
+  return JS.string(value);
+}
+
+export number toNum(JsValue value) {
+  return JS.number(value);
+}
+
+export int toInt(JsValue value) {
+  return JS.number(value).toInt();
+}
+
+export int len(JsValue value) {
+  return JS.number(value["length"]).toInt();
+}
+
+export bool yes(JsValue value) {
+  return JS.strictEqual(value, true);
+}
+
+export bool instanceOf(JsValue value, JsValue ctor) {
+  if (JS.isNullish(value)) {
+    return false;
+  }
+  string t = JS.typeOf(value);
+  if (t != "object" && t != "function") {
+    return false;
+  }
+  return JS.invoke(ctor["prototype"], "isPrototypeOf", value).truthy();
+}
+
+export JsValue call0(JsValue fn, JsValue self) {
+  return JS.call(fn, self);
+}
+
+export JsValue call1(JsValue fn, JsValue self, JsValue a) {
+  return JS.call(fn, self, a);
+}
+
+export JsValue call2(JsValue fn, JsValue self, JsValue a, JsValue b) {
+  return JS.call(fn, self, a, b);
+}
+
+export JsValue call3(JsValue fn, JsValue self, JsValue a, JsValue b, JsValue c) {
+  return JS.call(fn, self, a, b, c);
+}
+
+export JsValue apply(JsValue fn, JsValue self, JsValue args) {
+  return JS.apply(fn, self, args);
+}
+
+export JsValue invoke0(JsValue obj, string method) {
+  return JS.invoke(obj, method);
+}
+
+export JsValue invoke1(JsValue obj, string method, JsValue a) {
+  return JS.invoke(obj, method, a);
+}
+
+export JsValue invoke2(JsValue obj, string method, JsValue a, JsValue b) {
+  return JS.invoke(obj, method, a, b);
+}
+
+export JsValue invoke3(JsValue obj, string method, JsValue a, JsValue b, JsValue c) {
+  return JS.invoke(obj, method, a, b, c);
+}
+
+export JsValue construct0(JsValue ctor) {
+  return JS.construct(ctor);
+}
+
+export JsValue construct1(JsValue ctor, JsValue a) {
+  return JS.construct(ctor, a);
+}
+
+export JsValue construct2(JsValue ctor, JsValue a, JsValue b) {
+  return JS.construct(ctor, a, b);
+}
+
+export JsValue constructN(JsValue ctor, JsValue args) {
+  return JS.invoke(Reflect, "construct", ctor, args);
+}
+
+extern JsValue Reflect;
+
+export JsValue newArray() {
+  return JS.array();
+}
+
+export JsValue push(JsValue arr, JsValue item) {
+  JS.push(arr, item);
+  return arr;
+}
+
+export void pushAll(JsValue dest, JsValue items) {
+  int i = 0;
+  int n = len(items);
+  while (i < n) {
+    JS.push(dest, items[i]);
+    i = i + 1;
+  }
+}
+
+export JsValue spliceSpread(JsValue dest, JsValue start, JsValue deleteCount, JsValue items) {
+  JsValue args = newArray();
+  JS.push(args, start);
+  JS.push(args, deleteCount);
+  int i = 0;
+  int n = len(items);
+  while (i < n) {
+    JS.push(args, items[i]);
+    i = i + 1;
+  }
+  return apply(dest["splice"], dest, args);
+}
+
+export JsValue maxOfList(JsValue first, JsValue rest) {
+  JsValue args = newArray();
+  JS.push(args, first);
+  int i = 0;
+  int n = len(rest);
+  while (i < n) {
+    JS.push(args, rest[i]);
+    i = i + 1;
+  }
+  return apply(Math["max"], Math, args);
+}
+
+export bool hasOwn(JsValue target, JsValue key) {
+  return JS.call(Object["prototype"]["hasOwnProperty"], target, key).truthy();
+}
+
+export bool inOp(JsValue key, JsValue target) {
+  return JS.in(key, target);
+}
+
+export void deleteKey(JsValue target, JsValue key) {
+  JS.delete(target, key);
+}
+
+export JsValue makeError(string message) {
+  return JS.construct(Error, message);
+}
+
+export JsValue makeTypeError(string message) {
+  return JS.construct(TypeError, message);
+}
+
+export void throwErr(JsValue err) {
+  throw err;
+}
+
+export JsValue objectAssign(JsValue target, JsValue source) {
+  return JS.invoke(Object, "assign", target, source);
+}
+
+export JsValue objectKeys(JsValue value) {
+  return JS.invoke(Object, "keys", value);
+}
+
+export JsValue objectCreate(JsValue proto) {
+  return JS.invoke(Object, "create", proto);
+}
+
+export JsValue getPrototypeOf(JsValue value) {
+  return JS.invoke(Object, "getPrototypeOf", value);
+}
+
+export JsValue setPrototypeOf(JsValue value, JsValue proto) {
+  return JS.invoke(Object, "setPrototypeOf", value, proto);
+}
+
+export JsValue hostParseInt(JsValue value) {
+  return JS.call(parseInt, undef(), value);
+}
+
+export JsValue hostParseFloat(JsValue value) {
+  return JS.call(parseFloat, undef(), value);
+}
+
+export bool hostIsNaN(JsValue value) {
+  return yes(JS.call(isNaN, undef(), value));
+}
+
+export JsValue mathMin(JsValue a, JsValue b) {
+  return JS.invoke(Math, "min", a, b);
+}
+
+export JsValue mathMax(JsValue a, JsValue b) {
+  return JS.invoke(Math, "max", a, b);
+}
+
+export JsValue globalGet(string name) {
+  return globalThis[name];
+}
+
+export bool globalDefined(string name) {
+  return !JS.isUndefined(globalThis[name]);
+}
+
+export JsValue getDocument() {
+  return globalThis["document"];
+}
+
+export JsValue getConsole() {
+  return globalThis["console"];
+}
+
+export JsValue warn(JsValue message) {
+  JsValue cons = getConsole();
+  if (!isUndef(cons) && !isNullish(cons)) {
+    JS.invoke(cons, "warn", message);
+  }
+  return message;
+}
+
+export JsValue consoleLog(JsValue message) {
+  JsValue cons = getConsole();
+  if (!isUndef(cons) && !isNullish(cons)) {
+    JS.invoke(cons, "log", message);
+  }
+  return message;
+}
+
+export JsValue consoleError(JsValue message) {
+  JsValue cons = getConsole();
+  if (!isUndef(cons) && !isNullish(cons)) {
+    JS.invoke(cons, "error", message);
+  }
+  return message;
+}
+
+export JsValue emptyObject() {
+  return JS.object();
+}
+
+export JsValue fromCharCode(JsValue code) {
+  return JS.invoke(String, "fromCharCode", code);
+}
+
+export JsValue jsonStringify(JsValue value) {
+  return JS.invoke(JSON, "stringify", value);
+}
+
+export JsValue arrayFrom(JsValue iterable) {
+  return JS.invoke(Array, "from", iterable);
+}
+
+export JsValue concatArr(JsValue arr, JsValue items) {
+  return JS.invoke(arr, "concat", items);
+}
+
+export JsValue sliceArgs(JsValue args, number start) {
+  return JS.call(Array["prototype"]["slice"], args, start);
+}
+
+export JsValue bind(JsValue fn, JsValue self) {
+  return JS.invoke(fn, "bind", self);
+}
+
+export JsValue newRegExp(string pattern, string flags) {
+  return JS.construct(RegExp, pattern, flags);
+}
+
+export { Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN, globalThis };

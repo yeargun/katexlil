@@ -1,0 +1,43 @@
+import { emptyObject } from "./host.lil";
+
+JsValue unicodeAccents = emptyObject();
+unicodeAccents["\u0301"] = emptyObject();
+unicodeAccents["\u0301"]["text"] = "\\'";
+unicodeAccents["\u0301"]["math"] = "\\acute";
+unicodeAccents["\u0300"] = emptyObject();
+unicodeAccents["\u0300"]["text"] = "\\`";
+unicodeAccents["\u0300"]["math"] = "\\grave";
+unicodeAccents["\u0308"] = emptyObject();
+unicodeAccents["\u0308"]["text"] = "\\\"";
+unicodeAccents["\u0308"]["math"] = "\\ddot";
+unicodeAccents["\u0303"] = emptyObject();
+unicodeAccents["\u0303"]["text"] = "\\~";
+unicodeAccents["\u0303"]["math"] = "\\tilde";
+unicodeAccents["\u0304"] = emptyObject();
+unicodeAccents["\u0304"]["text"] = "\\=";
+unicodeAccents["\u0304"]["math"] = "\\bar";
+unicodeAccents["\u0306"] = emptyObject();
+unicodeAccents["\u0306"]["text"] = "\\u";
+unicodeAccents["\u0306"]["math"] = "\\breve";
+unicodeAccents["\u030c"] = emptyObject();
+unicodeAccents["\u030c"]["text"] = "\\v";
+unicodeAccents["\u030c"]["math"] = "\\check";
+unicodeAccents["\u0302"] = emptyObject();
+unicodeAccents["\u0302"]["text"] = "\\^";
+unicodeAccents["\u0302"]["math"] = "\\hat";
+unicodeAccents["\u0307"] = emptyObject();
+unicodeAccents["\u0307"]["text"] = "\\.";
+unicodeAccents["\u0307"]["math"] = "\\dot";
+unicodeAccents["\u030a"] = emptyObject();
+unicodeAccents["\u030a"]["text"] = "\\r";
+unicodeAccents["\u030a"]["math"] = "\\mathring";
+unicodeAccents["\u030b"] = emptyObject();
+unicodeAccents["\u030b"]["text"] = "\\H";
+unicodeAccents["\u0327"] = emptyObject();
+unicodeAccents["\u0327"]["text"] = "\\c";
+
+JsValue __star = emptyObject();
+__star["default"] = unicodeAccents;
+__star["unicodeAccents"] = unicodeAccents;
+
+export { __star, unicodeAccents };

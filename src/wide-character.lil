@@ -1,0 +1,215 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { ParseError } from "./ParseError.lil";
+
+JsValue wideLatinLetterData = undef();
+JsValue wideNumeralData = undef();
+JsValue wideCharacterFont = undef();
+
+JsValue a1 = newArray();
+JsValue a2 = newArray();
+JS.push(a2, "mathbf");
+JS.push(a2, "textbf");
+JS.push(a2, "Main-Bold");
+JS.push(a1, a2);
+JsValue a3 = newArray();
+JS.push(a3, "mathbf");
+JS.push(a3, "textbf");
+JS.push(a3, "Main-Bold");
+JS.push(a1, a3);
+JsValue a4 = newArray();
+JS.push(a4, "mathnormal");
+JS.push(a4, "textit");
+JS.push(a4, "Math-Italic");
+JS.push(a1, a4);
+JsValue a5 = newArray();
+JS.push(a5, "mathnormal");
+JS.push(a5, "textit");
+JS.push(a5, "Math-Italic");
+JS.push(a1, a5);
+JsValue a6 = newArray();
+JS.push(a6, "boldsymbol");
+JS.push(a6, "boldsymbol");
+JS.push(a6, "Main-BoldItalic");
+JS.push(a1, a6);
+JsValue a7 = newArray();
+JS.push(a7, "boldsymbol");
+JS.push(a7, "boldsymbol");
+JS.push(a7, "Main-BoldItalic");
+JS.push(a1, a7);
+JsValue a8 = newArray();
+JS.push(a8, "mathscr");
+JS.push(a8, "textscr");
+JS.push(a8, "Script-Regular");
+JS.push(a1, a8);
+JsValue a9 = newArray();
+JS.push(a9, "");
+JS.push(a9, "");
+JS.push(a9, "");
+JS.push(a1, a9);
+JsValue a10 = newArray();
+JS.push(a10, "");
+JS.push(a10, "");
+JS.push(a10, "");
+JS.push(a1, a10);
+JsValue a11 = newArray();
+JS.push(a11, "");
+JS.push(a11, "");
+JS.push(a11, "");
+JS.push(a1, a11);
+JsValue a12 = newArray();
+JS.push(a12, "mathfrak");
+JS.push(a12, "textfrak");
+JS.push(a12, "Fraktur-Regular");
+JS.push(a1, a12);
+JsValue a13 = newArray();
+JS.push(a13, "mathfrak");
+JS.push(a13, "textfrak");
+JS.push(a13, "Fraktur-Regular");
+JS.push(a1, a13);
+JsValue a14 = newArray();
+JS.push(a14, "mathbb");
+JS.push(a14, "textbb");
+JS.push(a14, "AMS-Regular");
+JS.push(a1, a14);
+JsValue a15 = newArray();
+JS.push(a15, "mathbb");
+JS.push(a15, "textbb");
+JS.push(a15, "AMS-Regular");
+JS.push(a1, a15);
+JsValue a16 = newArray();
+JS.push(a16, "mathboldfrak");
+JS.push(a16, "textboldfrak");
+JS.push(a16, "Fraktur-Regular");
+JS.push(a1, a16);
+JsValue a17 = newArray();
+JS.push(a17, "mathboldfrak");
+JS.push(a17, "textboldfrak");
+JS.push(a17, "Fraktur-Regular");
+JS.push(a1, a17);
+JsValue a18 = newArray();
+JS.push(a18, "mathsf");
+JS.push(a18, "textsf");
+JS.push(a18, "SansSerif-Regular");
+JS.push(a1, a18);
+JsValue a19 = newArray();
+JS.push(a19, "mathsf");
+JS.push(a19, "textsf");
+JS.push(a19, "SansSerif-Regular");
+JS.push(a1, a19);
+JsValue a20 = newArray();
+JS.push(a20, "mathboldsf");
+JS.push(a20, "textboldsf");
+JS.push(a20, "SansSerif-Bold");
+JS.push(a1, a20);
+JsValue a21 = newArray();
+JS.push(a21, "mathboldsf");
+JS.push(a21, "textboldsf");
+JS.push(a21, "SansSerif-Bold");
+JS.push(a1, a21);
+JsValue a22 = newArray();
+JS.push(a22, "mathitsf");
+JS.push(a22, "textitsf");
+JS.push(a22, "SansSerif-Italic");
+JS.push(a1, a22);
+JsValue a23 = newArray();
+JS.push(a23, "mathitsf");
+JS.push(a23, "textitsf");
+JS.push(a23, "SansSerif-Italic");
+JS.push(a1, a23);
+JsValue a24 = newArray();
+JS.push(a24, "");
+JS.push(a24, "");
+JS.push(a24, "");
+JS.push(a1, a24);
+JsValue a25 = newArray();
+JS.push(a25, "");
+JS.push(a25, "");
+JS.push(a25, "");
+JS.push(a1, a25);
+JsValue a26 = newArray();
+JS.push(a26, "mathtt");
+JS.push(a26, "texttt");
+JS.push(a26, "Typewriter-Regular");
+JS.push(a1, a26);
+JsValue a27 = newArray();
+JS.push(a27, "mathtt");
+JS.push(a27, "texttt");
+JS.push(a27, "Typewriter-Regular");
+JS.push(a1, a27);
+wideLatinLetterData = a1;
+JsValue a28 = newArray();
+JsValue a29 = newArray();
+JS.push(a29, "mathbf");
+JS.push(a29, "textbf");
+JS.push(a29, "Main-Bold");
+JS.push(a28, a29);
+JsValue a30 = newArray();
+JS.push(a30, "");
+JS.push(a30, "");
+JS.push(a30, "");
+JS.push(a28, a30);
+JsValue a31 = newArray();
+JS.push(a31, "mathsf");
+JS.push(a31, "textsf");
+JS.push(a31, "SansSerif-Regular");
+JS.push(a28, a31);
+JsValue a32 = newArray();
+JS.push(a32, "mathboldsf");
+JS.push(a32, "textboldsf");
+JS.push(a32, "SansSerif-Bold");
+JS.push(a28, a32);
+JsValue a33 = newArray();
+JS.push(a33, "mathtt");
+JS.push(a33, "texttt");
+JS.push(a33, "Typewriter-Regular");
+JS.push(a28, a33);
+wideNumeralData = a28;
+wideCharacterFont = (JsValue wideChar, JsValue mode) => {
+  JsValue H = JS.invoke(wideChar, "charCodeAt", 0);
+  JsValue L = JS.invoke(wideChar, "charCodeAt", 1);
+  JsValue codePoint = JS.add(JS.add((toNum((toNum(H) - toNum(55296))) * toNum(1024)), (toNum(L) - toNum(56320))), 65536);
+  JsValue c34 = undef();
+  if (JS.strictEqual(mode, "math")) {
+    c34 = 0;
+  } else {
+    c34 = 1;
+  }
+  JsValue j = c34;
+  if ((JS.lessThanOrEqual(119808, codePoint)) && (JS.lessThan(codePoint, 120484))) {
+    JsValue i = JS.invoke(Math, "floor", (toNum((toNum(codePoint) - toNum(119808))) / toNum(26)));
+    JsValue a35 = newArray();
+    JS.push(a35, wideLatinLetterData[i][2]);
+    JS.push(a35, wideLatinLetterData[i][j]);
+    return a35;
+  } else {
+    if ((JS.lessThanOrEqual(120782, codePoint)) && (JS.lessThanOrEqual(codePoint, 120831))) {
+      JsValue i = JS.invoke(Math, "floor", (toNum((toNum(codePoint) - toNum(120782))) / toNum(10)));
+      JsValue a36 = newArray();
+      JS.push(a36, wideNumeralData[i][2]);
+      JS.push(a36, wideNumeralData[i][j]);
+      return a36;
+    } else {
+      if ((JS.strictEqual(codePoint, 120485)) || (JS.strictEqual(codePoint, 120486))) {
+        JsValue a37 = newArray();
+        JS.push(a37, wideLatinLetterData[0][2]);
+        JS.push(a37, wideLatinLetterData[0][j]);
+        return a37;
+      } else {
+        if ((JS.lessThan(120486, codePoint)) && (JS.lessThan(codePoint, 120782))) {
+          JsValue a38 = newArray();
+          JS.push(a38, "");
+          JS.push(a38, "");
+          return a38;
+        } else {
+          throw JS.construct(ParseError, JS.add("Unsupported character: ", wideChar));
+        }
+      }
+    }
+  }
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["wideCharacterFont"] = wideCharacterFont;
+
+export { __star, wideCharacterFont };

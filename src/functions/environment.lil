@@ -1,0 +1,69 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { ParseError } from "../ParseError.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { environments } from "../environments.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "environment";
+JsValue a2 = newArray();
+JS.push(a2, "\\begin");
+JS.push(a2, "\\end");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 1;
+JsValue a4 = newArray();
+JS.push(a4, "text");
+o3["argTypes"] = a4;
+o1["props"] = o3;
+o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue funcName = op6["funcName"];
+  JsValue nameGroup = args[0];
+  if (JS.strictNotEqual(nameGroup["type"], "ordgroup")) {
+    throw JS.construct(ParseError, "Invalid environment name", nameGroup);
+  }
+  JsValue envName = "";
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, nameGroup["body"]["length"])) {
+      envName = JS.add(envName, JS.call(assertNodeType, undef(), nameGroup["body"][i], "textord")["text"]);
+      i = JS.add(i, 1);
+    }
+  }
+  if (JS.strictEqual(funcName, "\\begin")) {
+    if (!(hasOwn(environments, envName))) {
+      throw JS.construct(ParseError, JS.add("No such environment: ", envName), nameGroup);
+    }
+    JsValue env = environments[envName];
+    JsValue op8 = JS.invoke(parser, "parseArguments", JS.add(JS.add("\\begin{", envName), "}"), env);
+    JsValue args = op8["args"];
+    JsValue optArgs = op8["optArgs"];
+    JsValue o9 = emptyObject();
+    o9["mode"] = parser["mode"];
+    o9["envName"] = envName;
+    o9["parser"] = parser;
+    JsValue context = o9;
+    JsValue result = JS.invoke(env, "handler", context, args, optArgs);
+    JS.invoke(parser, "expect", "\\end", false);
+    JsValue endNameToken = parser["nextToken"];
+    JsValue end = JS.call(assertNodeType, undef(), JS.invoke(parser, "parseFunction"), "environment");
+    if (JS.strictNotEqual(end["name"], envName)) {
+      throw JS.construct(ParseError, "Mismatch: \\begin{" + toStr(envName) + "} matched by \\end{" + toStr(end["name"]) + "}", endNameToken);
+    }
+    return result;
+  }
+  JsValue o10 = emptyObject();
+  o10["type"] = "environment";
+  o10["mode"] = parser["mode"];
+  o10["name"] = envName;
+  o10["nameGroup"] = nameGroup;
+  return o10;
+  return undef();
+});
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

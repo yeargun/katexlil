@@ -1,0 +1,284 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { utils } from "./utils.lil";
+import { ParseError } from "./ParseError.lil";
+import { Token } from "./Token.lil";
+
+JsValue SETTINGS_SCHEMA = undef();
+JsValue getDefaultValue = undef();
+JsValue Settings = undef();
+
+JsValue o1 = emptyObject();
+JsValue o2 = emptyObject();
+o2["type"] = "boolean";
+o2["description"] = JS.add(JS.add("Render math in display mode, which puts the math in ", "display style (so \\int and \\sum are large, for example), and "), "centers the math on the page on its own line.");
+o2["cli"] = "-d, --display-mode";
+o1["displayMode"] = o2;
+JsValue o3 = emptyObject();
+JsValue o4 = emptyObject();
+JsValue a5 = newArray();
+JS.push(a5, "htmlAndMathml");
+JS.push(a5, "html");
+JS.push(a5, "mathml");
+o4["enum"] = a5;
+o3["type"] = o4;
+o3["description"] = "Determines the markup language of the output.";
+o3["cli"] = "-F, --format <type>";
+o1["output"] = o3;
+JsValue o6 = emptyObject();
+o6["type"] = "boolean";
+o6["description"] = "Render display math in leqno style (left-justified tags).";
+o1["leqno"] = o6;
+JsValue o7 = emptyObject();
+o7["type"] = "boolean";
+o7["description"] = "Render display math flush left.";
+o1["fleqn"] = o7;
+JsValue o8 = emptyObject();
+o8["type"] = "boolean";
+o8["default"] = true;
+o8["cli"] = "-t, --no-throw-on-error";
+o8["cliDescription"] = JS.add("Render errors (in the color given by --error-color) ins", "tead of throwing a ParseError exception when encountering an error.");
+o1["throwOnError"] = o8;
+JsValue o9 = emptyObject();
+o9["type"] = "string";
+o9["default"] = "#cc0000";
+o9["cli"] = "-c, --error-color <color>";
+o9["cliDescription"] = JS.add(JS.add("A color string given in the format 'rgb' or 'rrggbb' ", "(no #). This option determines the color of errors rendered by the "), "-t option.");
+o9["cliProcessor"] = (JsValue color) => {
+  return JS.add("#", color);
+};
+o1["errorColor"] = o9;
+JsValue o10 = emptyObject();
+o10["type"] = "object";
+o10["cli"] = "-m, --macro <def>";
+o10["cliDescription"] = JS.add("Define custom macro of the form '\\foo:expansion' (use ", "multiple -m arguments for multiple macros).");
+JsValue a11 = newArray();
+o10["cliDefault"] = a11;
+o10["cliProcessor"] = (JsValue def, JsValue defs) => {
+  JS.invoke(defs, "push", def);
+  return defs;
+  return undef();
+};
+o1["macros"] = o10;
+JsValue o12 = emptyObject();
+o12["type"] = "number";
+o12["description"] = JS.add(JS.add(JS.add("Specifies a minimum thickness, in ems, for fraction lines,", " `\\sqrt` top lines, `{array}` vertical lines, `\\hline`, "), "`\\hdashline`, `\\underline`, `\\overline`, and the borders of "), "`\\fbox`, `\\boxed`, and `\\fcolorbox`.");
+o12["processor"] = (JsValue t) => {
+  return JS.invoke(Math, "max", 0, t);
+};
+o12["cli"] = "--min-rule-thickness <size>";
+o12["cliProcessor"] = parseFloat;
+o1["minRuleThickness"] = o12;
+JsValue o13 = emptyObject();
+o13["type"] = "boolean";
+o13["description"] = JS.add("Makes \\color behave like LaTeX's 2-argument \\textcolor, ", "instead of LaTeX's one-argument \\color mode change.");
+o13["cli"] = "-b, --color-is-text-color";
+o1["colorIsTextColor"] = o13;
+JsValue o14 = emptyObject();
+JsValue a15 = newArray();
+JsValue o16 = emptyObject();
+JsValue a17 = newArray();
+JS.push(a17, "warn");
+JS.push(a17, "ignore");
+JS.push(a17, "error");
+o16["enum"] = a17;
+JS.push(a15, o16);
+JS.push(a15, "boolean");
+JS.push(a15, "function");
+o14["type"] = a15;
+o14["description"] = JS.add("Turn on strict / LaTeX faithfulness mode, which throws an ", "error if the input uses features that are not supported by LaTeX.");
+o14["cli"] = "-S, --strict";
+o14["cliDefault"] = false;
+o1["strict"] = o14;
+JsValue o18 = emptyObject();
+JsValue a19 = newArray();
+JS.push(a19, "boolean");
+JS.push(a19, "function");
+o18["type"] = a19;
+o18["description"] = "Trust the input, enabling all HTML features such as \\url.";
+o18["cli"] = "-T, --trust";
+o1["trust"] = o18;
+JsValue o20 = emptyObject();
+o20["type"] = "number";
+o20["default"] = Infinity;
+o20["description"] = JS.add(JS.add("If non-zero, all user-specified sizes, e.g. in ", "\\rule{500em}{500em}, will be capped to maxSize ems. Otherwise, "), "elements and spaces can be arbitrarily large");
+o20["processor"] = (JsValue s) => {
+  return JS.invoke(Math, "max", 0, s);
+};
+o20["cli"] = "-s, --max-size <n>";
+o20["cliProcessor"] = parseInt;
+o1["maxSize"] = o20;
+JsValue o21 = emptyObject();
+o21["type"] = "number";
+o21["default"] = 1000;
+o21["description"] = JS.add(JS.add("Limit the number of macro expansions to the specified ", "number, to prevent e.g. infinite macro loops. If set to Infinity, "), "the macro expander will try to fully expand as in LaTeX.");
+o21["processor"] = (JsValue n) => {
+  return JS.invoke(Math, "max", 0, n);
+};
+o21["cli"] = "-e, --max-expand <n>";
+o21["cliProcessor"] = (JsValue n) => {
+  JsValue c22 = undef();
+  if (JS.strictEqual(n, "Infinity")) {
+    c22 = Infinity;
+  } else {
+    c22 = hostParseInt(n);
+  }
+  return c22;
+};
+o1["maxExpand"] = o21;
+JsValue o23 = emptyObject();
+o23["type"] = "boolean";
+o23["cli"] = false;
+o1["globalGroup"] = o23;
+SETTINGS_SCHEMA = o1;
+getDefaultValue = (JsValue schema) => {
+  if (schema["default"].truthy()) {
+    return schema["default"];
+  }
+  JsValue type = schema["type"];
+  JsValue c24 = undef();
+  if (isArr(type)) {
+    c24 = type[0];
+  } else {
+    c24 = type;
+  }
+  JsValue defaultType = c24;
+  if (JS.strictNotEqual(JS.typeOf(defaultType), "string")) {
+    return defaultType["enum"][0];
+  }
+  JsValue sw25 = defaultType;
+  if (JS.strictEqual(sw25, "boolean")) {
+    return false;
+  }
+  else if (JS.strictEqual(sw25, "string")) {
+    return "";
+  }
+  else if (JS.strictEqual(sw25, "number")) {
+    return 0;
+  }
+  else if (JS.strictEqual(sw25, "object")) {
+    JsValue o26 = emptyObject();
+    return o26;
+  }
+  return undef();
+};
+Settings = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue options = argv[0];
+  JsValue or27 = options;
+  if (!(or27.truthy())) {
+    JsValue o28 = emptyObject();
+    or27 = o28;
+  }
+  options = or27;
+  JsValue obj29 = SETTINGS_SCHEMA;
+  JsValue keys30 = objectKeys(obj29);
+  int ki31 = 0;
+  int kn32 = len(keys30);
+  while (ki31 < kn32) {
+    JsValue prop = keys30[ki31];
+    if (hasOwn(SETTINGS_SCHEMA, prop)) {
+      JsValue schema = SETTINGS_SCHEMA[prop];
+      JsValue c33 = undef();
+      if (JS.strictNotEqual(options[prop], undef())) {
+        JsValue c34 = undef();
+        if (schema["processor"].truthy()) {
+          c34 = JS.invoke(schema, "processor", options[prop]);
+        } else {
+          c34 = options[prop];
+        }
+        c33 = c34;
+      } else {
+        c33 = JS.call(getDefaultValue, undef(), schema);
+      }
+      self[prop] = c33;
+    }
+    ki31 = ki31 + 1;
+  }
+  return self;
+});
+Settings["prototype"]["reportNonstrict"] = JS.method3((JsValue self, JsValue errorCode, JsValue errorMsg, JsValue token) => {
+  JsValue strict = self["strict"];
+  if (JS.strictEqual(JS.typeOf(strict), "function")) {
+    strict = JS.call(strict, undef(), errorCode, errorMsg, token);
+  }
+  if ((!(strict.truthy())) || (JS.strictEqual(strict, "ignore"))) {
+    return undef();
+  } else {
+    if ((JS.strictEqual(strict, true)) || (JS.strictEqual(strict, "error"))) {
+      throw JS.construct(ParseError, JS.add("LaTeX-incompatible input and strict mode is set to 'error': ", toStr(errorMsg) + " [" + toStr(errorCode) + "]"), token);
+    } else {
+      if (JS.strictEqual(strict, "warn")) {
+        JsValue and35 = JS.strictNotEqual(JS.typeOf(getConsole()), "undefined");
+        if (and35.truthy()) {
+          and35 = warn(JS.add("LaTeX-incompatible input and strict mode is set to 'warn': ", toStr(errorMsg) + " [" + toStr(errorCode) + "]"));
+        }
+        and35;
+      } else {
+        JsValue and36 = JS.strictNotEqual(JS.typeOf(getConsole()), "undefined");
+        if (and36.truthy()) {
+          and36 = warn(JS.add("LaTeX-incompatible input and strict mode is set to ", "unrecognized '" + toStr(strict) + "': " + toStr(errorMsg) + " [" + toStr(errorCode) + "]"));
+        }
+        and36;
+      }
+    }
+  }
+  return undef();
+});
+Settings["prototype"]["useStrictBehavior"] = JS.method3((JsValue self, JsValue errorCode, JsValue errorMsg, JsValue token) => {
+  JsValue strict = self["strict"];
+  if (JS.strictEqual(JS.typeOf(strict), "function")) {
+    try {
+      strict = JS.call(strict, undef(), errorCode, errorMsg, token);
+    } catch (JsValue error) {
+      strict = "error";
+    }
+  }
+  if ((!(strict.truthy())) || (JS.strictEqual(strict, "ignore"))) {
+    return false;
+  } else {
+    if ((JS.strictEqual(strict, true)) || (JS.strictEqual(strict, "error"))) {
+      return true;
+    } else {
+      if (JS.strictEqual(strict, "warn")) {
+        JsValue and37 = JS.strictNotEqual(JS.typeOf(getConsole()), "undefined");
+        if (and37.truthy()) {
+          and37 = warn(JS.add("LaTeX-incompatible input and strict mode is set to 'warn': ", toStr(errorMsg) + " [" + toStr(errorCode) + "]"));
+        }
+        and37;
+        return false;
+      } else {
+        JsValue and38 = JS.strictNotEqual(JS.typeOf(getConsole()), "undefined");
+        if (and38.truthy()) {
+          and38 = warn(JS.add("LaTeX-incompatible input and strict mode is set to ", "unrecognized '" + toStr(strict) + "': " + toStr(errorMsg) + " [" + toStr(errorCode) + "]"));
+        }
+        and38;
+        return false;
+      }
+    }
+  }
+  return undef();
+});
+Settings["prototype"]["isTrusted"] = JS.method1((JsValue self, JsValue context) => {
+  if ((context["url"].truthy()) && (!(context["protocol"].truthy()))) {
+    JsValue protocol = JS.invoke(utils, "protocolFromUrl", context["url"]);
+    if (isNullish(protocol)) {
+      return false;
+    }
+    context["protocol"] = protocol;
+  }
+  JsValue c39 = undef();
+  if (JS.strictEqual(JS.typeOf(self["trust"]), "function")) {
+    c39 = JS.invoke(self, "trust", context);
+  } else {
+    c39 = self["trust"];
+  }
+  JsValue trust = c39;
+  return trust.truthy();
+  return undef();
+});
+JsValue __star = emptyObject();
+__star["SETTINGS_SCHEMA"] = SETTINGS_SCHEMA;
+__star["default"] = Settings;
+__star["Settings"] = Settings;
+
+export { __star, SETTINGS_SCHEMA, Settings as Settings };

@@ -1,0 +1,133 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN, pushAll } from "./host.lil";
+
+JsValue scriptData = undef();
+JsValue scriptFromCodepoint = undef();
+JsValue allBlocks = undef();
+JsValue supportedCodepoint = undef();
+
+JsValue a1 = newArray();
+JsValue o2 = emptyObject();
+o2["name"] = "latin";
+JsValue a3 = newArray();
+JsValue a4 = newArray();
+JS.push(a4, 256);
+JS.push(a4, 591);
+JS.push(a3, a4);
+JsValue a5 = newArray();
+JS.push(a5, 768);
+JS.push(a5, 879);
+JS.push(a3, a5);
+o2["blocks"] = a3;
+JS.push(a1, o2);
+JsValue o6 = emptyObject();
+o6["name"] = "cyrillic";
+JsValue a7 = newArray();
+JsValue a8 = newArray();
+JS.push(a8, 1024);
+JS.push(a8, 1279);
+JS.push(a7, a8);
+o6["blocks"] = a7;
+JS.push(a1, o6);
+JsValue o9 = emptyObject();
+o9["name"] = "armenian";
+JsValue a10 = newArray();
+JsValue a11 = newArray();
+JS.push(a11, 1328);
+JS.push(a11, 1423);
+JS.push(a10, a11);
+o9["blocks"] = a10;
+JS.push(a1, o9);
+JsValue o12 = emptyObject();
+o12["name"] = "brahmic";
+JsValue a13 = newArray();
+JsValue a14 = newArray();
+JS.push(a14, 2304);
+JS.push(a14, 4255);
+JS.push(a13, a14);
+o12["blocks"] = a13;
+JS.push(a1, o12);
+JsValue o15 = emptyObject();
+o15["name"] = "georgian";
+JsValue a16 = newArray();
+JsValue a17 = newArray();
+JS.push(a17, 4256);
+JS.push(a17, 4351);
+JS.push(a16, a17);
+o15["blocks"] = a16;
+JS.push(a1, o15);
+JsValue o18 = emptyObject();
+o18["name"] = "cjk";
+JsValue a19 = newArray();
+JsValue a20 = newArray();
+JS.push(a20, 12288);
+JS.push(a20, 12543);
+JS.push(a19, a20);
+JsValue a21 = newArray();
+JS.push(a21, 19968);
+JS.push(a21, 40879);
+JS.push(a19, a21);
+JsValue a22 = newArray();
+JS.push(a22, 65280);
+JS.push(a22, 65376);
+JS.push(a19, a22);
+o18["blocks"] = a19;
+JS.push(a1, o18);
+JsValue o23 = emptyObject();
+o23["name"] = "hangul";
+JsValue a24 = newArray();
+JsValue a25 = newArray();
+JS.push(a25, 44032);
+JS.push(a25, 55215);
+JS.push(a24, a25);
+o23["blocks"] = a24;
+JS.push(a1, o23);
+scriptData = a1;
+scriptFromCodepoint = (JsValue codepoint) => {
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, scriptData["length"])) {
+      JsValue script = scriptData[i];
+      {
+        JsValue i = 0;
+        while (JS.lessThan(i, script["blocks"]["length"])) {
+          JsValue block = script["blocks"][i];
+          if ((JS.greaterThanOrEqual(codepoint, block[0])) && (JS.lessThanOrEqual(codepoint, block[1]))) {
+            return script["name"];
+          }
+          JsValue u26 = i;
+          i = JS.add(i, 1);
+        }
+      }
+      JsValue u27 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return null;
+  return undef();
+};
+JsValue a28 = newArray();
+allBlocks = a28;
+JS.invoke(scriptData, "forEach", (JsValue s) => {
+  return JS.invoke(s["blocks"], "forEach", (JsValue b) => {
+  pushAll(allBlocks, b);
+  return undef();
+  });
+});
+supportedCodepoint = (JsValue codepoint) => {
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, allBlocks["length"])) {
+      if ((JS.greaterThanOrEqual(codepoint, allBlocks[i])) && (JS.lessThanOrEqual(codepoint, allBlocks[JS.add(i, 1)]))) {
+        return true;
+      }
+      i = JS.add(i, 2);
+    }
+  }
+  return false;
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["scriptFromCodepoint"] = scriptFromCodepoint;
+__star["supportedCodepoint"] = supportedCodepoint;
+
+export { __star, scriptFromCodepoint, supportedCodepoint };

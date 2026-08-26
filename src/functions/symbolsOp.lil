@@ -1,0 +1,40 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunctionBuilders } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "atom";
+o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a2 = newArray();
+  JS.push(a2, JS.add("m", group["family"]));
+  return JS.invoke(buildCommon, "mathsym", group["text"], group["mode"], options, a2);
+  return undef();
+});
+o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a3 = newArray();
+  JS.push(a3, JS.invoke(mml, "makeText", group["text"], group["mode"]));
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mo", a3);
+  if (JS.strictEqual(group["family"], "bin")) {
+    JsValue variant = JS.invoke(mml, "getVariant", group, options);
+    if (JS.strictEqual(variant, "bold-italic")) {
+      JS.invoke(node, "setAttribute", "mathvariant", variant);
+    }
+  } else {
+    if (JS.strictEqual(group["family"], "punct")) {
+      JS.invoke(node, "setAttribute", "separator", "true");
+    } else {
+      if ((JS.strictEqual(group["family"], "open")) || (JS.strictEqual(group["family"], "close"))) {
+        JS.invoke(node, "setAttribute", "stretchy", "false");
+      }
+    }
+  }
+  return node;
+  return undef();
+});
+JS.call(defineFunctionBuilders, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

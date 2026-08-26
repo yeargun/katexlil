@@ -1,0 +1,26 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunctionBuilders } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "ordgroup";
+o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  if (group["semisimple"].truthy()) {
+    return JS.invoke(buildCommon, "makeFragment", JS.invoke(html, "buildExpression", group["body"], options, false));
+  }
+  JsValue a2 = newArray();
+  JS.push(a2, "mord");
+  return JS.invoke(buildCommon, "makeSpan", a2, JS.invoke(html, "buildExpression", group["body"], options, true), options);
+  return undef();
+});
+o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  return JS.invoke(mml, "buildExpressionRow", group["body"], options, true);
+  return undef();
+});
+JS.call(defineFunctionBuilders, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

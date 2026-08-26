@@ -1,0 +1,193 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { stretchy } from "../stretchy.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue paddedNode = undef();
+
+paddedNode = (JsValue group) => {
+  JsValue c1 = undef();
+  if (group.truthy()) {
+    JsValue a2 = newArray();
+    JS.push(a2, group);
+    c1 = a2;
+  } else {
+    JsValue a3 = newArray();
+    c1 = a3;
+  }
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", c1);
+  JS.invoke(node, "setAttribute", "width", "+0.6em");
+  JS.invoke(node, "setAttribute", "lspace", "0.3em");
+  return node;
+  return undef();
+};
+JsValue o4 = emptyObject();
+o4["type"] = "xArrow";
+JsValue a5 = newArray();
+JS.push(a5, "\\xleftarrow");
+JS.push(a5, "\\xrightarrow");
+JS.push(a5, "\\xLeftarrow");
+JS.push(a5, "\\xRightarrow");
+JS.push(a5, "\\xleftrightarrow");
+JS.push(a5, "\\xLeftrightarrow");
+JS.push(a5, "\\xhookleftarrow");
+JS.push(a5, "\\xhookrightarrow");
+JS.push(a5, "\\xmapsto");
+JS.push(a5, "\\xrightharpoondown");
+JS.push(a5, "\\xrightharpoonup");
+JS.push(a5, "\\xleftharpoondown");
+JS.push(a5, "\\xleftharpoonup");
+JS.push(a5, "\\xrightleftharpoons");
+JS.push(a5, "\\xleftrightharpoons");
+JS.push(a5, "\\xlongequal");
+JS.push(a5, "\\xtwoheadrightarrow");
+JS.push(a5, "\\xtwoheadleftarrow");
+JS.push(a5, "\\xtofrom");
+JS.push(a5, "\\xrightleftarrows");
+JS.push(a5, "\\xrightequilibrium");
+JS.push(a5, "\\xleftequilibrium");
+JS.push(a5, "\\\\cdrightarrow");
+JS.push(a5, "\\\\cdleftarrow");
+JS.push(a5, "\\\\cdlongequal");
+o4["names"] = a5;
+JsValue o6 = emptyObject();
+o6["numArgs"] = 1;
+o6["numOptionalArgs"] = 1;
+o4["props"] = o6;
+o4["handler"] = JS.method3((JsValue self, JsValue p7, JsValue args, JsValue optArgs) => {
+  JsValue op8 = p7;
+  JsValue parser = op8["parser"];
+  JsValue funcName = op8["funcName"];
+  JsValue o9 = emptyObject();
+  o9["type"] = "xArrow";
+  o9["mode"] = parser["mode"];
+  o9["label"] = funcName;
+  o9["body"] = args[0];
+  o9["below"] = optArgs[0];
+  return o9;
+  return undef();
+});
+o4["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue style = options["style"];
+  JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(style, "sup"));
+  JsValue upperGroup = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["body"], newOptions, options), options);
+  JsValue c10 = undef();
+  if (JS.strictEqual(JS.invoke(group["label"], "slice", 0, 2), "\\x")) {
+    c10 = "x";
+  } else {
+    c10 = "cd";
+  }
+  JsValue arrowPrefix = c10;
+  JS.invoke(upperGroup["classes"], "push", JS.add(arrowPrefix, "-arrow-pad"));
+  JsValue lowerGroup = undef();
+  if (group["below"].truthy()) {
+    newOptions = JS.invoke(options, "havingStyle", JS.invoke(style, "sub"));
+    lowerGroup = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["below"], newOptions, options), options);
+    JS.invoke(lowerGroup["classes"], "push", JS.add(arrowPrefix, "-arrow-pad"));
+  }
+  JsValue arrowBody = JS.invoke(stretchy, "svgSpan", group, options);
+  JsValue arrowShift = JS.add(JS.number(0) - toNum(JS.invoke(options, "fontMetrics")["axisHeight"]), (toNum(0.5) * toNum(arrowBody["height"])));
+  JsValue upperShift = (toNum((toNum(JS.number(0) - toNum(JS.invoke(options, "fontMetrics")["axisHeight"])) - toNum((toNum(0.5) * toNum(arrowBody["height"]))))) - toNum(0.111));
+  if ((JS.greaterThan(upperGroup["depth"], 0.25)) || (JS.strictEqual(group["label"], "\\xleftequilibrium"))) {
+    upperShift = (toNum(upperShift) - toNum(upperGroup["depth"]));
+  }
+  JsValue vlist = undef();
+  if (lowerGroup.truthy()) {
+    JsValue lowerShift = JS.add(JS.add(JS.add(JS.number(0) - toNum(JS.invoke(options, "fontMetrics")["axisHeight"]), lowerGroup["height"]), (toNum(0.5) * toNum(arrowBody["height"]))), 0.111);
+    JsValue o11 = emptyObject();
+    o11["positionType"] = "individualShift";
+    JsValue a12 = newArray();
+    JsValue o13 = emptyObject();
+    o13["type"] = "elem";
+    o13["elem"] = upperGroup;
+    o13["shift"] = upperShift;
+    JS.push(a12, o13);
+    JsValue o14 = emptyObject();
+    o14["type"] = "elem";
+    o14["elem"] = arrowBody;
+    o14["shift"] = arrowShift;
+    JS.push(a12, o14);
+    JsValue o15 = emptyObject();
+    o15["type"] = "elem";
+    o15["elem"] = lowerGroup;
+    o15["shift"] = lowerShift;
+    JS.push(a12, o15);
+    o11["children"] = a12;
+    vlist = JS.invoke(buildCommon, "makeVList", o11, options);
+  } else {
+    JsValue o16 = emptyObject();
+    o16["positionType"] = "individualShift";
+    JsValue a17 = newArray();
+    JsValue o18 = emptyObject();
+    o18["type"] = "elem";
+    o18["elem"] = upperGroup;
+    o18["shift"] = upperShift;
+    JS.push(a17, o18);
+    JsValue o19 = emptyObject();
+    o19["type"] = "elem";
+    o19["elem"] = arrowBody;
+    o19["shift"] = arrowShift;
+    JS.push(a17, o19);
+    o16["children"] = a17;
+    vlist = JS.invoke(buildCommon, "makeVList", o16, options);
+  }
+  JS.invoke(vlist["children"][0]["children"][0]["children"][1]["classes"], "push", "svg-align");
+  JsValue a20 = newArray();
+  JS.push(a20, "mrel");
+  JS.push(a20, "x-arrow");
+  JsValue a21 = newArray();
+  JS.push(a21, vlist);
+  return JS.invoke(buildCommon, "makeSpan", a20, a21, options);
+  return undef();
+});
+o4["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue arrowNode = JS.invoke(stretchy, "mathMLnode", group["label"]);
+  JsValue c22 = undef();
+  if (JS.strictEqual(JS.invoke(group["label"], "charAt", 0), "x")) {
+    c22 = "1.75em";
+  } else {
+    c22 = "3.0em";
+  }
+  JS.invoke(arrowNode, "setAttribute", "minsize", c22);
+  JsValue node = undef();
+  if (group["body"].truthy()) {
+    JsValue upperNode = JS.call(paddedNode, undef(), JS.invoke(mml, "buildGroup", group["body"], options));
+    if (group["below"].truthy()) {
+      JsValue lowerNode = JS.call(paddedNode, undef(), JS.invoke(mml, "buildGroup", group["below"], options));
+      JsValue a23 = newArray();
+      JS.push(a23, arrowNode);
+      JS.push(a23, lowerNode);
+      JS.push(a23, upperNode);
+      node = JS.construct(mathMLTree["MathNode"], "munderover", a23);
+    } else {
+      JsValue a24 = newArray();
+      JS.push(a24, arrowNode);
+      JS.push(a24, upperNode);
+      node = JS.construct(mathMLTree["MathNode"], "mover", a24);
+    }
+  } else {
+    if (group["below"].truthy()) {
+      JsValue lowerNode = JS.call(paddedNode, undef(), JS.invoke(mml, "buildGroup", group["below"], options));
+      JsValue a25 = newArray();
+      JS.push(a25, arrowNode);
+      JS.push(a25, lowerNode);
+      node = JS.construct(mathMLTree["MathNode"], "munder", a25);
+    } else {
+      node = JS.call(paddedNode, undef());
+      JsValue a26 = newArray();
+      JS.push(a26, arrowNode);
+      JS.push(a26, node);
+      node = JS.construct(mathMLTree["MathNode"], "mover", a26);
+    }
+  }
+  return node;
+  return undef();
+});
+JS.call(defineFunction, undef(), o4);
+JsValue __star = emptyObject();
+
+export { __star };

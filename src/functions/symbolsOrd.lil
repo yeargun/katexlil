@@ -1,0 +1,81 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunctionBuilders } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue defaultVariant = undef();
+
+JsValue o1 = emptyObject();
+o1["mi"] = "italic";
+o1["mn"] = "normal";
+o1["mtext"] = "normal";
+defaultVariant = o1;
+JsValue o2 = emptyObject();
+o2["type"] = "mathord";
+o2["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  return JS.invoke(buildCommon, "makeOrd", group, options, "mathord");
+  return undef();
+});
+o2["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a3 = newArray();
+  JS.push(a3, JS.invoke(mml, "makeText", group["text"], group["mode"], options));
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mi", a3);
+  JsValue or4 = JS.invoke(mml, "getVariant", group, options);
+  if (!(or4.truthy())) {
+    or4 = "italic";
+  }
+  JsValue variant = or4;
+  if (JS.strictNotEqual(variant, defaultVariant[node["type"]])) {
+    JS.invoke(node, "setAttribute", "mathvariant", variant);
+  }
+  return node;
+  return undef();
+});
+JS.call(defineFunctionBuilders, undef(), o2);
+JsValue o5 = emptyObject();
+o5["type"] = "textord";
+o5["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  return JS.invoke(buildCommon, "makeOrd", group, options, "textord");
+  return undef();
+});
+o5["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue text = JS.invoke(mml, "makeText", group["text"], group["mode"], options);
+  JsValue or6 = JS.invoke(mml, "getVariant", group, options);
+  if (!(or6.truthy())) {
+    or6 = "normal";
+  }
+  JsValue variant = or6;
+  JsValue node = undef();
+  if (JS.strictEqual(group["mode"], "text")) {
+    JsValue a7 = newArray();
+    JS.push(a7, text);
+    node = JS.construct(mathMLTree["MathNode"], "mtext", a7);
+  } else {
+    if (JS.invoke(JS.construct(RegExp, "[0-9]", ""), "test", group["text"]).truthy()) {
+      JsValue a8 = newArray();
+      JS.push(a8, text);
+      node = JS.construct(mathMLTree["MathNode"], "mn", a8);
+    } else {
+      if (JS.strictEqual(group["text"], "\\prime")) {
+        JsValue a9 = newArray();
+        JS.push(a9, text);
+        node = JS.construct(mathMLTree["MathNode"], "mo", a9);
+      } else {
+        JsValue a10 = newArray();
+        JS.push(a10, text);
+        node = JS.construct(mathMLTree["MathNode"], "mi", a10);
+      }
+    }
+  }
+  if (JS.strictNotEqual(variant, defaultVariant[node["type"]])) {
+    JS.invoke(node, "setAttribute", "mathvariant", variant);
+  }
+  return node;
+  return undef();
+});
+JS.call(defineFunctionBuilders, undef(), o5);
+JsValue __star = emptyObject();
+
+export { __star };

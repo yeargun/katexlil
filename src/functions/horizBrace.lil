@@ -1,0 +1,182 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { stretchy } from "../stretchy.lil";
+import { Style } from "../Style.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+
+htmlBuilder = (JsValue grp, JsValue options) => {
+  JsValue style = options["style"];
+  JsValue supSubGroup = undef();
+  JsValue group = undef();
+  if (JS.strictEqual(grp["type"], "supsub")) {
+    JsValue c1 = undef();
+    if (grp["sup"].truthy()) {
+      c1 = JS.invoke(html, "buildGroup", grp["sup"], JS.invoke(options, "havingStyle", JS.invoke(style, "sup")), options);
+    } else {
+      c1 = JS.invoke(html, "buildGroup", grp["sub"], JS.invoke(options, "havingStyle", JS.invoke(style, "sub")), options);
+    }
+    supSubGroup = c1;
+    group = JS.call(assertNodeType, undef(), grp["base"], "horizBrace");
+  } else {
+    group = JS.call(assertNodeType, undef(), grp, "horizBrace");
+  }
+  JsValue body = JS.invoke(html, "buildGroup", group["base"], JS.invoke(options, "havingBaseStyle", Style["DISPLAY"]));
+  JsValue braceBody = JS.invoke(stretchy, "svgSpan", group, options);
+  JsValue vlist = undef();
+  if (group["isOver"].truthy()) {
+    JsValue o2 = emptyObject();
+    o2["positionType"] = "firstBaseline";
+    JsValue a3 = newArray();
+    JsValue o4 = emptyObject();
+    o4["type"] = "elem";
+    o4["elem"] = body;
+    JS.push(a3, o4);
+    JsValue o5 = emptyObject();
+    o5["type"] = "kern";
+    o5["size"] = 0.1;
+    JS.push(a3, o5);
+    JsValue o6 = emptyObject();
+    o6["type"] = "elem";
+    o6["elem"] = braceBody;
+    JS.push(a3, o6);
+    o2["children"] = a3;
+    vlist = JS.invoke(buildCommon, "makeVList", o2, options);
+    JS.invoke(vlist["children"][0]["children"][0]["children"][1]["classes"], "push", "svg-align");
+  } else {
+    JsValue o7 = emptyObject();
+    o7["positionType"] = "bottom";
+    o7["positionData"] = JS.add(JS.add(body["depth"], 0.1), braceBody["height"]);
+    JsValue a8 = newArray();
+    JsValue o9 = emptyObject();
+    o9["type"] = "elem";
+    o9["elem"] = braceBody;
+    JS.push(a8, o9);
+    JsValue o10 = emptyObject();
+    o10["type"] = "kern";
+    o10["size"] = 0.1;
+    JS.push(a8, o10);
+    JsValue o11 = emptyObject();
+    o11["type"] = "elem";
+    o11["elem"] = body;
+    JS.push(a8, o11);
+    o7["children"] = a8;
+    vlist = JS.invoke(buildCommon, "makeVList", o7, options);
+    JS.invoke(vlist["children"][0]["children"][0]["children"][0]["classes"], "push", "svg-align");
+  }
+  if (supSubGroup.truthy()) {
+    JsValue a12 = newArray();
+    JS.push(a12, "mord");
+    JsValue c13 = undef();
+    if (group["isOver"].truthy()) {
+      c13 = "mover";
+    } else {
+      c13 = "munder";
+    }
+    JS.push(a12, c13);
+    JsValue a14 = newArray();
+    JS.push(a14, vlist);
+    JsValue vSpan = JS.invoke(buildCommon, "makeSpan", a12, a14, options);
+    if (group["isOver"].truthy()) {
+      JsValue o15 = emptyObject();
+      o15["positionType"] = "firstBaseline";
+      JsValue a16 = newArray();
+      JsValue o17 = emptyObject();
+      o17["type"] = "elem";
+      o17["elem"] = vSpan;
+      JS.push(a16, o17);
+      JsValue o18 = emptyObject();
+      o18["type"] = "kern";
+      o18["size"] = 0.2;
+      JS.push(a16, o18);
+      JsValue o19 = emptyObject();
+      o19["type"] = "elem";
+      o19["elem"] = supSubGroup;
+      JS.push(a16, o19);
+      o15["children"] = a16;
+      vlist = JS.invoke(buildCommon, "makeVList", o15, options);
+    } else {
+      JsValue o20 = emptyObject();
+      o20["positionType"] = "bottom";
+      o20["positionData"] = JS.add(JS.add(JS.add(vSpan["depth"], 0.2), supSubGroup["height"]), supSubGroup["depth"]);
+      JsValue a21 = newArray();
+      JsValue o22 = emptyObject();
+      o22["type"] = "elem";
+      o22["elem"] = supSubGroup;
+      JS.push(a21, o22);
+      JsValue o23 = emptyObject();
+      o23["type"] = "kern";
+      o23["size"] = 0.2;
+      JS.push(a21, o23);
+      JsValue o24 = emptyObject();
+      o24["type"] = "elem";
+      o24["elem"] = vSpan;
+      JS.push(a21, o24);
+      o20["children"] = a21;
+      vlist = JS.invoke(buildCommon, "makeVList", o20, options);
+    }
+  }
+  JsValue a25 = newArray();
+  JS.push(a25, "mord");
+  JsValue c26 = undef();
+  if (group["isOver"].truthy()) {
+    c26 = "mover";
+  } else {
+    c26 = "munder";
+  }
+  JS.push(a25, c26);
+  JsValue a27 = newArray();
+  JS.push(a27, vlist);
+  return JS.invoke(buildCommon, "makeSpan", a25, a27, options);
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue accentNode = JS.invoke(stretchy, "mathMLnode", group["label"]);
+  JsValue c28 = undef();
+  if (group["isOver"].truthy()) {
+    c28 = "mover";
+  } else {
+    c28 = "munder";
+  }
+  JsValue a29 = newArray();
+  JS.push(a29, JS.invoke(mml, "buildGroup", group["base"], options));
+  JS.push(a29, accentNode);
+  return JS.construct(mathMLTree["MathNode"], c28, a29);
+  return undef();
+};
+JsValue o30 = emptyObject();
+o30["type"] = "horizBrace";
+JsValue a31 = newArray();
+JS.push(a31, "\\overbrace");
+JS.push(a31, "\\underbrace");
+o30["names"] = a31;
+JsValue o32 = emptyObject();
+o32["numArgs"] = 1;
+o30["props"] = o32;
+o30["handler"] = JS.method2((JsValue self, JsValue p33, JsValue args) => {
+  JsValue op34 = p33;
+  JsValue parser = op34["parser"];
+  JsValue funcName = op34["funcName"];
+  JsValue o35 = emptyObject();
+  o35["type"] = "horizBrace";
+  o35["mode"] = parser["mode"];
+  o35["label"] = funcName;
+  o35["isOver"] = JS.invoke(JS.construct(RegExp, "^\\\\over", ""), "test", funcName);
+  o35["base"] = args[0];
+  return o35;
+  return undef();
+});
+o30["htmlBuilder"] = htmlBuilder;
+o30["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o30);
+JsValue __star = emptyObject();
+__star["htmlBuilder"] = htmlBuilder;
+
+export { __star, htmlBuilder };

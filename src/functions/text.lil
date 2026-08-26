@@ -1,0 +1,106 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue textFontFamilies = undef();
+JsValue textFontWeights = undef();
+JsValue textFontShapes = undef();
+JsValue optionsWithFont = undef();
+
+JsValue o1 = emptyObject();
+o1["\\text"] = undef();
+o1["\\textrm"] = "textrm";
+o1["\\textsf"] = "textsf";
+o1["\\texttt"] = "texttt";
+o1["\\textnormal"] = "textrm";
+textFontFamilies = o1;
+JsValue o2 = emptyObject();
+o2["\\textbf"] = "textbf";
+o2["\\textmd"] = "textmd";
+textFontWeights = o2;
+JsValue o3 = emptyObject();
+o3["\\textit"] = "textit";
+o3["\\textup"] = "textup";
+textFontShapes = o3;
+optionsWithFont = (JsValue group, JsValue options) => {
+  JsValue font = group["font"];
+  if (!(font.truthy())) {
+    return options;
+  } else {
+    if (textFontFamilies[font].truthy()) {
+      return JS.invoke(options, "withTextFontFamily", textFontFamilies[font]);
+    } else {
+      if (textFontWeights[font].truthy()) {
+        return JS.invoke(options, "withTextFontWeight", textFontWeights[font]);
+      } else {
+        if (JS.strictEqual(font, "\\emph")) {
+          JsValue c4 = undef();
+          if (JS.strictEqual(options["fontShape"], "textit")) {
+            c4 = JS.invoke(options, "withTextFontShape", "textup");
+          } else {
+            c4 = JS.invoke(options, "withTextFontShape", "textit");
+          }
+          return c4;
+        }
+      }
+    }
+  }
+  return JS.invoke(options, "withTextFontShape", textFontShapes[font]);
+  return undef();
+};
+JsValue o5 = emptyObject();
+o5["type"] = "text";
+JsValue a6 = newArray();
+JS.push(a6, "\\text");
+JS.push(a6, "\\textrm");
+JS.push(a6, "\\textsf");
+JS.push(a6, "\\texttt");
+JS.push(a6, "\\textnormal");
+JS.push(a6, "\\textbf");
+JS.push(a6, "\\textmd");
+JS.push(a6, "\\textit");
+JS.push(a6, "\\textup");
+JS.push(a6, "\\emph");
+o5["names"] = a6;
+JsValue o7 = emptyObject();
+o7["numArgs"] = 1;
+JsValue a8 = newArray();
+JS.push(a8, "text");
+o7["argTypes"] = a8;
+o7["allowedInArgument"] = true;
+o7["allowedInText"] = true;
+o5["props"] = o7;
+o5["handler"] = JS.method2((JsValue self, JsValue p9, JsValue args) => {
+  JsValue op10 = p9;
+  JsValue parser = op10["parser"];
+  JsValue funcName = op10["funcName"];
+  JsValue body = args[0];
+  JsValue o11 = emptyObject();
+  o11["type"] = "text";
+  o11["mode"] = parser["mode"];
+  o11["body"] = JS.call(ordargument, undef(), body);
+  o11["font"] = funcName;
+  return o11;
+  return undef();
+});
+o5["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue newOptions = JS.call(optionsWithFont, undef(), group, options);
+  JsValue inner = JS.invoke(html, "buildExpression", group["body"], newOptions, true);
+  JsValue a12 = newArray();
+  JS.push(a12, "mord");
+  JS.push(a12, "text");
+  return JS.invoke(buildCommon, "makeSpan", a12, inner, newOptions);
+  return undef();
+});
+o5["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue newOptions = JS.call(optionsWithFont, undef(), group, options);
+  return JS.invoke(mml, "buildExpressionRow", group["body"], newOptions);
+  return undef();
+});
+JS.call(defineFunction, undef(), o5);
+JsValue __star = emptyObject();
+
+export { __star };

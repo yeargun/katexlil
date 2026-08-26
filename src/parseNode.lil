@@ -1,0 +1,48 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { NON_ATOMS } from "./symbols.lil";
+
+JsValue assertNodeType = undef();
+JsValue assertSymbolNodeType = undef();
+JsValue checkSymbolNodeType = undef();
+
+assertNodeType = (JsValue node, JsValue type) => {
+  if ((!(node.truthy())) || (JS.strictNotEqual(node["type"], type))) {
+    JsValue c1 = undef();
+    if (node.truthy()) {
+      c1 = "node of type " + toStr(node["type"]);
+    } else {
+      c1 = toStr(node);
+    }
+    throw makeError(toStr(JS.add("Expected node of type " + toStr(type) + ", but got ", c1)));
+  }
+  return node;
+  return undef();
+};
+assertSymbolNodeType = (JsValue node) => {
+  JsValue typedNode = JS.call(checkSymbolNodeType, undef(), node);
+  if (!(typedNode.truthy())) {
+    JsValue c2 = undef();
+    if (node.truthy()) {
+      c2 = "node of type " + toStr(node["type"]);
+    } else {
+      c2 = toStr(node);
+    }
+    throw makeError(toStr(JS.add("Expected node of symbol group type, but got ", c2)));
+  }
+  return typedNode;
+  return undef();
+};
+checkSymbolNodeType = (JsValue node) => {
+  if ((node.truthy()) && ((JS.strictEqual(node["type"], "atom")) || (hasOwn(NON_ATOMS, node["type"])))) {
+    return node;
+  }
+  return null;
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["assertNodeType"] = assertNodeType;
+__star["assertSymbolNodeType"] = assertSymbolNodeType;
+__star["checkSymbolNodeType"] = checkSymbolNodeType;
+
+export { __star, assertNodeType, assertSymbolNodeType, checkSymbolNodeType };

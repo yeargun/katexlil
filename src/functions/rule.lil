@@ -1,0 +1,108 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { buildCommon } from "../buildCommon.lil";
+import { defineFunction } from "../defineFunction.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { calculateSize, makeEm } from "../units.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "rule";
+JsValue a2 = newArray();
+JS.push(a2, "\\rule");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 2;
+o3["numOptionalArgs"] = 1;
+o3["allowedInText"] = true;
+o3["allowedInMath"] = true;
+JsValue a4 = newArray();
+JS.push(a4, "size");
+JS.push(a4, "size");
+JS.push(a4, "size");
+o3["argTypes"] = a4;
+o1["props"] = o3;
+o1["handler"] = JS.method3((JsValue self, JsValue p5, JsValue args, JsValue optArgs) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue shift = optArgs[0];
+  JsValue width = JS.call(assertNodeType, undef(), args[0], "size");
+  JsValue height = JS.call(assertNodeType, undef(), args[1], "size");
+  JsValue o7 = emptyObject();
+  o7["type"] = "rule";
+  o7["mode"] = parser["mode"];
+  JsValue and8 = shift;
+  if (and8.truthy()) {
+    and8 = JS.call(assertNodeType, undef(), shift, "size")["value"];
+  }
+  o7["shift"] = and8;
+  o7["width"] = width["value"];
+  o7["height"] = height["value"];
+  return o7;
+  return undef();
+});
+o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a9 = newArray();
+  JS.push(a9, "mord");
+  JS.push(a9, "rule");
+  JsValue a10 = newArray();
+  JsValue rule = JS.invoke(buildCommon, "makeSpan", a9, a10, options);
+  JsValue width = JS.call(calculateSize, undef(), group["width"], options);
+  JsValue height = JS.call(calculateSize, undef(), group["height"], options);
+  JsValue c11 = undef();
+  if (group["shift"].truthy()) {
+    c11 = JS.call(calculateSize, undef(), group["shift"], options);
+  } else {
+    c11 = 0;
+  }
+  JsValue shift = c11;
+  rule["style"]["borderRightWidth"] = JS.call(makeEm, undef(), width);
+  rule["style"]["borderTopWidth"] = JS.call(makeEm, undef(), height);
+  rule["style"]["bottom"] = JS.call(makeEm, undef(), shift);
+  rule["width"] = width;
+  rule["height"] = JS.add(height, shift);
+  rule["depth"] = JS.number(0) - toNum(shift);
+  rule["maxFontSize"] = (toNum((toNum(height) * toNum(1.125))) * toNum(options["sizeMultiplier"]));
+  return rule;
+  return undef();
+});
+o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue width = JS.call(calculateSize, undef(), group["width"], options);
+  JsValue height = JS.call(calculateSize, undef(), group["height"], options);
+  JsValue c12 = undef();
+  if (group["shift"].truthy()) {
+    c12 = JS.call(calculateSize, undef(), group["shift"], options);
+  } else {
+    c12 = 0;
+  }
+  JsValue shift = c12;
+  JsValue and13 = options["color"];
+  if (and13.truthy()) {
+    and13 = JS.invoke(options, "getColor");
+  }
+  JsValue or14 = and13;
+  if (!(or14.truthy())) {
+    or14 = "black";
+  }
+  JsValue color = or14;
+  JsValue rule = JS.construct(mathMLTree["MathNode"], "mspace");
+  JS.invoke(rule, "setAttribute", "mathbackground", color);
+  JS.invoke(rule, "setAttribute", "width", JS.call(makeEm, undef(), width));
+  JS.invoke(rule, "setAttribute", "height", JS.call(makeEm, undef(), height));
+  JsValue a15 = newArray();
+  JS.push(a15, rule);
+  JsValue wrapper = JS.construct(mathMLTree["MathNode"], "mpadded", a15);
+  if (JS.greaterThanOrEqual(shift, 0)) {
+    JS.invoke(wrapper, "setAttribute", "height", JS.call(makeEm, undef(), shift));
+  } else {
+    JS.invoke(wrapper, "setAttribute", "height", JS.call(makeEm, undef(), shift));
+    JS.invoke(wrapper, "setAttribute", "depth", JS.call(makeEm, undef(), JS.number(0) - toNum(shift)));
+  }
+  JS.invoke(wrapper, "setAttribute", "voffset", JS.call(makeEm, undef(), shift));
+  return wrapper;
+  return undef();
+});
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

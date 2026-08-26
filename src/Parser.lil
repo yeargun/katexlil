@@ -1,0 +1,875 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { functions } from "./functions.lil";
+import { MacroExpander, implicitCommands } from "./MacroExpander.lil";
+import { symbols, ATOMS, extraLatin } from "./symbols.lil";
+import { validUnit } from "./units.lil";
+import { supportedCodepoint } from "./unicodeScripts.lil";
+import { ParseError } from "./ParseError.lil";
+import { combiningDiacriticalMarksEndRegex } from "./Lexer.lil";
+import { Settings } from "./Settings.lil";
+import { SourceLocation } from "./SourceLocation.lil";
+import { uSubsAndSups, unicodeSubRegEx } from "./unicodeSupOrSub.lil";
+import { Token } from "./Token.lil";
+import { unicodeAccents } from "./unicodeAccents.lil";
+import { unicodeSymbols } from "./data.lil";
+
+JsValue Parser = undef();
+
+Parser = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue input = argv[0];
+  JsValue settings = argv[1];
+  self["mode"] = "math";
+  self["gullet"] = JS.construct(MacroExpander, input, settings, self["mode"]);
+  self["settings"] = settings;
+  self["leftrightDepth"] = 0;
+  return self;
+});
+Parser["prototype"]["expect"] = JS.method2((JsValue self, JsValue text, JsValue consume) => {
+  if (isUndef(consume)) {
+    consume = true;
+  }
+  if (JS.strictNotEqual(JS.invoke(self, "fetch")["text"], text)) {
+    throw JS.construct(ParseError, "Expected '" + toStr(text) + "', got '" + toStr(JS.invoke(self, "fetch")["text"]) + "'", JS.invoke(self, "fetch"));
+  }
+  if (consume.truthy()) {
+    JS.invoke(self, "consume");
+  }
+  return undef();
+});
+Parser["prototype"]["consume"] = JS.method0((JsValue self) => {
+  self["nextToken"] = null;
+  return undef();
+});
+Parser["prototype"]["fetch"] = JS.method0((JsValue self) => {
+  if (isNullish(self["nextToken"])) {
+    self["nextToken"] = JS.invoke(self["gullet"], "expandNextToken");
+  }
+  return self["nextToken"];
+  return undef();
+});
+Parser["prototype"]["switchMode"] = JS.method1((JsValue self, JsValue newMode) => {
+  self["mode"] = newMode;
+  JS.invoke(self["gullet"], "switchMode", newMode);
+  return undef();
+});
+Parser["prototype"]["parse"] = JS.method0((JsValue self) => {
+  JsValue gullet = self["gullet"];
+  if (!(self["settings"]["globalGroup"].truthy())) {
+    JS.invoke(gullet, "beginGroup");
+  }
+  if (self["settings"]["colorIsTextColor"].truthy()) {
+    JS.invoke(gullet["macros"], "set", "\\color", "\\textcolor");
+  }
+  try {
+    JsValue parsed = JS.invoke(self, "parseExpression", false);
+    JS.invoke(self, "expect", "EOF");
+    if (!(self["settings"]["globalGroup"].truthy())) {
+      JS.invoke(gullet, "endGroup");
+    }
+    JS.invoke(gullet, "endGroups");
+    return parsed;
+  } catch (JsValue err) {
+    JS.invoke(gullet, "endGroups");
+    throw err;
+  }
+});
+Parser["prototype"]["subparse"] = JS.method1((JsValue self, JsValue tokens) => {
+  JsValue oldToken = self["nextToken"];
+  JS.invoke(self, "consume");
+  JS.invoke(self["gullet"], "pushToken", JS.construct(Token, "}"));
+  JS.invoke(self["gullet"], "pushTokens", tokens);
+  JsValue parse = JS.invoke(self, "parseExpression", false);
+  JS.invoke(self, "expect", "}");
+  self["nextToken"] = oldToken;
+  return parse;
+  return undef();
+});
+Parser["prototype"]["parseExpression"] = JS.method2((JsValue self, JsValue breakOnInfix, JsValue breakOnTokenText) => {
+  JsValue a1 = newArray();
+  JsValue body = a1;
+  while (true) {
+    if (JS.strictEqual(self["mode"], "math")) {
+      JS.invoke(self, "consumeSpaces");
+    }
+    JsValue lex = JS.invoke(self, "fetch");
+    if (JS.strictNotEqual(JS.invoke(Parser["endOfExpression"], "indexOf", lex["text"]), JS.number(0) - toNum(1))) {
+      break;
+    }
+    if ((breakOnTokenText.truthy()) && (JS.strictEqual(lex["text"], breakOnTokenText))) {
+      break;
+    }
+    if (((breakOnInfix.truthy()) && (functions[lex["text"]].truthy())) && (functions[lex["text"]]["infix"].truthy())) {
+      break;
+    }
+    JsValue atom = JS.invoke(self, "parseAtom", breakOnTokenText);
+    if (!(atom.truthy())) {
+      break;
+    } else {
+      if (JS.strictEqual(atom["type"], "internal")) {
+        continue;
+      }
+    }
+    JS.invoke(body, "push", atom);
+  }
+  if (JS.strictEqual(self["mode"], "text")) {
+    JS.invoke(self, "formLigatures", body);
+  }
+  return JS.invoke(self, "handleInfixNodes", body);
+  return undef();
+});
+Parser["prototype"]["handleInfixNodes"] = JS.method1((JsValue self, JsValue body) => {
+  JsValue overIndex = JS.number(0) - toNum(1);
+  JsValue funcName = undef();
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, body["length"])) {
+      if (JS.strictEqual(body[i]["type"], "infix")) {
+        if (JS.strictNotEqual(overIndex, JS.number(0) - toNum(1))) {
+          throw JS.construct(ParseError, "only one infix operator per group", body[i]["token"]);
+        }
+        overIndex = i;
+        funcName = body[i]["replaceWith"];
+      }
+      JsValue u2 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  if ((JS.strictNotEqual(overIndex, JS.number(0) - toNum(1))) && (funcName.truthy())) {
+    JsValue numerNode = undef();
+    JsValue denomNode = undef();
+    JsValue numerBody = JS.invoke(body, "slice", 0, overIndex);
+    JsValue denomBody = JS.invoke(body, "slice", JS.add(overIndex, 1));
+    if ((JS.strictEqual(numerBody["length"], 1)) && (JS.strictEqual(numerBody[0]["type"], "ordgroup"))) {
+      numerNode = numerBody[0];
+    } else {
+      JsValue o3 = emptyObject();
+      o3["type"] = "ordgroup";
+      o3["mode"] = self["mode"];
+      o3["body"] = numerBody;
+      numerNode = o3;
+    }
+    if ((JS.strictEqual(denomBody["length"], 1)) && (JS.strictEqual(denomBody[0]["type"], "ordgroup"))) {
+      denomNode = denomBody[0];
+    } else {
+      JsValue o4 = emptyObject();
+      o4["type"] = "ordgroup";
+      o4["mode"] = self["mode"];
+      o4["body"] = denomBody;
+      denomNode = o4;
+    }
+    JsValue node = undef();
+    if (JS.strictEqual(funcName, "\\\\abovefrac")) {
+      JsValue a5 = newArray();
+      JS.push(a5, numerNode);
+      JS.push(a5, body[overIndex]);
+      JS.push(a5, denomNode);
+      JsValue a6 = newArray();
+      node = JS.invoke(self, "callFunction", funcName, a5, a6);
+    } else {
+      JsValue a7 = newArray();
+      JS.push(a7, numerNode);
+      JS.push(a7, denomNode);
+      JsValue a8 = newArray();
+      node = JS.invoke(self, "callFunction", funcName, a7, a8);
+    }
+    JsValue a9 = newArray();
+    JS.push(a9, node);
+    return a9;
+  } else {
+    return body;
+  }
+  return undef();
+});
+Parser["prototype"]["handleSupSubscript"] = JS.method1((JsValue self, JsValue name) => {
+  JsValue symbolToken = JS.invoke(self, "fetch");
+  JsValue symbol = symbolToken["text"];
+  JS.invoke(self, "consume");
+  JS.invoke(self, "consumeSpaces");
+  JsValue group = undef();
+  while (true) {
+    group = JS.invoke(self, "parseGroup", name);
+    JsValue om10 = undef();
+    if (!isNullish(group)) {
+      om10 = group["type"];
+    }
+    if (!(JS.strictEqual(om10, "internal"))) {
+      break;
+    }
+  }
+  if (!(group.truthy())) {
+    throw JS.construct(ParseError, JS.add(JS.add("Expected group after '", symbol), "'"), symbolToken);
+  }
+  return group;
+  return undef();
+});
+Parser["prototype"]["formatUnsupportedCmd"] = JS.method1((JsValue self, JsValue text) => {
+  JsValue a11 = newArray();
+  JsValue textordArray = a11;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, text["length"])) {
+      JsValue o12 = emptyObject();
+      o12["type"] = "textord";
+      o12["mode"] = "text";
+      o12["text"] = text[i];
+      JS.invoke(textordArray, "push", o12);
+      JsValue u13 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  JsValue o14 = emptyObject();
+  o14["type"] = "text";
+  o14["mode"] = self["mode"];
+  o14["body"] = textordArray;
+  JsValue textNode = o14;
+  JsValue o15 = emptyObject();
+  o15["type"] = "color";
+  o15["mode"] = self["mode"];
+  o15["color"] = self["settings"]["errorColor"];
+  JsValue a16 = newArray();
+  JS.push(a16, textNode);
+  o15["body"] = a16;
+  JsValue colorNode = o15;
+  return colorNode;
+  return undef();
+});
+Parser["prototype"]["parseAtom"] = JS.method1((JsValue self, JsValue breakOnTokenText) => {
+  JsValue base = JS.invoke(self, "parseGroup", "atom", breakOnTokenText);
+  JsValue om17 = undef();
+  if (!isNullish(base)) {
+    om17 = base["type"];
+  }
+  if (JS.strictEqual(om17, "internal")) {
+    return base;
+  }
+  if (JS.strictEqual(self["mode"], "text")) {
+    return base;
+  }
+  JsValue superscript = undef();
+  JsValue subscript = undef();
+  while (true) {
+    JS.invoke(self, "consumeSpaces");
+    JsValue lex = JS.invoke(self, "fetch");
+    if ((JS.strictEqual(lex["text"], "\\limits")) || (JS.strictEqual(lex["text"], "\\nolimits"))) {
+      if ((base.truthy()) && (JS.strictEqual(base["type"], "op"))) {
+        JsValue limits = JS.strictEqual(lex["text"], "\\limits");
+        base["limits"] = limits;
+        base["alwaysHandleSupSub"] = true;
+      } else {
+        if ((base.truthy()) && (JS.strictEqual(base["type"], "operatorname"))) {
+          if (base["alwaysHandleSupSub"].truthy()) {
+            base["limits"] = JS.strictEqual(lex["text"], "\\limits");
+          }
+        } else {
+          throw JS.construct(ParseError, "Limit controls must follow a math operator", lex);
+        }
+      }
+      JS.invoke(self, "consume");
+    } else {
+      if (JS.strictEqual(lex["text"], "^")) {
+        if (superscript.truthy()) {
+          throw JS.construct(ParseError, "Double superscript", lex);
+        }
+        superscript = JS.invoke(self, "handleSupSubscript", "superscript");
+      } else {
+        if (JS.strictEqual(lex["text"], "_")) {
+          if (subscript.truthy()) {
+            throw JS.construct(ParseError, "Double subscript", lex);
+          }
+          subscript = JS.invoke(self, "handleSupSubscript", "subscript");
+        } else {
+          if (JS.strictEqual(lex["text"], "'")) {
+            if (superscript.truthy()) {
+              throw JS.construct(ParseError, "Double superscript", lex);
+            }
+            JsValue o18 = emptyObject();
+            o18["type"] = "textord";
+            o18["mode"] = self["mode"];
+            o18["text"] = "\\prime";
+            JsValue prime = o18;
+            JsValue a19 = newArray();
+            JS.push(a19, prime);
+            JsValue primes = a19;
+            JS.invoke(self, "consume");
+            while (JS.strictEqual(JS.invoke(self, "fetch")["text"], "'")) {
+              JS.invoke(primes, "push", prime);
+              JS.invoke(self, "consume");
+            }
+            if (JS.strictEqual(JS.invoke(self, "fetch")["text"], "^")) {
+              JS.invoke(primes, "push", JS.invoke(self, "handleSupSubscript", "superscript"));
+            }
+            JsValue o20 = emptyObject();
+            o20["type"] = "ordgroup";
+            o20["mode"] = self["mode"];
+            o20["body"] = primes;
+            superscript = o20;
+          } else {
+            if (uSubsAndSups[lex["text"]].truthy()) {
+              JsValue isSub = JS.invoke(unicodeSubRegEx, "test", lex["text"]);
+              JsValue a21 = newArray();
+              JsValue subsupTokens = a21;
+              JS.invoke(subsupTokens, "push", JS.construct(Token, uSubsAndSups[lex["text"]]));
+              JS.invoke(self, "consume");
+              while (true) {
+                JsValue token = JS.invoke(self, "fetch")["text"];
+                if (!(uSubsAndSups[token].truthy())) {
+                  break;
+                }
+                if (JS.strictNotEqual(JS.invoke(unicodeSubRegEx, "test", token), isSub)) {
+                  break;
+                }
+                JS.invoke(subsupTokens, "unshift", JS.construct(Token, uSubsAndSups[token]));
+                JS.invoke(self, "consume");
+              }
+              JsValue body = JS.invoke(self, "subparse", subsupTokens);
+              if (isSub.truthy()) {
+                JsValue o22 = emptyObject();
+                o22["type"] = "ordgroup";
+                o22["mode"] = "math";
+                o22["body"] = body;
+                subscript = o22;
+              } else {
+                JsValue o23 = emptyObject();
+                o23["type"] = "ordgroup";
+                o23["mode"] = "math";
+                o23["body"] = body;
+                superscript = o23;
+              }
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+  if ((superscript.truthy()) || (subscript.truthy())) {
+    JsValue o24 = emptyObject();
+    o24["type"] = "supsub";
+    o24["mode"] = self["mode"];
+    o24["base"] = base;
+    o24["sup"] = superscript;
+    o24["sub"] = subscript;
+    return o24;
+  } else {
+    return base;
+  }
+  return undef();
+});
+Parser["prototype"]["parseFunction"] = JS.method2((JsValue self, JsValue breakOnTokenText, JsValue name) => {
+  JsValue token = JS.invoke(self, "fetch");
+  JsValue funcVal = token["text"];
+  JsValue funcData = functions[funcVal];
+  if (!(funcData.truthy())) {
+    return null;
+  }
+  JS.invoke(self, "consume");
+  if (((name.truthy()) && (JS.strictNotEqual(name, "atom"))) && (!(funcData["allowedInArgument"].truthy()))) {
+    JsValue c25 = undef();
+    if (name.truthy()) {
+      c25 = JS.add(" as ", name);
+    } else {
+      c25 = "";
+    }
+    throw JS.construct(ParseError, JS.add(JS.add(JS.add("Got function '", funcVal), "' with no arguments"), c25), token);
+  } else {
+    if ((JS.strictEqual(self["mode"], "text")) && (!(funcData["allowedInText"].truthy()))) {
+      throw JS.construct(ParseError, JS.add(JS.add("Can't use function '", funcVal), "' in text mode"), token);
+    } else {
+      if ((JS.strictEqual(self["mode"], "math")) && (JS.strictEqual(funcData["allowedInMath"], false))) {
+        throw JS.construct(ParseError, JS.add(JS.add("Can't use function '", funcVal), "' in math mode"), token);
+      }
+    }
+  }
+  JsValue op26 = JS.invoke(self, "parseArguments", funcVal, funcData);
+  JsValue args = op26["args"];
+  JsValue optArgs = op26["optArgs"];
+  return JS.invoke(self, "callFunction", funcVal, args, optArgs, token, breakOnTokenText);
+  return undef();
+});
+Parser["prototype"]["callFunction"] = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue name = argv[0];
+  JsValue args = argv[1];
+  JsValue optArgs = argv[2];
+  JsValue token = argv[3];
+  JsValue breakOnTokenText = argv[4];
+  JsValue o27 = emptyObject();
+  o27["funcName"] = name;
+  o27["parser"] = self;
+  o27["token"] = token;
+  o27["breakOnTokenText"] = breakOnTokenText;
+  JsValue context = o27;
+  JsValue funcVal = functions[name];
+  if ((funcVal.truthy()) && (funcVal["handler"].truthy())) {
+    return JS.invoke(funcVal, "handler", context, args, optArgs);
+  } else {
+    throw JS.construct(ParseError, "No function handler for " + toStr(name));
+  }
+  return undef();
+});
+Parser["prototype"]["parseArguments"] = JS.method2((JsValue self, JsValue funcVal, JsValue funcData) => {
+  JsValue totalArgs = JS.add(funcData["numArgs"], funcData["numOptionalArgs"]);
+  if (JS.strictEqual(totalArgs, 0)) {
+    JsValue o28 = emptyObject();
+    JsValue a29 = newArray();
+    o28["args"] = a29;
+    JsValue a30 = newArray();
+    o28["optArgs"] = a30;
+    return o28;
+  }
+  JsValue a31 = newArray();
+  JsValue args = a31;
+  JsValue a32 = newArray();
+  JsValue optArgs = a32;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, totalArgs)) {
+      JsValue and33 = funcData["argTypes"];
+      if (and33.truthy()) {
+        and33 = funcData["argTypes"][i];
+      }
+      JsValue argType = and33;
+      JsValue isOptional = JS.lessThan(i, funcData["numOptionalArgs"]);
+      if (((funcData["primitive"].truthy()) && (isNullish(argType))) || (((JS.strictEqual(funcData["type"], "sqrt")) && (JS.strictEqual(i, 1))) && (isNullish(optArgs[0])))) {
+        argType = "primitive";
+      }
+      JsValue arg = JS.invoke(self, "parseGroupOfType", "argument to '" + toStr(funcVal) + "'", argType, isOptional);
+      if (isOptional.truthy()) {
+        JS.invoke(optArgs, "push", arg);
+      } else {
+        if (!isNullish(arg)) {
+          JS.invoke(args, "push", arg);
+        } else {
+          throw JS.construct(ParseError, "Null argument, please report this as a bug");
+        }
+      }
+      JsValue u34 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  JsValue o35 = emptyObject();
+  o35["args"] = args;
+  o35["optArgs"] = optArgs;
+  return o35;
+  return undef();
+});
+Parser["prototype"]["parseGroupOfType"] = JS.method3((JsValue self, JsValue name, JsValue type, JsValue optional) => {
+  JsValue sw36 = type;
+  if (JS.strictEqual(sw36, "color")) {
+    return JS.invoke(self, "parseColorGroup", optional);
+  }
+  else if (JS.strictEqual(sw36, "size")) {
+    return JS.invoke(self, "parseSizeGroup", optional);
+  }
+  else if (JS.strictEqual(sw36, "url")) {
+    return JS.invoke(self, "parseUrlGroup", optional);
+  }
+  else if (JS.strictEqual(sw36, "math") || JS.strictEqual(sw36, "text")) {
+    return JS.invoke(self, "parseArgumentGroup", optional, type);
+  }
+  else if (JS.strictEqual(sw36, "hbox")) {
+    JsValue group = JS.invoke(self, "parseArgumentGroup", optional, "text");
+    JsValue c37 = undef();
+    if (!isNullish(group)) {
+      JsValue o38 = emptyObject();
+      o38["type"] = "styling";
+      o38["mode"] = group["mode"];
+      JsValue a39 = newArray();
+      JS.push(a39, group);
+      o38["body"] = a39;
+      o38["style"] = "text";
+      c37 = o38;
+    } else {
+      c37 = null;
+    }
+    return c37;
+  }
+  else if (JS.strictEqual(sw36, "raw")) {
+    JsValue token = JS.invoke(self, "parseStringGroup", "raw", optional);
+    JsValue c40 = undef();
+    if (!isNullish(token)) {
+      JsValue o41 = emptyObject();
+      o41["type"] = "raw";
+      o41["mode"] = "text";
+      o41["string"] = token["text"];
+      c40 = o41;
+    } else {
+      c40 = null;
+    }
+    return c40;
+  }
+  else if (JS.strictEqual(sw36, "primitive")) {
+    if (optional.truthy()) {
+      throw JS.construct(ParseError, "A primitive argument cannot be optional");
+    }
+    JsValue group = JS.invoke(self, "parseGroup", name);
+    if (isNullish(group)) {
+      throw JS.construct(ParseError, JS.add("Expected group as ", name), JS.invoke(self, "fetch"));
+    }
+    return group;
+  }
+  else if (JS.strictEqual(sw36, "original") || JS.strictEqual(sw36, null) || JS.strictEqual(sw36, undef())) {
+    return JS.invoke(self, "parseArgumentGroup", optional);
+  }
+  else {
+    throw JS.construct(ParseError, JS.add("Unknown group type as ", name), JS.invoke(self, "fetch"));
+  }
+  return undef();
+});
+Parser["prototype"]["consumeSpaces"] = JS.method0((JsValue self) => {
+  while (JS.strictEqual(JS.invoke(self, "fetch")["text"], " ")) {
+    JS.invoke(self, "consume");
+  }
+  return undef();
+});
+Parser["prototype"]["parseStringGroup"] = JS.method2((JsValue self, JsValue modeName, JsValue optional) => {
+  JsValue argToken = JS.invoke(self["gullet"], "scanArgument", optional);
+  if (isNullish(argToken)) {
+    return null;
+  }
+  JsValue str = "";
+  JsValue nextToken = undef();
+  nextToken = JS.invoke(self, "fetch");
+  while (JS.strictNotEqual(nextToken["text"], "EOF")) {
+    str = JS.add(str, nextToken["text"]);
+    JS.invoke(self, "consume");
+    nextToken = JS.invoke(self, "fetch");
+  }
+  JS.invoke(self, "consume");
+  argToken["text"] = str;
+  return argToken;
+  return undef();
+});
+Parser["prototype"]["parseRegexGroup"] = JS.method2((JsValue self, JsValue regex, JsValue modeName) => {
+  JsValue firstToken = JS.invoke(self, "fetch");
+  JsValue lastToken = firstToken;
+  JsValue str = "";
+  JsValue nextToken = undef();
+  nextToken = JS.invoke(self, "fetch");
+  while ((JS.strictNotEqual(nextToken["text"], "EOF")) && (JS.invoke(regex, "test", JS.add(str, nextToken["text"])).truthy())) {
+    lastToken = nextToken;
+    str = JS.add(str, lastToken["text"]);
+    JS.invoke(self, "consume");
+    nextToken = JS.invoke(self, "fetch");
+  }
+  if (JS.strictEqual(str, "")) {
+    throw JS.construct(ParseError, JS.add(JS.add(JS.add(JS.add("Invalid ", modeName), ": '"), firstToken["text"]), "'"), firstToken);
+  }
+  return JS.invoke(firstToken, "range", lastToken, str);
+  return undef();
+});
+Parser["prototype"]["parseColorGroup"] = JS.method1((JsValue self, JsValue optional) => {
+  JsValue res = JS.invoke(self, "parseStringGroup", "color", optional);
+  if (isNullish(res)) {
+    return null;
+  }
+  JsValue matched = JS.invoke(JS.construct(RegExp, "^(#[a-f0-9]{3}|#?[a-f0-9]{6}|[a-z]+)$", "i"), "exec", res["text"]);
+  if (!(matched.truthy())) {
+    throw JS.construct(ParseError, JS.add(JS.add("Invalid color: '", res["text"]), "'"), res);
+  }
+  JsValue color = matched[0];
+  if (JS.invoke(JS.construct(RegExp, "^[0-9a-f]{6}$", "i"), "test", color).truthy()) {
+    color = JS.add("#", color);
+  }
+  JsValue o42 = emptyObject();
+  o42["type"] = "color-token";
+  o42["mode"] = self["mode"];
+  o42["color"] = color;
+  return o42;
+  return undef();
+});
+Parser["prototype"]["parseSizeGroup"] = JS.method1((JsValue self, JsValue optional) => {
+  JsValue res = undef();
+  JsValue isBlank = false;
+  JS.invoke(self["gullet"], "consumeSpaces");
+  if ((!(optional.truthy())) && (JS.strictNotEqual(JS.invoke(self["gullet"], "future")["text"], "{"))) {
+    res = JS.invoke(self, "parseRegexGroup", JS.construct(RegExp, "^[-+]? *(?:$|\\d+|\\d+\\.\\d*|\\.\\d*) *[a-z]{0,2} *$", ""), "size");
+  } else {
+    res = JS.invoke(self, "parseStringGroup", "size", optional);
+  }
+  if (!(res.truthy())) {
+    return null;
+  }
+  if ((!(optional.truthy())) && (JS.strictEqual(res["text"]["length"], 0))) {
+    res["text"] = "0pt";
+    isBlank = true;
+  }
+  JsValue matched = JS.invoke(JS.construct(RegExp, "([-+]?) *(\\d+(?:\\.\\d*)?|\\.\\d+) *([a-z]{2})", ""), "exec", res["text"]);
+  if (!(matched.truthy())) {
+    throw JS.construct(ParseError, JS.add(JS.add("Invalid size: '", res["text"]), "'"), res);
+  }
+  JsValue o43 = emptyObject();
+  o43["number"] = toNum(JS.add(matched[1], matched[2]));
+  o43["unit"] = matched[3];
+  JsValue data = o43;
+  if (!(JS.call(validUnit, undef(), data).truthy())) {
+    throw JS.construct(ParseError, JS.add(JS.add("Invalid unit: '", data["unit"]), "'"), res);
+  }
+  JsValue o44 = emptyObject();
+  o44["type"] = "size";
+  o44["mode"] = self["mode"];
+  o44["value"] = data;
+  o44["isBlank"] = isBlank;
+  return o44;
+  return undef();
+});
+Parser["prototype"]["parseUrlGroup"] = JS.method1((JsValue self, JsValue optional) => {
+  JS.invoke(self["gullet"]["lexer"], "setCatcode", "%", 13);
+  JS.invoke(self["gullet"]["lexer"], "setCatcode", "~", 12);
+  JsValue res = JS.invoke(self, "parseStringGroup", "url", optional);
+  JS.invoke(self["gullet"]["lexer"], "setCatcode", "%", 14);
+  JS.invoke(self["gullet"]["lexer"], "setCatcode", "~", 13);
+  if (isNullish(res)) {
+    return null;
+  }
+  JsValue url = JS.invoke(res["text"], "replace", JS.construct(RegExp, "\\\\([#$%&~_^{}])", "g"), "$1");
+  JsValue o45 = emptyObject();
+  o45["type"] = "url";
+  o45["mode"] = self["mode"];
+  o45["url"] = url;
+  return o45;
+  return undef();
+});
+Parser["prototype"]["parseArgumentGroup"] = JS.method2((JsValue self, JsValue optional, JsValue mode) => {
+  JsValue argToken = JS.invoke(self["gullet"], "scanArgument", optional);
+  if (isNullish(argToken)) {
+    return null;
+  }
+  JsValue outerMode = self["mode"];
+  if (mode.truthy()) {
+    JS.invoke(self, "switchMode", mode);
+  }
+  JS.invoke(self["gullet"], "beginGroup");
+  JsValue expression = JS.invoke(self, "parseExpression", false, "EOF");
+  JS.invoke(self, "expect", "EOF");
+  JS.invoke(self["gullet"], "endGroup");
+  JsValue o46 = emptyObject();
+  o46["type"] = "ordgroup";
+  o46["mode"] = self["mode"];
+  o46["loc"] = argToken["loc"];
+  o46["body"] = expression;
+  JsValue result = o46;
+  if (mode.truthy()) {
+    JS.invoke(self, "switchMode", outerMode);
+  }
+  return result;
+  return undef();
+});
+Parser["prototype"]["parseGroup"] = JS.method2((JsValue self, JsValue name, JsValue breakOnTokenText) => {
+  JsValue firstToken = JS.invoke(self, "fetch");
+  JsValue text = firstToken["text"];
+  JsValue result = undef();
+  if ((JS.strictEqual(text, "{")) || (JS.strictEqual(text, "\\begingroup"))) {
+    JS.invoke(self, "consume");
+    JsValue c47 = undef();
+    if (JS.strictEqual(text, "{")) {
+      c47 = "}";
+    } else {
+      c47 = "\\endgroup";
+    }
+    JsValue groupEnd = c47;
+    JS.invoke(self["gullet"], "beginGroup");
+    JsValue expression = JS.invoke(self, "parseExpression", false, groupEnd);
+    JsValue lastToken = JS.invoke(self, "fetch");
+    JS.invoke(self, "expect", groupEnd);
+    JS.invoke(self["gullet"], "endGroup");
+    JsValue o48 = emptyObject();
+    o48["type"] = "ordgroup";
+    o48["mode"] = self["mode"];
+    o48["loc"] = JS.invoke(SourceLocation, "range", firstToken, lastToken);
+    o48["body"] = expression;
+    JsValue or49 = JS.strictEqual(text, "\\begingroup");
+    if (!(or49.truthy())) {
+      or49 = undef();
+    }
+    o48["semisimple"] = or49;
+    result = o48;
+  } else {
+    JsValue or50 = JS.invoke(self, "parseFunction", breakOnTokenText, name);
+    if (!(or50.truthy())) {
+      or50 = JS.invoke(self, "parseSymbol");
+    }
+    result = or50;
+    if (((isNullish(result)) && (JS.strictEqual(text[0], "\\"))) && (!(hasOwn(implicitCommands, text)))) {
+      if (self["settings"]["throwOnError"].truthy()) {
+        throw JS.construct(ParseError, JS.add("Undefined control sequence: ", text), firstToken);
+      }
+      result = JS.invoke(self, "formatUnsupportedCmd", text);
+      JS.invoke(self, "consume");
+    }
+  }
+  return result;
+  return undef();
+});
+Parser["prototype"]["formLigatures"] = JS.method1((JsValue self, JsValue group) => {
+  JsValue n = (toNum(group["length"]) - toNum(1));
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, n)) {
+      JsValue a = group[i];
+      JsValue v = a["text"];
+      if ((JS.strictEqual(v, "-")) && (JS.strictEqual(group[JS.add(i, 1)]["text"], "-"))) {
+        if ((JS.lessThan(JS.add(i, 1), n)) && (JS.strictEqual(group[JS.add(i, 2)]["text"], "-"))) {
+          JsValue o51 = emptyObject();
+          o51["type"] = "textord";
+          o51["mode"] = "text";
+          o51["loc"] = JS.invoke(SourceLocation, "range", a, group[JS.add(i, 2)]);
+          o51["text"] = "---";
+          JS.invoke(group, "splice", i, 3, o51);
+          n = (toNum(n) - toNum(2));
+        } else {
+          JsValue o52 = emptyObject();
+          o52["type"] = "textord";
+          o52["mode"] = "text";
+          o52["loc"] = JS.invoke(SourceLocation, "range", a, group[JS.add(i, 1)]);
+          o52["text"] = "--";
+          JS.invoke(group, "splice", i, 2, o52);
+          n = (toNum(n) - toNum(1));
+        }
+      }
+      if (((JS.strictEqual(v, "'")) || (JS.strictEqual(v, "`"))) && (JS.strictEqual(group[JS.add(i, 1)]["text"], v))) {
+        JsValue o53 = emptyObject();
+        o53["type"] = "textord";
+        o53["mode"] = "text";
+        o53["loc"] = JS.invoke(SourceLocation, "range", a, group[JS.add(i, 1)]);
+        o53["text"] = JS.add(v, v);
+        JS.invoke(group, "splice", i, 2, o53);
+        n = (toNum(n) - toNum(1));
+      }
+      i = JS.add(i, 1);
+    }
+  }
+  return undef();
+});
+Parser["prototype"]["parseSymbol"] = JS.method0((JsValue self) => {
+  JsValue nucleus = JS.invoke(self, "fetch");
+  JsValue text = nucleus["text"];
+  if (JS.invoke(JS.construct(RegExp, "^\\\\verb[^a-zA-Z]", ""), "test", text).truthy()) {
+    JS.invoke(self, "consume");
+    JsValue arg = JS.invoke(text, "slice", 5);
+    JsValue star = JS.strictEqual(JS.invoke(arg, "charAt", 0), "*");
+    if (star.truthy()) {
+      arg = JS.invoke(arg, "slice", 1);
+    }
+    if ((JS.lessThan(arg["length"], 2)) || (JS.strictNotEqual(JS.invoke(arg, "charAt", 0), JS.invoke(arg, "slice", JS.number(0) - toNum(1))))) {
+      throw JS.construct(ParseError, "\\verb assertion failed --\n                    please report what input caused this bug");
+    }
+    arg = JS.invoke(arg, "slice", 1, JS.number(0) - toNum(1));
+    JsValue o55 = emptyObject();
+    o55["type"] = "verb";
+    o55["mode"] = "text";
+    o55["body"] = arg;
+    o55["star"] = star;
+    return o55;
+  }
+  if ((hasOwn(unicodeSymbols, text[0])) && (!(symbols[self["mode"]][text[0]].truthy()))) {
+    if ((self["settings"]["strict"].truthy()) && (JS.strictEqual(self["mode"], "math"))) {
+      JS.invoke(self["settings"], "reportNonstrict", "unicodeTextInMathMode", JS.add("Accented Unicode text character \"" + toStr(text[0]) + "\" used in ", "math mode"), nucleus);
+    }
+    text = JS.add(unicodeSymbols[text[0]], JS.invoke(text, "slice", 1));
+  }
+  JsValue matched = JS.invoke(combiningDiacriticalMarksEndRegex, "exec", text);
+  if (matched.truthy()) {
+    text = JS.invoke(text, "substring", 0, matched["index"]);
+    if (JS.strictEqual(text, "i")) {
+      text = "ı";
+    } else {
+      if (JS.strictEqual(text, "j")) {
+        text = "ȷ";
+      }
+    }
+  }
+  JsValue symbol = undef();
+  if (symbols[self["mode"]][text].truthy()) {
+    if (((self["settings"]["strict"].truthy()) && (JS.strictEqual(self["mode"], "math"))) && (JS.greaterThanOrEqual(JS.invoke(extraLatin, "indexOf", text), 0))) {
+      JS.invoke(self["settings"], "reportNonstrict", "unicodeTextInMathMode", JS.add("Latin-1/Unicode text character \"" + toStr(text[0]) + "\" used in ", "math mode"), nucleus);
+    }
+    JsValue group = symbols[self["mode"]][text]["group"];
+    JsValue loc = JS.invoke(SourceLocation, "range", nucleus);
+    JsValue s = undef();
+    if (hasOwn(ATOMS, group)) {
+      JsValue family = group;
+      JsValue o56 = emptyObject();
+      o56["type"] = "atom";
+      o56["mode"] = self["mode"];
+      o56["family"] = family;
+      o56["loc"] = loc;
+      o56["text"] = text;
+      s = o56;
+    } else {
+      JsValue o57 = emptyObject();
+      o57["type"] = group;
+      o57["mode"] = self["mode"];
+      o57["loc"] = loc;
+      o57["text"] = text;
+      s = o57;
+    }
+    symbol = s;
+  } else {
+    if (JS.greaterThanOrEqual(JS.invoke(text, "charCodeAt", 0), 128)) {
+      if (self["settings"]["strict"].truthy()) {
+        if (!(JS.call(supportedCodepoint, undef(), JS.invoke(text, "charCodeAt", 0)).truthy())) {
+          JS.invoke(self["settings"], "reportNonstrict", "unknownSymbol", JS.add("Unrecognized Unicode character \"" + toStr(text[0]) + "\"", " (" + toStr(JS.invoke(text, "charCodeAt", 0)) + ")"), nucleus);
+        } else {
+          if (JS.strictEqual(self["mode"], "math")) {
+            JS.invoke(self["settings"], "reportNonstrict", "unicodeTextInMathMode", "Unicode text character \"" + toStr(text[0]) + "\" used in math mode", nucleus);
+          }
+        }
+      }
+      JsValue o58 = emptyObject();
+      o58["type"] = "textord";
+      o58["mode"] = "text";
+      o58["loc"] = JS.invoke(SourceLocation, "range", nucleus);
+      o58["text"] = text;
+      symbol = o58;
+    } else {
+      return null;
+    }
+  }
+  JS.invoke(self, "consume");
+  if (matched.truthy()) {
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, matched[0]["length"])) {
+        JsValue accent = matched[0][i];
+        if (!(unicodeAccents[accent].truthy())) {
+          throw JS.construct(ParseError, "Unknown accent ' " + toStr(accent) + "'", nucleus);
+        }
+        JsValue or59 = unicodeAccents[accent][self["mode"]];
+        if (!(or59.truthy())) {
+          or59 = unicodeAccents[accent]["text"];
+        }
+        JsValue command = or59;
+        if (!(command.truthy())) {
+          throw JS.construct(ParseError, "Accent " + toStr(accent) + " unsupported in " + toStr(self["mode"]) + " mode", nucleus);
+        }
+        JsValue o60 = emptyObject();
+        o60["type"] = "accent";
+        o60["mode"] = self["mode"];
+        o60["loc"] = JS.invoke(SourceLocation, "range", nucleus);
+        o60["label"] = command;
+        o60["isStretchy"] = false;
+        o60["isShifty"] = true;
+        o60["base"] = symbol;
+        symbol = o60;
+        JsValue u61 = i;
+        i = JS.add(i, 1);
+      }
+    }
+  }
+  return symbol;
+  return undef();
+});
+JsValue a62 = newArray();
+JS.push(a62, "}");
+JS.push(a62, "\\endgroup");
+JS.push(a62, "\\end");
+JS.push(a62, "\\right");
+JS.push(a62, "&");
+Parser["endOfExpression"] = a62;
+JsValue __star = emptyObject();
+__star["default"] = Parser;
+__star["Parser"] = Parser;
+
+export { __star, Parser as Parser };

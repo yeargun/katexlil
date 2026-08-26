@@ -1,0 +1,322 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN, pushAll } from "./host.lil";
+
+import { buildCommon } from "./buildCommon.lil";
+import { getCharacterMetrics } from "./fontMetrics.lil";
+import { mathMLTree } from "./mathMLTree.lil";
+import { ParseError } from "./ParseError.lil";
+import { symbols, ligatures } from "./symbols.lil";
+import { utils } from "./utils.lil";
+import { _mathmlGroupBuilders as groupBuilders } from "./defineFunction.lil";
+import { MathNode, TextNode } from "./mathMLTree.lil";
+
+JsValue makeText = undef();
+JsValue makeRow = undef();
+JsValue getVariant = undef();
+JsValue isNumberPunctuation = undef();
+JsValue buildExpression = undef();
+JsValue buildExpressionRow = undef();
+JsValue buildGroup = undef();
+JsValue buildMathML = undef();
+
+makeText = (JsValue text, JsValue mode, JsValue options) => {
+  if ((((symbols[mode][text].truthy()) && (symbols[mode][text]["replace"].truthy())) && (JS.strictNotEqual(JS.invoke(text, "charCodeAt", 0), 55349))) && (!(((hasOwn(ligatures, text)) && (options.truthy())) && (((options["fontFamily"].truthy()) && (JS.strictEqual(JS.invoke(options["fontFamily"], "slice", 4, 6), "tt"))) || ((options["font"].truthy()) && (JS.strictEqual(JS.invoke(options["font"], "slice", 4, 6), "tt"))))))) {
+    text = symbols[mode][text]["replace"];
+  }
+  return JS.construct(mathMLTree["TextNode"], text);
+  return undef();
+};
+makeRow = (JsValue body) => {
+  if (JS.strictEqual(body["length"], 1)) {
+    return body[0];
+  } else {
+    return JS.construct(mathMLTree["MathNode"], "mrow", body);
+  }
+  return undef();
+};
+getVariant = (JsValue group, JsValue options) => {
+  if (JS.strictEqual(options["fontFamily"], "texttt")) {
+    return "monospace";
+  } else {
+    if (JS.strictEqual(options["fontFamily"], "textsf")) {
+      if ((JS.strictEqual(options["fontShape"], "textit")) && (JS.strictEqual(options["fontWeight"], "textbf"))) {
+        return "sans-serif-bold-italic";
+      } else {
+        if (JS.strictEqual(options["fontShape"], "textit")) {
+          return "sans-serif-italic";
+        } else {
+          if (JS.strictEqual(options["fontWeight"], "textbf")) {
+            return "bold-sans-serif";
+          } else {
+            return "sans-serif";
+          }
+        }
+      }
+    } else {
+      if ((JS.strictEqual(options["fontShape"], "textit")) && (JS.strictEqual(options["fontWeight"], "textbf"))) {
+        return "bold-italic";
+      } else {
+        if (JS.strictEqual(options["fontShape"], "textit")) {
+          return "italic";
+        } else {
+          if (JS.strictEqual(options["fontWeight"], "textbf")) {
+            return "bold";
+          }
+        }
+      }
+    }
+  }
+  JsValue font = options["font"];
+  if ((!(font.truthy())) || (JS.strictEqual(font, "mathnormal"))) {
+    return null;
+  }
+  JsValue mode = group["mode"];
+  if (JS.strictEqual(font, "mathit")) {
+    return "italic";
+  } else {
+    if (JS.strictEqual(font, "boldsymbol")) {
+      JsValue c1 = undef();
+      if (JS.strictEqual(group["type"], "textord")) {
+        c1 = "bold";
+      } else {
+        c1 = "bold-italic";
+      }
+      return c1;
+    } else {
+      if (JS.strictEqual(font, "mathbf")) {
+        return "bold";
+      } else {
+        if (JS.strictEqual(font, "mathbb")) {
+          return "double-struck";
+        } else {
+          if (JS.strictEqual(font, "mathsfit")) {
+            return "sans-serif-italic";
+          } else {
+            if (JS.strictEqual(font, "mathfrak")) {
+              return "fraktur";
+            } else {
+              if ((JS.strictEqual(font, "mathscr")) || (JS.strictEqual(font, "mathcal"))) {
+                return "script";
+              } else {
+                if (JS.strictEqual(font, "mathsf")) {
+                  return "sans-serif";
+                } else {
+                  if (JS.strictEqual(font, "mathtt")) {
+                    return "monospace";
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  JsValue text = group["text"];
+  JsValue a2 = newArray();
+  JS.push(a2, "\\imath");
+  JS.push(a2, "\\jmath");
+  if (JS.invoke(utils, "contains", a2, text).truthy()) {
+    return null;
+  }
+  if ((symbols[mode][text].truthy()) && (symbols[mode][text]["replace"].truthy())) {
+    text = symbols[mode][text]["replace"];
+  }
+  JsValue fontName = buildCommon["fontMap"][font]["fontName"];
+  if (JS.call(getCharacterMetrics, undef(), text, fontName, mode).truthy()) {
+    return buildCommon["fontMap"][font]["variant"];
+  }
+  return null;
+  return undef();
+};
+isNumberPunctuation = (JsValue group) => {
+  if (!(group.truthy())) {
+    return false;
+  }
+  if ((JS.strictEqual(group["type"], "mi")) && (JS.strictEqual(group["children"]["length"], 1))) {
+    JsValue child = group["children"][0];
+    JsValue and3 = instanceOf(child, TextNode);
+    if (and3.truthy()) {
+      and3 = JS.strictEqual(child["text"], ".");
+    }
+    return and3;
+  } else {
+    if (((((JS.strictEqual(group["type"], "mo")) && (JS.strictEqual(group["children"]["length"], 1))) && (JS.strictEqual(JS.invoke(group, "getAttribute", "separator"), "true"))) && (JS.strictEqual(JS.invoke(group, "getAttribute", "lspace"), "0em"))) && (JS.strictEqual(JS.invoke(group, "getAttribute", "rspace"), "0em"))) {
+      JsValue child = group["children"][0];
+      JsValue and4 = instanceOf(child, TextNode);
+      if (and4.truthy()) {
+        and4 = JS.strictEqual(child["text"], ",");
+      }
+      return and4;
+    } else {
+      return false;
+    }
+  }
+  return undef();
+};
+buildExpression = (JsValue expression, JsValue options, JsValue isOrdgroup) => {
+  if (JS.strictEqual(expression["length"], 1)) {
+    JsValue group = JS.call(buildGroup, undef(), expression[0], options);
+    if (((isOrdgroup.truthy()) && (instanceOf(group, MathNode))) && (JS.strictEqual(group["type"], "mo"))) {
+      JS.invoke(group, "setAttribute", "lspace", "0em");
+      JS.invoke(group, "setAttribute", "rspace", "0em");
+    }
+    JsValue a5 = newArray();
+    JS.push(a5, group);
+    return a5;
+  }
+  JsValue a6 = newArray();
+  JsValue groups = a6;
+  JsValue lastGroup = undef();
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, expression["length"])) {
+      JsValue group = JS.call(buildGroup, undef(), expression[i], options);
+      if ((instanceOf(group, MathNode)) && (instanceOf(lastGroup, MathNode))) {
+        if (((JS.strictEqual(group["type"], "mtext")) && (JS.strictEqual(lastGroup["type"], "mtext"))) && (JS.strictEqual(JS.invoke(group, "getAttribute", "mathvariant"), JS.invoke(lastGroup, "getAttribute", "mathvariant")))) {
+          pushAll(lastGroup["children"], group["children"]);
+          i = JS.add(i, 1);
+          continue;
+        } else {
+          if ((JS.strictEqual(group["type"], "mn")) && (JS.strictEqual(lastGroup["type"], "mn"))) {
+            pushAll(lastGroup["children"], group["children"]);
+            i = JS.add(i, 1);
+            continue;
+          } else {
+            if ((JS.call(isNumberPunctuation, undef(), group).truthy()) && (JS.strictEqual(lastGroup["type"], "mn"))) {
+              pushAll(lastGroup["children"], group["children"]);
+              i = JS.add(i, 1);
+              continue;
+            } else {
+              if ((JS.strictEqual(group["type"], "mn")) && (JS.call(isNumberPunctuation, undef(), lastGroup).truthy())) {
+                JsValue a7 = newArray();
+                JsValue ss10 = lastGroup["children"];
+                int si8 = 0;
+                int sn9 = len(ss10);
+                while (si8 < sn9) {
+                  JS.push(a7, ss10[si8]);
+                  si8 = si8 + 1;
+                }
+                JsValue ss13 = group["children"];
+                int si11 = 0;
+                int sn12 = len(ss13);
+                while (si11 < sn12) {
+                  JS.push(a7, ss13[si11]);
+                  si11 = si11 + 1;
+                }
+                group["children"] = a7;
+                JS.invoke(groups, "pop");
+              } else {
+                if ((((JS.strictEqual(group["type"], "msup")) || (JS.strictEqual(group["type"], "msub"))) && (JS.greaterThanOrEqual(group["children"]["length"], 1))) && ((JS.strictEqual(lastGroup["type"], "mn")) || (JS.call(isNumberPunctuation, undef(), lastGroup).truthy()))) {
+                  JsValue base = group["children"][0];
+                  if ((instanceOf(base, MathNode)) && (JS.strictEqual(base["type"], "mn"))) {
+                    JsValue a14 = newArray();
+                    JsValue ss17 = lastGroup["children"];
+                    int si15 = 0;
+                    int sn16 = len(ss17);
+                    while (si15 < sn16) {
+                      JS.push(a14, ss17[si15]);
+                      si15 = si15 + 1;
+                    }
+                    JsValue ss20 = base["children"];
+                    int si18 = 0;
+                    int sn19 = len(ss20);
+                    while (si18 < sn19) {
+                      JS.push(a14, ss20[si18]);
+                      si18 = si18 + 1;
+                    }
+                    base["children"] = a14;
+                    JS.invoke(groups, "pop");
+                  }
+                } else {
+                  if ((JS.strictEqual(lastGroup["type"], "mi")) && (JS.strictEqual(lastGroup["children"]["length"], 1))) {
+                    JsValue lastChild = lastGroup["children"][0];
+                    if (((instanceOf(lastChild, TextNode)) && (JS.strictEqual(lastChild["text"], "̸"))) && (((JS.strictEqual(group["type"], "mo")) || (JS.strictEqual(group["type"], "mi"))) || (JS.strictEqual(group["type"], "mn")))) {
+                      JsValue child = group["children"][0];
+                      if ((instanceOf(child, TextNode)) && (JS.greaterThan(child["text"]["length"], 0))) {
+                        child["text"] = JS.add(JS.add(JS.invoke(child["text"], "slice", 0, 1), "̸"), JS.invoke(child["text"], "slice", 1));
+                        JS.invoke(groups, "pop");
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      JS.invoke(groups, "push", group);
+      lastGroup = group;
+      JsValue u21 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return groups;
+  return undef();
+};
+buildExpressionRow = (JsValue expression, JsValue options, JsValue isOrdgroup) => {
+  return JS.call(makeRow, undef(), JS.call(buildExpression, undef(), expression, options, isOrdgroup));
+  return undef();
+};
+buildGroup = (JsValue group, JsValue options) => {
+  if (!(group.truthy())) {
+    return JS.construct(mathMLTree["MathNode"], "mrow");
+  }
+  if (groupBuilders[group["type"]].truthy()) {
+    JsValue result = JS.call(groupBuilders[group["type"]], groupBuilders, group, options);
+    return result;
+  } else {
+    throw JS.construct(ParseError, JS.add(JS.add("Got group of unknown type: '", group["type"]), "'"));
+  }
+  return undef();
+};
+buildMathML = (JsValue tree, JsValue texExpression, JsValue options, JsValue isDisplayMode, JsValue forMathmlOnly) => {
+  JsValue expression = JS.call(buildExpression, undef(), tree, options);
+  JsValue wrapper = undef();
+  JsValue a22 = newArray();
+  JS.push(a22, "mrow");
+  JS.push(a22, "mtable");
+  if (((JS.strictEqual(expression["length"], 1)) && (instanceOf(expression[0], MathNode))) && (JS.invoke(utils, "contains", a22, expression[0]["type"]).truthy())) {
+    wrapper = expression[0];
+  } else {
+    wrapper = JS.construct(mathMLTree["MathNode"], "mrow", expression);
+  }
+  JsValue a23 = newArray();
+  JS.push(a23, JS.construct(mathMLTree["TextNode"], texExpression));
+  JsValue annotation = JS.construct(mathMLTree["MathNode"], "annotation", a23);
+  JS.invoke(annotation, "setAttribute", "encoding", "application/x-tex");
+  JsValue a24 = newArray();
+  JS.push(a24, wrapper);
+  JS.push(a24, annotation);
+  JsValue semantics = JS.construct(mathMLTree["MathNode"], "semantics", a24);
+  JsValue a25 = newArray();
+  JS.push(a25, semantics);
+  JsValue math = JS.construct(mathMLTree["MathNode"], "math", a25);
+  JS.invoke(math, "setAttribute", "xmlns", "http://www.w3.org/1998/Math/MathML");
+  if (isDisplayMode.truthy()) {
+    JS.invoke(math, "setAttribute", "display", "block");
+  }
+  JsValue c26 = undef();
+  if (forMathmlOnly.truthy()) {
+    c26 = "katex";
+  } else {
+    c26 = "katex-mathml";
+  }
+  JsValue wrapperClass = c26;
+  JsValue a27 = newArray();
+  JS.push(a27, wrapperClass);
+  JsValue a28 = newArray();
+  JS.push(a28, math);
+  return JS.invoke(buildCommon, "makeSpan", a27, a28);
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["makeText"] = makeText;
+__star["makeRow"] = makeRow;
+__star["getVariant"] = getVariant;
+__star["buildExpression"] = buildExpression;
+__star["buildExpressionRow"] = buildExpressionRow;
+__star["buildGroup"] = buildGroup;
+__star["default"] = buildMathML;
+__star["buildMathML"] = buildMathML;
+
+export { __star, makeText, makeRow, getVariant, buildExpression, buildExpressionRow, buildGroup, buildMathML as buildMathML };

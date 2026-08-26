@@ -1,0 +1,719 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { SymbolNode, Anchor, Span, PathNode, SvgNode, createClass } from "./domTree.lil";
+import { getCharacterMetrics } from "./fontMetrics.lil";
+import { symbols, ligatures } from "./symbols.lil";
+import { wideCharacterFont } from "./wide-character.lil";
+import { calculateSize, makeEm } from "./units.lil";
+import { DocumentFragment } from "./tree.lil";
+
+JsValue lookupSymbol = undef();
+JsValue makeSymbol = undef();
+JsValue mathsym = undef();
+JsValue boldsymbol = undef();
+JsValue makeOrd = undef();
+JsValue canCombine = undef();
+JsValue tryCombineChars = undef();
+JsValue sizeElementFromChildren = undef();
+JsValue makeSpan = undef();
+JsValue makeSvgSpan = undef();
+JsValue makeLineSpan = undef();
+JsValue makeAnchor = undef();
+JsValue makeFragment = undef();
+JsValue wrapFragment = undef();
+JsValue getVListChildrenAndDepth = undef();
+JsValue makeVList = undef();
+JsValue makeGlue = undef();
+JsValue retrieveTextFontName = undef();
+JsValue fontMap = undef();
+JsValue svgData = undef();
+JsValue staticSvg = undef();
+
+lookupSymbol = (JsValue value, JsValue fontName, JsValue mode) => {
+  if ((symbols[mode][value].truthy()) && (symbols[mode][value]["replace"].truthy())) {
+    value = symbols[mode][value]["replace"];
+  }
+  JsValue o1 = emptyObject();
+  o1["value"] = value;
+  o1["metrics"] = JS.call(getCharacterMetrics, undef(), value, fontName, mode);
+  return o1;
+  return undef();
+};
+makeSymbol = (JsValue value, JsValue fontName, JsValue mode, JsValue options, JsValue classes) => {
+  JsValue lookup = JS.call(lookupSymbol, undef(), value, fontName, mode);
+  JsValue metrics = lookup["metrics"];
+  value = lookup["value"];
+  JsValue symbolNode = undef();
+  if (metrics.truthy()) {
+    JsValue italic = metrics["italic"];
+    if ((JS.strictEqual(mode, "text")) || ((options.truthy()) && (JS.strictEqual(options["font"], "mathit")))) {
+      italic = 0;
+    }
+    JsValue na2 = newArray();
+    JS.push(na2, value);
+    JS.push(na2, metrics["height"]);
+    JS.push(na2, metrics["depth"]);
+    JS.push(na2, italic);
+    JS.push(na2, metrics["skew"]);
+    JS.push(na2, metrics["width"]);
+    JS.push(na2, classes);
+    symbolNode = constructN(SymbolNode, na2);
+  } else {
+    JsValue and3 = JS.strictNotEqual(JS.typeOf(getConsole()), "undefined");
+    if (and3.truthy()) {
+      and3 = warn(JS.add("No character metrics ", "for '" + toStr(value) + "' in style '" + toStr(fontName) + "' and mode '" + toStr(mode) + "'"));
+    }
+    and3;
+    JsValue na4 = newArray();
+    JS.push(na4, value);
+    JS.push(na4, 0);
+    JS.push(na4, 0);
+    JS.push(na4, 0);
+    JS.push(na4, 0);
+    JS.push(na4, 0);
+    JS.push(na4, classes);
+    symbolNode = constructN(SymbolNode, na4);
+  }
+  if (options.truthy()) {
+    symbolNode["maxFontSize"] = options["sizeMultiplier"];
+    if (JS.invoke(options["style"], "isTight").truthy()) {
+      JS.invoke(symbolNode["classes"], "push", "mtight");
+    }
+    JsValue color = JS.invoke(options, "getColor");
+    if (color.truthy()) {
+      symbolNode["style"]["color"] = color;
+    }
+  }
+  return symbolNode;
+  return undef();
+};
+mathsym = (JsValue value, JsValue mode, JsValue options, JsValue classes) => {
+  if (isUndef(classes)) {
+    JsValue a5 = newArray();
+    classes = a5;
+  }
+  if ((JS.strictEqual(options["font"], "boldsymbol")) && (JS.call(lookupSymbol, undef(), value, "Main-Bold", mode)["metrics"].truthy())) {
+    JsValue a6 = newArray();
+    JS.push(a6, "mathbf");
+    return JS.call(makeSymbol, undef(), value, "Main-Bold", mode, options, JS.invoke(classes, "concat", a6));
+  } else {
+    if ((JS.strictEqual(value, "\\")) || (JS.strictEqual(symbols[mode][value]["font"], "main"))) {
+      return JS.call(makeSymbol, undef(), value, "Main-Regular", mode, options, classes);
+    } else {
+      JsValue a7 = newArray();
+      JS.push(a7, "amsrm");
+      return JS.call(makeSymbol, undef(), value, "AMS-Regular", mode, options, JS.invoke(classes, "concat", a7));
+    }
+  }
+  return undef();
+};
+boldsymbol = (JsValue value, JsValue mode, JsValue options, JsValue classes, JsValue type) => {
+  if ((JS.strictNotEqual(type, "textord")) && (JS.call(lookupSymbol, undef(), value, "Math-BoldItalic", mode)["metrics"].truthy())) {
+    JsValue o8 = emptyObject();
+    o8["fontName"] = "Math-BoldItalic";
+    o8["fontClass"] = "boldsymbol";
+    return o8;
+  } else {
+    JsValue o9 = emptyObject();
+    o9["fontName"] = "Main-Bold";
+    o9["fontClass"] = "mathbf";
+    return o9;
+  }
+  return undef();
+};
+makeOrd = (JsValue group, JsValue options, JsValue type) => {
+  JsValue mode = group["mode"];
+  JsValue text = group["text"];
+  JsValue a10 = newArray();
+  JS.push(a10, "mord");
+  JsValue classes = a10;
+  JsValue or11 = JS.strictEqual(mode, "math");
+  if (!(or11.truthy())) {
+    JsValue and12 = JS.strictEqual(mode, "text");
+    if (and12.truthy()) {
+      and12 = options["font"];
+    }
+    or11 = and12;
+  }
+  JsValue isFont = or11;
+  JsValue c13 = undef();
+  if (isFont.truthy()) {
+    c13 = options["font"];
+  } else {
+    c13 = options["fontFamily"];
+  }
+  JsValue fontOrFamily = c13;
+  JsValue wideFontName = "";
+  JsValue wideFontClass = "";
+  if (JS.strictEqual(JS.invoke(text, "charCodeAt", 0), 55349)) {
+    JsValue widePair = JS.call(wideCharacterFont, undef(), text, mode);
+    wideFontName = widePair[0];
+    wideFontClass = widePair[1];
+  }
+  if (JS.greaterThan(wideFontName["length"], 0)) {
+    return JS.call(makeSymbol, undef(), text, wideFontName, mode, options, JS.invoke(classes, "concat", wideFontClass));
+  } else {
+    if (fontOrFamily.truthy()) {
+      JsValue fontName = undef();
+      JsValue fontClasses = undef();
+      if (JS.strictEqual(fontOrFamily, "boldsymbol")) {
+        JsValue fontData = JS.call(boldsymbol, undef(), text, mode, options, classes, type);
+        fontName = fontData["fontName"];
+        JsValue a14 = newArray();
+        JS.push(a14, fontData["fontClass"]);
+        fontClasses = a14;
+      } else {
+        if (isFont.truthy()) {
+          fontName = fontMap[fontOrFamily]["fontName"];
+          JsValue a15 = newArray();
+          JS.push(a15, fontOrFamily);
+          fontClasses = a15;
+        } else {
+          fontName = JS.call(retrieveTextFontName, undef(), fontOrFamily, options["fontWeight"], options["fontShape"]);
+          JsValue a16 = newArray();
+          JS.push(a16, fontOrFamily);
+          JS.push(a16, options["fontWeight"]);
+          JS.push(a16, options["fontShape"]);
+          fontClasses = a16;
+        }
+      }
+      if (JS.call(lookupSymbol, undef(), text, fontName, mode)["metrics"].truthy()) {
+        return JS.call(makeSymbol, undef(), text, fontName, mode, options, JS.invoke(classes, "concat", fontClasses));
+      } else {
+        if ((hasOwn(ligatures, text)) && (JS.strictEqual(JS.invoke(fontName, "slice", 0, 10), "Typewriter"))) {
+          JsValue a17 = newArray();
+          JsValue parts = a17;
+          {
+            JsValue i = 0;
+            while (JS.lessThan(i, text["length"])) {
+              JS.invoke(parts, "push", JS.call(makeSymbol, undef(), text[i], fontName, mode, options, JS.invoke(classes, "concat", fontClasses)));
+              JsValue u18 = i;
+              i = JS.add(i, 1);
+            }
+          }
+          return JS.call(makeFragment, undef(), parts);
+        }
+      }
+    }
+  }
+  if (JS.strictEqual(type, "mathord")) {
+    JsValue a19 = newArray();
+    JS.push(a19, "mathnormal");
+    return JS.call(makeSymbol, undef(), text, "Math-Italic", mode, options, JS.invoke(classes, "concat", a19));
+  } else {
+    if (JS.strictEqual(type, "textord")) {
+      JsValue and20 = symbols[mode][text];
+      if (and20.truthy()) {
+        and20 = symbols[mode][text]["font"];
+      }
+      JsValue font = and20;
+      if (JS.strictEqual(font, "ams")) {
+        JsValue fontName = JS.call(retrieveTextFontName, undef(), "amsrm", options["fontWeight"], options["fontShape"]);
+        return JS.call(makeSymbol, undef(), text, fontName, mode, options, JS.invoke(classes, "concat", "amsrm", options["fontWeight"], options["fontShape"]));
+      } else {
+        if ((JS.strictEqual(font, "main")) || (!(font.truthy()))) {
+          JsValue fontName = JS.call(retrieveTextFontName, undef(), "textrm", options["fontWeight"], options["fontShape"]);
+          return JS.call(makeSymbol, undef(), text, fontName, mode, options, JS.invoke(classes, "concat", options["fontWeight"], options["fontShape"]));
+        } else {
+          JsValue fontName = JS.call(retrieveTextFontName, undef(), font, options["fontWeight"], options["fontShape"]);
+          return JS.call(makeSymbol, undef(), text, fontName, mode, options, JS.invoke(classes, "concat", fontName, options["fontWeight"], options["fontShape"]));
+        }
+      }
+    } else {
+      throw makeError(toStr(JS.add(JS.add("unexpected type: ", type), " in makeOrd")));
+    }
+  }
+  return undef();
+};
+canCombine = (JsValue prev, JsValue next) => {
+  if (((JS.strictNotEqual(JS.call(createClass, undef(), prev["classes"]), JS.call(createClass, undef(), next["classes"]))) || (JS.strictNotEqual(prev["skew"], next["skew"]))) || (JS.strictNotEqual(prev["maxFontSize"], next["maxFontSize"]))) {
+    return false;
+  }
+  if (JS.strictEqual(prev["classes"]["length"], 1)) {
+    JsValue cls = prev["classes"][0];
+    if ((JS.strictEqual(cls, "mbin")) || (JS.strictEqual(cls, "mord"))) {
+      return false;
+    }
+  }
+  JsValue obj21 = prev["style"];
+  JsValue keys22 = objectKeys(obj21);
+  int ki23 = 0;
+  int kn24 = len(keys22);
+  while (ki23 < kn24) {
+    JsValue style = keys22[ki23];
+    if ((hasOwn(prev["style"], style)) && (JS.strictNotEqual(prev["style"][style], next["style"][style]))) {
+      return false;
+    }
+    ki23 = ki23 + 1;
+  }
+  JsValue obj25 = next["style"];
+  JsValue keys26 = objectKeys(obj25);
+  int ki27 = 0;
+  int kn28 = len(keys26);
+  while (ki27 < kn28) {
+    JsValue style = keys26[ki27];
+    if ((hasOwn(next["style"], style)) && (JS.strictNotEqual(prev["style"][style], next["style"][style]))) {
+      return false;
+    }
+    ki27 = ki27 + 1;
+  }
+  return true;
+  return undef();
+};
+tryCombineChars = (JsValue chars) => {
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, (toNum(chars["length"]) - toNum(1)))) {
+      JsValue prev = chars[i];
+      JsValue next = chars[JS.add(i, 1)];
+      if (((instanceOf(prev, SymbolNode)) && (instanceOf(next, SymbolNode))) && (JS.call(canCombine, undef(), prev, next).truthy())) {
+        JsValue as29 = prev["text"];
+        prev["text"] = JS.add(as29, next["text"]);
+        prev["height"] = JS.invoke(Math, "max", prev["height"], next["height"]);
+        prev["depth"] = JS.invoke(Math, "max", prev["depth"], next["depth"]);
+        prev["italic"] = next["italic"];
+        JS.invoke(chars, "splice", JS.add(i, 1), 1);
+        JsValue u30 = i;
+        i = JS.add(i, -1);
+      }
+      JsValue u31 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return chars;
+  return undef();
+};
+sizeElementFromChildren = (JsValue elem) => {
+  JsValue height = 0;
+  JsValue depth = 0;
+  JsValue maxFontSize = 0;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, elem["children"]["length"])) {
+      JsValue child = elem["children"][i];
+      if (JS.greaterThan(child["height"], height)) {
+        height = child["height"];
+      }
+      if (JS.greaterThan(child["depth"], depth)) {
+        depth = child["depth"];
+      }
+      if (JS.greaterThan(child["maxFontSize"], maxFontSize)) {
+        maxFontSize = child["maxFontSize"];
+      }
+      JsValue u32 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  elem["height"] = height;
+  elem["depth"] = depth;
+  elem["maxFontSize"] = maxFontSize;
+  return undef();
+};
+makeSpan = (JsValue classes, JsValue children, JsValue options, JsValue style) => {
+  JsValue span = JS.construct(Span, classes, children, options, style);
+  JS.call(sizeElementFromChildren, undef(), span);
+  return span;
+  return undef();
+};
+makeSvgSpan = (JsValue classes, JsValue children, JsValue options, JsValue style) => {
+  return JS.construct(Span, classes, children, options, style);
+};
+makeLineSpan = (JsValue className, JsValue options, JsValue thickness) => {
+  JsValue a33 = newArray();
+  JS.push(a33, className);
+  JsValue a34 = newArray();
+  JsValue line = JS.call(makeSpan, undef(), a33, a34, options);
+  JsValue or35 = thickness;
+  if (!(or35.truthy())) {
+    or35 = JS.invoke(options, "fontMetrics")["defaultRuleThickness"];
+  }
+  line["height"] = JS.invoke(Math, "max", or35, options["minRuleThickness"]);
+  line["style"]["borderBottomWidth"] = JS.call(makeEm, undef(), line["height"]);
+  line["maxFontSize"] = 1;
+  return line;
+  return undef();
+};
+makeAnchor = (JsValue href, JsValue classes, JsValue children, JsValue options) => {
+  JsValue anchor = JS.construct(Anchor, href, classes, children, options);
+  JS.call(sizeElementFromChildren, undef(), anchor);
+  return anchor;
+  return undef();
+};
+makeFragment = (JsValue children) => {
+  JsValue fragment = JS.construct(DocumentFragment, children);
+  JS.call(sizeElementFromChildren, undef(), fragment);
+  return fragment;
+  return undef();
+};
+wrapFragment = (JsValue group, JsValue options) => {
+  if (instanceOf(group, DocumentFragment)) {
+    JsValue a36 = newArray();
+    JsValue a37 = newArray();
+    JS.push(a37, group);
+    return JS.call(makeSpan, undef(), a36, a37, options);
+  }
+  return group;
+  return undef();
+};
+getVListChildrenAndDepth = (JsValue params) => {
+  if (JS.strictEqual(params["positionType"], "individualShift")) {
+    JsValue oldChildren = params["children"];
+    JsValue a38 = newArray();
+    JS.push(a38, oldChildren[0]);
+    JsValue children = a38;
+    JsValue depth = (toNum(JS.number(0) - toNum(oldChildren[0]["shift"])) - toNum(oldChildren[0]["elem"]["depth"]));
+    JsValue currPos = depth;
+    {
+      JsValue i = 1;
+      while (JS.lessThan(i, oldChildren["length"])) {
+        JsValue diff = (toNum((toNum(JS.number(0) - toNum(oldChildren[i]["shift"])) - toNum(currPos))) - toNum(oldChildren[i]["elem"]["depth"]));
+        JsValue size = (toNum(diff) - toNum(JS.add(oldChildren[(toNum(i) - toNum(1))]["elem"]["height"], oldChildren[(toNum(i) - toNum(1))]["elem"]["depth"])));
+        currPos = JS.add(currPos, diff);
+        JsValue o39 = emptyObject();
+        o39["type"] = "kern";
+        o39["size"] = size;
+        JS.invoke(children, "push", o39);
+        JS.invoke(children, "push", oldChildren[i]);
+        JsValue u40 = i;
+        i = JS.add(i, 1);
+      }
+    }
+    JsValue o41 = emptyObject();
+    o41["children"] = children;
+    o41["depth"] = depth;
+    return o41;
+  }
+  JsValue depth = undef();
+  if (JS.strictEqual(params["positionType"], "top")) {
+    JsValue bottom = params["positionData"];
+    {
+      JsValue i = 0;
+      while (JS.lessThan(i, params["children"]["length"])) {
+        JsValue child = params["children"][i];
+        JsValue c42 = undef();
+        if (JS.strictEqual(child["type"], "kern")) {
+          c42 = child["size"];
+        } else {
+          c42 = JS.add(child["elem"]["height"], child["elem"]["depth"]);
+        }
+        JsValue c43 = undef();
+        if (JS.strictEqual(child["type"], "kern")) {
+          c43 = child["size"];
+        } else {
+          c43 = JS.add(child["elem"]["height"], child["elem"]["depth"]);
+        }
+        bottom = (toNum(bottom) - toNum(c43));
+        JsValue u44 = i;
+        i = JS.add(i, 1);
+      }
+    }
+    depth = bottom;
+  } else {
+    if (JS.strictEqual(params["positionType"], "bottom")) {
+      depth = JS.number(0) - toNum(params["positionData"]);
+    } else {
+      JsValue firstChild = params["children"][0];
+      if (JS.strictNotEqual(firstChild["type"], "elem")) {
+        throw makeError(toStr("First child must have type \"elem\"."));
+      }
+      if (JS.strictEqual(params["positionType"], "shift")) {
+        depth = (toNum(JS.number(0) - toNum(firstChild["elem"]["depth"])) - toNum(params["positionData"]));
+      } else {
+        if (JS.strictEqual(params["positionType"], "firstBaseline")) {
+          depth = JS.number(0) - toNum(firstChild["elem"]["depth"]);
+        } else {
+          throw makeError(toStr("Invalid positionType " + toStr(params["positionType"]) + "."));
+        }
+      }
+    }
+  }
+  JsValue o45 = emptyObject();
+  o45["children"] = params["children"];
+  o45["depth"] = depth;
+  return o45;
+  return undef();
+};
+makeVList = (JsValue params, JsValue options) => {
+  JsValue op46 = JS.call(getVListChildrenAndDepth, undef(), params);
+  JsValue children = op46["children"];
+  JsValue depth = op46["depth"];
+  JsValue pstrutSize = 0;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, children["length"])) {
+      JsValue child = children[i];
+      if (JS.strictEqual(child["type"], "elem")) {
+        JsValue elem = child["elem"];
+        pstrutSize = JS.invoke(Math, "max", pstrutSize, elem["maxFontSize"], elem["height"]);
+      }
+      JsValue u47 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  pstrutSize = JS.add(pstrutSize, 2);
+  JsValue a48 = newArray();
+  JS.push(a48, "pstrut");
+  JsValue a49 = newArray();
+  JsValue pstrut = JS.call(makeSpan, undef(), a48, a49);
+  pstrut["style"]["height"] = JS.call(makeEm, undef(), pstrutSize);
+  JsValue a50 = newArray();
+  JsValue realChildren = a50;
+  JsValue minPos = depth;
+  JsValue maxPos = depth;
+  JsValue currPos = depth;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, children["length"])) {
+      JsValue child = children[i];
+      if (JS.strictEqual(child["type"], "kern")) {
+        currPos = JS.add(currPos, child["size"]);
+      } else {
+        JsValue elem = child["elem"];
+        JsValue or51 = child["wrapperClasses"];
+        if (!(or51.truthy())) {
+          JsValue a52 = newArray();
+          or51 = a52;
+        }
+        JsValue classes = or51;
+        JsValue or53 = child["wrapperStyle"];
+        if (!(or53.truthy())) {
+          JsValue o54 = emptyObject();
+          or53 = o54;
+        }
+        JsValue style = or53;
+        JsValue a55 = newArray();
+        JS.push(a55, pstrut);
+        JS.push(a55, elem);
+        JsValue childWrap = JS.call(makeSpan, undef(), classes, a55, undef(), style);
+        childWrap["style"]["top"] = JS.call(makeEm, undef(), (toNum((toNum(JS.number(0) - toNum(pstrutSize)) - toNum(currPos))) - toNum(elem["depth"])));
+        if (child["marginLeft"].truthy()) {
+          childWrap["style"]["marginLeft"] = child["marginLeft"];
+        }
+        if (child["marginRight"].truthy()) {
+          childWrap["style"]["marginRight"] = child["marginRight"];
+        }
+        JS.invoke(realChildren, "push", childWrap);
+        currPos = JS.add(currPos, JS.add(elem["height"], elem["depth"]));
+      }
+      minPos = JS.invoke(Math, "min", minPos, currPos);
+      maxPos = JS.invoke(Math, "max", maxPos, currPos);
+      JsValue u56 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  JsValue a57 = newArray();
+  JS.push(a57, "vlist");
+  JsValue vlist = JS.call(makeSpan, undef(), a57, realChildren);
+  vlist["style"]["height"] = JS.call(makeEm, undef(), maxPos);
+  JsValue rows = undef();
+  if (JS.lessThan(minPos, 0)) {
+    JsValue a58 = newArray();
+    JsValue a59 = newArray();
+    JsValue emptySpan = JS.call(makeSpan, undef(), a58, a59);
+    JsValue a60 = newArray();
+    JS.push(a60, "vlist");
+    JsValue a61 = newArray();
+    JS.push(a61, emptySpan);
+    JsValue depthStrut = JS.call(makeSpan, undef(), a60, a61);
+    depthStrut["style"]["height"] = JS.call(makeEm, undef(), JS.number(0) - toNum(minPos));
+    JsValue a62 = newArray();
+    JS.push(a62, "vlist-s");
+    JsValue a63 = newArray();
+    JS.push(a63, JS.construct(SymbolNode, "​"));
+    JsValue topStrut = JS.call(makeSpan, undef(), a62, a63);
+    JsValue a64 = newArray();
+    JsValue a65 = newArray();
+    JS.push(a65, "vlist-r");
+    JsValue a66 = newArray();
+    JS.push(a66, vlist);
+    JS.push(a66, topStrut);
+    JS.push(a64, JS.call(makeSpan, undef(), a65, a66));
+    JsValue a67 = newArray();
+    JS.push(a67, "vlist-r");
+    JsValue a68 = newArray();
+    JS.push(a68, depthStrut);
+    JS.push(a64, JS.call(makeSpan, undef(), a67, a68));
+    rows = a64;
+  } else {
+    JsValue a69 = newArray();
+    JsValue a70 = newArray();
+    JS.push(a70, "vlist-r");
+    JsValue a71 = newArray();
+    JS.push(a71, vlist);
+    JS.push(a69, JS.call(makeSpan, undef(), a70, a71));
+    rows = a69;
+  }
+  JsValue a72 = newArray();
+  JS.push(a72, "vlist-t");
+  JsValue vtable = JS.call(makeSpan, undef(), a72, rows);
+  if (JS.strictEqual(rows["length"], 2)) {
+    JS.invoke(vtable["classes"], "push", "vlist-t2");
+  }
+  vtable["height"] = maxPos;
+  vtable["depth"] = JS.number(0) - toNum(minPos);
+  return vtable;
+  return undef();
+};
+makeGlue = (JsValue measurement, JsValue options) => {
+  JsValue a73 = newArray();
+  JS.push(a73, "mspace");
+  JsValue a74 = newArray();
+  JsValue rule = JS.call(makeSpan, undef(), a73, a74, options);
+  JsValue size = JS.call(calculateSize, undef(), measurement, options);
+  rule["style"]["marginRight"] = JS.call(makeEm, undef(), size);
+  return rule;
+  return undef();
+};
+retrieveTextFontName = (JsValue fontFamily, JsValue fontWeight, JsValue fontShape) => {
+  JsValue families = emptyObject();
+  families["amsrm"] = "AMS";
+  families["textrm"] = "Main";
+  families["textsf"] = "SansSerif";
+  families["texttt"] = "Typewriter";
+  JsValue baseFontName = families[fontFamily];
+  if (isUndef(baseFontName) || isNullish(baseFontName)) {
+    baseFontName = fontFamily;
+  }
+  JsValue fontStylesName = "Regular";
+  bool isBold = JS.strictEqual(fontWeight, "textbf");
+  bool isItalicWeight = JS.strictEqual(fontWeight, "textit");
+  bool isItalicShape = JS.strictEqual(fontShape, "textit");
+  if (isBold) {
+    if (isItalicShape) {
+      fontStylesName = "BoldItalic";
+    } else {
+      fontStylesName = "Bold";
+    }
+  } else {
+    if (isItalicWeight) {
+      fontStylesName = "Italic";
+    }
+  }
+  return toStr(baseFontName) + "-" + toStr(fontStylesName);
+};
+JsValue o76 = emptyObject();
+JsValue o77 = emptyObject();
+o77["variant"] = "bold";
+o77["fontName"] = "Main-Bold";
+o76["mathbf"] = o77;
+JsValue o78 = emptyObject();
+o78["variant"] = "normal";
+o78["fontName"] = "Main-Regular";
+o76["mathrm"] = o78;
+JsValue o79 = emptyObject();
+o79["variant"] = "italic";
+o79["fontName"] = "Main-Italic";
+o76["textit"] = o79;
+JsValue o80 = emptyObject();
+o80["variant"] = "italic";
+o80["fontName"] = "Main-Italic";
+o76["mathit"] = o80;
+JsValue o81 = emptyObject();
+o81["variant"] = "italic";
+o81["fontName"] = "Math-Italic";
+o76["mathnormal"] = o81;
+JsValue o82 = emptyObject();
+o82["variant"] = "sans-serif-italic";
+o82["fontName"] = "SansSerif-Italic";
+o76["mathsfit"] = o82;
+JsValue o83 = emptyObject();
+o83["variant"] = "double-struck";
+o83["fontName"] = "AMS-Regular";
+o76["mathbb"] = o83;
+JsValue o84 = emptyObject();
+o84["variant"] = "script";
+o84["fontName"] = "Caligraphic-Regular";
+o76["mathcal"] = o84;
+JsValue o85 = emptyObject();
+o85["variant"] = "fraktur";
+o85["fontName"] = "Fraktur-Regular";
+o76["mathfrak"] = o85;
+JsValue o86 = emptyObject();
+o86["variant"] = "script";
+o86["fontName"] = "Script-Regular";
+o76["mathscr"] = o86;
+JsValue o87 = emptyObject();
+o87["variant"] = "sans-serif";
+o87["fontName"] = "SansSerif-Regular";
+o76["mathsf"] = o87;
+JsValue o88 = emptyObject();
+o88["variant"] = "monospace";
+o88["fontName"] = "Typewriter-Regular";
+o76["mathtt"] = o88;
+fontMap = o76;
+JsValue o89 = emptyObject();
+JsValue a90 = newArray();
+JS.push(a90, "vec");
+JS.push(a90, 0.471);
+JS.push(a90, 0.714);
+o89["vec"] = a90;
+JsValue a91 = newArray();
+JS.push(a91, "oiintSize1");
+JS.push(a91, 0.957);
+JS.push(a91, 0.499);
+o89["oiintSize1"] = a91;
+JsValue a92 = newArray();
+JS.push(a92, "oiintSize2");
+JS.push(a92, 1.472);
+JS.push(a92, 0.659);
+o89["oiintSize2"] = a92;
+JsValue a93 = newArray();
+JS.push(a93, "oiiintSize1");
+JS.push(a93, 1.304);
+JS.push(a93, 0.499);
+o89["oiiintSize1"] = a93;
+JsValue a94 = newArray();
+JS.push(a94, "oiiintSize2");
+JS.push(a94, 1.98);
+JS.push(a94, 0.659);
+o89["oiiintSize2"] = a94;
+svgData = o89;
+staticSvg = (JsValue value, JsValue options) => {
+  JsValue ap95 = svgData[value];
+  JsValue pathName = ap95[0];
+  JsValue width = ap95[1];
+  JsValue height = ap95[2];
+  JsValue path = JS.construct(PathNode, pathName);
+  JsValue a96 = newArray();
+  JS.push(a96, path);
+  JsValue o97 = emptyObject();
+  o97["width"] = JS.call(makeEm, undef(), width);
+  o97["height"] = JS.call(makeEm, undef(), height);
+  o97["style"] = JS.add("width:", JS.call(makeEm, undef(), width));
+  o97["viewBox"] = JS.add(JS.add(JS.add("0 0 ", (toNum(1000) * toNum(width))), " "), (toNum(1000) * toNum(height)));
+  o97["preserveAspectRatio"] = "xMinYMin";
+  JsValue svgNode = JS.construct(SvgNode, a96, o97);
+  JsValue a98 = newArray();
+  JS.push(a98, "overlay");
+  JsValue a99 = newArray();
+  JS.push(a99, svgNode);
+  JsValue span = JS.call(makeSvgSpan, undef(), a98, a99, options);
+  span["height"] = height;
+  span["style"]["height"] = JS.call(makeEm, undef(), height);
+  span["style"]["width"] = JS.call(makeEm, undef(), width);
+  return span;
+  return undef();
+};
+JsValue o100 = emptyObject();
+o100["fontMap"] = fontMap;
+o100["makeSymbol"] = makeSymbol;
+o100["mathsym"] = mathsym;
+o100["makeSpan"] = makeSpan;
+o100["makeSvgSpan"] = makeSvgSpan;
+o100["makeLineSpan"] = makeLineSpan;
+o100["makeAnchor"] = makeAnchor;
+o100["makeFragment"] = makeFragment;
+o100["wrapFragment"] = wrapFragment;
+o100["makeVList"] = makeVList;
+o100["makeOrd"] = makeOrd;
+o100["makeGlue"] = makeGlue;
+o100["staticSvg"] = staticSvg;
+o100["svgData"] = svgData;
+o100["tryCombineChars"] = tryCombineChars;
+JsValue buildCommon = undef();
+buildCommon = o100;
+JsValue __star = emptyObject();
+__star["default"] = buildCommon;
+__star["buildCommon"] = buildCommon;
+
+export { __star, buildCommon as buildCommon };

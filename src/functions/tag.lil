@@ -1,0 +1,38 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunctionBuilders } from "../defineFunction.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue pad = undef();
+
+pad = () => {
+  JsValue a1 = newArray();
+  JsValue padNode = JS.construct(mathMLTree["MathNode"], "mtd", a1);
+  JS.invoke(padNode, "setAttribute", "width", "50%");
+  return padNode;
+  return undef();
+};
+JsValue o2 = emptyObject();
+o2["type"] = "tag";
+o2["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a3 = newArray();
+  JsValue a4 = newArray();
+  JS.push(a4, JS.call(pad, undef()));
+  JsValue a5 = newArray();
+  JS.push(a5, JS.invoke(mml, "buildExpressionRow", group["body"], options));
+  JS.push(a4, JS.construct(mathMLTree["MathNode"], "mtd", a5));
+  JS.push(a4, JS.call(pad, undef()));
+  JsValue a6 = newArray();
+  JS.push(a6, JS.invoke(mml, "buildExpressionRow", group["tag"], options));
+  JS.push(a4, JS.construct(mathMLTree["MathNode"], "mtd", a6));
+  JS.push(a3, JS.construct(mathMLTree["MathNode"], "mtr", a4));
+  JsValue table = JS.construct(mathMLTree["MathNode"], "mtable", a3);
+  JS.invoke(table, "setAttribute", "width", "100%");
+  return table;
+  return undef();
+});
+JS.call(defineFunctionBuilders, undef(), o2);
+JsValue __star = emptyObject();
+
+export { __star };

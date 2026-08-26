@@ -1,0 +1,58 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "vcenter";
+JsValue a2 = newArray();
+JS.push(a2, "\\vcenter");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 1;
+JsValue a4 = newArray();
+JS.push(a4, "original");
+o3["argTypes"] = a4;
+o3["allowedInText"] = false;
+o1["props"] = o3;
+o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+  JsValue op6 = p5;
+  JsValue parser = op6["parser"];
+  JsValue o7 = emptyObject();
+  o7["type"] = "vcenter";
+  o7["mode"] = parser["mode"];
+  o7["body"] = args[0];
+  return o7;
+  return undef();
+});
+o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue body = JS.invoke(html, "buildGroup", group["body"], options);
+  JsValue axisHeight = JS.invoke(options, "fontMetrics")["axisHeight"];
+  JsValue dy = (toNum(0.5) * toNum((toNum((toNum(body["height"]) - toNum(axisHeight))) - toNum(JS.add(body["depth"], axisHeight)))));
+  JsValue o8 = emptyObject();
+  o8["positionType"] = "shift";
+  o8["positionData"] = dy;
+  JsValue a9 = newArray();
+  JsValue o10 = emptyObject();
+  o10["type"] = "elem";
+  o10["elem"] = body;
+  JS.push(a9, o10);
+  o8["children"] = a9;
+  return JS.invoke(buildCommon, "makeVList", o8, options);
+  return undef();
+});
+o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue a11 = newArray();
+  JS.push(a11, JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue a12 = newArray();
+  JS.push(a12, "vcenter");
+  return JS.construct(mathMLTree["MathNode"], "mpadded", a11, a12);
+  return undef();
+});
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

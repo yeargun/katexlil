@@ -1,0 +1,381 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { utils } from "../utils.lil";
+import { stretchy } from "../stretchy.lil";
+import { phasePath } from "../svgGeometry.lil";
+import { PathNode, SvgNode } from "../domTree.lil";
+import { calculateSize, makeEm } from "../units.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+
+htmlBuilder = (JsValue group, JsValue options) => {
+  JsValue inner = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["body"], options), options);
+  JsValue label = JS.invoke(group["label"], "slice", 1);
+  JsValue scale = options["sizeMultiplier"];
+  JsValue img = undef();
+  JsValue imgShift = 0;
+  JsValue isSingleChar = JS.invoke(utils, "isCharacterBox", group["body"]);
+  if (JS.strictEqual(label, "sout")) {
+    JsValue a1 = newArray();
+    JS.push(a1, "stretchy");
+    JS.push(a1, "sout");
+    img = JS.invoke(buildCommon, "makeSpan", a1);
+    img["height"] = (toNum(JS.invoke(options, "fontMetrics")["defaultRuleThickness"]) / toNum(scale));
+    imgShift = (toNum(JS.number(0) - toNum(0.5)) * toNum(JS.invoke(options, "fontMetrics")["xHeight"]));
+  } else {
+    if (JS.strictEqual(label, "phase")) {
+      JsValue o2 = emptyObject();
+      o2["number"] = 0.6;
+      o2["unit"] = "pt";
+      JsValue lineWeight = JS.call(calculateSize, undef(), o2, options);
+      JsValue o3 = emptyObject();
+      o3["number"] = 0.35;
+      o3["unit"] = "ex";
+      JsValue clearance = JS.call(calculateSize, undef(), o3, options);
+      JsValue newOptions = JS.invoke(options, "havingBaseSizing");
+      scale = (toNum(scale) / toNum(newOptions["sizeMultiplier"]));
+      JsValue angleHeight = JS.add(JS.add(JS.add(inner["height"], inner["depth"]), lineWeight), clearance);
+      inner["style"]["paddingLeft"] = JS.call(makeEm, undef(), JS.add((toNum(angleHeight) / toNum(2)), lineWeight));
+      JsValue viewBoxHeight = JS.invoke(Math, "floor", (toNum((toNum(1000) * toNum(angleHeight))) * toNum(scale)));
+      JsValue path = JS.call(phasePath, undef(), viewBoxHeight);
+      JsValue a4 = newArray();
+      JS.push(a4, JS.construct(PathNode, "phase", path));
+      JsValue o5 = emptyObject();
+      o5["width"] = "400em";
+      o5["height"] = JS.call(makeEm, undef(), (toNum(viewBoxHeight) / toNum(1000)));
+      o5["viewBox"] = "0 0 400000 " + toStr(viewBoxHeight);
+      o5["preserveAspectRatio"] = "xMinYMin slice";
+      JsValue svgNode = JS.construct(SvgNode, a4, o5);
+      JsValue a6 = newArray();
+      JS.push(a6, "hide-tail");
+      JsValue a7 = newArray();
+      JS.push(a7, svgNode);
+      img = JS.invoke(buildCommon, "makeSvgSpan", a6, a7, options);
+      img["style"]["height"] = JS.call(makeEm, undef(), angleHeight);
+      imgShift = JS.add(JS.add(inner["depth"], lineWeight), clearance);
+    } else {
+      if (JS.invoke(JS.construct(RegExp, "cancel", ""), "test", label).truthy()) {
+        if (!(isSingleChar.truthy())) {
+          JS.invoke(inner["classes"], "push", "cancel-pad");
+        }
+      } else {
+        if (JS.strictEqual(label, "angl")) {
+          JS.invoke(inner["classes"], "push", "anglpad");
+        } else {
+          JS.invoke(inner["classes"], "push", "boxpad");
+        }
+      }
+      JsValue topPad = 0;
+      JsValue bottomPad = 0;
+      JsValue ruleThickness = 0;
+      if (JS.invoke(JS.construct(RegExp, "box", ""), "test", label).truthy()) {
+        ruleThickness = JS.invoke(Math, "max", JS.invoke(options, "fontMetrics")["fboxrule"], options["minRuleThickness"]);
+        JsValue c8 = undef();
+        if (JS.strictEqual(label, "colorbox")) {
+          c8 = 0;
+        } else {
+          c8 = ruleThickness;
+        }
+        topPad = JS.add(JS.invoke(options, "fontMetrics")["fboxsep"], c8);
+        bottomPad = topPad;
+      } else {
+        if (JS.strictEqual(label, "angl")) {
+          ruleThickness = JS.invoke(Math, "max", JS.invoke(options, "fontMetrics")["defaultRuleThickness"], options["minRuleThickness"]);
+          topPad = (toNum(4) * toNum(ruleThickness));
+          bottomPad = JS.invoke(Math, "max", 0, (toNum(0.25) - toNum(inner["depth"])));
+        } else {
+          JsValue c9 = undef();
+          if (isSingleChar.truthy()) {
+            c9 = 0.2;
+          } else {
+            c9 = 0;
+          }
+          topPad = c9;
+          bottomPad = topPad;
+        }
+      }
+      img = JS.invoke(stretchy, "encloseSpan", inner, label, topPad, bottomPad, options);
+      if (JS.invoke(JS.construct(RegExp, "fbox|boxed|fcolorbox", ""), "test", label).truthy()) {
+        img["style"]["borderStyle"] = "solid";
+        img["style"]["borderWidth"] = JS.call(makeEm, undef(), ruleThickness);
+      } else {
+        if ((JS.strictEqual(label, "angl")) && (JS.strictNotEqual(ruleThickness, 0.049))) {
+          img["style"]["borderTopWidth"] = JS.call(makeEm, undef(), ruleThickness);
+          img["style"]["borderRightWidth"] = JS.call(makeEm, undef(), ruleThickness);
+        }
+      }
+      imgShift = JS.add(inner["depth"], bottomPad);
+      if (group["backgroundColor"].truthy()) {
+        img["style"]["backgroundColor"] = group["backgroundColor"];
+        if (group["borderColor"].truthy()) {
+          img["style"]["borderColor"] = group["borderColor"];
+        }
+      }
+    }
+  }
+  JsValue vlist = undef();
+  if (group["backgroundColor"].truthy()) {
+    JsValue o10 = emptyObject();
+    o10["positionType"] = "individualShift";
+    JsValue a11 = newArray();
+    JsValue o12 = emptyObject();
+    o12["type"] = "elem";
+    o12["elem"] = img;
+    o12["shift"] = imgShift;
+    JS.push(a11, o12);
+    JsValue o13 = emptyObject();
+    o13["type"] = "elem";
+    o13["elem"] = inner;
+    o13["shift"] = 0;
+    JS.push(a11, o13);
+    o10["children"] = a11;
+    vlist = JS.invoke(buildCommon, "makeVList", o10, options);
+  } else {
+    JsValue c14 = undef();
+    if (JS.invoke(JS.construct(RegExp, "cancel|phase", ""), "test", label).truthy()) {
+      JsValue a15 = newArray();
+      JS.push(a15, "svg-align");
+      c14 = a15;
+    } else {
+      JsValue a16 = newArray();
+      c14 = a16;
+    }
+    JsValue classes = c14;
+    JsValue o17 = emptyObject();
+    o17["positionType"] = "individualShift";
+    JsValue a18 = newArray();
+    JsValue o19 = emptyObject();
+    o19["type"] = "elem";
+    o19["elem"] = inner;
+    o19["shift"] = 0;
+    JS.push(a18, o19);
+    JsValue o20 = emptyObject();
+    o20["type"] = "elem";
+    o20["elem"] = img;
+    o20["shift"] = imgShift;
+    o20["wrapperClasses"] = classes;
+    JS.push(a18, o20);
+    o17["children"] = a18;
+    vlist = JS.invoke(buildCommon, "makeVList", o17, options);
+  }
+  if (JS.invoke(JS.construct(RegExp, "cancel", ""), "test", label).truthy()) {
+    vlist["height"] = inner["height"];
+    vlist["depth"] = inner["depth"];
+  }
+  if ((JS.invoke(JS.construct(RegExp, "cancel", ""), "test", label).truthy()) && (!(isSingleChar.truthy()))) {
+    JsValue a21 = newArray();
+    JS.push(a21, "mord");
+    JS.push(a21, "cancel-lap");
+    JsValue a22 = newArray();
+    JS.push(a22, vlist);
+    return JS.invoke(buildCommon, "makeSpan", a21, a22, options);
+  } else {
+    JsValue a23 = newArray();
+    JS.push(a23, "mord");
+    JsValue a24 = newArray();
+    JS.push(a24, vlist);
+    return JS.invoke(buildCommon, "makeSpan", a23, a24, options);
+  }
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue fboxsep = 0;
+  JsValue c25 = undef();
+  if (JS.greaterThan(JS.invoke(group["label"], "indexOf", "colorbox"), JS.number(0) - toNum(1))) {
+    c25 = "mpadded";
+  } else {
+    c25 = "menclose";
+  }
+  JsValue a26 = newArray();
+  JS.push(a26, JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue node = JS.construct(mathMLTree["MathNode"], c25, a26);
+  JsValue sw27 = group["label"];
+  if (JS.strictEqual(sw27, "\\cancel")) {
+    JS.invoke(node, "setAttribute", "notation", "updiagonalstrike");
+  }
+  else if (JS.strictEqual(sw27, "\\bcancel")) {
+    JS.invoke(node, "setAttribute", "notation", "downdiagonalstrike");
+  }
+  else if (JS.strictEqual(sw27, "\\phase")) {
+    JS.invoke(node, "setAttribute", "notation", "phasorangle");
+  }
+  else if (JS.strictEqual(sw27, "\\sout")) {
+    JS.invoke(node, "setAttribute", "notation", "horizontalstrike");
+  }
+  else if (JS.strictEqual(sw27, "\\fbox")) {
+    JS.invoke(node, "setAttribute", "notation", "box");
+  }
+  else if (JS.strictEqual(sw27, "\\angl")) {
+    JS.invoke(node, "setAttribute", "notation", "actuarial");
+  }
+  else if (JS.strictEqual(sw27, "\\fcolorbox") || JS.strictEqual(sw27, "\\colorbox")) {
+    fboxsep = (toNum(JS.invoke(options, "fontMetrics")["fboxsep"]) * toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]));
+    JS.invoke(node, "setAttribute", "width", "+" + toStr((toNum(2) * toNum(fboxsep))) + "pt");
+    JS.invoke(node, "setAttribute", "height", "+" + toStr((toNum(2) * toNum(fboxsep))) + "pt");
+    JS.invoke(node, "setAttribute", "lspace", toStr(fboxsep) + "pt");
+    JS.invoke(node, "setAttribute", "voffset", toStr(fboxsep) + "pt");
+    if (JS.strictEqual(group["label"], "\\fcolorbox")) {
+      JsValue thk = JS.invoke(Math, "max", JS.invoke(options, "fontMetrics")["fboxrule"], options["minRuleThickness"]);
+      JS.invoke(node, "setAttribute", "style", JS.add(JS.add(JS.add("border: ", thk), "em solid "), toStr(group["borderColor"])));
+    }
+  }
+  else if (JS.strictEqual(sw27, "\\xcancel")) {
+    JS.invoke(node, "setAttribute", "notation", "updiagonalstrike downdiagonalstrike");
+  }
+  if (group["backgroundColor"].truthy()) {
+    JS.invoke(node, "setAttribute", "mathbackground", group["backgroundColor"]);
+  }
+  return node;
+  return undef();
+};
+JsValue o28 = emptyObject();
+o28["type"] = "enclose";
+JsValue a29 = newArray();
+JS.push(a29, "\\colorbox");
+o28["names"] = a29;
+JsValue o30 = emptyObject();
+o30["numArgs"] = 2;
+o30["allowedInText"] = true;
+JsValue a31 = newArray();
+JS.push(a31, "color");
+JS.push(a31, "text");
+o30["argTypes"] = a31;
+o28["props"] = o30;
+o28["handler"] = JS.method3((JsValue self, JsValue p32, JsValue args, JsValue optArgs) => {
+  JsValue op33 = p32;
+  JsValue parser = op33["parser"];
+  JsValue funcName = op33["funcName"];
+  JsValue color = JS.call(assertNodeType, undef(), args[0], "color-token")["color"];
+  JsValue body = args[1];
+  JsValue o34 = emptyObject();
+  o34["type"] = "enclose";
+  o34["mode"] = parser["mode"];
+  o34["label"] = funcName;
+  o34["backgroundColor"] = color;
+  o34["body"] = body;
+  return o34;
+  return undef();
+});
+o28["htmlBuilder"] = htmlBuilder;
+o28["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o28);
+JsValue o35 = emptyObject();
+o35["type"] = "enclose";
+JsValue a36 = newArray();
+JS.push(a36, "\\fcolorbox");
+o35["names"] = a36;
+JsValue o37 = emptyObject();
+o37["numArgs"] = 3;
+o37["allowedInText"] = true;
+JsValue a38 = newArray();
+JS.push(a38, "color");
+JS.push(a38, "color");
+JS.push(a38, "text");
+o37["argTypes"] = a38;
+o35["props"] = o37;
+o35["handler"] = JS.method3((JsValue self, JsValue p39, JsValue args, JsValue optArgs) => {
+  JsValue op40 = p39;
+  JsValue parser = op40["parser"];
+  JsValue funcName = op40["funcName"];
+  JsValue borderColor = JS.call(assertNodeType, undef(), args[0], "color-token")["color"];
+  JsValue backgroundColor = JS.call(assertNodeType, undef(), args[1], "color-token")["color"];
+  JsValue body = args[2];
+  JsValue o41 = emptyObject();
+  o41["type"] = "enclose";
+  o41["mode"] = parser["mode"];
+  o41["label"] = funcName;
+  o41["backgroundColor"] = backgroundColor;
+  o41["borderColor"] = borderColor;
+  o41["body"] = body;
+  return o41;
+  return undef();
+});
+o35["htmlBuilder"] = htmlBuilder;
+o35["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o35);
+JsValue o42 = emptyObject();
+o42["type"] = "enclose";
+JsValue a43 = newArray();
+JS.push(a43, "\\fbox");
+o42["names"] = a43;
+JsValue o44 = emptyObject();
+o44["numArgs"] = 1;
+JsValue a45 = newArray();
+JS.push(a45, "hbox");
+o44["argTypes"] = a45;
+o44["allowedInText"] = true;
+o42["props"] = o44;
+o42["handler"] = JS.method2((JsValue self, JsValue p46, JsValue args) => {
+  JsValue op47 = p46;
+  JsValue parser = op47["parser"];
+  JsValue o48 = emptyObject();
+  o48["type"] = "enclose";
+  o48["mode"] = parser["mode"];
+  o48["label"] = "\\fbox";
+  o48["body"] = args[0];
+  return o48;
+  return undef();
+});
+JS.call(defineFunction, undef(), o42);
+JsValue o49 = emptyObject();
+o49["type"] = "enclose";
+JsValue a50 = newArray();
+JS.push(a50, "\\cancel");
+JS.push(a50, "\\bcancel");
+JS.push(a50, "\\xcancel");
+JS.push(a50, "\\sout");
+JS.push(a50, "\\phase");
+o49["names"] = a50;
+JsValue o51 = emptyObject();
+o51["numArgs"] = 1;
+o49["props"] = o51;
+o49["handler"] = JS.method2((JsValue self, JsValue p52, JsValue args) => {
+  JsValue op53 = p52;
+  JsValue parser = op53["parser"];
+  JsValue funcName = op53["funcName"];
+  JsValue body = args[0];
+  JsValue o54 = emptyObject();
+  o54["type"] = "enclose";
+  o54["mode"] = parser["mode"];
+  o54["label"] = funcName;
+  o54["body"] = body;
+  return o54;
+  return undef();
+});
+o49["htmlBuilder"] = htmlBuilder;
+o49["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o49);
+JsValue o55 = emptyObject();
+o55["type"] = "enclose";
+JsValue a56 = newArray();
+JS.push(a56, "\\angl");
+o55["names"] = a56;
+JsValue o57 = emptyObject();
+o57["numArgs"] = 1;
+JsValue a58 = newArray();
+JS.push(a58, "hbox");
+o57["argTypes"] = a58;
+o57["allowedInText"] = false;
+o55["props"] = o57;
+o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
+  JsValue op60 = p59;
+  JsValue parser = op60["parser"];
+  JsValue o61 = emptyObject();
+  o61["type"] = "enclose";
+  o61["mode"] = parser["mode"];
+  o61["label"] = "\\angl";
+  o61["body"] = args[0];
+  return o61;
+  return undef();
+});
+JS.call(defineFunction, undef(), o55);
+JsValue __star = emptyObject();
+
+export { __star };

@@ -1,0 +1,117 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+JsValue _functions = undef();
+JsValue _htmlGroupBuilders = undef();
+JsValue _mathmlGroupBuilders = undef();
+JsValue defineFunction = undef();
+JsValue defineFunctionBuilders = undef();
+JsValue normalizeArgument = undef();
+JsValue ordargument = undef();
+
+JsValue o1 = emptyObject();
+_functions = o1;
+JsValue o2 = emptyObject();
+_htmlGroupBuilders = o2;
+JsValue o3 = emptyObject();
+_mathmlGroupBuilders = o3;
+defineFunction = (JsValue p5) => {
+  JsValue op6 = p5;
+  JsValue type = op6["type"];
+  JsValue names = op6["names"];
+  JsValue props = op6["props"];
+  JsValue handler = op6["handler"];
+  JsValue htmlBuilder = op6["htmlBuilder"];
+  JsValue mathmlBuilder = op6["mathmlBuilder"];
+  JsValue o7 = emptyObject();
+  o7["type"] = type;
+  o7["numArgs"] = props["numArgs"];
+  o7["argTypes"] = props["argTypes"];
+  o7["allowedInArgument"] = !(!(props["allowedInArgument"].truthy()));
+  o7["allowedInText"] = !(!(props["allowedInText"].truthy()));
+  JsValue c8 = undef();
+  if (JS.strictEqual(props["allowedInMath"], undef())) {
+    c8 = true;
+  } else {
+    c8 = props["allowedInMath"];
+  }
+  o7["allowedInMath"] = c8;
+  JsValue or9 = props["numOptionalArgs"];
+  if (!(or9.truthy())) {
+    or9 = 0;
+  }
+  o7["numOptionalArgs"] = or9;
+  o7["infix"] = !(!(props["infix"].truthy()));
+  o7["primitive"] = !(!(props["primitive"].truthy()));
+  o7["handler"] = handler;
+  JsValue data = o7;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, names["length"])) {
+      _functions[names[i]] = data;
+      i = JS.add(i, 1);
+    }
+  }
+  if (type.truthy()) {
+    if (htmlBuilder.truthy()) {
+      _htmlGroupBuilders[type] = htmlBuilder;
+    }
+    if (mathmlBuilder.truthy()) {
+      _mathmlGroupBuilders[type] = mathmlBuilder;
+    }
+  }
+  return undef();
+};
+defineFunctionBuilders = (JsValue p12) => {
+  JsValue op13 = p12;
+  JsValue type = op13["type"];
+  JsValue htmlBuilder = op13["htmlBuilder"];
+  JsValue mathmlBuilder = op13["mathmlBuilder"];
+  JsValue o14 = emptyObject();
+  o14["type"] = type;
+  JsValue a15 = newArray();
+  o14["names"] = a15;
+  JsValue o16 = emptyObject();
+  o16["numArgs"] = 0;
+  o14["props"] = o16;
+  o14["handler"] = JS.method0((JsValue self) => {
+  throw makeError(toStr("Should never be called."));
+  return undef();
+  });
+  o14["htmlBuilder"] = htmlBuilder;
+  o14["mathmlBuilder"] = mathmlBuilder;
+  JS.call(defineFunction, undef(), o14);
+  return undef();
+};
+normalizeArgument = (JsValue arg) => {
+  JsValue c17 = undef();
+  if ((JS.strictEqual(arg["type"], "ordgroup")) && (JS.strictEqual(arg["body"]["length"], 1))) {
+    c17 = arg["body"][0];
+  } else {
+    c17 = arg;
+  }
+  return c17;
+  return undef();
+};
+ordargument = (JsValue arg) => {
+  JsValue c18 = undef();
+  if (JS.strictEqual(arg["type"], "ordgroup")) {
+    c18 = arg["body"];
+  } else {
+    JsValue a19 = newArray();
+    JS.push(a19, arg);
+    c18 = a19;
+  }
+  return c18;
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["_functions"] = _functions;
+__star["_htmlGroupBuilders"] = _htmlGroupBuilders;
+__star["_mathmlGroupBuilders"] = _mathmlGroupBuilders;
+__star["defineFunctionBuilders"] = defineFunctionBuilders;
+__star["normalizeArgument"] = normalizeArgument;
+__star["ordargument"] = ordargument;
+__star["default"] = defineFunction;
+__star["defineFunction"] = defineFunction;
+
+export { __star, _functions, _htmlGroupBuilders, _mathmlGroupBuilders, defineFunctionBuilders, normalizeArgument, ordargument, defineFunction as defineFunction };

@@ -1,0 +1,49 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { _htmlGroupBuilders, _mathmlGroupBuilders } from "./defineFunction.lil";
+
+JsValue _environments = undef();
+JsValue defineEnvironment = undef();
+
+JsValue o1 = emptyObject();
+_environments = o1;
+defineEnvironment = (JsValue p3) => {
+  JsValue op4 = p3;
+  JsValue type = op4["type"];
+  JsValue names = op4["names"];
+  JsValue props = op4["props"];
+  JsValue handler = op4["handler"];
+  JsValue htmlBuilder = op4["htmlBuilder"];
+  JsValue mathmlBuilder = op4["mathmlBuilder"];
+  JsValue o5 = emptyObject();
+  o5["type"] = type;
+  JsValue or6 = props["numArgs"];
+  if (!(or6.truthy())) {
+    or6 = 0;
+  }
+  o5["numArgs"] = or6;
+  o5["allowedInText"] = false;
+  o5["numOptionalArgs"] = 0;
+  o5["handler"] = handler;
+  JsValue data = o5;
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, names["length"])) {
+      _environments[names[i]] = data;
+      i = JS.add(i, 1);
+    }
+  }
+  if (htmlBuilder.truthy()) {
+    _htmlGroupBuilders[type] = htmlBuilder;
+  }
+  if (mathmlBuilder.truthy()) {
+    _mathmlGroupBuilders[type] = mathmlBuilder;
+  }
+  return undef();
+};
+JsValue __star = emptyObject();
+__star["_environments"] = _environments;
+__star["default"] = defineEnvironment;
+__star["defineEnvironment"] = defineEnvironment;
+
+export { __star, _environments, defineEnvironment as defineEnvironment };

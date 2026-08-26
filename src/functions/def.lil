@@ -1,0 +1,216 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction } from "../defineFunction.lil";
+import { ParseError } from "../ParseError.lil";
+import { assertNodeType } from "../parseNode.lil";
+
+JsValue globalMap = undef();
+JsValue checkControlSequence = undef();
+JsValue getRHS = undef();
+JsValue letCommand = undef();
+
+JsValue o1 = emptyObject();
+o1["\\global"] = "\\global";
+o1["\\long"] = "\\\\globallong";
+o1["\\\\globallong"] = "\\\\globallong";
+o1["\\def"] = "\\gdef";
+o1["\\gdef"] = "\\gdef";
+o1["\\edef"] = "\\xdef";
+o1["\\xdef"] = "\\xdef";
+o1["\\let"] = "\\\\globallet";
+o1["\\futurelet"] = "\\\\globalfuture";
+globalMap = o1;
+checkControlSequence = (JsValue tok) => {
+  JsValue name = tok["text"];
+  if (JS.invoke(JS.construct(RegExp, "^(?:[\\\\{}$&#^_]|EOF)$", ""), "test", name).truthy()) {
+    throw JS.construct(ParseError, "Expected a control sequence", tok);
+  }
+  return name;
+  return undef();
+};
+getRHS = (JsValue parser) => {
+  JsValue tok = JS.invoke(parser["gullet"], "popToken");
+  if (JS.strictEqual(tok["text"], "=")) {
+    tok = JS.invoke(parser["gullet"], "popToken");
+    if (JS.strictEqual(tok["text"], " ")) {
+      tok = JS.invoke(parser["gullet"], "popToken");
+    }
+  }
+  return tok;
+  return undef();
+};
+letCommand = (JsValue parser, JsValue name, JsValue tok, JsValue global) => {
+  JsValue macro = JS.invoke(parser["gullet"]["macros"], "get", tok["text"]);
+  if (isNullish(macro)) {
+    tok["noexpand"] = true;
+    JsValue o2 = emptyObject();
+    JsValue a3 = newArray();
+    JS.push(a3, tok);
+    o2["tokens"] = a3;
+    o2["numArgs"] = 0;
+    o2["unexpandable"] = !(JS.invoke(parser["gullet"], "isExpandable", tok["text"]).truthy());
+    macro = o2;
+  }
+  JS.invoke(parser["gullet"]["macros"], "set", name, macro, global);
+  return undef();
+};
+JsValue o4 = emptyObject();
+o4["type"] = "internal";
+JsValue a5 = newArray();
+JS.push(a5, "\\global");
+JS.push(a5, "\\long");
+JS.push(a5, "\\\\globallong");
+o4["names"] = a5;
+JsValue o6 = emptyObject();
+o6["numArgs"] = 0;
+o6["allowedInText"] = true;
+o4["props"] = o6;
+o4["handler"] = JS.method1((JsValue self, JsValue p7) => {
+  JsValue op8 = p7;
+  JsValue parser = op8["parser"];
+  JsValue funcName = op8["funcName"];
+  JS.invoke(parser, "consumeSpaces");
+  JsValue token = JS.invoke(parser, "fetch");
+  if (globalMap[token["text"]].truthy()) {
+    if ((JS.strictEqual(funcName, "\\global")) || (JS.strictEqual(funcName, "\\\\globallong"))) {
+      token["text"] = globalMap[token["text"]];
+    }
+    return JS.call(assertNodeType, undef(), JS.invoke(parser, "parseFunction"), "internal");
+  }
+  throw JS.construct(ParseError, "Invalid token after macro prefix", token);
+  return undef();
+});
+JS.call(defineFunction, undef(), o4);
+JsValue o9 = emptyObject();
+o9["type"] = "internal";
+JsValue a10 = newArray();
+JS.push(a10, "\\def");
+JS.push(a10, "\\gdef");
+JS.push(a10, "\\edef");
+JS.push(a10, "\\xdef");
+o9["names"] = a10;
+JsValue o11 = emptyObject();
+o11["numArgs"] = 0;
+o11["allowedInText"] = true;
+o11["primitive"] = true;
+o9["props"] = o11;
+o9["handler"] = JS.method1((JsValue self, JsValue p12) => {
+  JsValue op13 = p12;
+  JsValue parser = op13["parser"];
+  JsValue funcName = op13["funcName"];
+  JsValue tok = JS.invoke(parser["gullet"], "popToken");
+  JsValue name = tok["text"];
+  if (JS.invoke(JS.construct(RegExp, "^(?:[\\\\{}$&#^_]|EOF)$", ""), "test", name).truthy()) {
+    throw JS.construct(ParseError, "Expected a control sequence", tok);
+  }
+  JsValue numArgs = 0;
+  JsValue insert = undef();
+  JsValue a14 = newArray();
+  JsValue a15 = newArray();
+  JS.push(a14, a15);
+  JsValue delimiters = a14;
+  while (JS.strictNotEqual(JS.invoke(parser["gullet"], "future")["text"], "{")) {
+    tok = JS.invoke(parser["gullet"], "popToken");
+    if (JS.strictEqual(tok["text"], "#")) {
+      if (JS.strictEqual(JS.invoke(parser["gullet"], "future")["text"], "{")) {
+        insert = JS.invoke(parser["gullet"], "future");
+        JS.invoke(delimiters[numArgs], "push", "{");
+        break;
+      }
+      tok = JS.invoke(parser["gullet"], "popToken");
+      if (!(JS.invoke(JS.construct(RegExp, "^[1-9]$", ""), "test", tok["text"]).truthy())) {
+        throw JS.construct(ParseError, "Invalid argument number \"" + toStr(tok["text"]) + "\"");
+      }
+      if (JS.strictNotEqual(hostParseInt(tok["text"]), JS.add(numArgs, 1))) {
+        throw JS.construct(ParseError, "Argument number \"" + toStr(tok["text"]) + "\" out of order");
+      }
+      JsValue u16 = numArgs;
+      numArgs = JS.add(numArgs, 1);
+      JsValue a17 = newArray();
+      JS.invoke(delimiters, "push", a17);
+    } else {
+      if (JS.strictEqual(tok["text"], "EOF")) {
+        throw JS.construct(ParseError, "Expected a macro definition");
+      } else {
+        JS.invoke(delimiters[numArgs], "push", tok["text"]);
+      }
+    }
+  }
+  JsValue op18 = JS.invoke(parser["gullet"], "consumeArg");
+  JsValue tokens = op18["tokens"];
+  if (insert.truthy()) {
+    JS.invoke(tokens, "unshift", insert);
+  }
+  if ((JS.strictEqual(funcName, "\\edef")) || (JS.strictEqual(funcName, "\\xdef"))) {
+    tokens = JS.invoke(parser["gullet"], "expandTokens", tokens);
+    JS.invoke(tokens, "reverse");
+  }
+  JsValue o19 = emptyObject();
+  o19["tokens"] = tokens;
+  o19["numArgs"] = numArgs;
+  o19["delimiters"] = delimiters;
+  JS.invoke(parser["gullet"]["macros"], "set", name, o19, JS.strictEqual(funcName, globalMap[funcName]));
+  JsValue o20 = emptyObject();
+  o20["type"] = "internal";
+  o20["mode"] = parser["mode"];
+  return o20;
+  return undef();
+});
+JS.call(defineFunction, undef(), o9);
+JsValue o21 = emptyObject();
+o21["type"] = "internal";
+JsValue a22 = newArray();
+JS.push(a22, "\\let");
+JS.push(a22, "\\\\globallet");
+o21["names"] = a22;
+JsValue o23 = emptyObject();
+o23["numArgs"] = 0;
+o23["allowedInText"] = true;
+o23["primitive"] = true;
+o21["props"] = o23;
+o21["handler"] = JS.method1((JsValue self, JsValue p24) => {
+  JsValue op25 = p24;
+  JsValue parser = op25["parser"];
+  JsValue funcName = op25["funcName"];
+  JsValue name = JS.call(checkControlSequence, undef(), JS.invoke(parser["gullet"], "popToken"));
+  JS.invoke(parser["gullet"], "consumeSpaces");
+  JsValue tok = JS.call(getRHS, undef(), parser);
+  JS.call(letCommand, undef(), parser, name, tok, JS.strictEqual(funcName, "\\\\globallet"));
+  JsValue o26 = emptyObject();
+  o26["type"] = "internal";
+  o26["mode"] = parser["mode"];
+  return o26;
+  return undef();
+});
+JS.call(defineFunction, undef(), o21);
+JsValue o27 = emptyObject();
+o27["type"] = "internal";
+JsValue a28 = newArray();
+JS.push(a28, "\\futurelet");
+JS.push(a28, "\\\\globalfuture");
+o27["names"] = a28;
+JsValue o29 = emptyObject();
+o29["numArgs"] = 0;
+o29["allowedInText"] = true;
+o29["primitive"] = true;
+o27["props"] = o29;
+o27["handler"] = JS.method1((JsValue self, JsValue p30) => {
+  JsValue op31 = p30;
+  JsValue parser = op31["parser"];
+  JsValue funcName = op31["funcName"];
+  JsValue name = JS.call(checkControlSequence, undef(), JS.invoke(parser["gullet"], "popToken"));
+  JsValue middle = JS.invoke(parser["gullet"], "popToken");
+  JsValue tok = JS.invoke(parser["gullet"], "popToken");
+  JS.call(letCommand, undef(), parser, name, tok, JS.strictEqual(funcName, "\\\\globalfuture"));
+  JS.invoke(parser["gullet"], "pushToken", tok);
+  JS.invoke(parser["gullet"], "pushToken", middle);
+  JsValue o32 = emptyObject();
+  o32["type"] = "internal";
+  o32["mode"] = parser["mode"];
+  return o32;
+  return undef();
+});
+JS.call(defineFunction, undef(), o27);
+JsValue __star = emptyObject();
+
+export { __star };

@@ -1,0 +1,49 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, ordargument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { binrelClass } from "./mclass.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue o1 = emptyObject();
+o1["type"] = "pmb";
+JsValue a2 = newArray();
+JS.push(a2, "\\pmb");
+o1["names"] = a2;
+JsValue o3 = emptyObject();
+o3["numArgs"] = 1;
+o3["allowedInText"] = true;
+o1["props"] = o3;
+o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
+  JsValue op5 = p4;
+  JsValue parser = op5["parser"];
+  JsValue o6 = emptyObject();
+  o6["type"] = "pmb";
+  o6["mode"] = parser["mode"];
+  o6["mclass"] = JS.call(binrelClass, undef(), args[0]);
+  o6["body"] = JS.call(ordargument, undef(), args[0]);
+  return o6;
+  return undef();
+});
+o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+  JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, true);
+  JsValue a7 = newArray();
+  JS.push(a7, group["mclass"]);
+  JsValue node = JS.invoke(buildCommon, "makeSpan", a7, elements, options);
+  node["style"]["textShadow"] = "0.02em 0.01em 0.04px";
+  return node;
+  return undef();
+});
+o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue style) => {
+  JsValue inner = JS.invoke(mml, "buildExpression", group["body"], style);
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JS.invoke(node, "setAttribute", "style", "text-shadow: 0.02em 0.01em 0.04px");
+  return node;
+  return undef();
+});
+JS.call(defineFunction, undef(), o1);
+JsValue __star = emptyObject();
+
+export { __star };

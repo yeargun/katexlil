@@ -1,0 +1,21 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { SourceLocation } from "./SourceLocation.lil";
+
+JsValue Token = undef();
+
+Token = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue text = argv[0];
+  JsValue loc = argv[1];
+  self["text"] = text;
+  self["loc"] = loc;
+  return self;
+});
+Token["prototype"]["range"] = JS.method2((JsValue self, JsValue endToken, JsValue text) => {
+  return JS.construct(Token, text, JS.invoke(SourceLocation, "range", self, endToken));
+  return undef();
+});
+JsValue __star = emptyObject();
+__star["Token"] = Token;
+
+export { __star, Token };

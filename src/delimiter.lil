@@ -1,0 +1,799 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { ParseError } from "./ParseError.lil";
+import { Style } from "./Style.lil";
+import { PathNode, SvgNode, SymbolNode } from "./domTree.lil";
+import { sqrtPath, innerPath, tallDelim } from "./svgGeometry.lil";
+import { buildCommon } from "./buildCommon.lil";
+import { getCharacterMetrics } from "./fontMetrics.lil";
+import { symbols } from "./symbols.lil";
+import { utils } from "./utils.lil";
+import { makeEm } from "./units.lil";
+import { fontMetricsData } from "./data.lil";
+
+JsValue getMetrics = undef();
+JsValue styleWrap = undef();
+JsValue centerSpan = undef();
+JsValue makeSmallDelim = undef();
+JsValue mathrmSize = undef();
+JsValue makeLargeDelim = undef();
+JsValue makeGlyphSpan = undef();
+JsValue makeInner = undef();
+JsValue lapInEms = undef();
+JsValue lap = undef();
+JsValue verts = undef();
+JsValue doubleVerts = undef();
+JsValue makeStackedDelim = undef();
+JsValue vbPad = undef();
+JsValue emPad = undef();
+JsValue sqrtSvg = undef();
+JsValue makeSqrtImage = undef();
+JsValue stackLargeDelimiters = undef();
+JsValue stackAlwaysDelimiters = undef();
+JsValue stackNeverDelimiters = undef();
+JsValue sizeToMaxHeight = undef();
+JsValue makeSizedDelim = undef();
+JsValue stackNeverDelimiterSequence = undef();
+JsValue stackAlwaysDelimiterSequence = undef();
+JsValue stackLargeDelimiterSequence = undef();
+JsValue delimTypeToFont = undef();
+JsValue traverseSequence = undef();
+JsValue makeCustomSizedDelim = undef();
+JsValue makeLeftRightDelim = undef();
+
+getMetrics = (JsValue symbol, JsValue font, JsValue mode) => {
+  JsValue and1 = symbols["math"][symbol];
+  if (and1.truthy()) {
+    and1 = symbols["math"][symbol]["replace"];
+  }
+  JsValue replace = and1;
+  JsValue or2 = replace;
+  if (!(or2.truthy())) {
+    or2 = symbol;
+  }
+  JsValue metrics = JS.call(getCharacterMetrics, undef(), or2, font, mode);
+  if (!(metrics.truthy())) {
+    throw makeError(toStr("Unsupported symbol " + toStr(symbol) + " and font size " + toStr(font) + "."));
+  }
+  return metrics;
+  return undef();
+};
+styleWrap = (JsValue delim, JsValue toStyle, JsValue options, JsValue classes) => {
+  JsValue newOptions = JS.invoke(options, "havingBaseStyle", toStyle);
+  JsValue a3 = newArray();
+  JS.push(a3, delim);
+  JsValue span = JS.invoke(buildCommon, "makeSpan", JS.invoke(classes, "concat", JS.invoke(newOptions, "sizingClasses", options)), a3, options);
+  JsValue delimSizeMultiplier = (toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]));
+  JsValue as4 = span["height"];
+  span["height"] = (toNum(as4) * toNum(delimSizeMultiplier));
+  JsValue as5 = span["depth"];
+  span["depth"] = (toNum(as5) * toNum(delimSizeMultiplier));
+  span["maxFontSize"] = newOptions["sizeMultiplier"];
+  return span;
+  return undef();
+};
+centerSpan = (JsValue span, JsValue options, JsValue style) => {
+  JsValue newOptions = JS.invoke(options, "havingBaseStyle", style);
+  JsValue shift = (toNum((toNum(1) - toNum((toNum(options["sizeMultiplier"]) / toNum(newOptions["sizeMultiplier"]))))) * toNum(JS.invoke(options, "fontMetrics")["axisHeight"]));
+  JS.invoke(span["classes"], "push", "delimcenter");
+  span["style"]["top"] = JS.call(makeEm, undef(), shift);
+  JsValue as6 = span["height"];
+  span["height"] = (toNum(as6) - toNum(shift));
+  JsValue as7 = span["depth"];
+  span["depth"] = JS.add(as7, shift);
+  return undef();
+};
+makeSmallDelim = (JsValue delim, JsValue style, JsValue center, JsValue options, JsValue mode, JsValue classes) => {
+  JsValue text = JS.invoke(buildCommon, "makeSymbol", delim, "Main-Regular", mode, options);
+  JsValue span = JS.call(styleWrap, undef(), text, style, options, classes);
+  if (center.truthy()) {
+    JS.call(centerSpan, undef(), span, options, style);
+  }
+  return span;
+  return undef();
+};
+mathrmSize = (JsValue value, JsValue size, JsValue mode, JsValue options) => {
+  return JS.invoke(buildCommon, "makeSymbol", value, JS.add(JS.add("Size", size), "-Regular"), mode, options);
+  return undef();
+};
+makeLargeDelim = (JsValue delim, JsValue size, JsValue center, JsValue options, JsValue mode, JsValue classes) => {
+  JsValue inner = JS.call(mathrmSize, undef(), delim, size, mode, options);
+  JsValue a8 = newArray();
+  JS.push(a8, "delimsizing");
+  JS.push(a8, JS.add("size", size));
+  JsValue a9 = newArray();
+  JS.push(a9, inner);
+  JsValue span = JS.call(styleWrap, undef(), JS.invoke(buildCommon, "makeSpan", a8, a9, options), Style["TEXT"], options, classes);
+  if (center.truthy()) {
+    JS.call(centerSpan, undef(), span, options, Style["TEXT"]);
+  }
+  return span;
+  return undef();
+};
+makeGlyphSpan = (JsValue symbol, JsValue font, JsValue mode) => {
+  JsValue sizeClass = undef();
+  if (JS.strictEqual(font, "Size1-Regular")) {
+    sizeClass = "delim-size1";
+  } else {
+    sizeClass = "delim-size4";
+  }
+  JsValue a10 = newArray();
+  JS.push(a10, "delimsizinginner");
+  JS.push(a10, sizeClass);
+  JsValue a11 = newArray();
+  JsValue a12 = newArray();
+  JsValue a13 = newArray();
+  JS.push(a13, JS.invoke(buildCommon, "makeSymbol", symbol, font, mode));
+  JS.push(a11, JS.invoke(buildCommon, "makeSpan", a12, a13));
+  JsValue corner = JS.invoke(buildCommon, "makeSpan", a10, a11);
+  JsValue o14 = emptyObject();
+  o14["type"] = "elem";
+  o14["elem"] = corner;
+  return o14;
+  return undef();
+};
+makeInner = (JsValue ch, JsValue height, JsValue options) => {
+  JsValue c15 = undef();
+  if (fontMetricsData["Size4-Regular"][JS.invoke(ch, "charCodeAt", 0)].truthy()) {
+    c15 = fontMetricsData["Size4-Regular"][JS.invoke(ch, "charCodeAt", 0)][4];
+  } else {
+    c15 = fontMetricsData["Size1-Regular"][JS.invoke(ch, "charCodeAt", 0)][4];
+  }
+  JsValue width = c15;
+  JsValue path = JS.construct(PathNode, "inner", JS.call(innerPath, undef(), ch, JS.invoke(Math, "round", (toNum(1000) * toNum(height)))));
+  JsValue a16 = newArray();
+  JS.push(a16, path);
+  JsValue o17 = emptyObject();
+  o17["width"] = JS.call(makeEm, undef(), width);
+  o17["height"] = JS.call(makeEm, undef(), height);
+  o17["style"] = JS.add("width:", JS.call(makeEm, undef(), width));
+  o17["viewBox"] = JS.add(JS.add(JS.add("0 0 ", (toNum(1000) * toNum(width))), " "), JS.invoke(Math, "round", (toNum(1000) * toNum(height))));
+  o17["preserveAspectRatio"] = "xMinYMin";
+  JsValue svgNode = JS.construct(SvgNode, a16, o17);
+  JsValue a18 = newArray();
+  JsValue a19 = newArray();
+  JS.push(a19, svgNode);
+  JsValue span = JS.invoke(buildCommon, "makeSvgSpan", a18, a19, options);
+  span["height"] = height;
+  span["style"]["height"] = JS.call(makeEm, undef(), height);
+  span["style"]["width"] = JS.call(makeEm, undef(), width);
+  JsValue o20 = emptyObject();
+  o20["type"] = "elem";
+  o20["elem"] = span;
+  return o20;
+  return undef();
+};
+lapInEms = 0.008;
+JsValue o21 = emptyObject();
+o21["type"] = "kern";
+o21["size"] = (toNum(JS.number(0) - toNum(1)) * toNum(lapInEms));
+lap = o21;
+JsValue a22 = newArray();
+JS.push(a22, "|");
+JS.push(a22, "\\lvert");
+JS.push(a22, "\\rvert");
+JS.push(a22, "\\vert");
+verts = a22;
+JsValue a23 = newArray();
+JS.push(a23, "\\|");
+JS.push(a23, "\\lVert");
+JS.push(a23, "\\rVert");
+JS.push(a23, "\\Vert");
+doubleVerts = a23;
+makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue options, JsValue mode, JsValue classes) => {
+  JsValue top = undef();
+  JsValue middle = undef();
+  JsValue repeat = undef();
+  JsValue bottom = undef();
+  JsValue svgLabel = "";
+  JsValue viewBoxWidth = 0;
+  bottom = delim;
+  repeat = bottom;
+  top = repeat;
+  middle = null;
+  JsValue font = "Size1-Regular";
+  if (JS.strictEqual(delim, "\\uparrow")) {
+    bottom = "⏐";
+    repeat = bottom;
+  } else {
+    if (JS.strictEqual(delim, "\\Uparrow")) {
+      bottom = "‖";
+      repeat = bottom;
+    } else {
+      if (JS.strictEqual(delim, "\\downarrow")) {
+        repeat = "⏐";
+        top = repeat;
+      } else {
+        if (JS.strictEqual(delim, "\\Downarrow")) {
+          repeat = "‖";
+          top = repeat;
+        } else {
+          if (JS.strictEqual(delim, "\\updownarrow")) {
+            top = "\\uparrow";
+            repeat = "⏐";
+            bottom = "\\downarrow";
+          } else {
+            if (JS.strictEqual(delim, "\\Updownarrow")) {
+              top = "\\Uparrow";
+              repeat = "‖";
+              bottom = "\\Downarrow";
+            } else {
+              if (JS.invoke(utils, "contains", verts, delim).truthy()) {
+                repeat = "∣";
+                svgLabel = "vert";
+                viewBoxWidth = 333;
+              } else {
+                if (JS.invoke(utils, "contains", doubleVerts, delim).truthy()) {
+                  repeat = "∥";
+                  svgLabel = "doublevert";
+                  viewBoxWidth = 556;
+                } else {
+                  if ((JS.strictEqual(delim, "[")) || (JS.strictEqual(delim, "\\lbrack"))) {
+                    top = "⎡";
+                    repeat = "⎢";
+                    bottom = "⎣";
+                    font = "Size4-Regular";
+                    svgLabel = "lbrack";
+                    viewBoxWidth = 667;
+                  } else {
+                    if ((JS.strictEqual(delim, "]")) || (JS.strictEqual(delim, "\\rbrack"))) {
+                      top = "⎤";
+                      repeat = "⎥";
+                      bottom = "⎦";
+                      font = "Size4-Regular";
+                      svgLabel = "rbrack";
+                      viewBoxWidth = 667;
+                    } else {
+                      if ((JS.strictEqual(delim, "\\lfloor")) || (JS.strictEqual(delim, "⌊"))) {
+                        top = "⎢";
+                        repeat = top;
+                        bottom = "⎣";
+                        font = "Size4-Regular";
+                        svgLabel = "lfloor";
+                        viewBoxWidth = 667;
+                      } else {
+                        if ((JS.strictEqual(delim, "\\lceil")) || (JS.strictEqual(delim, "⌈"))) {
+                          top = "⎡";
+                          bottom = "⎢";
+                          repeat = bottom;
+                          font = "Size4-Regular";
+                          svgLabel = "lceil";
+                          viewBoxWidth = 667;
+                        } else {
+                          if ((JS.strictEqual(delim, "\\rfloor")) || (JS.strictEqual(delim, "⌋"))) {
+                            top = "⎥";
+                            repeat = top;
+                            bottom = "⎦";
+                            font = "Size4-Regular";
+                            svgLabel = "rfloor";
+                            viewBoxWidth = 667;
+                          } else {
+                            if ((JS.strictEqual(delim, "\\rceil")) || (JS.strictEqual(delim, "⌉"))) {
+                              top = "⎤";
+                              bottom = "⎥";
+                              repeat = bottom;
+                              font = "Size4-Regular";
+                              svgLabel = "rceil";
+                              viewBoxWidth = 667;
+                            } else {
+                              if ((JS.strictEqual(delim, "(")) || (JS.strictEqual(delim, "\\lparen"))) {
+                                top = "⎛";
+                                repeat = "⎜";
+                                bottom = "⎝";
+                                font = "Size4-Regular";
+                                svgLabel = "lparen";
+                                viewBoxWidth = 875;
+                              } else {
+                                if ((JS.strictEqual(delim, ")")) || (JS.strictEqual(delim, "\\rparen"))) {
+                                  top = "⎞";
+                                  repeat = "⎟";
+                                  bottom = "⎠";
+                                  font = "Size4-Regular";
+                                  svgLabel = "rparen";
+                                  viewBoxWidth = 875;
+                                } else {
+                                  if ((JS.strictEqual(delim, "\\{")) || (JS.strictEqual(delim, "\\lbrace"))) {
+                                    top = "⎧";
+                                    middle = "⎨";
+                                    bottom = "⎩";
+                                    repeat = "⎪";
+                                    font = "Size4-Regular";
+                                  } else {
+                                    if ((JS.strictEqual(delim, "\\}")) || (JS.strictEqual(delim, "\\rbrace"))) {
+                                      top = "⎫";
+                                      middle = "⎬";
+                                      bottom = "⎭";
+                                      repeat = "⎪";
+                                      font = "Size4-Regular";
+                                    } else {
+                                      if ((JS.strictEqual(delim, "\\lgroup")) || (JS.strictEqual(delim, "⟮"))) {
+                                        top = "⎧";
+                                        bottom = "⎩";
+                                        repeat = "⎪";
+                                        font = "Size4-Regular";
+                                      } else {
+                                        if ((JS.strictEqual(delim, "\\rgroup")) || (JS.strictEqual(delim, "⟯"))) {
+                                          top = "⎫";
+                                          bottom = "⎭";
+                                          repeat = "⎪";
+                                          font = "Size4-Regular";
+                                        } else {
+                                          if ((JS.strictEqual(delim, "\\lmoustache")) || (JS.strictEqual(delim, "⎰"))) {
+                                            top = "⎧";
+                                            bottom = "⎭";
+                                            repeat = "⎪";
+                                            font = "Size4-Regular";
+                                          } else {
+                                            if ((JS.strictEqual(delim, "\\rmoustache")) || (JS.strictEqual(delim, "⎱"))) {
+                                              top = "⎫";
+                                              bottom = "⎩";
+                                              repeat = "⎪";
+                                              font = "Size4-Regular";
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  JsValue topMetrics = JS.call(getMetrics, undef(), top, font, mode);
+  JsValue topHeightTotal = JS.add(topMetrics["height"], topMetrics["depth"]);
+  JsValue repeatMetrics = JS.call(getMetrics, undef(), repeat, font, mode);
+  JsValue repeatHeightTotal = JS.add(repeatMetrics["height"], repeatMetrics["depth"]);
+  JsValue bottomMetrics = JS.call(getMetrics, undef(), bottom, font, mode);
+  JsValue bottomHeightTotal = JS.add(bottomMetrics["height"], bottomMetrics["depth"]);
+  JsValue middleHeightTotal = 0;
+  JsValue middleFactor = 1;
+  if (JS.strictNotEqual(middle, null)) {
+    JsValue middleMetrics = JS.call(getMetrics, undef(), middle, font, mode);
+    middleHeightTotal = JS.add(middleMetrics["height"], middleMetrics["depth"]);
+    middleFactor = 2;
+  }
+  JsValue minHeight = JS.add(JS.add(topHeightTotal, bottomHeightTotal), middleHeightTotal);
+  JsValue repeatCount = JS.invoke(Math, "max", 0, JS.invoke(Math, "ceil", (toNum((toNum(heightTotal) - toNum(minHeight))) / toNum((toNum(middleFactor) * toNum(repeatHeightTotal))))));
+  JsValue realHeightTotal = JS.add(minHeight, (toNum((toNum(repeatCount) * toNum(middleFactor))) * toNum(repeatHeightTotal)));
+  JsValue axisHeight = JS.invoke(options, "fontMetrics")["axisHeight"];
+  if (center.truthy()) {
+    axisHeight = (toNum(axisHeight) * toNum(options["sizeMultiplier"]));
+  }
+  JsValue depth = (toNum((toNum(realHeightTotal) / toNum(2))) - toNum(axisHeight));
+  JsValue a24 = newArray();
+  JsValue stack = a24;
+  if (JS.greaterThan(svgLabel["length"], 0)) {
+    JsValue midHeight = (toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal));
+    JsValue viewBoxHeight = JS.invoke(Math, "round", (toNum(realHeightTotal) * toNum(1000)));
+    JsValue pathStr = JS.call(tallDelim, undef(), svgLabel, JS.invoke(Math, "round", (toNum(midHeight) * toNum(1000))));
+    JsValue path = JS.construct(PathNode, svgLabel, pathStr);
+    JsValue width = JS.add(JS.invoke((toNum(viewBoxWidth) / toNum(1000)), "toFixed", 3), "em");
+    JsValue height = JS.add(JS.invoke((toNum(viewBoxHeight) / toNum(1000)), "toFixed", 3), "em");
+    JsValue a25 = newArray();
+    JS.push(a25, path);
+    JsValue o26 = emptyObject();
+    o26["width"] = width;
+    o26["height"] = height;
+    o26["viewBox"] = "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight);
+    JsValue svg = JS.construct(SvgNode, a25, o26);
+    JsValue a27 = newArray();
+    JsValue a28 = newArray();
+    JS.push(a28, svg);
+    JsValue wrapper = JS.invoke(buildCommon, "makeSvgSpan", a27, a28, options);
+    wrapper["height"] = (toNum(viewBoxHeight) / toNum(1000));
+    wrapper["style"]["width"] = width;
+    wrapper["style"]["height"] = height;
+    JsValue o29 = emptyObject();
+    o29["type"] = "elem";
+    o29["elem"] = wrapper;
+    JS.invoke(stack, "push", o29);
+  } else {
+    JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), bottom, font, mode));
+    JS.invoke(stack, "push", lap);
+    if (JS.strictEqual(middle, null)) {
+      JsValue innerHeight = JS.add((toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal)), (toNum(2) * toNum(lapInEms)));
+      JS.invoke(stack, "push", JS.call(makeInner, undef(), repeat, innerHeight, options));
+    } else {
+      JsValue innerHeight = JS.add((toNum((toNum((toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal))) - toNum(middleHeightTotal))) / toNum(2)), (toNum(2) * toNum(lapInEms)));
+      JS.invoke(stack, "push", JS.call(makeInner, undef(), repeat, innerHeight, options));
+      JS.invoke(stack, "push", lap);
+      JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), middle, font, mode));
+      JS.invoke(stack, "push", lap);
+      JS.invoke(stack, "push", JS.call(makeInner, undef(), repeat, innerHeight, options));
+    }
+    JS.invoke(stack, "push", lap);
+    JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), top, font, mode));
+  }
+  JsValue newOptions = JS.invoke(options, "havingBaseStyle", Style["TEXT"]);
+  JsValue o30 = emptyObject();
+  o30["positionType"] = "bottom";
+  o30["positionData"] = depth;
+  o30["children"] = stack;
+  JsValue inner = JS.invoke(buildCommon, "makeVList", o30, newOptions);
+  JsValue a31 = newArray();
+  JS.push(a31, "delimsizing");
+  JS.push(a31, "mult");
+  JsValue a32 = newArray();
+  JS.push(a32, inner);
+  return JS.call(styleWrap, undef(), JS.invoke(buildCommon, "makeSpan", a31, a32, newOptions), Style["TEXT"], options, classes);
+  return undef();
+};
+vbPad = 80;
+emPad = 0.08;
+sqrtSvg = (JsValue sqrtName, JsValue height, JsValue viewBoxHeight, JsValue extraVinculum, JsValue options) => {
+  JsValue path = JS.call(sqrtPath, undef(), sqrtName, extraVinculum, viewBoxHeight);
+  JsValue pathNode = JS.construct(PathNode, sqrtName, path);
+  JsValue a33 = newArray();
+  JS.push(a33, pathNode);
+  JsValue o34 = emptyObject();
+  o34["width"] = "400em";
+  o34["height"] = JS.call(makeEm, undef(), height);
+  o34["viewBox"] = JS.add("0 0 400000 ", viewBoxHeight);
+  o34["preserveAspectRatio"] = "xMinYMin slice";
+  JsValue svg = JS.construct(SvgNode, a33, o34);
+  JsValue a35 = newArray();
+  JS.push(a35, "hide-tail");
+  JsValue a36 = newArray();
+  JS.push(a36, svg);
+  return JS.invoke(buildCommon, "makeSvgSpan", a35, a36, options);
+  return undef();
+};
+makeSqrtImage = (JsValue height, JsValue options) => {
+  JsValue newOptions = JS.invoke(options, "havingBaseSizing");
+  JsValue delim = JS.call(traverseSequence, undef(), "\\surd", (toNum(height) * toNum(newOptions["sizeMultiplier"])), stackLargeDelimiterSequence, newOptions);
+  JsValue sizeMultiplier = newOptions["sizeMultiplier"];
+  JsValue extraVinculum = JS.invoke(Math, "max", 0, (toNum(options["minRuleThickness"]) - toNum(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"])));
+  JsValue span = undef();
+  JsValue spanHeight = 0;
+  JsValue texHeight = 0;
+  JsValue viewBoxHeight = 0;
+  JsValue advanceWidth = undef();
+  if (JS.strictEqual(delim["type"], "small")) {
+    viewBoxHeight = JS.add(JS.add(1000, (toNum(1000) * toNum(extraVinculum))), vbPad);
+    if (JS.lessThan(height, 1)) {
+      sizeMultiplier = 1;
+    } else {
+      if (JS.lessThan(height, 1.4)) {
+        sizeMultiplier = 0.7;
+      }
+    }
+    spanHeight = (toNum(JS.add(JS.add(1, extraVinculum), emPad)) / toNum(sizeMultiplier));
+    texHeight = (toNum(JS.add(1, extraVinculum)) / toNum(sizeMultiplier));
+    span = JS.call(sqrtSvg, undef(), "sqrtMain", spanHeight, viewBoxHeight, extraVinculum, options);
+    span["style"]["minWidth"] = "0.853em";
+    advanceWidth = (toNum(0.833) / toNum(sizeMultiplier));
+  } else {
+    if (JS.strictEqual(delim["type"], "large")) {
+      viewBoxHeight = (toNum(JS.add(1000, vbPad)) * toNum(sizeToMaxHeight[delim["size"]]));
+      texHeight = (toNum(JS.add(sizeToMaxHeight[delim["size"]], extraVinculum)) / toNum(sizeMultiplier));
+      spanHeight = (toNum(JS.add(JS.add(sizeToMaxHeight[delim["size"]], extraVinculum), emPad)) / toNum(sizeMultiplier));
+      span = JS.call(sqrtSvg, undef(), JS.add("sqrtSize", delim["size"]), spanHeight, viewBoxHeight, extraVinculum, options);
+      span["style"]["minWidth"] = "1.02em";
+      advanceWidth = (toNum(1) / toNum(sizeMultiplier));
+    } else {
+      spanHeight = JS.add(JS.add(height, extraVinculum), emPad);
+      texHeight = JS.add(height, extraVinculum);
+      viewBoxHeight = JS.add(JS.invoke(Math, "floor", JS.add((toNum(1000) * toNum(height)), extraVinculum)), vbPad);
+      span = JS.call(sqrtSvg, undef(), "sqrtTall", spanHeight, viewBoxHeight, extraVinculum, options);
+      span["style"]["minWidth"] = "0.742em";
+      advanceWidth = 1.056;
+    }
+  }
+  span["height"] = texHeight;
+  span["style"]["height"] = JS.call(makeEm, undef(), spanHeight);
+  JsValue o37 = emptyObject();
+  o37["span"] = span;
+  o37["advanceWidth"] = advanceWidth;
+  o37["ruleWidth"] = (toNum(JS.add(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"], extraVinculum)) * toNum(sizeMultiplier));
+  return o37;
+  return undef();
+};
+JsValue a38 = newArray();
+JS.push(a38, "(");
+JS.push(a38, "\\lparen");
+JS.push(a38, ")");
+JS.push(a38, "\\rparen");
+JS.push(a38, "[");
+JS.push(a38, "\\lbrack");
+JS.push(a38, "]");
+JS.push(a38, "\\rbrack");
+JS.push(a38, "\\{");
+JS.push(a38, "\\lbrace");
+JS.push(a38, "\\}");
+JS.push(a38, "\\rbrace");
+JS.push(a38, "\\lfloor");
+JS.push(a38, "\\rfloor");
+JS.push(a38, "⌊");
+JS.push(a38, "⌋");
+JS.push(a38, "\\lceil");
+JS.push(a38, "\\rceil");
+JS.push(a38, "⌈");
+JS.push(a38, "⌉");
+JS.push(a38, "\\surd");
+stackLargeDelimiters = a38;
+JsValue a39 = newArray();
+JS.push(a39, "\\uparrow");
+JS.push(a39, "\\downarrow");
+JS.push(a39, "\\updownarrow");
+JS.push(a39, "\\Uparrow");
+JS.push(a39, "\\Downarrow");
+JS.push(a39, "\\Updownarrow");
+JS.push(a39, "|");
+JS.push(a39, "\\|");
+JS.push(a39, "\\vert");
+JS.push(a39, "\\Vert");
+JS.push(a39, "\\lvert");
+JS.push(a39, "\\rvert");
+JS.push(a39, "\\lVert");
+JS.push(a39, "\\rVert");
+JS.push(a39, "\\lgroup");
+JS.push(a39, "\\rgroup");
+JS.push(a39, "⟮");
+JS.push(a39, "⟯");
+JS.push(a39, "\\lmoustache");
+JS.push(a39, "\\rmoustache");
+JS.push(a39, "⎰");
+JS.push(a39, "⎱");
+stackAlwaysDelimiters = a39;
+JsValue a40 = newArray();
+JS.push(a40, "<");
+JS.push(a40, ">");
+JS.push(a40, "\\langle");
+JS.push(a40, "\\rangle");
+JS.push(a40, "/");
+JS.push(a40, "\\backslash");
+JS.push(a40, "\\lt");
+JS.push(a40, "\\gt");
+stackNeverDelimiters = a40;
+JsValue a41 = newArray();
+JS.push(a41, 0);
+JS.push(a41, 1.2);
+JS.push(a41, 1.8);
+JS.push(a41, 2.4);
+JS.push(a41, 3);
+sizeToMaxHeight = a41;
+makeSizedDelim = (JsValue delim, JsValue size, JsValue options, JsValue mode, JsValue classes) => {
+  if (((JS.strictEqual(delim, "<")) || (JS.strictEqual(delim, "\\lt"))) || (JS.strictEqual(delim, "⟨"))) {
+    delim = "\\langle";
+  } else {
+    if (((JS.strictEqual(delim, ">")) || (JS.strictEqual(delim, "\\gt"))) || (JS.strictEqual(delim, "⟩"))) {
+      delim = "\\rangle";
+    }
+  }
+  if ((JS.invoke(utils, "contains", stackLargeDelimiters, delim).truthy()) || (JS.invoke(utils, "contains", stackNeverDelimiters, delim).truthy())) {
+    JsValue ca42 = newArray();
+    JS.push(ca42, delim);
+    JS.push(ca42, size);
+    JS.push(ca42, false);
+    JS.push(ca42, options);
+    JS.push(ca42, mode);
+    JS.push(ca42, classes);
+    return apply(makeLargeDelim, undef(), ca42);
+  } else {
+    if (JS.invoke(utils, "contains", stackAlwaysDelimiters, delim).truthy()) {
+      JsValue ca43 = newArray();
+      JS.push(ca43, delim);
+      JS.push(ca43, sizeToMaxHeight[size]);
+      JS.push(ca43, false);
+      JS.push(ca43, options);
+      JS.push(ca43, mode);
+      JS.push(ca43, classes);
+      return apply(makeStackedDelim, undef(), ca43);
+    } else {
+      throw JS.construct(ParseError, JS.add(JS.add("Illegal delimiter: '", delim), "'"));
+    }
+  }
+  return undef();
+};
+JsValue a44 = newArray();
+JsValue o45 = emptyObject();
+o45["type"] = "small";
+o45["style"] = Style["SCRIPTSCRIPT"];
+JS.push(a44, o45);
+JsValue o46 = emptyObject();
+o46["type"] = "small";
+o46["style"] = Style["SCRIPT"];
+JS.push(a44, o46);
+JsValue o47 = emptyObject();
+o47["type"] = "small";
+o47["style"] = Style["TEXT"];
+JS.push(a44, o47);
+JsValue o48 = emptyObject();
+o48["type"] = "large";
+o48["size"] = 1;
+JS.push(a44, o48);
+JsValue o49 = emptyObject();
+o49["type"] = "large";
+o49["size"] = 2;
+JS.push(a44, o49);
+JsValue o50 = emptyObject();
+o50["type"] = "large";
+o50["size"] = 3;
+JS.push(a44, o50);
+JsValue o51 = emptyObject();
+o51["type"] = "large";
+o51["size"] = 4;
+JS.push(a44, o51);
+stackNeverDelimiterSequence = a44;
+JsValue a52 = newArray();
+JsValue o53 = emptyObject();
+o53["type"] = "small";
+o53["style"] = Style["SCRIPTSCRIPT"];
+JS.push(a52, o53);
+JsValue o54 = emptyObject();
+o54["type"] = "small";
+o54["style"] = Style["SCRIPT"];
+JS.push(a52, o54);
+JsValue o55 = emptyObject();
+o55["type"] = "small";
+o55["style"] = Style["TEXT"];
+JS.push(a52, o55);
+JsValue o56 = emptyObject();
+o56["type"] = "stack";
+JS.push(a52, o56);
+stackAlwaysDelimiterSequence = a52;
+JsValue a57 = newArray();
+JsValue o58 = emptyObject();
+o58["type"] = "small";
+o58["style"] = Style["SCRIPTSCRIPT"];
+JS.push(a57, o58);
+JsValue o59 = emptyObject();
+o59["type"] = "small";
+o59["style"] = Style["SCRIPT"];
+JS.push(a57, o59);
+JsValue o60 = emptyObject();
+o60["type"] = "small";
+o60["style"] = Style["TEXT"];
+JS.push(a57, o60);
+JsValue o61 = emptyObject();
+o61["type"] = "large";
+o61["size"] = 1;
+JS.push(a57, o61);
+JsValue o62 = emptyObject();
+o62["type"] = "large";
+o62["size"] = 2;
+JS.push(a57, o62);
+JsValue o63 = emptyObject();
+o63["type"] = "large";
+o63["size"] = 3;
+JS.push(a57, o63);
+JsValue o64 = emptyObject();
+o64["type"] = "large";
+o64["size"] = 4;
+JS.push(a57, o64);
+JsValue o65 = emptyObject();
+o65["type"] = "stack";
+JS.push(a57, o65);
+stackLargeDelimiterSequence = a57;
+delimTypeToFont = (JsValue type) => {
+  if (JS.strictEqual(type["type"], "small")) {
+    return "Main-Regular";
+  } else {
+    if (JS.strictEqual(type["type"], "large")) {
+      return JS.add(JS.add("Size", type["size"]), "-Regular");
+    } else {
+      if (JS.strictEqual(type["type"], "stack")) {
+        return "Size4-Regular";
+      } else {
+        throw makeError(toStr("Add support for delim type '" + toStr(type["type"]) + "' here."));
+      }
+    }
+  }
+  return undef();
+};
+traverseSequence = (JsValue delim, JsValue height, JsValue sequence, JsValue options) => {
+  JsValue start = JS.invoke(Math, "min", 2, (toNum(3) - toNum(options["style"]["size"])));
+  {
+    JsValue i = start;
+    while (JS.lessThan(i, sequence["length"])) {
+      if (JS.strictEqual(sequence[i]["type"], "stack")) {
+        break;
+      }
+      JsValue metrics = JS.call(getMetrics, undef(), delim, JS.call(delimTypeToFont, undef(), sequence[i]), "math");
+      JsValue heightDepth = JS.add(metrics["height"], metrics["depth"]);
+      if (JS.strictEqual(sequence[i]["type"], "small")) {
+        JsValue newOptions = JS.invoke(options, "havingBaseStyle", sequence[i]["style"]);
+        heightDepth = (toNum(heightDepth) * toNum(newOptions["sizeMultiplier"]));
+      }
+      if (JS.greaterThan(heightDepth, height)) {
+        return sequence[i];
+      }
+      JsValue u66 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return sequence[(toNum(sequence["length"]) - toNum(1))];
+  return undef();
+};
+makeCustomSizedDelim = (JsValue delim, JsValue height, JsValue center, JsValue options, JsValue mode, JsValue classes) => {
+  if (((JS.strictEqual(delim, "<")) || (JS.strictEqual(delim, "\\lt"))) || (JS.strictEqual(delim, "⟨"))) {
+    delim = "\\langle";
+  } else {
+    if (((JS.strictEqual(delim, ">")) || (JS.strictEqual(delim, "\\gt"))) || (JS.strictEqual(delim, "⟩"))) {
+      delim = "\\rangle";
+    }
+  }
+  JsValue sequence = undef();
+  if (JS.invoke(utils, "contains", stackNeverDelimiters, delim).truthy()) {
+    sequence = stackNeverDelimiterSequence;
+  } else {
+    if (JS.invoke(utils, "contains", stackLargeDelimiters, delim).truthy()) {
+      sequence = stackLargeDelimiterSequence;
+    } else {
+      sequence = stackAlwaysDelimiterSequence;
+    }
+  }
+  JsValue delimType = JS.call(traverseSequence, undef(), delim, height, sequence, options);
+  if (JS.strictEqual(delimType["type"], "small")) {
+    JsValue ca67 = newArray();
+    JS.push(ca67, delim);
+    JS.push(ca67, delimType["style"]);
+    JS.push(ca67, center);
+    JS.push(ca67, options);
+    JS.push(ca67, mode);
+    JS.push(ca67, classes);
+    return apply(makeSmallDelim, undef(), ca67);
+  } else {
+    if (JS.strictEqual(delimType["type"], "large")) {
+      JsValue ca68 = newArray();
+      JS.push(ca68, delim);
+      JS.push(ca68, delimType["size"]);
+      JS.push(ca68, center);
+      JS.push(ca68, options);
+      JS.push(ca68, mode);
+      JS.push(ca68, classes);
+      return apply(makeLargeDelim, undef(), ca68);
+    } else {
+      JsValue ca69 = newArray();
+      JS.push(ca69, delim);
+      JS.push(ca69, height);
+      JS.push(ca69, center);
+      JS.push(ca69, options);
+      JS.push(ca69, mode);
+      JS.push(ca69, classes);
+      return apply(makeStackedDelim, undef(), ca69);
+    }
+  }
+  return undef();
+};
+makeLeftRightDelim = (JsValue delim, JsValue height, JsValue depth, JsValue options, JsValue mode, JsValue classes) => {
+  JsValue axisHeight = (toNum(JS.invoke(options, "fontMetrics")["axisHeight"]) * toNum(options["sizeMultiplier"]));
+  JsValue delimiterFactor = 901;
+  JsValue delimiterExtend = (toNum(5) / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]));
+  JsValue maxDistFromAxis = JS.invoke(Math, "max", (toNum(height) - toNum(axisHeight)), JS.add(depth, axisHeight));
+  JsValue totalHeight = JS.invoke(Math, "max", (toNum((toNum(maxDistFromAxis) / toNum(500))) * toNum(delimiterFactor)), (toNum((toNum(2) * toNum(maxDistFromAxis))) - toNum(delimiterExtend)));
+  JsValue ca70 = newArray();
+  JS.push(ca70, delim);
+  JS.push(ca70, totalHeight);
+  JS.push(ca70, true);
+  JS.push(ca70, options);
+  JS.push(ca70, mode);
+  JS.push(ca70, classes);
+  return apply(makeCustomSizedDelim, undef(), ca70);
+  return undef();
+};
+JsValue o71 = emptyObject();
+o71["sqrtImage"] = makeSqrtImage;
+o71["sizedDelim"] = makeSizedDelim;
+o71["sizeToMaxHeight"] = sizeToMaxHeight;
+o71["customSizedDelim"] = makeCustomSizedDelim;
+o71["leftRightDelim"] = makeLeftRightDelim;
+JsValue delimiter = undef();
+delimiter = o71;
+JsValue __star = emptyObject();
+__star["default"] = delimiter;
+__star["delimiter"] = delimiter;
+
+export { __star, delimiter as delimiter };

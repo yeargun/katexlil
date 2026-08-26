@@ -10,9 +10,9 @@
   "warmupDiscard": 3,
   "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild. LilScript is the compiled npm file. Closed is extern_fields=false.",
   "spec": {
-    "total": 8,
-    "pass": 8,
-    "label": "subset tests"
+    "total": 1013,
+    "pass": 1013,
+    "label": "official jest suite"
   },
   "play": {
     "kind": "tex-html",
@@ -66,18 +66,18 @@
     {
       "id": "itslil",
       "name": "@itslil/katex · library",
-      "raw": 12210,
-      "gzip9": 4149,
-      "brotli11": 3654,
+      "raw": 564801,
+      "gzip9": 107944,
+      "brotli11": 86283,
       "note": "LilScript js-module, extern_fields true. The npm ESM.",
       "primary": true
     },
     {
       "id": "itslil-closed",
       "name": "@itslil/katex · closed",
-      "raw": 12136,
-      "gzip9": 4095,
-      "brotli11": 3600,
+      "raw": 539234,
+      "gzip9": 108047,
+      "brotli11": 86829,
       "note": "Same source, extern_fields false"
     }
   ],

@@ -1,0 +1,216 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+
+import { utils } from "./utils.lil";
+import { DocumentFragment } from "./tree.lil";
+import { createClass } from "./domTree.lil";
+import { makeEm } from "./units.lil";
+
+JsValue newDocumentFragment = undef();
+JsValue MathNode = undef();
+JsValue TextNode = undef();
+JsValue SpaceNode = undef();
+
+newDocumentFragment = (JsValue children) => {
+  return JS.construct(DocumentFragment, children);
+  return undef();
+};
+MathNode = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue type = argv[0];
+  JsValue children = argv[1];
+  JsValue classes = argv[2];
+  self["type"] = type;
+  JsValue o1 = emptyObject();
+  self["attributes"] = o1;
+  JsValue or2 = children;
+  if (!(or2.truthy())) {
+    JsValue a3 = newArray();
+    or2 = a3;
+  }
+  self["children"] = or2;
+  JsValue or4 = classes;
+  if (!(or4.truthy())) {
+    JsValue a5 = newArray();
+    or4 = a5;
+  }
+  self["classes"] = or4;
+  return self;
+});
+MathNode["prototype"]["setAttribute"] = JS.method2((JsValue self, JsValue name, JsValue value) => {
+  self["attributes"][name] = value;
+  return undef();
+});
+MathNode["prototype"]["getAttribute"] = JS.method1((JsValue self, JsValue name) => {
+  return self["attributes"][name];
+  return undef();
+});
+MathNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
+  JsValue node = JS.invoke(getDocument(), "createElementNS", "http://www.w3.org/1998/Math/MathML", self["type"]);
+  JsValue obj6 = self["attributes"];
+  JsValue keys7 = objectKeys(obj6);
+  int ki8 = 0;
+  int kn9 = len(keys7);
+  while (ki8 < kn9) {
+    JsValue attr = keys7[ki8];
+    if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
+      JS.invoke(node, "setAttribute", attr, self["attributes"][attr]);
+    }
+    ki8 = ki8 + 1;
+  }
+  if (JS.greaterThan(self["classes"]["length"], 0)) {
+    node["className"] = JS.call(createClass, undef(), self["classes"]);
+  }
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, self["children"]["length"])) {
+      if ((instanceOf(self["children"][i], TextNode)) && (instanceOf(self["children"][JS.add(i, 1)], TextNode))) {
+        i = JS.add(i, 1);
+        JsValue text = JS.add(JS.invoke(self["children"][i], "toText"), JS.invoke(self["children"][i], "toText"));
+        while (instanceOf(self["children"][JS.add(i, 1)], TextNode)) {
+          i = JS.add(i, 1);
+          i = JS.add(i, 1);
+          text = JS.add(text, JS.invoke(self["children"][i], "toText"));
+        }
+        JS.invoke(node, "appendChild", JS.invoke(JS.construct(TextNode, text), "toNode"));
+      } else {
+        JS.invoke(node, "appendChild", JS.invoke(self["children"][i], "toNode"));
+      }
+      JsValue u13 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  return node;
+  return undef();
+});
+MathNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
+  JsValue markup = JS.add("<", self["type"]);
+  JsValue obj14 = self["attributes"];
+  JsValue keys15 = objectKeys(obj14);
+  int ki16 = 0;
+  int kn17 = len(keys15);
+  while (ki16 < kn17) {
+    JsValue attr = keys15[ki16];
+    if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
+      markup = JS.add(markup, JS.add(JS.add(" ", attr), "=\""));
+      markup = JS.add(markup, JS.invoke(utils, "escape", self["attributes"][attr]));
+      markup = JS.add(markup, "\"");
+    }
+    ki16 = ki16 + 1;
+  }
+  if (JS.greaterThan(self["classes"]["length"], 0)) {
+    markup = JS.add(markup, " class =\"" + toStr(JS.invoke(utils, "escape", JS.call(createClass, undef(), self["classes"]))) + "\"");
+  }
+  markup = JS.add(markup, ">");
+  {
+    JsValue i = 0;
+    while (JS.lessThan(i, self["children"]["length"])) {
+      markup = JS.add(markup, JS.invoke(self["children"][i], "toMarkup"));
+      JsValue u18 = i;
+      i = JS.add(i, 1);
+    }
+  }
+  markup = JS.add(markup, JS.add(JS.add("</", self["type"]), ">"));
+  return markup;
+  return undef();
+});
+MathNode["prototype"]["toText"] = JS.method0((JsValue self) => {
+  return JS.invoke(JS.invoke(self["children"], "map", (JsValue child) => {
+  return JS.invoke(child, "toText");
+  }), "join", "");
+  return undef();
+});
+TextNode = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue text = argv[0];
+  self["text"] = text;
+  return self;
+});
+TextNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
+  return JS.invoke(getDocument(), "createTextNode", self["text"]);
+  return undef();
+});
+TextNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
+  return JS.invoke(utils, "escape", JS.invoke(self, "toText"));
+  return undef();
+});
+TextNode["prototype"]["toText"] = JS.method0((JsValue self) => {
+  return self["text"];
+  return undef();
+});
+SpaceNode = JS.methodRest((JsValue self, JsValue argv) => {
+  JsValue width = argv[0];
+  self["width"] = width;
+  if ((JS.greaterThanOrEqual(width, 0.05555)) && (JS.lessThanOrEqual(width, 0.05556))) {
+    self["character"] = " ";
+  } else {
+    if ((JS.greaterThanOrEqual(width, 0.1666)) && (JS.lessThanOrEqual(width, 0.1667))) {
+      self["character"] = " ";
+    } else {
+      if ((JS.greaterThanOrEqual(width, 0.2222)) && (JS.lessThanOrEqual(width, 0.2223))) {
+        self["character"] = " ";
+      } else {
+        if ((JS.greaterThanOrEqual(width, 0.2777)) && (JS.lessThanOrEqual(width, 0.2778))) {
+          self["character"] = "  ";
+        } else {
+          if ((JS.greaterThanOrEqual(width, JS.number(0) - toNum(0.05556))) && (JS.lessThanOrEqual(width, JS.number(0) - toNum(0.05555)))) {
+            self["character"] = " ⁣";
+          } else {
+            if ((JS.greaterThanOrEqual(width, JS.number(0) - toNum(0.1667))) && (JS.lessThanOrEqual(width, JS.number(0) - toNum(0.1666)))) {
+              self["character"] = " ⁣";
+            } else {
+              if ((JS.greaterThanOrEqual(width, JS.number(0) - toNum(0.2223))) && (JS.lessThanOrEqual(width, JS.number(0) - toNum(0.2222)))) {
+                self["character"] = " ⁣";
+              } else {
+                if ((JS.greaterThanOrEqual(width, JS.number(0) - toNum(0.2778))) && (JS.lessThanOrEqual(width, JS.number(0) - toNum(0.2777)))) {
+                  self["character"] = " ⁣";
+                } else {
+                  self["character"] = null;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return self;
+});
+SpaceNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
+  if (self["character"].truthy()) {
+    return JS.invoke(getDocument(), "createTextNode", self["character"]);
+  } else {
+    JsValue node = JS.invoke(getDocument(), "createElementNS", "http://www.w3.org/1998/Math/MathML", "mspace");
+    JS.invoke(node, "setAttribute", "width", JS.call(makeEm, undef(), self["width"]));
+    return node;
+  }
+  return undef();
+});
+SpaceNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
+  if (self["character"].truthy()) {
+    return "<mtext>" + toStr(self["character"]) + "</mtext>";
+  } else {
+    return "<mspace width=\"" + toStr(JS.call(makeEm, undef(), self["width"])) + "\"/>";
+  }
+  return undef();
+});
+SpaceNode["prototype"]["toText"] = JS.method0((JsValue self) => {
+  if (self["character"].truthy()) {
+    return self["character"];
+  } else {
+    return " ";
+  }
+  return undef();
+});
+JsValue o19 = emptyObject();
+o19["MathNode"] = MathNode;
+o19["TextNode"] = TextNode;
+o19["SpaceNode"] = SpaceNode;
+o19["newDocumentFragment"] = newDocumentFragment;
+JsValue mathMLTree = undef();
+mathMLTree = o19;
+JsValue __star = emptyObject();
+__star["newDocumentFragment"] = newDocumentFragment;
+__star["MathNode"] = MathNode;
+__star["TextNode"] = TextNode;
+__star["default"] = mathMLTree;
+__star["mathMLTree"] = mathMLTree;
+
+export { __star, newDocumentFragment, MathNode, TextNode, mathMLTree as mathMLTree };

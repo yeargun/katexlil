@@ -1,0 +1,596 @@
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "../host.lil";
+
+import { defineFunction, normalizeArgument } from "../defineFunction.lil";
+import { buildCommon } from "../buildCommon.lil";
+import { delimiter } from "../delimiter.lil";
+import { mathMLTree } from "../mathMLTree.lil";
+import { Style } from "../Style.lil";
+import { assertNodeType } from "../parseNode.lil";
+import { assert } from "../utils.lil";
+import { calculateSize, makeEm } from "../units.lil";
+import { __star as html } from "../buildHTML.lil";
+import { __star as mml } from "../buildMathML.lil";
+
+JsValue adjustStyle = undef();
+JsValue htmlBuilder = undef();
+JsValue mathmlBuilder = undef();
+JsValue stylArray = undef();
+JsValue delimFromValue = undef();
+
+adjustStyle = (JsValue size, JsValue originalStyle) => {
+  JsValue style = originalStyle;
+  if (JS.strictEqual(size, "display")) {
+    JsValue c1 = undef();
+    if (JS.greaterThanOrEqual(style["id"], Style["SCRIPT"]["id"])) {
+      c1 = JS.invoke(style, "text");
+    } else {
+      c1 = Style["DISPLAY"];
+    }
+    style = c1;
+  } else {
+    if ((JS.strictEqual(size, "text")) && (JS.strictEqual(style["size"], Style["DISPLAY"]["size"]))) {
+      style = Style["TEXT"];
+    } else {
+      if (JS.strictEqual(size, "script")) {
+        style = Style["SCRIPT"];
+      } else {
+        if (JS.strictEqual(size, "scriptscript")) {
+          style = Style["SCRIPTSCRIPT"];
+        }
+      }
+    }
+  }
+  return style;
+  return undef();
+};
+htmlBuilder = (JsValue group, JsValue options) => {
+  JsValue style = JS.call(adjustStyle, undef(), group["size"], options["style"]);
+  JsValue nstyle = JS.invoke(style, "fracNum");
+  JsValue dstyle = JS.invoke(style, "fracDen");
+  JsValue newOptions = undef();
+  newOptions = JS.invoke(options, "havingStyle", nstyle);
+  JsValue numerm = JS.invoke(html, "buildGroup", group["numer"], newOptions, options);
+  if (group["continued"].truthy()) {
+    JsValue hStrut = (toNum(8.5) / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]));
+    JsValue dStrut = (toNum(3.5) / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]));
+    JsValue c2 = undef();
+    if (JS.lessThan(numerm["height"], hStrut)) {
+      c2 = hStrut;
+    } else {
+      c2 = numerm["height"];
+    }
+    numerm["height"] = c2;
+    JsValue c3 = undef();
+    if (JS.lessThan(numerm["depth"], dStrut)) {
+      c3 = dStrut;
+    } else {
+      c3 = numerm["depth"];
+    }
+    numerm["depth"] = c3;
+  }
+  newOptions = JS.invoke(options, "havingStyle", dstyle);
+  JsValue denomm = JS.invoke(html, "buildGroup", group["denom"], newOptions, options);
+  JsValue rule = undef();
+  JsValue ruleWidth = undef();
+  JsValue ruleSpacing = undef();
+  if (group["hasBarLine"].truthy()) {
+    if (group["barSize"].truthy()) {
+      ruleWidth = JS.call(calculateSize, undef(), group["barSize"], options);
+      rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options, ruleWidth);
+    } else {
+      rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options);
+    }
+    ruleWidth = rule["height"];
+    ruleSpacing = rule["height"];
+  } else {
+    rule = null;
+    ruleWidth = 0;
+    ruleSpacing = JS.invoke(options, "fontMetrics")["defaultRuleThickness"];
+  }
+  JsValue numShift = undef();
+  JsValue clearance = undef();
+  JsValue denomShift = undef();
+  if ((JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) || (JS.strictEqual(group["size"], "display"))) {
+    numShift = JS.invoke(options, "fontMetrics")["num1"];
+    if (JS.greaterThan(ruleWidth, 0)) {
+      clearance = (toNum(3) * toNum(ruleSpacing));
+    } else {
+      clearance = (toNum(7) * toNum(ruleSpacing));
+    }
+    denomShift = JS.invoke(options, "fontMetrics")["denom1"];
+  } else {
+    if (JS.greaterThan(ruleWidth, 0)) {
+      numShift = JS.invoke(options, "fontMetrics")["num2"];
+      clearance = ruleSpacing;
+    } else {
+      numShift = JS.invoke(options, "fontMetrics")["num3"];
+      clearance = (toNum(3) * toNum(ruleSpacing));
+    }
+    denomShift = JS.invoke(options, "fontMetrics")["denom2"];
+  }
+  JsValue frac = undef();
+  if (!(rule.truthy())) {
+    JsValue candidateClearance = (toNum((toNum(numShift) - toNum(numerm["depth"]))) - toNum((toNum(denomm["height"]) - toNum(denomShift))));
+    if (JS.lessThan(candidateClearance, clearance)) {
+      numShift = JS.add(numShift, (toNum(0.5) * toNum((toNum(clearance) - toNum(candidateClearance)))));
+      denomShift = JS.add(denomShift, (toNum(0.5) * toNum((toNum(clearance) - toNum(candidateClearance)))));
+    }
+    JsValue o4 = emptyObject();
+    o4["positionType"] = "individualShift";
+    JsValue a5 = newArray();
+    JsValue o6 = emptyObject();
+    o6["type"] = "elem";
+    o6["elem"] = denomm;
+    o6["shift"] = denomShift;
+    JS.push(a5, o6);
+    JsValue o7 = emptyObject();
+    o7["type"] = "elem";
+    o7["elem"] = numerm;
+    o7["shift"] = JS.number(0) - toNum(numShift);
+    JS.push(a5, o7);
+    o4["children"] = a5;
+    frac = JS.invoke(buildCommon, "makeVList", o4, options);
+  } else {
+    JsValue axisHeight = JS.invoke(options, "fontMetrics")["axisHeight"];
+    if (JS.lessThan((toNum((toNum(numShift) - toNum(numerm["depth"]))) - toNum(JS.add(axisHeight, (toNum(0.5) * toNum(ruleWidth))))), clearance)) {
+      numShift = JS.add(numShift, (toNum(clearance) - toNum((toNum((toNum(numShift) - toNum(numerm["depth"]))) - toNum(JS.add(axisHeight, (toNum(0.5) * toNum(ruleWidth))))))));
+    }
+    if (JS.lessThan((toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth))))) - toNum((toNum(denomm["height"]) - toNum(denomShift)))), clearance)) {
+      denomShift = JS.add(denomShift, (toNum(clearance) - toNum((toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth))))) - toNum((toNum(denomm["height"]) - toNum(denomShift)))))));
+    }
+    JsValue midShift = JS.number(0) - toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth)))));
+    JsValue o8 = emptyObject();
+    o8["positionType"] = "individualShift";
+    JsValue a9 = newArray();
+    JsValue o10 = emptyObject();
+    o10["type"] = "elem";
+    o10["elem"] = denomm;
+    o10["shift"] = denomShift;
+    JS.push(a9, o10);
+    JsValue o11 = emptyObject();
+    o11["type"] = "elem";
+    o11["elem"] = rule;
+    o11["shift"] = midShift;
+    JS.push(a9, o11);
+    JsValue o12 = emptyObject();
+    o12["type"] = "elem";
+    o12["elem"] = numerm;
+    o12["shift"] = JS.number(0) - toNum(numShift);
+    JS.push(a9, o12);
+    o8["children"] = a9;
+    frac = JS.invoke(buildCommon, "makeVList", o8, options);
+  }
+  newOptions = JS.invoke(options, "havingStyle", style);
+  JsValue as13 = frac["height"];
+  frac["height"] = (toNum(as13) * toNum((toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]))));
+  JsValue as14 = frac["depth"];
+  frac["depth"] = (toNum(as14) * toNum((toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]))));
+  JsValue delimSize = undef();
+  if (JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) {
+    delimSize = JS.invoke(options, "fontMetrics")["delim1"];
+  } else {
+    if (JS.strictEqual(style["size"], Style["SCRIPTSCRIPT"]["size"])) {
+      delimSize = JS.invoke(JS.invoke(options, "havingStyle", Style["SCRIPT"]), "fontMetrics")["delim2"];
+    } else {
+      delimSize = JS.invoke(options, "fontMetrics")["delim2"];
+    }
+  }
+  JsValue leftDelim = undef();
+  JsValue rightDelim = undef();
+  if (isNullish(group["leftDelim"])) {
+    JsValue a15 = newArray();
+    JS.push(a15, "mopen");
+    leftDelim = JS.invoke(html, "makeNullDelimiter", options, a15);
+  } else {
+    JsValue a16 = newArray();
+    JS.push(a16, "mopen");
+    JsValue ia17 = newArray();
+    JS.push(ia17, group["leftDelim"]);
+    JS.push(ia17, delimSize);
+    JS.push(ia17, true);
+    JS.push(ia17, JS.invoke(options, "havingStyle", style));
+    JS.push(ia17, group["mode"]);
+    JS.push(ia17, a16);
+    leftDelim = apply(delimiter["customSizedDelim"], delimiter, ia17);
+  }
+  if (group["continued"].truthy()) {
+    JsValue a18 = newArray();
+    rightDelim = JS.invoke(buildCommon, "makeSpan", a18);
+  } else {
+    if (isNullish(group["rightDelim"])) {
+      JsValue a19 = newArray();
+      JS.push(a19, "mclose");
+      rightDelim = JS.invoke(html, "makeNullDelimiter", options, a19);
+    } else {
+      JsValue a20 = newArray();
+      JS.push(a20, "mclose");
+      JsValue ia21 = newArray();
+      JS.push(ia21, group["rightDelim"]);
+      JS.push(ia21, delimSize);
+      JS.push(ia21, true);
+      JS.push(ia21, JS.invoke(options, "havingStyle", style));
+      JS.push(ia21, group["mode"]);
+      JS.push(ia21, a20);
+      rightDelim = apply(delimiter["customSizedDelim"], delimiter, ia21);
+    }
+  }
+  JsValue a22 = newArray();
+  JS.push(a22, "mord");
+  JsValue a23 = newArray();
+  JS.push(a23, leftDelim);
+  JsValue a24 = newArray();
+  JS.push(a24, "mfrac");
+  JsValue a25 = newArray();
+  JS.push(a25, frac);
+  JS.push(a23, JS.invoke(buildCommon, "makeSpan", a24, a25));
+  JS.push(a23, rightDelim);
+  return JS.invoke(buildCommon, "makeSpan", JS.invoke(a22, "concat", JS.invoke(newOptions, "sizingClasses", options)), a23, options);
+  return undef();
+};
+mathmlBuilder = (JsValue group, JsValue options) => {
+  JsValue a26 = newArray();
+  JS.push(a26, JS.invoke(mml, "buildGroup", group["numer"], options));
+  JS.push(a26, JS.invoke(mml, "buildGroup", group["denom"], options));
+  JsValue node = JS.construct(mathMLTree["MathNode"], "mfrac", a26);
+  if (!(group["hasBarLine"].truthy())) {
+    JS.invoke(node, "setAttribute", "linethickness", "0px");
+  } else {
+    if (group["barSize"].truthy()) {
+      JsValue ruleWidth = JS.call(calculateSize, undef(), group["barSize"], options);
+      JS.invoke(node, "setAttribute", "linethickness", JS.call(makeEm, undef(), ruleWidth));
+    }
+  }
+  JsValue style = JS.call(adjustStyle, undef(), group["size"], options["style"]);
+  if (JS.strictNotEqual(style["size"], options["style"]["size"])) {
+    JsValue a27 = newArray();
+    JS.push(a27, node);
+    node = JS.construct(mathMLTree["MathNode"], "mstyle", a27);
+    JsValue c28 = undef();
+    if (JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) {
+      c28 = "true";
+    } else {
+      c28 = "false";
+    }
+    JsValue isDisplay = c28;
+    JS.invoke(node, "setAttribute", "displaystyle", isDisplay);
+    JS.invoke(node, "setAttribute", "scriptlevel", "0");
+  }
+  if ((!isNullish(group["leftDelim"])) || (!isNullish(group["rightDelim"]))) {
+    JsValue a29 = newArray();
+    JsValue withDelims = a29;
+    if (!isNullish(group["leftDelim"])) {
+      JsValue a30 = newArray();
+      JS.push(a30, JS.construct(mathMLTree["TextNode"], JS.invoke(group["leftDelim"], "replace", "\\", "")));
+      JsValue leftOp = JS.construct(mathMLTree["MathNode"], "mo", a30);
+      JS.invoke(leftOp, "setAttribute", "fence", "true");
+      JS.invoke(withDelims, "push", leftOp);
+    }
+    JS.invoke(withDelims, "push", node);
+    if (!isNullish(group["rightDelim"])) {
+      JsValue a31 = newArray();
+      JS.push(a31, JS.construct(mathMLTree["TextNode"], JS.invoke(group["rightDelim"], "replace", "\\", "")));
+      JsValue rightOp = JS.construct(mathMLTree["MathNode"], "mo", a31);
+      JS.invoke(rightOp, "setAttribute", "fence", "true");
+      JS.invoke(withDelims, "push", rightOp);
+    }
+    return JS.invoke(mml, "makeRow", withDelims);
+  }
+  return node;
+  return undef();
+};
+JsValue o32 = emptyObject();
+o32["type"] = "genfrac";
+JsValue a33 = newArray();
+JS.push(a33, "\\dfrac");
+JS.push(a33, "\\frac");
+JS.push(a33, "\\tfrac");
+JS.push(a33, "\\dbinom");
+JS.push(a33, "\\binom");
+JS.push(a33, "\\tbinom");
+JS.push(a33, "\\\\atopfrac");
+JS.push(a33, "\\\\bracefrac");
+JS.push(a33, "\\\\brackfrac");
+o32["names"] = a33;
+JsValue o34 = emptyObject();
+o34["numArgs"] = 2;
+o34["allowedInArgument"] = true;
+o32["props"] = o34;
+o32["handler"] = (JsValue p35, JsValue args) => {
+  JsValue op36 = p35;
+  JsValue parser = op36["parser"];
+  JsValue funcName = op36["funcName"];
+  JsValue numer = args[0];
+  JsValue denom = args[1];
+  JsValue hasBarLine = undef();
+  JsValue leftDelim = null;
+  JsValue rightDelim = null;
+  JsValue size = "auto";
+  JsValue sw37 = funcName;
+  if (JS.strictEqual(sw37, "\\dfrac") || JS.strictEqual(sw37, "\\frac") || JS.strictEqual(sw37, "\\tfrac")) {
+    hasBarLine = true;
+  }
+  else if (JS.strictEqual(sw37, "\\\\atopfrac")) {
+    hasBarLine = false;
+  }
+  else if (JS.strictEqual(sw37, "\\dbinom") || JS.strictEqual(sw37, "\\binom") || JS.strictEqual(sw37, "\\tbinom")) {
+    hasBarLine = false;
+    leftDelim = "(";
+    rightDelim = ")";
+  }
+  else if (JS.strictEqual(sw37, "\\\\bracefrac")) {
+    hasBarLine = false;
+    leftDelim = "\\{";
+    rightDelim = "\\}";
+  }
+  else if (JS.strictEqual(sw37, "\\\\brackfrac")) {
+    hasBarLine = false;
+    leftDelim = "[";
+    rightDelim = "]";
+  }
+  else {
+    throw makeError(toStr("Unrecognized genfrac command"));
+  }
+  JsValue sw38 = funcName;
+  if (JS.strictEqual(sw38, "\\dfrac") || JS.strictEqual(sw38, "\\dbinom")) {
+    size = "display";
+  }
+  else if (JS.strictEqual(sw38, "\\tfrac") || JS.strictEqual(sw38, "\\tbinom")) {
+    size = "text";
+  }
+  JsValue o39 = emptyObject();
+  o39["type"] = "genfrac";
+  o39["mode"] = parser["mode"];
+  o39["continued"] = false;
+  o39["numer"] = numer;
+  o39["denom"] = denom;
+  o39["hasBarLine"] = hasBarLine;
+  o39["leftDelim"] = leftDelim;
+  o39["rightDelim"] = rightDelim;
+  o39["size"] = size;
+  o39["barSize"] = null;
+  return o39;
+  return undef();
+};
+o32["htmlBuilder"] = htmlBuilder;
+o32["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o32);
+JsValue o40 = emptyObject();
+o40["type"] = "genfrac";
+JsValue a41 = newArray();
+JS.push(a41, "\\cfrac");
+o40["names"] = a41;
+JsValue o42 = emptyObject();
+o42["numArgs"] = 2;
+o40["props"] = o42;
+o40["handler"] = (JsValue p43, JsValue args) => {
+  JsValue op44 = p43;
+  JsValue parser = op44["parser"];
+  JsValue funcName = op44["funcName"];
+  JsValue numer = args[0];
+  JsValue denom = args[1];
+  JsValue o45 = emptyObject();
+  o45["type"] = "genfrac";
+  o45["mode"] = parser["mode"];
+  o45["continued"] = true;
+  o45["numer"] = numer;
+  o45["denom"] = denom;
+  o45["hasBarLine"] = true;
+  o45["leftDelim"] = null;
+  o45["rightDelim"] = null;
+  o45["size"] = "display";
+  o45["barSize"] = null;
+  return o45;
+  return undef();
+};
+JS.call(defineFunction, undef(), o40);
+JsValue o46 = emptyObject();
+o46["type"] = "infix";
+JsValue a47 = newArray();
+JS.push(a47, "\\over");
+JS.push(a47, "\\choose");
+JS.push(a47, "\\atop");
+JS.push(a47, "\\brace");
+JS.push(a47, "\\brack");
+o46["names"] = a47;
+JsValue o48 = emptyObject();
+o48["numArgs"] = 0;
+o48["infix"] = true;
+o46["props"] = o48;
+o46["handler"] = JS.method1((JsValue self, JsValue p49) => {
+  JsValue op50 = p49;
+  JsValue parser = op50["parser"];
+  JsValue funcName = op50["funcName"];
+  JsValue token = op50["token"];
+  JsValue replaceWith = undef();
+  JsValue sw51 = funcName;
+  if (JS.strictEqual(sw51, "\\over")) {
+    replaceWith = "\\frac";
+  }
+  else if (JS.strictEqual(sw51, "\\choose")) {
+    replaceWith = "\\binom";
+  }
+  else if (JS.strictEqual(sw51, "\\atop")) {
+    replaceWith = "\\\\atopfrac";
+  }
+  else if (JS.strictEqual(sw51, "\\brace")) {
+    replaceWith = "\\\\bracefrac";
+  }
+  else if (JS.strictEqual(sw51, "\\brack")) {
+    replaceWith = "\\\\brackfrac";
+  }
+  else {
+    throw makeError(toStr("Unrecognized infix genfrac command"));
+  }
+  JsValue o52 = emptyObject();
+  o52["type"] = "infix";
+  o52["mode"] = parser["mode"];
+  o52["replaceWith"] = replaceWith;
+  o52["token"] = token;
+  return o52;
+  return undef();
+});
+JS.call(defineFunction, undef(), o46);
+JsValue a53 = newArray();
+JS.push(a53, "display");
+JS.push(a53, "text");
+JS.push(a53, "script");
+JS.push(a53, "scriptscript");
+stylArray = a53;
+delimFromValue = (JsValue delimString) => {
+  JsValue delim = null;
+  if (JS.greaterThan(delimString["length"], 0)) {
+    delim = delimString;
+    JsValue c54 = undef();
+    if (JS.strictEqual(delim, ".")) {
+      c54 = null;
+    } else {
+      c54 = delim;
+    }
+    delim = c54;
+  }
+  return delim;
+  return undef();
+};
+JsValue o55 = emptyObject();
+o55["type"] = "genfrac";
+JsValue a56 = newArray();
+JS.push(a56, "\\genfrac");
+o55["names"] = a56;
+JsValue o57 = emptyObject();
+o57["numArgs"] = 6;
+o57["allowedInArgument"] = true;
+JsValue a58 = newArray();
+JS.push(a58, "math");
+JS.push(a58, "math");
+JS.push(a58, "size");
+JS.push(a58, "text");
+JS.push(a58, "math");
+JS.push(a58, "math");
+o57["argTypes"] = a58;
+o55["props"] = o57;
+o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
+  JsValue op60 = p59;
+  JsValue parser = op60["parser"];
+  JsValue numer = args[4];
+  JsValue denom = args[5];
+  JsValue leftNode = JS.call(normalizeArgument, undef(), args[0]);
+  JsValue c61 = undef();
+  if ((JS.strictEqual(leftNode["type"], "atom")) && (JS.strictEqual(leftNode["family"], "open"))) {
+    c61 = JS.call(delimFromValue, undef(), leftNode["text"]);
+  } else {
+    c61 = null;
+  }
+  JsValue leftDelim = c61;
+  JsValue rightNode = JS.call(normalizeArgument, undef(), args[1]);
+  JsValue c62 = undef();
+  if ((JS.strictEqual(rightNode["type"], "atom")) && (JS.strictEqual(rightNode["family"], "close"))) {
+    c62 = JS.call(delimFromValue, undef(), rightNode["text"]);
+  } else {
+    c62 = null;
+  }
+  JsValue rightDelim = c62;
+  JsValue barNode = JS.call(assertNodeType, undef(), args[2], "size");
+  JsValue hasBarLine = undef();
+  JsValue barSize = null;
+  if (barNode["isBlank"].truthy()) {
+    hasBarLine = true;
+  } else {
+    barSize = barNode["value"];
+    hasBarLine = JS.greaterThan(barSize["number"], 0);
+  }
+  JsValue size = "auto";
+  JsValue styl = args[3];
+  if (JS.strictEqual(styl["type"], "ordgroup")) {
+    if (JS.greaterThan(styl["body"]["length"], 0)) {
+      JsValue textOrd = JS.call(assertNodeType, undef(), styl["body"][0], "textord");
+      size = stylArray[toNum(textOrd["text"])];
+    }
+  } else {
+    styl = JS.call(assertNodeType, undef(), styl, "textord");
+    size = stylArray[toNum(styl["text"])];
+  }
+  JsValue o63 = emptyObject();
+  o63["type"] = "genfrac";
+  o63["mode"] = parser["mode"];
+  o63["numer"] = numer;
+  o63["denom"] = denom;
+  o63["continued"] = false;
+  o63["hasBarLine"] = hasBarLine;
+  o63["barSize"] = barSize;
+  o63["leftDelim"] = leftDelim;
+  o63["rightDelim"] = rightDelim;
+  o63["size"] = size;
+  return o63;
+  return undef();
+});
+o55["htmlBuilder"] = htmlBuilder;
+o55["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o55);
+JsValue o64 = emptyObject();
+o64["type"] = "infix";
+JsValue a65 = newArray();
+JS.push(a65, "\\above");
+o64["names"] = a65;
+JsValue o66 = emptyObject();
+o66["numArgs"] = 1;
+JsValue a67 = newArray();
+JS.push(a67, "size");
+o66["argTypes"] = a67;
+o66["infix"] = true;
+o64["props"] = o66;
+o64["handler"] = JS.method2((JsValue self, JsValue p68, JsValue args) => {
+  JsValue op69 = p68;
+  JsValue parser = op69["parser"];
+  JsValue funcName = op69["funcName"];
+  JsValue token = op69["token"];
+  JsValue o70 = emptyObject();
+  o70["type"] = "infix";
+  o70["mode"] = parser["mode"];
+  o70["replaceWith"] = "\\\\abovefrac";
+  o70["size"] = JS.call(assertNodeType, undef(), args[0], "size")["value"];
+  o70["token"] = token;
+  return o70;
+  return undef();
+});
+JS.call(defineFunction, undef(), o64);
+JsValue o71 = emptyObject();
+o71["type"] = "genfrac";
+JsValue a72 = newArray();
+JS.push(a72, "\\\\abovefrac");
+o71["names"] = a72;
+JsValue o73 = emptyObject();
+o73["numArgs"] = 3;
+JsValue a74 = newArray();
+JS.push(a74, "math");
+JS.push(a74, "size");
+JS.push(a74, "math");
+o73["argTypes"] = a74;
+o71["props"] = o73;
+o71["handler"] = (JsValue p75, JsValue args) => {
+  JsValue op76 = p75;
+  JsValue parser = op76["parser"];
+  JsValue funcName = op76["funcName"];
+  JsValue numer = args[0];
+  JsValue barSize = JS.call(assert, undef(), JS.call(assertNodeType, undef(), args[1], "infix")["size"]);
+  JsValue denom = args[2];
+  JsValue hasBarLine = JS.greaterThan(barSize["number"], 0);
+  JsValue o77 = emptyObject();
+  o77["type"] = "genfrac";
+  o77["mode"] = parser["mode"];
+  o77["numer"] = numer;
+  o77["denom"] = denom;
+  o77["continued"] = false;
+  o77["hasBarLine"] = hasBarLine;
+  o77["barSize"] = barSize;
+  o77["leftDelim"] = null;
+  o77["rightDelim"] = null;
+  o77["size"] = "auto";
+  return o77;
+  return undef();
+};
+o71["htmlBuilder"] = htmlBuilder;
+o71["mathmlBuilder"] = mathmlBuilder;
+JS.call(defineFunction, undef(), o71);
+JsValue __star = emptyObject();
+
+export { __star };
