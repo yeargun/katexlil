@@ -22,12 +22,7 @@ defineFunction = (JsValue p5) => {
   JsValue handler = op6["handler"];
   JsValue htmlBuilder = op6["htmlBuilder"];
   JsValue mathmlBuilder = op6["mathmlBuilder"];
-  JsValue o7 = emptyObject();
-  o7["type"] = type;
-  o7["numArgs"] = props["numArgs"];
-  o7["argTypes"] = props["argTypes"];
-  o7["allowedInArgument"] = !(!(props["allowedInArgument"].truthy()));
-  o7["allowedInText"] = !(!(props["allowedInText"].truthy()));
+  JsValue o7 = JS.object("type", type, "numArgs", props["numArgs"], "argTypes", props["argTypes"], "allowedInArgument", !(!(props["allowedInArgument"].truthy())), "allowedInText", !(!(props["allowedInText"].truthy())));
   JsValue c8 = undef();
   if (JS.strictEqual(props["allowedInMath"], undef())) {
     c8 = true;
@@ -66,12 +61,10 @@ defineFunctionBuilders = (JsValue p12) => {
   JsValue type = op13["type"];
   JsValue htmlBuilder = op13["htmlBuilder"];
   JsValue mathmlBuilder = op13["mathmlBuilder"];
-  JsValue o14 = emptyObject();
-  o14["type"] = type;
-  JsValue a15 = newArray();
+  JsValue o14 = JS.object("type", type);
+  JsValue a15 = JS.array();
   o14["names"] = a15;
-  JsValue o16 = emptyObject();
-  o16["numArgs"] = 0;
+  JsValue o16 = JS.object("numArgs", 0);
   o14["props"] = o16;
   o14["handler"] = JS.method0((JsValue self) => {
   throw makeError(toStr("Should never be called."));

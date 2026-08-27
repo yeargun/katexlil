@@ -46,17 +46,12 @@ o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
     smashDepth = true;
   }
   JsValue body = args[0];
-  JsValue o8 = emptyObject();
-  o8["type"] = "smash";
-  o8["mode"] = parser["mode"];
-  o8["body"] = body;
-  o8["smashHeight"] = smashHeight;
-  o8["smashDepth"] = smashDepth;
+  JsValue o8 = JS.object("type", "smash", "mode", parser["mode"], "body", body, "smashHeight", smashHeight, "smashDepth", smashDepth);
   return o8;
   return undef();
 };
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
-  JsValue a9 = newArray();
+  JsValue a9 = JS.array();
   JsValue a10 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
   JsValue node = JS.invoke(buildCommon, "makeSpan", a9, a10);
   if ((!(group["smashHeight"].truthy())) && (!(group["smashDepth"].truthy()))) {
@@ -88,14 +83,7 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
       }
     }
   }
-  JsValue o13 = emptyObject();
-  o13["positionType"] = "firstBaseline";
-  JsValue a14 = newArray();
-  JsValue o15 = emptyObject();
-  o15["type"] = "elem";
-  o15["elem"] = node;
-  JS.push(a14, o15);
-  o13["children"] = a14;
+  JsValue o13 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", node)));
   JsValue smashedNode = JS.invoke(buildCommon, "makeVList", o13, options);
   JsValue a16 = JS.array("mord");
   JsValue a17 = JS.array(smashedNode);

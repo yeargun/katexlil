@@ -17,7 +17,7 @@ Namespace = JS.methodRest((JsValue self, JsValue argv) => {
   }
   self["current"] = globalMacros;
   self["builtins"] = builtins;
-  JsValue a3 = newArray();
+  JsValue a3 = JS.array();
   self["undefStack"] = a3;
   return self;
 });

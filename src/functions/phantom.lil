@@ -13,10 +13,7 @@ o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
   JsValue parser = op5["parser"];
   JsValue body = args[0];
-  JsValue o6 = emptyObject();
-  o6["type"] = "phantom";
-  o6["mode"] = parser["mode"];
-  o6["body"] = JS.call(ordargument, undef(), body);
+  JsValue o6 = JS.object("type", "phantom", "mode", parser["mode"], "body", JS.call(ordargument, undef(), body));
   return o6;
   return undef();
 };
@@ -38,15 +35,12 @@ o7["handler"] = (JsValue p10, JsValue args) => {
   JsValue op11 = p10;
   JsValue parser = op11["parser"];
   JsValue body = args[0];
-  JsValue o12 = emptyObject();
-  o12["type"] = "hphantom";
-  o12["mode"] = parser["mode"];
-  o12["body"] = body;
+  JsValue o12 = JS.object("type", "hphantom", "mode", parser["mode"], "body", body);
   return o12;
   return undef();
 };
 o7["htmlBuilder"] = (JsValue group, JsValue options) => {
-  JsValue a13 = newArray();
+  JsValue a13 = JS.array();
   JsValue a14 = JS.array(JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
   JsValue node = JS.invoke(buildCommon, "makeSpan", a13, a14);
   node["height"] = 0;
@@ -62,14 +56,7 @@ o7["htmlBuilder"] = (JsValue group, JsValue options) => {
       }
     }
   }
-  JsValue o16 = emptyObject();
-  o16["positionType"] = "firstBaseline";
-  JsValue a17 = newArray();
-  JsValue o18 = emptyObject();
-  o18["type"] = "elem";
-  o18["elem"] = node;
-  JS.push(a17, o18);
-  o16["children"] = a17;
+  JsValue o16 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", node)));
   node = JS.invoke(buildCommon, "makeVList", o16, options);
   JsValue a19 = JS.array("mord");
   JsValue a20 = JS.array(node);
@@ -94,10 +81,7 @@ o22["handler"] = (JsValue p25, JsValue args) => {
   JsValue op26 = p25;
   JsValue parser = op26["parser"];
   JsValue body = args[0];
-  JsValue o27 = emptyObject();
-  o27["type"] = "vphantom";
-  o27["mode"] = parser["mode"];
-  o27["body"] = body;
+  JsValue o27 = JS.object("type", "vphantom", "mode", parser["mode"], "body", body);
   return o27;
   return undef();
 };
@@ -106,7 +90,7 @@ o22["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a29 = JS.array(JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
   JsValue inner = JS.invoke(buildCommon, "makeSpan", a28, a29);
   JsValue a30 = JS.array("fix");
-  JsValue a31 = newArray();
+  JsValue a31 = JS.array();
   JsValue fix = JS.invoke(buildCommon, "makeSpan", a30, a31);
   JsValue a32 = JS.array("mord", "rlap");
   JsValue a33 = JS.array(inner, fix);

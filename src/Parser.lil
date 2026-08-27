@@ -86,7 +86,7 @@ Parser["prototype"]["subparse"] = JS.method1((JsValue self, JsValue tokens) => {
   return undef();
 });
 Parser["prototype"]["parseExpression"] = JS.method2((JsValue self, JsValue breakOnInfix, JsValue breakOnTokenText) => {
-  JsValue a1 = newArray();
+  JsValue a1 = JS.array();
   JsValue body = a1;
   while (true) {
     if (JS.strictEqual(self["mode"], "math")) {
@@ -161,11 +161,11 @@ Parser["prototype"]["handleInfixNodes"] = JS.method1((JsValue self, JsValue body
     JsValue node = undef();
     if (JS.strictEqual(funcName, "\\\\abovefrac")) {
       JsValue a5 = JS.array(numerNode, body[overIndex], denomNode);
-      JsValue a6 = newArray();
+      JsValue a6 = JS.array();
       node = JS.invoke(self, "callFunction", funcName, a5, a6);
     } else {
       JsValue a7 = JS.array(numerNode, denomNode);
-      JsValue a8 = newArray();
+      JsValue a8 = JS.array();
       node = JS.invoke(self, "callFunction", funcName, a7, a8);
     }
     JsValue a9 = JS.array(node);
@@ -198,7 +198,7 @@ Parser["prototype"]["handleSupSubscript"] = JS.method1((JsValue self, JsValue na
   return undef();
 });
 Parser["prototype"]["formatUnsupportedCmd"] = JS.method1((JsValue self, JsValue text) => {
-  JsValue a11 = newArray();
+  JsValue a11 = JS.array();
   JsValue textordArray = a11;
   {
     JsValue i = 0;
@@ -299,7 +299,7 @@ Parser["prototype"]["parseAtom"] = JS.method1((JsValue self, JsValue breakOnToke
           } else {
             if (uSubsAndSups[lex["text"]].truthy()) {
               JsValue isSub = JS.invoke(unicodeSubRegEx, "test", lex["text"]);
-              JsValue a21 = newArray();
+              JsValue a21 = JS.array();
               JsValue subsupTokens = a21;
               JS.invoke(subsupTokens, "push", JS.construct(Token, uSubsAndSups[lex["text"]]));
               JS.invoke(self, "consume");
@@ -404,15 +404,15 @@ Parser["prototype"]["parseArguments"] = JS.method2((JsValue self, JsValue funcVa
   JsValue totalArgs = JS.add(funcData["numArgs"], funcData["numOptionalArgs"]);
   if (JS.strictEqual(totalArgs, 0)) {
     JsValue o28 = emptyObject();
-    JsValue a29 = newArray();
+    JsValue a29 = JS.array();
     o28["args"] = a29;
-    JsValue a30 = newArray();
+    JsValue a30 = JS.array();
     o28["optArgs"] = a30;
     return o28;
   }
-  JsValue a31 = newArray();
+  JsValue a31 = JS.array();
   JsValue args = a31;
-  JsValue a32 = newArray();
+  JsValue a32 = JS.array();
   JsValue optArgs = a32;
   {
     JsValue i = 0;

@@ -15,23 +15,17 @@ o1["handler"] = (JsValue p5, JsValue args) => {
   JsValue parser = op6["parser"];
   JsValue body = args[1];
   JsValue href = JS.call(assertNodeType, undef(), args[0], "url")["url"];
-  JsValue o7 = emptyObject();
-  o7["command"] = "\\href";
-  o7["url"] = href;
+  JsValue o7 = JS.object("command", "\\href", "url", href);
   if (!(JS.invoke(parser["settings"], "isTrusted", o7).truthy())) {
     return JS.invoke(parser, "formatUnsupportedCmd", "\\href");
   }
-  JsValue o8 = emptyObject();
-  o8["type"] = "href";
-  o8["mode"] = parser["mode"];
-  o8["href"] = href;
-  o8["body"] = JS.call(ordargument, undef(), body);
+  JsValue o8 = JS.object("type", "href", "mode", parser["mode"], "href", href, "body", JS.call(ordargument, undef(), body));
   return o8;
   return undef();
 };
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, false);
-  JsValue a9 = newArray();
+  JsValue a9 = JS.array();
   return JS.invoke(buildCommon, "makeAnchor", group["href"], a9, elements, options);
   return undef();
 };
@@ -53,13 +47,11 @@ o11["handler"] = (JsValue p15, JsValue args) => {
   JsValue op16 = p15;
   JsValue parser = op16["parser"];
   JsValue href = JS.call(assertNodeType, undef(), args[0], "url")["url"];
-  JsValue o17 = emptyObject();
-  o17["command"] = "\\url";
-  o17["url"] = href;
+  JsValue o17 = JS.object("command", "\\url", "url", href);
   if (!(JS.invoke(parser["settings"], "isTrusted", o17).truthy())) {
     return JS.invoke(parser, "formatUnsupportedCmd", "\\url");
   }
-  JsValue a18 = newArray();
+  JsValue a18 = JS.array();
   JsValue chars = a18;
   {
     JsValue i = 0;
@@ -68,26 +60,15 @@ o11["handler"] = (JsValue p15, JsValue args) => {
       if (JS.strictEqual(c, "~")) {
         c = "\\textasciitilde";
       }
-      JsValue o19 = emptyObject();
-      o19["type"] = "textord";
-      o19["mode"] = "text";
-      o19["text"] = c;
+      JsValue o19 = JS.object("type", "textord", "mode", "text", "text", c);
       JS.invoke(chars, "push", o19);
       JsValue u20 = i;
       i = JS.add(i, 1);
     }
   }
-  JsValue o21 = emptyObject();
-  o21["type"] = "text";
-  o21["mode"] = parser["mode"];
-  o21["font"] = "\\texttt";
-  o21["body"] = chars;
+  JsValue o21 = JS.object("type", "text", "mode", parser["mode"], "font", "\\texttt", "body", chars);
   JsValue body = o21;
-  JsValue o22 = emptyObject();
-  o22["type"] = "href";
-  o22["mode"] = parser["mode"];
-  o22["href"] = href;
-  o22["body"] = JS.call(ordargument, undef(), body);
+  JsValue o22 = JS.object("type", "href", "mode", parser["mode"], "href", href, "body", JS.call(ordargument, undef(), body));
   return o22;
   return undef();
 };

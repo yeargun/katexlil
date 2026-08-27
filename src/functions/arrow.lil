@@ -15,7 +15,7 @@ paddedNode = (JsValue group) => {
     JsValue a2 = JS.array(group);
     c1 = a2;
   } else {
-    JsValue a3 = newArray();
+    JsValue a3 = JS.array();
     c1 = a3;
   }
   JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", c1);

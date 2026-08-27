@@ -15,8 +15,7 @@ defineEnvironment = (JsValue p3) => {
   JsValue handler = op4["handler"];
   JsValue htmlBuilder = op4["htmlBuilder"];
   JsValue mathmlBuilder = op4["mathmlBuilder"];
-  JsValue o5 = emptyObject();
-  o5["type"] = type;
+  JsValue o5 = JS.object("type", type);
   JsValue or6 = props["numArgs"];
   if (!(or6.truthy())) {
     or6 = 0;

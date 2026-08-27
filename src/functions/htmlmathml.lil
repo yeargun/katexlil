@@ -11,11 +11,7 @@ o1["props"] = o3;
 o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
   JsValue parser = op5["parser"];
-  JsValue o6 = emptyObject();
-  o6["type"] = "htmlmathml";
-  o6["mode"] = parser["mode"];
-  o6["html"] = JS.call(ordargument, undef(), args[0]);
-  o6["mathml"] = JS.call(ordargument, undef(), args[1]);
+  JsValue o6 = JS.object("type", "htmlmathml", "mode", parser["mode"], "html", JS.call(ordargument, undef(), args[0]), "mathml", JS.call(ordargument, undef(), args[1]));
   return o6;
   return undef();
 };

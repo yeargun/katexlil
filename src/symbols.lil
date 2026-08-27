@@ -37,10 +37,7 @@ JsValue o5 = emptyObject();
 o3["text"] = o5;
 symbols = o3;
 defineSymbol = (JsValue mode, JsValue font, JsValue group, JsValue replace, JsValue name, JsValue acceptUnicodeChar) => {
-  JsValue o6 = emptyObject();
-  o6["font"] = font;
-  o6["group"] = group;
-  o6["replace"] = replace;
+  JsValue o6 = JS.object("font", font, "group", group, "replace", replace);
   symbols[mode][name] = o6;
   if ((acceptUnicodeChar.truthy()) && (replace.truthy())) {
     symbols[mode][replace] = symbols[mode][name];
@@ -781,13 +778,6 @@ extraLatin = "ÐÞþ";
     i = JS.add(i, 1);
   }
 }
-JsValue __star = emptyObject();
-__star["ATOMS"] = ATOMS;
-__star["NON_ATOMS"] = NON_ATOMS;
-__star["defineSymbol"] = defineSymbol;
-__star["ligatures"] = ligatures;
-__star["extraLatin"] = extraLatin;
-__star["default"] = symbols;
-__star["symbols"] = symbols;
+JsValue __star = JS.object("ATOMS", ATOMS, "NON_ATOMS", NON_ATOMS, "defineSymbol", defineSymbol, "ligatures", ligatures, "extraLatin", extraLatin, "default", symbols, "symbols", symbols);
 
 export { __star, ATOMS, NON_ATOMS, defineSymbol, ligatures, extraLatin, symbols as symbols };

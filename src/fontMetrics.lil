@@ -34,12 +34,7 @@ getCharacterMetrics = (JsValue character, JsValue font, JsValue mode) => {
     }
   }
   if (metrics.truthy()) {
-    JsValue o37 = emptyObject();
-    o37["depth"] = metrics[0];
-    o37["height"] = metrics[1];
-    o37["italic"] = metrics[2];
-    o37["skew"] = metrics[3];
-    o37["width"] = metrics[4];
+    JsValue o37 = JS.object("depth", metrics[0], "height", metrics[1], "italic", metrics[2], "skew", metrics[3], "width", metrics[4]);
     return o37;
   }
   return undef();
@@ -58,8 +53,7 @@ getGlobalMetrics = (JsValue size) => {
     }
   }
   if (!(fontMetricsBySizeIndex[sizeIndex].truthy())) {
-    JsValue o39 = emptyObject();
-    o39["cssEmPerMu"] = (toNum(sigmasAndXis["quad"][sizeIndex]) / toNum(18));
+    JsValue o39 = JS.object("cssEmPerMu", (toNum(sigmasAndXis["quad"][sizeIndex]) / toNum(18)));
     fontMetricsBySizeIndex[sizeIndex] = o39;
     JsValue metrics = o39;
     JsValue obj40 = sigmasAndXis;

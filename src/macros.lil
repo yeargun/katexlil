@@ -163,9 +163,7 @@ newcommand = (JsValue context, JsValue existsOK, JsValue nonexistsOK, JsValue sk
     arg = JS.invoke(context, "consumeArg")["tokens"];
   }
   if (!((exists.truthy()) && (skipIfExists.truthy()))) {
-    JsValue o12 = emptyObject();
-    o12["tokens"] = arg;
-    o12["numArgs"] = numArgs;
+    JsValue o12 = JS.object("tokens", arg, "numArgs", numArgs);
     JS.invoke(context["macros"], "set", name, o12);
   }
   return "";
@@ -586,9 +584,7 @@ braketHelper = (JsValue one) => {
   }
   JsValue expanded = JS.invoke(context, "expandTokens", a18);
   JS.invoke(context["macros"], "endGroup");
-  JsValue o28 = emptyObject();
-  o28["tokens"] = JS.invoke(expanded, "reverse");
-  o28["numArgs"] = 0;
+  JsValue o28 = JS.object("tokens", JS.invoke(expanded, "reverse"), "numArgs", 0);
   return o28;
   return undef();
   };

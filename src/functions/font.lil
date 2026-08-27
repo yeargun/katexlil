@@ -36,11 +36,7 @@ o2["handler"] = (JsValue p5, JsValue args) => {
   if (inOp(funcVal, fontAliases)) {
     funcVal = fontAliases[funcVal];
   }
-  JsValue o7 = emptyObject();
-  o7["type"] = "font";
-  o7["mode"] = parser["mode"];
-  o7["font"] = JS.invoke(funcVal, "slice", 1);
-  o7["body"] = body;
+  JsValue o7 = JS.object("type", "font", "mode", parser["mode"], "font", JS.invoke(funcVal, "slice", 1), "body", body);
   return o7;
   return undef();
 };
@@ -55,17 +51,8 @@ o8["handler"] = (JsValue p11, JsValue args) => {
   JsValue parser = op12["parser"];
   JsValue body = args[0];
   JsValue isCharacterBox = JS.invoke(utils, "isCharacterBox", body);
-  JsValue o13 = emptyObject();
-  o13["type"] = "mclass";
-  o13["mode"] = parser["mode"];
-  o13["mclass"] = JS.call(binrelClass, undef(), body);
-  JsValue a14 = newArray();
-  JsValue o15 = emptyObject();
-  o15["type"] = "font";
-  o15["mode"] = parser["mode"];
-  o15["font"] = "boldsymbol";
-  o15["body"] = body;
-  JS.push(a14, o15);
+  JsValue o13 = JS.object("type", "mclass", "mode", parser["mode"], "mclass", JS.call(binrelClass, undef(), body));
+  JsValue a14 = JS.array(JS.object("type", "font", "mode", parser["mode"], "font", "boldsymbol", "body", body));
   o13["body"] = a14;
   o13["isCharacterBox"] = isCharacterBox;
   return o13;
@@ -84,14 +71,8 @@ o16["handler"] = (JsValue p19, JsValue args) => {
   JsValue mode = op21["mode"];
   JsValue body = JS.invoke(parser, "parseExpression", true, breakOnTokenText);
   JsValue style = "math" + toStr(JS.invoke(funcName, "slice", 1));
-  JsValue o22 = emptyObject();
-  o22["type"] = "font";
-  o22["mode"] = mode;
-  o22["font"] = style;
-  JsValue o23 = emptyObject();
-  o23["type"] = "ordgroup";
-  o23["mode"] = parser["mode"];
-  o23["body"] = body;
+  JsValue o22 = JS.object("type", "font", "mode", mode, "font", style);
+  JsValue o23 = JS.object("type", "ordgroup", "mode", parser["mode"], "body", body);
   o22["body"] = o23;
   return o22;
   return undef();

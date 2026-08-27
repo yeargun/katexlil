@@ -7,7 +7,7 @@ JsValue DocumentFragment = undef();
 DocumentFragment = JS.methodRest((JsValue self, JsValue argv) => {
   JsValue children = argv[0];
   self["children"] = children;
-  JsValue a1 = newArray();
+  JsValue a1 = JS.array();
   self["classes"] = a1;
   self["height"] = 0;
   self["depth"] = 0;

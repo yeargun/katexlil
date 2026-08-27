@@ -32,7 +32,7 @@ createClass = (JsValue classes) => {
 initNode = JS.method3((JsValue self, JsValue classes, JsValue options, JsValue style) => {
   JsValue or1 = classes;
   if (!(or1.truthy())) {
-    JsValue a2 = newArray();
+    JsValue a2 = JS.array();
     or1 = a2;
   }
   self["classes"] = or1;
@@ -150,7 +150,7 @@ Span = JS.methodRest((JsValue self, JsValue argv) => {
   JS.call(initNode, self, classes, options, style);
   JsValue or24 = children;
   if (!(or24.truthy())) {
-    JsValue a25 = newArray();
+    JsValue a25 = JS.array();
     or24 = a25;
   }
   self["children"] = or24;
@@ -180,7 +180,7 @@ Anchor = JS.methodRest((JsValue self, JsValue argv) => {
   JS.call(initNode, self, classes, options);
   JsValue or26 = children;
   if (!(or26.truthy())) {
-    JsValue a27 = newArray();
+    JsValue a27 = JS.array();
     or26 = a27;
   }
   self["children"] = or26;
@@ -297,7 +297,7 @@ SymbolNode = JS.methodRest((JsValue self, JsValue argv) => {
   self["width"] = or42;
   JsValue or43 = classes;
   if (!(or43.truthy())) {
-    JsValue a44 = newArray();
+    JsValue a44 = JS.array();
     or43 = a44;
   }
   self["classes"] = or43;
@@ -404,7 +404,7 @@ SvgNode = JS.methodRest((JsValue self, JsValue argv) => {
   JsValue attributes = argv[1];
   JsValue or57 = children;
   if (!(or57.truthy())) {
-    JsValue a58 = newArray();
+    JsValue a58 = JS.array();
     or57 = a58;
   }
   self["children"] = or57;

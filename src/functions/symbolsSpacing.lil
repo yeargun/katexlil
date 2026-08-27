@@ -42,7 +42,7 @@ o8["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   } else {
     if (hasOwn(cssSpace, group["text"])) {
       JsValue a12 = JS.array("mspace", cssSpace[group["text"]]);
-      JsValue a13 = newArray();
+      JsValue a13 = JS.array();
       return JS.invoke(buildCommon, "makeSpan", a12, a13, options);
     } else {
       throw JS.construct(ParseError, "Unknown type of space \"" + toStr(group["text"]) + "\"");

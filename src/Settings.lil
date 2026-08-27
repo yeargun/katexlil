@@ -23,7 +23,7 @@ o9["cliProcessor"] = (JsValue color) => {
 };
 o1["errorColor"] = o9;
 JsValue o10 = JS.object("type", "object", "cli", "-m, --macro <def>", "cliDescription", JS.add("Define custom macro of the form '\\foo:expansion' (use ", "multiple -m arguments for multiple macros)."));
-JsValue a11 = newArray();
+JsValue a11 = JS.array();
 o10["cliDefault"] = a11;
 o10["cliProcessor"] = (JsValue def, JsValue defs) => {
   JS.invoke(defs, "push", def);

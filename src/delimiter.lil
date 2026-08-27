@@ -115,13 +115,11 @@ makeGlyphSpan = (JsValue symbol, JsValue font, JsValue mode) => {
   }
   JsValue a10 = JS.array("delimsizinginner", sizeClass);
   JsValue a11 = newArray();
-  JsValue a12 = newArray();
+  JsValue a12 = JS.array();
   JsValue a13 = JS.array(JS.invoke(buildCommon, "makeSymbol", symbol, font, mode));
   JS.push(a11, JS.invoke(buildCommon, "makeSpan", a12, a13));
   JsValue corner = JS.invoke(buildCommon, "makeSpan", a10, a11);
-  JsValue o14 = emptyObject();
-  o14["type"] = "elem";
-  o14["elem"] = corner;
+  JsValue o14 = JS.object("type", "elem", "elem", corner);
   return o14;
   return undef();
 };
@@ -135,22 +133,15 @@ makeInner = (JsValue ch, JsValue height, JsValue options) => {
   JsValue width = c15;
   JsValue path = JS.construct(PathNode, "inner", JS.call(innerPath, undef(), ch, JS.invoke(Math, "round", (toNum(1000) * toNum(height)))));
   JsValue a16 = JS.array(path);
-  JsValue o17 = emptyObject();
-  o17["width"] = JS.call(makeEm, undef(), width);
-  o17["height"] = JS.call(makeEm, undef(), height);
-  o17["style"] = JS.add("width:", JS.call(makeEm, undef(), width));
-  o17["viewBox"] = JS.add(JS.add(JS.add("0 0 ", (toNum(1000) * toNum(width))), " "), JS.invoke(Math, "round", (toNum(1000) * toNum(height))));
-  o17["preserveAspectRatio"] = "xMinYMin";
+  JsValue o17 = JS.object("width", JS.call(makeEm, undef(), width), "height", JS.call(makeEm, undef(), height), "style", JS.add("width:", JS.call(makeEm, undef(), width)), "viewBox", JS.add(JS.add(JS.add("0 0 ", (toNum(1000) * toNum(width))), " "), JS.invoke(Math, "round", (toNum(1000) * toNum(height)))), "preserveAspectRatio", "xMinYMin");
   JsValue svgNode = JS.construct(SvgNode, a16, o17);
-  JsValue a18 = newArray();
+  JsValue a18 = JS.array();
   JsValue a19 = JS.array(svgNode);
   JsValue span = JS.invoke(buildCommon, "makeSvgSpan", a18, a19, options);
   span["height"] = height;
   span["style"]["height"] = JS.call(makeEm, undef(), height);
   span["style"]["width"] = JS.call(makeEm, undef(), width);
-  JsValue o20 = emptyObject();
-  o20["type"] = "elem";
-  o20["elem"] = span;
+  JsValue o20 = JS.object("type", "elem", "elem", span);
   return o20;
   return undef();
 };
@@ -353,7 +344,7 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     axisHeight = (toNum(axisHeight) * toNum(options["sizeMultiplier"]));
   }
   JsValue depth = (toNum((toNum(realHeightTotal) / toNum(2))) - toNum(axisHeight));
-  JsValue a24 = newArray();
+  JsValue a24 = JS.array();
   JsValue stack = a24;
   if (JS.greaterThan(svgLabel["length"], 0)) {
     JsValue midHeight = (toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal));
@@ -363,20 +354,15 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     JsValue width = JS.add(JS.invoke((toNum(viewBoxWidth) / toNum(1000)), "toFixed", 3), "em");
     JsValue height = JS.add(JS.invoke((toNum(viewBoxHeight) / toNum(1000)), "toFixed", 3), "em");
     JsValue a25 = JS.array(path);
-    JsValue o26 = emptyObject();
-    o26["width"] = width;
-    o26["height"] = height;
-    o26["viewBox"] = "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight);
+    JsValue o26 = JS.object("width", width, "height", height, "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight));
     JsValue svg = JS.construct(SvgNode, a25, o26);
-    JsValue a27 = newArray();
+    JsValue a27 = JS.array();
     JsValue a28 = JS.array(svg);
     JsValue wrapper = JS.invoke(buildCommon, "makeSvgSpan", a27, a28, options);
     wrapper["height"] = (toNum(viewBoxHeight) / toNum(1000));
     wrapper["style"]["width"] = width;
     wrapper["style"]["height"] = height;
-    JsValue o29 = emptyObject();
-    o29["type"] = "elem";
-    o29["elem"] = wrapper;
+    JsValue o29 = JS.object("type", "elem", "elem", wrapper);
     JS.invoke(stack, "push", o29);
   } else {
     JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), bottom, font, mode));
@@ -396,10 +382,7 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), top, font, mode));
   }
   JsValue newOptions = JS.invoke(options, "havingBaseStyle", Style["TEXT"]);
-  JsValue o30 = emptyObject();
-  o30["positionType"] = "bottom";
-  o30["positionData"] = depth;
-  o30["children"] = stack;
+  JsValue o30 = JS.object("positionType", "bottom", "positionData", depth, "children", stack);
   JsValue inner = JS.invoke(buildCommon, "makeVList", o30, newOptions);
   JsValue a31 = JS.array("delimsizing", "mult");
   JsValue a32 = JS.array(inner);
@@ -412,11 +395,7 @@ sqrtSvg = (JsValue sqrtName, JsValue height, JsValue viewBoxHeight, JsValue extr
   JsValue path = JS.call(sqrtPath, undef(), sqrtName, extraVinculum, viewBoxHeight);
   JsValue pathNode = JS.construct(PathNode, sqrtName, path);
   JsValue a33 = JS.array(pathNode);
-  JsValue o34 = emptyObject();
-  o34["width"] = "400em";
-  o34["height"] = JS.call(makeEm, undef(), height);
-  o34["viewBox"] = JS.add("0 0 400000 ", viewBoxHeight);
-  o34["preserveAspectRatio"] = "xMinYMin slice";
+  JsValue o34 = JS.object("width", "400em", "height", JS.call(makeEm, undef(), height), "viewBox", JS.add("0 0 400000 ", viewBoxHeight), "preserveAspectRatio", "xMinYMin slice");
   JsValue svg = JS.construct(SvgNode, a33, o34);
   JsValue a35 = JS.array("hide-tail");
   JsValue a36 = JS.array(svg);
@@ -466,10 +445,7 @@ makeSqrtImage = (JsValue height, JsValue options) => {
   }
   span["height"] = texHeight;
   span["style"]["height"] = JS.call(makeEm, undef(), spanHeight);
-  JsValue o37 = emptyObject();
-  o37["span"] = span;
-  o37["advanceWidth"] = advanceWidth;
-  o37["ruleWidth"] = (toNum(JS.add(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"], extraVinculum)) * toNum(sizeMultiplier));
+  JsValue o37 = JS.object("span", span, "advanceWidth", advanceWidth, "ruleWidth", (toNum(JS.add(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"], extraVinculum)) * toNum(sizeMultiplier)));
   return o37;
   return undef();
 };

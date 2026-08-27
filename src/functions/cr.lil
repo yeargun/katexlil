@@ -38,7 +38,7 @@ o1["handler"] = JS.method3((JsValue self, JsValue p4, JsValue args, JsValue optA
 });
 o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue a10 = JS.array("mspace");
-  JsValue a11 = newArray();
+  JsValue a11 = JS.array();
   JsValue span = JS.invoke(buildCommon, "makeSpan", a10, a11, options);
   if (group["newLine"].truthy()) {
     JS.invoke(span["classes"], "push", "newline");

@@ -16,7 +16,7 @@ o1["handler"] = JS.method3((JsValue self, JsValue context, JsValue args, JsValue
 });
 o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue text = JS.call(makeVerb, undef(), group);
-  JsValue a4 = newArray();
+  JsValue a4 = JS.array();
   JsValue body = a4;
   JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "text"));
   {

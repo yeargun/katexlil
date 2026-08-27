@@ -39,7 +39,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
     JsValue a5 = JS.array(null, null);
     surrounding = a5;
   }
-  JsValue a6 = newArray();
+  JsValue a6 = JS.array();
   JsValue groups = a6;
   {
     JsValue i = 0;
@@ -76,7 +76,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
     or9 = "leftmost";
   }
   JS.push(a8, or9);
-  JsValue a10 = newArray();
+  JsValue a10 = JS.array();
   JsValue dummyPrev = JS.call(makeSpan, undef(), a8, a10, options);
   JsValue a11 = newArray();
   JsValue or12 = surrounding[1];
@@ -84,11 +84,10 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
     or12 = "rightmost";
   }
   JS.push(a11, or12);
-  JsValue a13 = newArray();
+  JsValue a13 = JS.array();
   JsValue dummyNext = JS.call(makeSpan, undef(), a11, a13, options);
   JsValue isRoot = JS.strictEqual(isRealGroup, "root");
-  JsValue o14 = emptyObject();
-  o14["node"] = dummyPrev;
+  JsValue o14 = JS.object("node", dummyPrev);
   JS.call(traverseNonSpaceNodes, undef(), groups, (JsValue node, JsValue prev) => {
   JsValue prevType = prev["classes"][0];
   JsValue type = node["classes"][0];
@@ -101,8 +100,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
   }
   return undef();
   }, o14, dummyNext, isRoot);
-  JsValue o17 = emptyObject();
-  o17["node"] = dummyPrev;
+  JsValue o17 = JS.object("node", dummyPrev);
   JS.call(traverseNonSpaceNodes, undef(), groups, (JsValue node, JsValue prev) => {
   JsValue prevType = JS.call(getTypeOfDomTree, undef(), prev);
   JsValue type = JS.call(getTypeOfDomTree, undef(), node);
@@ -268,9 +266,9 @@ buildHTML = (JsValue tree, JsValue options) => {
   if ((JS.strictEqual(expression["length"], 2)) && (JS.invoke(expression[1], "hasClass", "tag").truthy())) {
     eqnNum = JS.invoke(expression, "pop");
   }
-  JsValue a29 = newArray();
+  JsValue a29 = JS.array();
   JsValue children = a29;
-  JsValue a30 = newArray();
+  JsValue a30 = JS.array();
   JsValue parts = a30;
   {
     JsValue i = 0;
@@ -288,7 +286,7 @@ buildHTML = (JsValue tree, JsValue options) => {
         }
         if (!(nobreak.truthy())) {
           JS.invoke(children, "push", JS.call(buildHTMLUnbreakable, undef(), parts, options));
-          JsValue a32 = newArray();
+          JsValue a32 = JS.array();
           parts = a32;
         }
       } else {
@@ -296,7 +294,7 @@ buildHTML = (JsValue tree, JsValue options) => {
           JS.invoke(parts, "pop");
           if (JS.greaterThan(parts["length"], 0)) {
             JS.invoke(children, "push", JS.call(buildHTMLUnbreakable, undef(), parts, options));
-            JsValue a33 = newArray();
+            JsValue a33 = JS.array();
             parts = a33;
           }
           JS.invoke(children, "push", expression[i]);

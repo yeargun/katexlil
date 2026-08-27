@@ -161,7 +161,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isOrdgroup) => {
     JsValue a5 = JS.array(group);
     return a5;
   }
-  JsValue a6 = newArray();
+  JsValue a6 = JS.array();
   JsValue groups = a6;
   JsValue lastGroup = undef();
   {

@@ -30,7 +30,7 @@ scriptFromCodepoint = (JsValue codepoint) => {
   return null;
   return undef();
 };
-JsValue a28 = newArray();
+JsValue a28 = JS.array();
 allBlocks = a28;
 JS.invoke(scriptData, "forEach", (JsValue s) => {
   return JS.invoke(s["blocks"], "forEach", (JsValue b) => {

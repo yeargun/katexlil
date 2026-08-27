@@ -19,9 +19,8 @@ JsValue parseCD = undef();
 JsValue o1 = JS.object(">", "\\\\cdrightarrow", "<", "\\\\cdleftarrow", "=", "\\\\cdlongequal", "A", "\\uparrow", "V", "\\downarrow", "|", "\\Vert", ".", "no arrow");
 cdArrowFunctionName = o1;
 newCell = () => {
-  JsValue o2 = emptyObject();
-  o2["type"] = "styling";
-  JsValue a3 = newArray();
+  JsValue o2 = JS.object("type", "styling");
+  JsValue a3 = JS.array();
   o2["body"] = a3;
   o2["mode"] = "math";
   o2["style"] = "display";
@@ -58,56 +57,42 @@ cdArrow = (JsValue arrowChar, JsValue labels, JsValue parser) => {
   }
   else if (JS.strictEqual(sw7, "\\uparrow") || JS.strictEqual(sw7, "\\downarrow")) {
     JsValue a10 = JS.array(labels[0]);
-    JsValue a11 = newArray();
+    JsValue a11 = JS.array();
     JsValue leftLabel = JS.invoke(parser, "callFunction", "\\\\cdleft", a10, a11);
-    JsValue o12 = emptyObject();
-    o12["type"] = "atom";
-    o12["text"] = funcName;
-    o12["mode"] = "math";
-    o12["family"] = "rel";
+    JsValue o12 = JS.object("type", "atom", "text", funcName, "mode", "math", "family", "rel");
     JsValue bareArrow = o12;
     JsValue a13 = JS.array(bareArrow);
-    JsValue a14 = newArray();
+    JsValue a14 = JS.array();
     JsValue sizedArrow = JS.invoke(parser, "callFunction", "\\Big", a13, a14);
     JsValue a15 = JS.array(labels[1]);
-    JsValue a16 = newArray();
+    JsValue a16 = JS.array();
     JsValue rightLabel = JS.invoke(parser, "callFunction", "\\\\cdright", a15, a16);
-    JsValue o17 = emptyObject();
-    o17["type"] = "ordgroup";
-    o17["mode"] = "math";
-    JsValue a18 = JS.array(leftLabel, sizedArrow, rightLabel);
-    o17["body"] = a18;
+    JsValue o17 = JS.object("type", "ordgroup", "mode", "math", "body", JS.array(leftLabel, sizedArrow, rightLabel));
     JsValue arrowGroup = o17;
     JsValue a19 = JS.array(arrowGroup);
-    JsValue a20 = newArray();
+    JsValue a20 = JS.array();
     return JS.invoke(parser, "callFunction", "\\\\cdparent", a19, a20);
   }
   else if (JS.strictEqual(sw7, "\\\\cdlongequal")) {
-    JsValue a21 = newArray();
-    JsValue a22 = newArray();
+    JsValue a21 = JS.array();
+    JsValue a22 = JS.array();
     return JS.invoke(parser, "callFunction", "\\\\cdlongequal", a21, a22);
   }
   else if (JS.strictEqual(sw7, "\\Vert")) {
-    JsValue o23 = emptyObject();
-    o23["type"] = "textord";
-    o23["text"] = "\\Vert";
-    o23["mode"] = "math";
+    JsValue o23 = JS.object("type", "textord", "text", "\\Vert", "mode", "math");
     JsValue arrow = o23;
     JsValue a24 = JS.array(arrow);
-    JsValue a25 = newArray();
+    JsValue a25 = JS.array();
     return JS.invoke(parser, "callFunction", "\\Big", a24, a25);
   }
   else {
-    JsValue o26 = emptyObject();
-    o26["type"] = "textord";
-    o26["text"] = " ";
-    o26["mode"] = "math";
+    JsValue o26 = JS.object("type", "textord", "text", " ", "mode", "math");
     return o26;
   }
   return undef();
 };
 parseCD = (JsValue parser) => {
-  JsValue a27 = newArray();
+  JsValue a27 = JS.array();
   JsValue parsedRows = a27;
   JS.invoke(parser["gullet"], "beginGroup");
   JS.invoke(parser["gullet"]["macros"], "set", "\\cr", "\\\\\\relax");
@@ -130,7 +115,7 @@ parseCD = (JsValue parser) => {
       }
     }
   }
-  JsValue a28 = newArray();
+  JsValue a28 = JS.array();
   JsValue row = a28;
   JsValue a29 = JS.array(row);
   JsValue body = a29;
@@ -149,16 +134,12 @@ parseCD = (JsValue parser) => {
             j = JS.add(j, 1);
             JsValue arrowChar = JS.call(assertSymbolNodeType, undef(), rowNodes[j])["text"];
             JsValue labels = JS.construct(Array, 2);
-            JsValue o30 = emptyObject();
-            o30["type"] = "ordgroup";
-            o30["mode"] = "math";
-            JsValue a31 = newArray();
+            JsValue o30 = JS.object("type", "ordgroup", "mode", "math");
+            JsValue a31 = JS.array();
             o30["body"] = a31;
             labels[0] = o30;
-            JsValue o32 = emptyObject();
-            o32["type"] = "ordgroup";
-            o32["mode"] = "math";
-            JsValue a33 = newArray();
+            JsValue o32 = JS.object("type", "ordgroup", "mode", "math");
+            JsValue a33 = JS.array();
             o32["body"] = a33;
             labels[1] = o32;
             if (JS.greaterThan(JS.invoke("=|.", "indexOf", arrowChar), JS.number(0) - toNum(1))) {
@@ -196,12 +177,7 @@ parseCD = (JsValue parser) => {
               }
             }
             JsValue arrow = JS.call(cdArrow, undef(), arrowChar, labels, parser);
-            JsValue o36 = emptyObject();
-            o36["type"] = "styling";
-            JsValue a37 = JS.array(arrow);
-            o36["body"] = a37;
-            o36["mode"] = "math";
-            o36["style"] = "display";
+            JsValue o36 = JS.object("type", "styling", "body", JS.array(arrow), "mode", "math", "style", "display");
             JsValue wrappedArrow = o36;
             JS.invoke(row, "push", wrappedArrow);
             cell = JS.call(newCell, undef());
@@ -215,7 +191,7 @@ parseCD = (JsValue parser) => {
       } else {
         JS.invoke(row, "shift");
       }
-      JsValue a39 = newArray();
+      JsValue a39 = JS.array();
       row = a39;
       JS.invoke(body, "push", row);
       JsValue u40 = i;
@@ -224,23 +200,10 @@ parseCD = (JsValue parser) => {
   }
   JS.invoke(parser["gullet"], "endGroup");
   JS.invoke(parser["gullet"], "endGroup");
-  JsValue o41 = emptyObject();
-  o41["type"] = "align";
-  o41["align"] = "c";
-  o41["pregap"] = 0.25;
-  o41["postgap"] = 0.25;
+  JsValue o41 = JS.object("type", "align", "align", "c", "pregap", 0.25, "postgap", 0.25);
   JsValue cols = JS.invoke(JS.construct(Array, body[0]["length"]), "fill", o41);
-  JsValue o42 = emptyObject();
-  o42["type"] = "array";
-  o42["mode"] = "math";
-  o42["body"] = body;
-  o42["arraystretch"] = 1;
-  o42["addJot"] = true;
-  JsValue a43 = JS.array(null);
-  o42["rowGaps"] = a43;
-  o42["cols"] = cols;
-  o42["colSeparationType"] = "CD";
-  JsValue a44 = newArray();
+  JsValue o42 = JS.object("type", "array", "mode", "math", "body", body, "arraystretch", 1, "addJot", true, "rowGaps", JS.array(null), "cols", cols, "colSeparationType", "CD");
+  JsValue a44 = JS.array();
   o42["hLinesBeforeRow"] = JS.invoke(JS.construct(Array, JS.add(body["length"], 1)), "fill", a44);
   return o42;
   return undef();

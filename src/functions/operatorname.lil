@@ -57,7 +57,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     base = JS.invoke(buildCommon, "makeSpan", a3, expression, options);
   } else {
     JsValue a4 = JS.array("mop");
-    JsValue a5 = newArray();
+    JsValue a5 = JS.array();
     base = JS.invoke(buildCommon, "makeSpan", a4, a5, options);
   }
   if (hasLimits.truthy()) {
@@ -127,13 +127,7 @@ o13["handler"] = (JsValue p16, JsValue args) => {
   JsValue parser = op17["parser"];
   JsValue funcName = op17["funcName"];
   JsValue body = args[0];
-  JsValue o18 = emptyObject();
-  o18["type"] = "operatorname";
-  o18["mode"] = parser["mode"];
-  o18["body"] = JS.call(ordargument, undef(), body);
-  o18["alwaysHandleSupSub"] = JS.strictEqual(funcName, "\\operatornamewithlimits");
-  o18["limits"] = false;
-  o18["parentIsSupSub"] = false;
+  JsValue o18 = JS.object("type", "operatorname", "mode", parser["mode"], "body", JS.call(ordargument, undef(), body), "alwaysHandleSupSub", JS.strictEqual(funcName, "\\operatornamewithlimits"), "limits", false, "parentIsSupSub", false);
   return o18;
   return undef();
 };

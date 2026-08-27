@@ -30,7 +30,7 @@ o1["handler"] = JS.method3((JsValue self, JsValue p5, JsValue args, JsValue optA
 });
 o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue a9 = JS.array("mord", "rule");
-  JsValue a10 = newArray();
+  JsValue a10 = JS.array();
   JsValue rule = JS.invoke(buildCommon, "makeSpan", a9, a10, options);
   JsValue width = JS.call(calculateSize, undef(), group["width"], options);
   JsValue height = JS.call(calculateSize, undef(), group["height"], options);

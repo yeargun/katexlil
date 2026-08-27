@@ -115,20 +115,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       numShift = JS.add(numShift, (toNum(0.5) * toNum((toNum(clearance) - toNum(candidateClearance)))));
       denomShift = JS.add(denomShift, (toNum(0.5) * toNum((toNum(clearance) - toNum(candidateClearance)))));
     }
-    JsValue o4 = emptyObject();
-    o4["positionType"] = "individualShift";
-    JsValue a5 = newArray();
-    JsValue o6 = emptyObject();
-    o6["type"] = "elem";
-    o6["elem"] = denomm;
-    o6["shift"] = denomShift;
-    JS.push(a5, o6);
-    JsValue o7 = emptyObject();
-    o7["type"] = "elem";
-    o7["elem"] = numerm;
-    o7["shift"] = JS.number(0) - toNum(numShift);
-    JS.push(a5, o7);
-    o4["children"] = a5;
+    JsValue o4 = JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", numerm, "shift", JS.number(0) - toNum(numShift))));
     frac = JS.invoke(buildCommon, "makeVList", o4, options);
   } else {
     JsValue axisHeight = JS.invoke(options, "fontMetrics")["axisHeight"];
@@ -139,24 +126,8 @@ htmlBuilder = (JsValue group, JsValue options) => {
       denomShift = JS.add(denomShift, (toNum(clearance) - toNum((toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth))))) - toNum((toNum(denomm["height"]) - toNum(denomShift)))))));
     }
     JsValue midShift = JS.number(0) - toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth)))));
-    JsValue o8 = emptyObject();
-    o8["positionType"] = "individualShift";
-    JsValue a9 = newArray();
-    JsValue o10 = emptyObject();
-    o10["type"] = "elem";
-    o10["elem"] = denomm;
-    o10["shift"] = denomShift;
-    JS.push(a9, o10);
-    JsValue o11 = emptyObject();
-    o11["type"] = "elem";
-    o11["elem"] = rule;
-    o11["shift"] = midShift;
-    JS.push(a9, o11);
-    JsValue o12 = emptyObject();
-    o12["type"] = "elem";
-    o12["elem"] = numerm;
-    o12["shift"] = JS.number(0) - toNum(numShift);
-    JS.push(a9, o12);
+    JsValue o8 = JS.object("positionType", "individualShift");
+    JsValue a9 = JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", rule, "shift", midShift), JS.object("type", "elem", "elem", numerm, "shift", JS.number(0) - toNum(numShift)));
     o8["children"] = a9;
     frac = JS.invoke(buildCommon, "makeVList", o8, options);
   }
@@ -186,7 +157,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
     leftDelim = apply(delimiter["customSizedDelim"], delimiter, ia17);
   }
   if (group["continued"].truthy()) {
-    JsValue a18 = newArray();
+    JsValue a18 = JS.array();
     rightDelim = JS.invoke(buildCommon, "makeSpan", a18);
   } else {
     if (isNullish(group["rightDelim"])) {
@@ -233,7 +204,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     JS.invoke(node, "setAttribute", "scriptlevel", "0");
   }
   if ((!isNullish(group["leftDelim"])) || (!isNullish(group["rightDelim"]))) {
-    JsValue a29 = newArray();
+    JsValue a29 = JS.array();
     JsValue withDelims = a29;
     if (!isNullish(group["leftDelim"])) {
       JsValue a30 = JS.array(JS.construct(mathMLTree["TextNode"], JS.invoke(group["leftDelim"], "replace", "\\", "")));
@@ -298,17 +269,7 @@ o32["handler"] = (JsValue p35, JsValue args) => {
   else if (JS.strictEqual(sw38, "\\tfrac") || JS.strictEqual(sw38, "\\tbinom")) {
     size = "text";
   }
-  JsValue o39 = emptyObject();
-  o39["type"] = "genfrac";
-  o39["mode"] = parser["mode"];
-  o39["continued"] = false;
-  o39["numer"] = numer;
-  o39["denom"] = denom;
-  o39["hasBarLine"] = hasBarLine;
-  o39["leftDelim"] = leftDelim;
-  o39["rightDelim"] = rightDelim;
-  o39["size"] = size;
-  o39["barSize"] = null;
+  JsValue o39 = JS.object("type", "genfrac", "mode", parser["mode"], "continued", false, "numer", numer, "denom", denom, "hasBarLine", hasBarLine, "leftDelim", leftDelim, "rightDelim", rightDelim, "size", size, "barSize", null);
   return o39;
   return undef();
 };
@@ -324,17 +285,7 @@ o40["handler"] = (JsValue p43, JsValue args) => {
   JsValue funcName = op44["funcName"];
   JsValue numer = args[0];
   JsValue denom = args[1];
-  JsValue o45 = emptyObject();
-  o45["type"] = "genfrac";
-  o45["mode"] = parser["mode"];
-  o45["continued"] = true;
-  o45["numer"] = numer;
-  o45["denom"] = denom;
-  o45["hasBarLine"] = true;
-  o45["leftDelim"] = null;
-  o45["rightDelim"] = null;
-  o45["size"] = "display";
-  o45["barSize"] = null;
+  JsValue o45 = JS.object("type", "genfrac", "mode", parser["mode"], "continued", true, "numer", numer, "denom", denom, "hasBarLine", true, "leftDelim", null, "rightDelim", null, "size", "display", "barSize", null);
   return o45;
   return undef();
 };
@@ -483,17 +434,7 @@ o71["handler"] = (JsValue p75, JsValue args) => {
   JsValue barSize = JS.call(assert, undef(), JS.call(assertNodeType, undef(), args[1], "infix")["size"]);
   JsValue denom = args[2];
   JsValue hasBarLine = JS.greaterThan(barSize["number"], 0);
-  JsValue o77 = emptyObject();
-  o77["type"] = "genfrac";
-  o77["mode"] = parser["mode"];
-  o77["numer"] = numer;
-  o77["denom"] = denom;
-  o77["continued"] = false;
-  o77["hasBarLine"] = hasBarLine;
-  o77["barSize"] = barSize;
-  o77["leftDelim"] = null;
-  o77["rightDelim"] = null;
-  o77["size"] = "auto";
+  JsValue o77 = JS.object("type", "genfrac", "mode", parser["mode"], "numer", numer, "denom", denom, "continued", false, "hasBarLine", hasBarLine, "barSize", barSize, "leftDelim", null, "rightDelim", null, "size", "auto");
   return o77;
   return undef();
 };

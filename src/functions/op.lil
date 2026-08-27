@@ -76,17 +76,11 @@ htmlBuilder = (JsValue grp, JsValue options) => {
         c6 = "1";
       }
       JsValue oval = JS.invoke(buildCommon, "staticSvg", JS.add(JS.add(stash, "Size"), c6), options);
-      JsValue o7 = emptyObject();
-      o7["positionType"] = "individualShift";
+      JsValue o7 = JS.object("positionType", "individualShift");
       JsValue a8 = newArray();
-      JsValue o9 = emptyObject();
-      o9["type"] = "elem";
-      o9["elem"] = base;
-      o9["shift"] = 0;
+      JsValue o9 = JS.object("type", "elem", "elem", base, "shift", 0);
       JS.push(a8, o9);
-      JsValue o10 = emptyObject();
-      o10["type"] = "elem";
-      o10["elem"] = oval;
+      JsValue o10 = JS.object("type", "elem", "elem", oval);
       JsValue c11 = undef();
       if (large.truthy()) {
         c11 = 0.08;
@@ -112,7 +106,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
         base = JS.invoke(buildCommon, "makeSpan", a12, inner, options);
       }
     } else {
-      JsValue a13 = newArray();
+      JsValue a13 = JS.array();
       JsValue output = a13;
       {
         JsValue i = 1;
@@ -184,13 +178,7 @@ o23["handler"] = (JsValue p26, JsValue args) => {
   if (JS.strictEqual(fName["length"], 1)) {
     fName = singleCharBigOps[fName];
   }
-  JsValue o28 = emptyObject();
-  o28["type"] = "op";
-  o28["mode"] = parser["mode"];
-  o28["limits"] = true;
-  o28["parentIsSupSub"] = false;
-  o28["symbol"] = true;
-  o28["name"] = fName;
+  JsValue o28 = JS.object("type", "op", "mode", parser["mode"], "limits", true, "parentIsSupSub", false, "symbol", true, "name", fName);
   return o28;
   return undef();
 };
@@ -204,13 +192,7 @@ o29["handler"] = (JsValue p32, JsValue args) => {
   JsValue op33 = p32;
   JsValue parser = op33["parser"];
   JsValue body = args[0];
-  JsValue o34 = emptyObject();
-  o34["type"] = "op";
-  o34["mode"] = parser["mode"];
-  o34["limits"] = false;
-  o34["parentIsSupSub"] = false;
-  o34["symbol"] = false;
-  o34["body"] = JS.call(ordargument, undef(), body);
+  JsValue o34 = JS.object("type", "op", "mode", parser["mode"], "limits", false, "parentIsSupSub", false, "symbol", false, "body", JS.call(ordargument, undef(), body));
   return o34;
   return undef();
 };

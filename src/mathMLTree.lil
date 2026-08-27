@@ -23,13 +23,13 @@ MathNode = JS.methodRest((JsValue self, JsValue argv) => {
   self["attributes"] = o1;
   JsValue or2 = children;
   if (!(or2.truthy())) {
-    JsValue a3 = newArray();
+    JsValue a3 = JS.array();
     or2 = a3;
   }
   self["children"] = or2;
   JsValue or4 = classes;
   if (!(or4.truthy())) {
-    JsValue a5 = newArray();
+    JsValue a5 = JS.array();
     or4 = a5;
   }
   self["classes"] = or4;

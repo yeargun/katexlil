@@ -57,9 +57,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
       accent = JS.invoke(buildCommon, "staticSvg", "vec", options);
       width = buildCommon["svgData"]["vec"][1];
     } else {
-      JsValue o3 = emptyObject();
-      o3["mode"] = group["mode"];
-      o3["text"] = group["label"];
+      JsValue o3 = JS.object("mode", group["mode"], "text", group["label"]);
       accent = JS.invoke(buildCommon, "makeOrd", o3, options, "textord");
       accent = JS.call(assertSymbolDomNode, undef(), accent);
       accent["italic"] = 0;
@@ -84,42 +82,18 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     if (JS.strictEqual(group["label"], "\\textcircled")) {
       accentBody["style"]["top"] = ".2em";
     }
-    JsValue o6 = emptyObject();
-    o6["positionType"] = "firstBaseline";
-    JsValue a7 = newArray();
-    JsValue o8 = emptyObject();
-    o8["type"] = "elem";
-    o8["elem"] = body;
-    JS.push(a7, o8);
-    JsValue o9 = emptyObject();
-    o9["type"] = "kern";
-    o9["size"] = JS.number(0) - toNum(clearance);
-    JS.push(a7, o9);
-    JsValue o10 = emptyObject();
-    o10["type"] = "elem";
-    o10["elem"] = accentBody;
-    JS.push(a7, o10);
-    o6["children"] = a7;
+    JsValue o6 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", body), JS.object("type", "kern", "size", JS.number(0) - toNum(clearance)), JS.object("type", "elem", "elem", accentBody)));
     accentBody = JS.invoke(buildCommon, "makeVList", o6, options);
   } else {
     accentBody = JS.invoke(stretchy, "svgSpan", group, options);
-    JsValue o11 = emptyObject();
-    o11["positionType"] = "firstBaseline";
+    JsValue o11 = JS.object("positionType", "firstBaseline");
     JsValue a12 = newArray();
-    JsValue o13 = emptyObject();
-    o13["type"] = "elem";
-    o13["elem"] = body;
+    JsValue o13 = JS.object("type", "elem", "elem", body);
     JS.push(a12, o13);
-    JsValue o14 = emptyObject();
-    o14["type"] = "elem";
-    o14["elem"] = accentBody;
-    JsValue a15 = JS.array("svg-align");
-    o14["wrapperClasses"] = a15;
+    JsValue o14 = JS.object("type", "elem", "elem", accentBody, "wrapperClasses", JS.array("svg-align"));
     JsValue c16 = undef();
     if (JS.greaterThan(skew, 0)) {
-      JsValue o17 = emptyObject();
-      o17["width"] = "calc(100% - " + toStr(JS.call(makeEm, undef(), (toNum(2) * toNum(skew)))) + ")";
-      o17["marginLeft"] = JS.call(makeEm, undef(), (toNum(2) * toNum(skew)));
+      JsValue o17 = JS.object("width", "calc(100% - " + toStr(JS.call(makeEm, undef(), (toNum(2) * toNum(skew)))) + ")", "marginLeft", JS.call(makeEm, undef(), (toNum(2) * toNum(skew))));
       c16 = o17;
     } else {
       c16 = undef();
@@ -180,13 +154,7 @@ o24["handler"] = (JsValue context, JsValue args) => {
     or29 = JS.strictEqual(context["funcName"], "\\widecheck");
   }
   JsValue isShifty = or29;
-  JsValue o30 = emptyObject();
-  o30["type"] = "accent";
-  o30["mode"] = context["parser"]["mode"];
-  o30["label"] = context["funcName"];
-  o30["isStretchy"] = isStretchy;
-  o30["isShifty"] = isShifty;
-  o30["base"] = base;
+  JsValue o30 = JS.object("type", "accent", "mode", context["parser"]["mode"], "label", context["funcName"], "isStretchy", isStretchy, "isShifty", isShifty, "base", base);
   return o30;
   return undef();
 };
@@ -203,13 +171,7 @@ o31["handler"] = (JsValue context, JsValue args) => {
     JS.invoke(context["parser"]["settings"], "reportNonstrict", "mathVsTextAccents", "LaTeX's accent " + toStr(context["funcName"]) + " works only in text mode");
     mode = "text";
   }
-  JsValue o35 = emptyObject();
-  o35["type"] = "accent";
-  o35["mode"] = mode;
-  o35["label"] = context["funcName"];
-  o35["isStretchy"] = false;
-  o35["isShifty"] = true;
-  o35["base"] = base;
+  JsValue o35 = JS.object("type", "accent", "mode", mode, "label", context["funcName"], "isStretchy", false, "isShifty", true, "base", base);
   return o35;
   return undef();
 };

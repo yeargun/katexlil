@@ -15,18 +15,14 @@ o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue parser = op5["parser"];
   JsValue funcName = op5["funcName"];
   JsValue body = args[0];
-  JsValue o6 = emptyObject();
-  o6["type"] = "lap";
-  o6["mode"] = parser["mode"];
-  o6["alignment"] = JS.invoke(funcName, "slice", 5);
-  o6["body"] = body;
+  JsValue o6 = JS.object("type", "lap", "mode", parser["mode"], "alignment", JS.invoke(funcName, "slice", 5), "body", body);
   return o6;
   return undef();
 };
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = undef();
   if (JS.strictEqual(group["alignment"], "clap")) {
-    JsValue a7 = newArray();
+    JsValue a7 = JS.array();
     JsValue a8 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
     inner = JS.invoke(buildCommon, "makeSpan", a7, a8);
     JsValue a9 = JS.array("inner");
@@ -38,7 +34,7 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
     inner = JS.invoke(buildCommon, "makeSpan", a11, a12);
   }
   JsValue a13 = JS.array("fix");
-  JsValue a14 = newArray();
+  JsValue a14 = JS.array();
   JsValue fix = JS.invoke(buildCommon, "makeSpan", a13, a14);
   JsValue a15 = JS.array(group["alignment"]);
   JsValue a16 = JS.array(inner, fix);

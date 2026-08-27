@@ -68,12 +68,7 @@ JsValue o21 = JS.object("numArgs", 1, "argTypes", JS.array("primitive"));
 o19["props"] = o21;
 o19["handler"] = (JsValue context, JsValue args) => {
   JsValue delim = JS.call(checkDelimiter, undef(), args[0], context);
-  JsValue o23 = emptyObject();
-  o23["type"] = "delimsizing";
-  o23["mode"] = context["parser"]["mode"];
-  o23["size"] = delimiterSizes[context["funcName"]]["size"];
-  o23["mclass"] = delimiterSizes[context["funcName"]]["mclass"];
-  o23["delim"] = delim["text"];
+  JsValue o23 = JS.object("type", "delimsizing", "mode", context["parser"]["mode"], "size", delimiterSizes[context["funcName"]]["size"], "mclass", delimiterSizes[context["funcName"]]["mclass"], "delim", delim["text"]);
   return o23;
   return undef();
 };
@@ -87,7 +82,7 @@ o19["htmlBuilder"] = (JsValue group, JsValue options) => {
   return undef();
 };
 o19["mathmlBuilder"] = (JsValue group) => {
-  JsValue a26 = newArray();
+  JsValue a26 = JS.array();
   JsValue children = a26;
   if (JS.strictNotEqual(group["delim"], ".")) {
     JS.invoke(children, "push", JS.invoke(mml, "makeText", group["delim"], group["mode"]));
@@ -120,11 +115,7 @@ o27["handler"] = (JsValue context, JsValue args) => {
   if ((color.truthy()) && (JS.strictNotEqual(JS.typeOf(color), "string"))) {
     throw JS.construct(ParseError, "\\current@color set to non-string in \\right");
   }
-  JsValue o30 = emptyObject();
-  o30["type"] = "leftright-right";
-  o30["mode"] = context["parser"]["mode"];
-  o30["delim"] = JS.call(checkDelimiter, undef(), args[0], context)["text"];
-  o30["color"] = color;
+  JsValue o30 = JS.object("type", "leftright-right", "mode", context["parser"]["mode"], "delim", JS.call(checkDelimiter, undef(), args[0], context)["text"], "color", color);
   return o30;
   return undef();
 };
@@ -142,13 +133,7 @@ o31["handler"] = (JsValue context, JsValue args) => {
   parser["leftrightDepth"] = JS.add(u35, -1);
   JS.invoke(parser, "expect", "\\right", false);
   JsValue right = JS.call(assertNodeType, undef(), JS.invoke(parser, "parseFunction"), "leftright-right");
-  JsValue o36 = emptyObject();
-  o36["type"] = "leftright";
-  o36["mode"] = parser["mode"];
-  o36["body"] = body;
-  o36["left"] = delim["text"];
-  o36["right"] = right["delim"];
-  o36["rightColor"] = right["color"];
+  JsValue o36 = JS.object("type", "leftright", "mode", parser["mode"], "body", body, "left", delim["text"], "right", right["delim"], "rightColor", right["color"]);
   return o36;
   return undef();
 };
@@ -191,7 +176,7 @@ o31["htmlBuilder"] = (JsValue group, JsValue options) => {
         JsValue middleDelim = inner[i];
         JsValue isMiddle = middleDelim["isMiddle"];
         if (isMiddle.truthy()) {
-          JsValue a42 = newArray();
+          JsValue a42 = JS.array();
           JsValue ia43 = JS.array(isMiddle["delim"], innerHeight, innerDepth, isMiddle["options"], group["mode"], a42);
           inner[i] = apply(delimiter["leftRightDelim"], delimiter, ia43);
         }
@@ -251,24 +236,19 @@ o52["handler"] = (JsValue context, JsValue args) => {
   if (!(context["parser"]["leftrightDepth"].truthy())) {
     throw JS.construct(ParseError, "\\middle without preceding \\left", delim);
   }
-  JsValue o55 = emptyObject();
-  o55["type"] = "middle";
-  o55["mode"] = context["parser"]["mode"];
-  o55["delim"] = delim["text"];
+  JsValue o55 = JS.object("type", "middle", "mode", context["parser"]["mode"], "delim", delim["text"]);
   return o55;
   return undef();
 };
 o52["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue middleDelim = undef();
   if (JS.strictEqual(group["delim"], ".")) {
-    JsValue a56 = newArray();
+    JsValue a56 = JS.array();
     middleDelim = JS.invoke(html, "makeNullDelimiter", options, a56);
   } else {
-    JsValue a57 = newArray();
+    JsValue a57 = JS.array();
     middleDelim = JS.invoke(delimiter, "sizedDelim", group["delim"], 1, options, group["mode"], a57);
-    JsValue o58 = emptyObject();
-    o58["delim"] = group["delim"];
-    o58["options"] = options;
+    JsValue o58 = JS.object("delim", group["delim"], "options", options);
     JsValue isMiddle = o58;
     middleDelim["isMiddle"] = isMiddle;
   }

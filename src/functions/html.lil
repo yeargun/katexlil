@@ -26,23 +26,17 @@ o1["handler"] = (JsValue p5, JsValue args) => {
   JsValue sw8 = funcName;
   if (JS.strictEqual(sw8, "\\htmlClass")) {
     attributes["class"] = value;
-    JsValue o9 = emptyObject();
-    o9["command"] = "\\htmlClass";
-    o9["class"] = value;
+    JsValue o9 = JS.object("command", "\\htmlClass", "class", value);
     trustContext = o9;
   }
   else if (JS.strictEqual(sw8, "\\htmlId")) {
     attributes["id"] = value;
-    JsValue o10 = emptyObject();
-    o10["command"] = "\\htmlId";
-    o10["id"] = value;
+    JsValue o10 = JS.object("command", "\\htmlId", "id", value);
     trustContext = o10;
   }
   else if (JS.strictEqual(sw8, "\\htmlStyle")) {
     attributes["style"] = value;
-    JsValue o11 = emptyObject();
-    o11["command"] = "\\htmlStyle";
-    o11["style"] = value;
+    JsValue o11 = JS.object("command", "\\htmlStyle", "style", value);
     trustContext = o11;
   }
   else if (JS.strictEqual(sw8, "\\htmlData")) {
@@ -59,9 +53,7 @@ o1["handler"] = (JsValue p5, JsValue args) => {
         i = JS.add(i, 1);
       }
     }
-    JsValue o13 = emptyObject();
-    o13["command"] = "\\htmlData";
-    o13["attributes"] = attributes;
+    JsValue o13 = JS.object("command", "\\htmlData", "attributes", attributes);
     trustContext = o13;
   }
   else {
@@ -70,11 +62,7 @@ o1["handler"] = (JsValue p5, JsValue args) => {
   if (!(JS.invoke(parser["settings"], "isTrusted", trustContext).truthy())) {
     return JS.invoke(parser, "formatUnsupportedCmd", funcName);
   }
-  JsValue o14 = emptyObject();
-  o14["type"] = "html";
-  o14["mode"] = parser["mode"];
-  o14["attributes"] = attributes;
-  o14["body"] = JS.call(ordargument, undef(), body);
+  JsValue o14 = JS.object("type", "html", "mode", parser["mode"], "attributes", attributes, "body", JS.call(ordargument, undef(), body));
   return o14;
   return undef();
 };

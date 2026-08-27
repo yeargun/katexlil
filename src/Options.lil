@@ -197,7 +197,7 @@ Options["prototype"]["sizingClasses"] = JS.method1((JsValue self, JsValue oldOpt
     JsValue a38 = JS.array("sizing", JS.add("reset-size", oldOptions["size"]), JS.add("size", self["size"]));
     return a38;
   } else {
-    JsValue a39 = newArray();
+    JsValue a39 = JS.array();
     return a39;
   }
   return undef();
@@ -207,7 +207,7 @@ Options["prototype"]["baseSizingClasses"] = JS.method0((JsValue self) => {
     JsValue a40 = JS.array("sizing", JS.add("reset-size", self["size"]), JS.add("size", Options["BASESIZE"]));
     return a40;
   } else {
-    JsValue a41 = newArray();
+    JsValue a41 = JS.array();
     return a41;
   }
   return undef();

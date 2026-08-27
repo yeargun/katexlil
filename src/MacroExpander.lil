@@ -22,7 +22,7 @@ MacroExpander = JS.methodRest((JsValue self, JsValue argv) => {
   JS.invoke(self, "feed", input);
   self["macros"] = JS.construct(Namespace, macros, settings["macros"]);
   self["mode"] = mode;
-  JsValue a2 = newArray();
+  JsValue a2 = JS.array();
   self["stack"] = a2;
   return self;
 });
@@ -104,7 +104,7 @@ MacroExpander["prototype"]["consumeSpaces"] = JS.method0((JsValue self) => {
   return undef();
 });
 MacroExpander["prototype"]["consumeArg"] = JS.method1((JsValue self, JsValue delims) => {
-  JsValue a4 = newArray();
+  JsValue a4 = JS.array();
   JsValue tokens = a4;
   JsValue and5 = delims;
   if (and5.truthy()) {
@@ -186,7 +186,7 @@ MacroExpander["prototype"]["consumeArgs"] = JS.method2((JsValue self, JsValue nu
       }
     }
   }
-  JsValue a12 = newArray();
+  JsValue a12 = JS.array();
   JsValue args = a12;
   {
     JsValue i = 0;
@@ -293,7 +293,7 @@ MacroExpander["prototype"]["expandMacro"] = JS.method1((JsValue self, JsValue na
   return undef();
 });
 MacroExpander["prototype"]["expandTokens"] = JS.method1((JsValue self, JsValue tokens) => {
-  JsValue a21 = newArray();
+  JsValue a21 = JS.array();
   JsValue output = a21;
   JsValue oldStackLength = self["stack"]["length"];
   JS.invoke(self, "pushTokens", tokens);
@@ -349,7 +349,7 @@ MacroExpander["prototype"]["_getExpansion"] = JS.method1((JsValue self, JsValue 
       }
     }
     JsValue bodyLexer = JS.construct(Lexer, expansion, self["settings"]);
-    JsValue a24 = newArray();
+    JsValue a24 = JS.array();
     JsValue tokens = a24;
     JsValue tok = JS.invoke(bodyLexer, "lex");
     while (JS.strictNotEqual(tok["text"], "EOF")) {

@@ -52,11 +52,7 @@ o5["handler"] = (JsValue p7, JsValue args) => {
   JsValue funcName = op8["funcName"];
   JsValue parser = op8["parser"];
   JsValue body = JS.invoke(parser, "parseExpression", false, breakOnTokenText);
-  JsValue o9 = emptyObject();
-  o9["type"] = "sizing";
-  o9["mode"] = parser["mode"];
-  o9["size"] = JS.add(JS.invoke(sizeFuncs, "indexOf", funcName), 1);
-  o9["body"] = body;
+  JsValue o9 = JS.object("type", "sizing", "mode", parser["mode"], "size", JS.add(JS.invoke(sizeFuncs, "indexOf", funcName), 1), "body", body);
   return o9;
   return undef();
 };

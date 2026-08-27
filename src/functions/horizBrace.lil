@@ -32,42 +32,11 @@ htmlBuilder = (JsValue grp, JsValue options) => {
   JsValue braceBody = JS.invoke(stretchy, "svgSpan", group, options);
   JsValue vlist = undef();
   if (group["isOver"].truthy()) {
-    JsValue o2 = emptyObject();
-    o2["positionType"] = "firstBaseline";
-    JsValue a3 = newArray();
-    JsValue o4 = emptyObject();
-    o4["type"] = "elem";
-    o4["elem"] = body;
-    JS.push(a3, o4);
-    JsValue o5 = emptyObject();
-    o5["type"] = "kern";
-    o5["size"] = 0.1;
-    JS.push(a3, o5);
-    JsValue o6 = emptyObject();
-    o6["type"] = "elem";
-    o6["elem"] = braceBody;
-    JS.push(a3, o6);
-    o2["children"] = a3;
+    JsValue o2 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", body), JS.object("type", "kern", "size", 0.1), JS.object("type", "elem", "elem", braceBody)));
     vlist = JS.invoke(buildCommon, "makeVList", o2, options);
     JS.invoke(vlist["children"][0]["children"][0]["children"][1]["classes"], "push", "svg-align");
   } else {
-    JsValue o7 = emptyObject();
-    o7["positionType"] = "bottom";
-    o7["positionData"] = JS.add(JS.add(body["depth"], 0.1), braceBody["height"]);
-    JsValue a8 = newArray();
-    JsValue o9 = emptyObject();
-    o9["type"] = "elem";
-    o9["elem"] = braceBody;
-    JS.push(a8, o9);
-    JsValue o10 = emptyObject();
-    o10["type"] = "kern";
-    o10["size"] = 0.1;
-    JS.push(a8, o10);
-    JsValue o11 = emptyObject();
-    o11["type"] = "elem";
-    o11["elem"] = body;
-    JS.push(a8, o11);
-    o7["children"] = a8;
+    JsValue o7 = JS.object("positionType", "bottom", "positionData", JS.add(JS.add(body["depth"], 0.1), braceBody["height"]), "children", JS.array(JS.object("type", "elem", "elem", braceBody), JS.object("type", "kern", "size", 0.1), JS.object("type", "elem", "elem", body)));
     vlist = JS.invoke(buildCommon, "makeVList", o7, options);
     JS.invoke(vlist["children"][0]["children"][0]["children"][0]["classes"], "push", "svg-align");
   }
@@ -83,41 +52,10 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     JsValue a14 = JS.array(vlist);
     JsValue vSpan = JS.invoke(buildCommon, "makeSpan", a12, a14, options);
     if (group["isOver"].truthy()) {
-      JsValue o15 = emptyObject();
-      o15["positionType"] = "firstBaseline";
-      JsValue a16 = newArray();
-      JsValue o17 = emptyObject();
-      o17["type"] = "elem";
-      o17["elem"] = vSpan;
-      JS.push(a16, o17);
-      JsValue o18 = emptyObject();
-      o18["type"] = "kern";
-      o18["size"] = 0.2;
-      JS.push(a16, o18);
-      JsValue o19 = emptyObject();
-      o19["type"] = "elem";
-      o19["elem"] = supSubGroup;
-      JS.push(a16, o19);
-      o15["children"] = a16;
+      JsValue o15 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", vSpan), JS.object("type", "kern", "size", 0.2), JS.object("type", "elem", "elem", supSubGroup)));
       vlist = JS.invoke(buildCommon, "makeVList", o15, options);
     } else {
-      JsValue o20 = emptyObject();
-      o20["positionType"] = "bottom";
-      o20["positionData"] = JS.add(JS.add(JS.add(vSpan["depth"], 0.2), supSubGroup["height"]), supSubGroup["depth"]);
-      JsValue a21 = newArray();
-      JsValue o22 = emptyObject();
-      o22["type"] = "elem";
-      o22["elem"] = supSubGroup;
-      JS.push(a21, o22);
-      JsValue o23 = emptyObject();
-      o23["type"] = "kern";
-      o23["size"] = 0.2;
-      JS.push(a21, o23);
-      JsValue o24 = emptyObject();
-      o24["type"] = "elem";
-      o24["elem"] = vSpan;
-      JS.push(a21, o24);
-      o20["children"] = a21;
+      JsValue o20 = JS.object("positionType", "bottom", "positionData", JS.add(JS.add(JS.add(vSpan["depth"], 0.2), supSubGroup["height"]), supSubGroup["depth"]), "children", JS.array(JS.object("type", "elem", "elem", supSubGroup), JS.object("type", "kern", "size", 0.2), JS.object("type", "elem", "elem", vSpan)));
       vlist = JS.invoke(buildCommon, "makeVList", o20, options);
     }
   }

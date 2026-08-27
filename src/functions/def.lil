@@ -34,11 +34,7 @@ letCommand = (JsValue parser, JsValue name, JsValue tok, JsValue global) => {
   JsValue macro = JS.invoke(parser["gullet"]["macros"], "get", tok["text"]);
   if (isNullish(macro)) {
     tok["noexpand"] = true;
-    JsValue o2 = emptyObject();
-    JsValue a3 = JS.array(tok);
-    o2["tokens"] = a3;
-    o2["numArgs"] = 0;
-    o2["unexpandable"] = !(JS.invoke(parser["gullet"], "isExpandable", tok["text"]).truthy());
+    JsValue o2 = JS.object("tokens", JS.array(tok), "numArgs", 0, "unexpandable", !(JS.invoke(parser["gullet"], "isExpandable", tok["text"]).truthy()));
     macro = o2;
   }
   JS.invoke(parser["gullet"]["macros"], "set", name, macro, global);
@@ -78,7 +74,7 @@ o9["handler"] = JS.method1((JsValue self, JsValue p12) => {
   JsValue numArgs = 0;
   JsValue insert = undef();
   JsValue a14 = newArray();
-  JsValue a15 = newArray();
+  JsValue a15 = JS.array();
   JS.push(a14, a15);
   JsValue delimiters = a14;
   while (JS.strictNotEqual(JS.invoke(parser["gullet"], "future")["text"], "{")) {
@@ -98,7 +94,7 @@ o9["handler"] = JS.method1((JsValue self, JsValue p12) => {
       }
       JsValue u16 = numArgs;
       numArgs = JS.add(numArgs, 1);
-      JsValue a17 = newArray();
+      JsValue a17 = JS.array();
       JS.invoke(delimiters, "push", a17);
     } else {
       if (JS.strictEqual(tok["text"], "EOF")) {

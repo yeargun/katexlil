@@ -33,13 +33,7 @@ o2["props"] = o4;
 o2["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;
   JsValue parser = op6["parser"];
-  JsValue o7 = emptyObject();
-  o7["type"] = "mathchoice";
-  o7["mode"] = parser["mode"];
-  o7["display"] = JS.call(ordargument, undef(), args[0]);
-  o7["text"] = JS.call(ordargument, undef(), args[1]);
-  o7["script"] = JS.call(ordargument, undef(), args[2]);
-  o7["scriptscript"] = JS.call(ordargument, undef(), args[3]);
+  JsValue o7 = JS.object("type", "mathchoice", "mode", parser["mode"], "display", JS.call(ordargument, undef(), args[0]), "text", JS.call(ordargument, undef(), args[1]), "script", JS.call(ordargument, undef(), args[2]), "scriptscript", JS.call(ordargument, undef(), args[3]));
   return o7;
   return undef();
 };

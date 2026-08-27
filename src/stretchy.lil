@@ -79,21 +79,17 @@ svgSpan = (JsValue group, JsValue options) => {
     }
     JsValue path = JS.construct(PathNode, pathName);
     JsValue a92 = JS.array(path);
-    JsValue o93 = emptyObject();
-    o93["width"] = "100%";
-    o93["height"] = JS.call(makeEm, undef(), height);
-    o93["viewBox"] = "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight);
-    o93["preserveAspectRatio"] = "none";
+    JsValue o93 = JS.object("width", "100%", "height", JS.call(makeEm, undef(), height), "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight), "preserveAspectRatio", "none");
     JsValue svgNode = JS.construct(SvgNode, a92, o93);
     JsValue o94 = emptyObject();
-    JsValue a95 = newArray();
+    JsValue a95 = JS.array();
     JsValue a96 = JS.array(svgNode);
     o94["span"] = JS.invoke(buildCommon, "makeSvgSpan", a95, a96, options);
     o94["minWidth"] = 0;
     o94["height"] = height;
     return o94;
   } else {
-    JsValue a97 = newArray();
+    JsValue a97 = JS.array();
     JsValue spans = a97;
     JsValue data = katexImagesData[label];
     JsValue ap98 = data;
@@ -132,20 +128,13 @@ svgSpan = (JsValue group, JsValue options) => {
       while (JS.lessThan(i, numSvgChildren)) {
         JsValue path = JS.construct(PathNode, paths[i]);
         JsValue a105 = JS.array(path);
-        JsValue o106 = emptyObject();
-        o106["width"] = "400em";
-        o106["height"] = JS.call(makeEm, undef(), height);
-        o106["viewBox"] = "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight);
-        o106["preserveAspectRatio"] = JS.add(aligns[i], " slice");
+        JsValue o106 = JS.object("width", "400em", "height", JS.call(makeEm, undef(), height), "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight), "preserveAspectRatio", JS.add(aligns[i], " slice"));
         JsValue svgNode = JS.construct(SvgNode, a105, o106);
         JsValue a107 = JS.array(widthClasses[i]);
         JsValue a108 = JS.array(svgNode);
         JsValue span = JS.invoke(buildCommon, "makeSvgSpan", a107, a108, options);
         if (JS.strictEqual(numSvgChildren, 1)) {
-          JsValue o109 = emptyObject();
-          o109["span"] = span;
-          o109["minWidth"] = minWidth;
-          o109["height"] = height;
+          JsValue o109 = JS.object("span", span, "minWidth", minWidth, "height", height);
           return o109;
         } else {
           span["style"]["height"] = JS.call(makeEm, undef(), height);
@@ -181,7 +170,7 @@ encloseSpan = (JsValue inner, JsValue label, JsValue topPad, JsValue bottomPad, 
   JsValue totalHeight = JS.add(JS.add(JS.add(inner["height"], inner["depth"]), topPad), bottomPad);
   if (JS.invoke(JS.construct(RegExp, "fbox|color|angl", ""), "test", label).truthy()) {
     JsValue a114 = JS.array("stretchy", label);
-    JsValue a115 = newArray();
+    JsValue a115 = JS.array();
     img = JS.invoke(buildCommon, "makeSpan", a114, a115, options);
     if (JS.strictEqual(label, "fbox")) {
       JsValue and116 = options["color"];
@@ -194,31 +183,19 @@ encloseSpan = (JsValue inner, JsValue label, JsValue topPad, JsValue bottomPad, 
       }
     }
   } else {
-    JsValue a117 = newArray();
+    JsValue a117 = JS.array();
     JsValue lines = a117;
     if (JS.invoke(JS.construct(RegExp, "^[bx]cancel$", ""), "test", label).truthy()) {
-      JsValue o118 = emptyObject();
-      o118["x1"] = "0";
-      o118["y1"] = "0";
-      o118["x2"] = "100%";
-      o118["y2"] = "100%";
-      o118["stroke-width"] = "0.046em";
+      JsValue o118 = JS.object("x1", "0", "y1", "0", "x2", "100%", "y2", "100%", "stroke-width", "0.046em");
       JS.invoke(lines, "push", JS.construct(LineNode, o118));
     }
     if (JS.invoke(JS.construct(RegExp, "^x?cancel$", ""), "test", label).truthy()) {
-      JsValue o119 = emptyObject();
-      o119["x1"] = "0";
-      o119["y1"] = "100%";
-      o119["x2"] = "100%";
-      o119["y2"] = "0";
-      o119["stroke-width"] = "0.046em";
+      JsValue o119 = JS.object("x1", "0", "y1", "100%", "x2", "100%", "y2", "0", "stroke-width", "0.046em");
       JS.invoke(lines, "push", JS.construct(LineNode, o119));
     }
-    JsValue o120 = emptyObject();
-    o120["width"] = "100%";
-    o120["height"] = JS.call(makeEm, undef(), totalHeight);
+    JsValue o120 = JS.object("width", "100%", "height", JS.call(makeEm, undef(), totalHeight));
     JsValue svgNode = JS.construct(SvgNode, lines, o120);
-    JsValue a121 = newArray();
+    JsValue a121 = JS.array();
     JsValue a122 = JS.array(svgNode);
     img = JS.invoke(buildCommon, "makeSvgSpan", a121, a122, options);
   }

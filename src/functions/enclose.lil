@@ -29,13 +29,9 @@ htmlBuilder = (JsValue group, JsValue options) => {
     imgShift = (toNum(JS.number(0) - toNum(0.5)) * toNum(JS.invoke(options, "fontMetrics")["xHeight"]));
   } else {
     if (JS.strictEqual(label, "phase")) {
-      JsValue o2 = emptyObject();
-      o2["number"] = 0.6;
-      o2["unit"] = "pt";
+      JsValue o2 = JS.object("number", 0.6, "unit", "pt");
       JsValue lineWeight = JS.call(calculateSize, undef(), o2, options);
-      JsValue o3 = emptyObject();
-      o3["number"] = 0.35;
-      o3["unit"] = "ex";
+      JsValue o3 = JS.object("number", 0.35, "unit", "ex");
       JsValue clearance = JS.call(calculateSize, undef(), o3, options);
       JsValue newOptions = JS.invoke(options, "havingBaseSizing");
       scale = (toNum(scale) / toNum(newOptions["sizeMultiplier"]));
@@ -44,11 +40,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       JsValue viewBoxHeight = JS.invoke(Math, "floor", (toNum((toNum(1000) * toNum(angleHeight))) * toNum(scale)));
       JsValue path = JS.call(phasePath, undef(), viewBoxHeight);
       JsValue a4 = JS.array(JS.construct(PathNode, "phase", path));
-      JsValue o5 = emptyObject();
-      o5["width"] = "400em";
-      o5["height"] = JS.call(makeEm, undef(), (toNum(viewBoxHeight) / toNum(1000)));
-      o5["viewBox"] = "0 0 400000 " + toStr(viewBoxHeight);
-      o5["preserveAspectRatio"] = "xMinYMin slice";
+      JsValue o5 = JS.object("width", "400em", "height", JS.call(makeEm, undef(), (toNum(viewBoxHeight) / toNum(1000))), "viewBox", "0 0 400000 " + toStr(viewBoxHeight), "preserveAspectRatio", "xMinYMin slice");
       JsValue svgNode = JS.construct(SvgNode, a4, o5);
       JsValue a6 = JS.array("hide-tail");
       JsValue a7 = JS.array(svgNode);
@@ -117,20 +109,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
   }
   JsValue vlist = undef();
   if (group["backgroundColor"].truthy()) {
-    JsValue o10 = emptyObject();
-    o10["positionType"] = "individualShift";
-    JsValue a11 = newArray();
-    JsValue o12 = emptyObject();
-    o12["type"] = "elem";
-    o12["elem"] = img;
-    o12["shift"] = imgShift;
-    JS.push(a11, o12);
-    JsValue o13 = emptyObject();
-    o13["type"] = "elem";
-    o13["elem"] = inner;
-    o13["shift"] = 0;
-    JS.push(a11, o13);
-    o10["children"] = a11;
+    JsValue o10 = JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", img, "shift", imgShift), JS.object("type", "elem", "elem", inner, "shift", 0)));
     vlist = JS.invoke(buildCommon, "makeVList", o10, options);
   } else {
     JsValue c14 = undef();
@@ -138,24 +117,12 @@ htmlBuilder = (JsValue group, JsValue options) => {
       JsValue a15 = JS.array("svg-align");
       c14 = a15;
     } else {
-      JsValue a16 = newArray();
+      JsValue a16 = JS.array();
       c14 = a16;
     }
     JsValue classes = c14;
-    JsValue o17 = emptyObject();
-    o17["positionType"] = "individualShift";
-    JsValue a18 = newArray();
-    JsValue o19 = emptyObject();
-    o19["type"] = "elem";
-    o19["elem"] = inner;
-    o19["shift"] = 0;
-    JS.push(a18, o19);
-    JsValue o20 = emptyObject();
-    o20["type"] = "elem";
-    o20["elem"] = img;
-    o20["shift"] = imgShift;
-    o20["wrapperClasses"] = classes;
-    JS.push(a18, o20);
+    JsValue o17 = JS.object("positionType", "individualShift");
+    JsValue a18 = JS.array(JS.object("type", "elem", "elem", inner, "shift", 0), JS.object("type", "elem", "elem", img, "shift", imgShift, "wrapperClasses", classes));
     o17["children"] = a18;
     vlist = JS.invoke(buildCommon, "makeVList", o17, options);
   }
