@@ -66,18 +66,18 @@
     {
       "id": "itslil",
       "name": "@itslil/katex · library",
-      "raw": 564801,
-      "gzip9": 107944,
-      "brotli11": 86283,
+      "raw": 283674,
+      "gzip9": 80953,
+      "brotli11": 66879,
       "note": "LilScript js-module, extern_fields true. The npm ESM.",
       "primary": true
     },
     {
       "id": "itslil-closed",
       "name": "@itslil/katex · closed",
-      "raw": 539234,
-      "gzip9": 108047,
-      "brotli11": 86829,
+      "raw": 284685,
+      "gzip9": 84571,
+      "brotli11": 69799,
       "note": "Same source, extern_fields false"
     }
   ],
