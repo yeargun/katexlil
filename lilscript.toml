@@ -1,12 +1,19 @@
 # reusable ESM — host-visible names stay
 [javascript]
+# Measured on this port: the objects it reads are plain data, so a member
+# read is not a coercion hook and the value can nest into its consumer.
+assume_pure_property_reads = true
 priority = "size-first"
-optimization_level = 12
+optimization_level = 13
+# 290 KB of artifact gets `level_limit.div_ceil(12)` probes by default, which
+# exhausts before the terminal cleanup families are scored. Measured on this
+# port: 63,146 -> 62,505 Brotli, converged by 256.
+terminal_codec_probe_limit = 256
 cost_model = "brotli"
 assume_pristine_builtins = true
 strip_console = true
 local_name_reserve = 48
-candidate_search = "off"
+candidate_search = "always"
 function_spelling = "arrow"
 public_aggregate_abi = "named"
 

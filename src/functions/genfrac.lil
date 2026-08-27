@@ -178,19 +178,11 @@ htmlBuilder = (JsValue group, JsValue options) => {
   JsValue leftDelim = undef();
   JsValue rightDelim = undef();
   if (isNullish(group["leftDelim"])) {
-    JsValue a15 = newArray();
-    JS.push(a15, "mopen");
+    JsValue a15 = JS.array("mopen");
     leftDelim = JS.invoke(html, "makeNullDelimiter", options, a15);
   } else {
-    JsValue a16 = newArray();
-    JS.push(a16, "mopen");
-    JsValue ia17 = newArray();
-    JS.push(ia17, group["leftDelim"]);
-    JS.push(ia17, delimSize);
-    JS.push(ia17, true);
-    JS.push(ia17, JS.invoke(options, "havingStyle", style));
-    JS.push(ia17, group["mode"]);
-    JS.push(ia17, a16);
+    JsValue a16 = JS.array("mopen");
+    JsValue ia17 = JS.array(group["leftDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], a16);
     leftDelim = apply(delimiter["customSizedDelim"], delimiter, ia17);
   }
   if (group["continued"].truthy()) {
@@ -198,39 +190,25 @@ htmlBuilder = (JsValue group, JsValue options) => {
     rightDelim = JS.invoke(buildCommon, "makeSpan", a18);
   } else {
     if (isNullish(group["rightDelim"])) {
-      JsValue a19 = newArray();
-      JS.push(a19, "mclose");
+      JsValue a19 = JS.array("mclose");
       rightDelim = JS.invoke(html, "makeNullDelimiter", options, a19);
     } else {
-      JsValue a20 = newArray();
-      JS.push(a20, "mclose");
-      JsValue ia21 = newArray();
-      JS.push(ia21, group["rightDelim"]);
-      JS.push(ia21, delimSize);
-      JS.push(ia21, true);
-      JS.push(ia21, JS.invoke(options, "havingStyle", style));
-      JS.push(ia21, group["mode"]);
-      JS.push(ia21, a20);
+      JsValue a20 = JS.array("mclose");
+      JsValue ia21 = JS.array(group["rightDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], a20);
       rightDelim = apply(delimiter["customSizedDelim"], delimiter, ia21);
     }
   }
-  JsValue a22 = newArray();
-  JS.push(a22, "mord");
-  JsValue a23 = newArray();
-  JS.push(a23, leftDelim);
-  JsValue a24 = newArray();
-  JS.push(a24, "mfrac");
-  JsValue a25 = newArray();
-  JS.push(a25, frac);
+  JsValue a22 = JS.array("mord");
+  JsValue a23 = JS.array(leftDelim);
+  JsValue a24 = JS.array("mfrac");
+  JsValue a25 = JS.array(frac);
   JS.push(a23, JS.invoke(buildCommon, "makeSpan", a24, a25));
   JS.push(a23, rightDelim);
   return JS.invoke(buildCommon, "makeSpan", JS.invoke(a22, "concat", JS.invoke(newOptions, "sizingClasses", options)), a23, options);
   return undef();
 };
 mathmlBuilder = (JsValue group, JsValue options) => {
-  JsValue a26 = newArray();
-  JS.push(a26, JS.invoke(mml, "buildGroup", group["numer"], options));
-  JS.push(a26, JS.invoke(mml, "buildGroup", group["denom"], options));
+  JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", group["numer"], options), JS.invoke(mml, "buildGroup", group["denom"], options));
   JsValue node = JS.construct(mathMLTree["MathNode"], "mfrac", a26);
   if (!(group["hasBarLine"].truthy())) {
     JS.invoke(node, "setAttribute", "linethickness", "0px");
@@ -242,8 +220,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   }
   JsValue style = JS.call(adjustStyle, undef(), group["size"], options["style"]);
   if (JS.strictNotEqual(style["size"], options["style"]["size"])) {
-    JsValue a27 = newArray();
-    JS.push(a27, node);
+    JsValue a27 = JS.array(node);
     node = JS.construct(mathMLTree["MathNode"], "mstyle", a27);
     JsValue c28 = undef();
     if (JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) {
@@ -259,16 +236,14 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     JsValue a29 = newArray();
     JsValue withDelims = a29;
     if (!isNullish(group["leftDelim"])) {
-      JsValue a30 = newArray();
-      JS.push(a30, JS.construct(mathMLTree["TextNode"], JS.invoke(group["leftDelim"], "replace", "\\", "")));
+      JsValue a30 = JS.array(JS.construct(mathMLTree["TextNode"], JS.invoke(group["leftDelim"], "replace", "\\", "")));
       JsValue leftOp = JS.construct(mathMLTree["MathNode"], "mo", a30);
       JS.invoke(leftOp, "setAttribute", "fence", "true");
       JS.invoke(withDelims, "push", leftOp);
     }
     JS.invoke(withDelims, "push", node);
     if (!isNullish(group["rightDelim"])) {
-      JsValue a31 = newArray();
-      JS.push(a31, JS.construct(mathMLTree["TextNode"], JS.invoke(group["rightDelim"], "replace", "\\", "")));
+      JsValue a31 = JS.array(JS.construct(mathMLTree["TextNode"], JS.invoke(group["rightDelim"], "replace", "\\", "")));
       JsValue rightOp = JS.construct(mathMLTree["MathNode"], "mo", a31);
       JS.invoke(rightOp, "setAttribute", "fence", "true");
       JS.invoke(withDelims, "push", rightOp);
@@ -278,22 +253,8 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   return node;
   return undef();
 };
-JsValue o32 = emptyObject();
-o32["type"] = "genfrac";
-JsValue a33 = newArray();
-JS.push(a33, "\\dfrac");
-JS.push(a33, "\\frac");
-JS.push(a33, "\\tfrac");
-JS.push(a33, "\\dbinom");
-JS.push(a33, "\\binom");
-JS.push(a33, "\\tbinom");
-JS.push(a33, "\\\\atopfrac");
-JS.push(a33, "\\\\bracefrac");
-JS.push(a33, "\\\\brackfrac");
-o32["names"] = a33;
-JsValue o34 = emptyObject();
-o34["numArgs"] = 2;
-o34["allowedInArgument"] = true;
+JsValue o32 = JS.object("type", "genfrac", "names", JS.array("\\dfrac", "\\frac", "\\tfrac", "\\dbinom", "\\binom", "\\tbinom", "\\\\atopfrac", "\\\\bracefrac", "\\\\brackfrac"));
+JsValue o34 = JS.object("numArgs", 2, "allowedInArgument", true);
 o32["props"] = o34;
 o32["handler"] = (JsValue p35, JsValue args) => {
   JsValue op36 = p35;
@@ -354,13 +315,8 @@ o32["handler"] = (JsValue p35, JsValue args) => {
 o32["htmlBuilder"] = htmlBuilder;
 o32["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o32);
-JsValue o40 = emptyObject();
-o40["type"] = "genfrac";
-JsValue a41 = newArray();
-JS.push(a41, "\\cfrac");
-o40["names"] = a41;
-JsValue o42 = emptyObject();
-o42["numArgs"] = 2;
+JsValue o40 = JS.object("type", "genfrac", "names", JS.array("\\cfrac"));
+JsValue o42 = JS.object("numArgs", 2);
 o40["props"] = o42;
 o40["handler"] = (JsValue p43, JsValue args) => {
   JsValue op44 = p43;
@@ -383,18 +339,8 @@ o40["handler"] = (JsValue p43, JsValue args) => {
   return undef();
 };
 JS.call(defineFunction, undef(), o40);
-JsValue o46 = emptyObject();
-o46["type"] = "infix";
-JsValue a47 = newArray();
-JS.push(a47, "\\over");
-JS.push(a47, "\\choose");
-JS.push(a47, "\\atop");
-JS.push(a47, "\\brace");
-JS.push(a47, "\\brack");
-o46["names"] = a47;
-JsValue o48 = emptyObject();
-o48["numArgs"] = 0;
-o48["infix"] = true;
+JsValue o46 = JS.object("type", "infix", "names", JS.array("\\over", "\\choose", "\\atop", "\\brace", "\\brack"));
+JsValue o48 = JS.object("numArgs", 0, "infix", true);
 o46["props"] = o48;
 o46["handler"] = JS.method1((JsValue self, JsValue p49) => {
   JsValue op50 = p49;
@@ -430,11 +376,7 @@ o46["handler"] = JS.method1((JsValue self, JsValue p49) => {
   return undef();
 });
 JS.call(defineFunction, undef(), o46);
-JsValue a53 = newArray();
-JS.push(a53, "display");
-JS.push(a53, "text");
-JS.push(a53, "script");
-JS.push(a53, "scriptscript");
+JsValue a53 = JS.array("display", "text", "script", "scriptscript");
 stylArray = a53;
 delimFromValue = (JsValue delimString) => {
   JsValue delim = null;
@@ -451,22 +393,8 @@ delimFromValue = (JsValue delimString) => {
   return delim;
   return undef();
 };
-JsValue o55 = emptyObject();
-o55["type"] = "genfrac";
-JsValue a56 = newArray();
-JS.push(a56, "\\genfrac");
-o55["names"] = a56;
-JsValue o57 = emptyObject();
-o57["numArgs"] = 6;
-o57["allowedInArgument"] = true;
-JsValue a58 = newArray();
-JS.push(a58, "math");
-JS.push(a58, "math");
-JS.push(a58, "size");
-JS.push(a58, "text");
-JS.push(a58, "math");
-JS.push(a58, "math");
-o57["argTypes"] = a58;
+JsValue o55 = JS.object("type", "genfrac", "names", JS.array("\\genfrac"));
+JsValue o57 = JS.object("numArgs", 6, "allowedInArgument", true, "argTypes", JS.array("math", "math", "size", "text", "math", "math"));
 o55["props"] = o57;
 o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
   JsValue op60 = p59;
@@ -526,17 +454,8 @@ o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
 o55["htmlBuilder"] = htmlBuilder;
 o55["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o55);
-JsValue o64 = emptyObject();
-o64["type"] = "infix";
-JsValue a65 = newArray();
-JS.push(a65, "\\above");
-o64["names"] = a65;
-JsValue o66 = emptyObject();
-o66["numArgs"] = 1;
-JsValue a67 = newArray();
-JS.push(a67, "size");
-o66["argTypes"] = a67;
-o66["infix"] = true;
+JsValue o64 = JS.object("type", "infix", "names", JS.array("\\above"));
+JsValue o66 = JS.object("numArgs", 1, "argTypes", JS.array("size"), "infix", true);
 o64["props"] = o66;
 o64["handler"] = JS.method2((JsValue self, JsValue p68, JsValue args) => {
   JsValue op69 = p68;
@@ -553,18 +472,8 @@ o64["handler"] = JS.method2((JsValue self, JsValue p68, JsValue args) => {
   return undef();
 });
 JS.call(defineFunction, undef(), o64);
-JsValue o71 = emptyObject();
-o71["type"] = "genfrac";
-JsValue a72 = newArray();
-JS.push(a72, "\\\\abovefrac");
-o71["names"] = a72;
-JsValue o73 = emptyObject();
-o73["numArgs"] = 3;
-JsValue a74 = newArray();
-JS.push(a74, "math");
-JS.push(a74, "size");
-JS.push(a74, "math");
-o73["argTypes"] = a74;
+JsValue o71 = JS.object("type", "genfrac", "names", JS.array("\\\\abovefrac"));
+JsValue o73 = JS.object("numArgs", 3, "argTypes", JS.array("math", "size", "math"));
 o71["props"] = o73;
 o71["handler"] = (JsValue p75, JsValue args) => {
   JsValue op76 = p75;

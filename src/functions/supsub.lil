@@ -84,8 +84,7 @@ htmlBuilderDelegate = (JsValue group, JsValue options) => {
   }
   return undef();
 };
-JsValue o9 = emptyObject();
-o9["type"] = "supsub";
+JsValue o9 = JS.object("type", "supsub");
 o9["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue builderDelegate = JS.call(htmlBuilderDelegate, undef(), group, options);
   if (builderDelegate.truthy()) {
@@ -228,14 +227,10 @@ o9["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
     or26 = "mord";
   }
   JsValue mclass = or26;
-  JsValue a27 = newArray();
-  JS.push(a27, mclass);
-  JsValue a28 = newArray();
-  JS.push(a28, base);
-  JsValue a29 = newArray();
-  JS.push(a29, "msupsub");
-  JsValue a30 = newArray();
-  JS.push(a30, supsub);
+  JsValue a27 = JS.array(mclass);
+  JsValue a28 = JS.array(base);
+  JsValue a29 = JS.array("msupsub");
+  JsValue a30 = JS.array(supsub);
   JS.push(a28, JS.invoke(buildCommon, "makeSpan", a29, a30));
   return JS.invoke(buildCommon, "makeSpan", a27, a28, options);
   return undef();
@@ -254,8 +249,7 @@ o9["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   if ((group["base"].truthy()) && ((JS.strictEqual(group["base"]["type"], "op")) || (JS.strictEqual(group["base"]["type"], "operatorname")))) {
     group["base"]["parentIsSupSub"] = true;
   }
-  JsValue a31 = newArray();
-  JS.push(a31, JS.invoke(mml, "buildGroup", group["base"], options));
+  JsValue a31 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options));
   JsValue children = a31;
   if (group["sub"].truthy()) {
     JS.invoke(children, "push", JS.invoke(mml, "buildGroup", group["sub"], options));

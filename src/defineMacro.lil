@@ -11,9 +11,6 @@ defineMacro = (JsValue name, JsValue body) => {
   _macros[name] = body;
   return undef();
 };
-JsValue __star = emptyObject();
-__star["_macros"] = _macros;
-__star["default"] = defineMacro;
-__star["defineMacro"] = defineMacro;
+JsValue __star = JS.object("_macros", _macros, "default", defineMacro, "defineMacro", defineMacro);
 
 export { __star, _macros, defineMacro as defineMacro };

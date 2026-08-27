@@ -93,20 +93,7 @@ __domTree["SvgNode"] = SvgNode;
 __domTree["PathNode"] = PathNode;
 __domTree["LineNode"] = LineNode;
 
-JsValue katexApi = emptyObject();
-katexApi["version"] = version;
-katexApi["render"] = render;
-katexApi["renderToString"] = renderToString;
-katexApi["ParseError"] = ParseError;
-katexApi["SETTINGS_SCHEMA"] = SETTINGS_SCHEMA;
-katexApi["__parse"] = __parse;
-katexApi["__renderToDomTree"] = __renderToDomTree;
-katexApi["__renderToHTMLTree"] = __renderToHTMLTree;
-katexApi["__setFontMetrics"] = setFontMetrics;
-katexApi["__defineSymbol"] = defineSymbol;
-katexApi["__defineFunction"] = defineFunction;
-katexApi["__defineMacro"] = defineMacro;
-katexApi["__domTree"] = __domTree;
+JsValue katexApi = JS.object("version", version, "render", render, "renderToString", renderToString, "ParseError", ParseError, "SETTINGS_SCHEMA", SETTINGS_SCHEMA, "__parse", __parse, "__renderToDomTree", __renderToDomTree, "__renderToHTMLTree", __renderToHTMLTree, "__setFontMetrics", setFontMetrics, "__defineSymbol", defineSymbol, "__defineFunction", defineFunction, "__defineMacro", defineMacro, "__domTree", __domTree);
 
 export JsValue __setFontMetrics = setFontMetrics;
 export JsValue __defineSymbol = defineSymbol;

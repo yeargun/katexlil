@@ -112,9 +112,7 @@ getVariant = (JsValue group, JsValue options) => {
     }
   }
   JsValue text = group["text"];
-  JsValue a2 = newArray();
-  JS.push(a2, "\\imath");
-  JS.push(a2, "\\jmath");
+  JsValue a2 = JS.array("\\imath", "\\jmath");
   if (JS.invoke(utils, "contains", a2, text).truthy()) {
     return null;
   }
@@ -160,8 +158,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isOrdgroup) => {
       JS.invoke(group, "setAttribute", "lspace", "0em");
       JS.invoke(group, "setAttribute", "rspace", "0em");
     }
-    JsValue a5 = newArray();
-    JS.push(a5, group);
+    JsValue a5 = JS.array(group);
     return a5;
   }
   JsValue a6 = newArray();
@@ -272,24 +269,18 @@ buildGroup = (JsValue group, JsValue options) => {
 buildMathML = (JsValue tree, JsValue texExpression, JsValue options, JsValue isDisplayMode, JsValue forMathmlOnly) => {
   JsValue expression = JS.call(buildExpression, undef(), tree, options);
   JsValue wrapper = undef();
-  JsValue a22 = newArray();
-  JS.push(a22, "mrow");
-  JS.push(a22, "mtable");
+  JsValue a22 = JS.array("mrow", "mtable");
   if (((JS.strictEqual(expression["length"], 1)) && (instanceOf(expression[0], MathNode))) && (JS.invoke(utils, "contains", a22, expression[0]["type"]).truthy())) {
     wrapper = expression[0];
   } else {
     wrapper = JS.construct(mathMLTree["MathNode"], "mrow", expression);
   }
-  JsValue a23 = newArray();
-  JS.push(a23, JS.construct(mathMLTree["TextNode"], texExpression));
+  JsValue a23 = JS.array(JS.construct(mathMLTree["TextNode"], texExpression));
   JsValue annotation = JS.construct(mathMLTree["MathNode"], "annotation", a23);
   JS.invoke(annotation, "setAttribute", "encoding", "application/x-tex");
-  JsValue a24 = newArray();
-  JS.push(a24, wrapper);
-  JS.push(a24, annotation);
+  JsValue a24 = JS.array(wrapper, annotation);
   JsValue semantics = JS.construct(mathMLTree["MathNode"], "semantics", a24);
-  JsValue a25 = newArray();
-  JS.push(a25, semantics);
+  JsValue a25 = JS.array(semantics);
   JsValue math = JS.construct(mathMLTree["MathNode"], "math", a25);
   JS.invoke(math, "setAttribute", "xmlns", "http://www.w3.org/1998/Math/MathML");
   if (isDisplayMode.truthy()) {
@@ -302,21 +293,11 @@ buildMathML = (JsValue tree, JsValue texExpression, JsValue options, JsValue isD
     c26 = "katex-mathml";
   }
   JsValue wrapperClass = c26;
-  JsValue a27 = newArray();
-  JS.push(a27, wrapperClass);
-  JsValue a28 = newArray();
-  JS.push(a28, math);
+  JsValue a27 = JS.array(wrapperClass);
+  JsValue a28 = JS.array(math);
   return JS.invoke(buildCommon, "makeSpan", a27, a28);
   return undef();
 };
-JsValue __star = emptyObject();
-__star["makeText"] = makeText;
-__star["makeRow"] = makeRow;
-__star["getVariant"] = getVariant;
-__star["buildExpression"] = buildExpression;
-__star["buildExpressionRow"] = buildExpressionRow;
-__star["buildGroup"] = buildGroup;
-__star["default"] = buildMathML;
-__star["buildMathML"] = buildMathML;
+JsValue __star = JS.object("makeText", makeText, "makeRow", makeRow, "getVariant", getVariant, "buildExpression", buildExpression, "buildExpressionRow", buildExpressionRow, "buildGroup", buildGroup, "default", buildMathML, "buildMathML", buildMathML);
 
 export { __star, makeText, makeRow, getVariant, buildExpression, buildExpressionRow, buildGroup, buildMathML as buildMathML };

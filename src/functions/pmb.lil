@@ -7,14 +7,8 @@ import { binrelClass } from "./mclass.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "pmb";
-JsValue a2 = newArray();
-JS.push(a2, "\\pmb");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-o3["allowedInText"] = true;
+JsValue o1 = JS.object("type", "pmb", "names", JS.array("\\pmb"));
+JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
 o1["props"] = o3;
 o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
   JsValue op5 = p4;
@@ -29,8 +23,7 @@ o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
 });
 o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, true);
-  JsValue a7 = newArray();
-  JS.push(a7, group["mclass"]);
+  JsValue a7 = JS.array(group["mclass"]);
   JsValue node = JS.invoke(buildCommon, "makeSpan", a7, elements, options);
   node["style"]["textShadow"] = "0.02em 0.01em 0.04px";
   return node;

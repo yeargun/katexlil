@@ -1,7 +1,6 @@
 import { emptyObject } from "./host.lil";
 
-JsValue unicodeAccents = emptyObject();
-unicodeAccents["\u0301"] = emptyObject();
+JsValue unicodeAccents = JS.object("\u0301", emptyObject());
 unicodeAccents["\u0301"]["text"] = "\\'";
 unicodeAccents["\u0301"]["math"] = "\\acute";
 unicodeAccents["\u0300"] = emptyObject();
@@ -36,8 +35,6 @@ unicodeAccents["\u030b"]["text"] = "\\H";
 unicodeAccents["\u0327"] = emptyObject();
 unicodeAccents["\u0327"]["text"] = "\\c";
 
-JsValue __star = emptyObject();
-__star["default"] = unicodeAccents;
-__star["unicodeAccents"] = unicodeAccents;
+JsValue __star = JS.object("default", unicodeAccents, "unicodeAccents", unicodeAccents);
 
 export { __star, unicodeAccents };

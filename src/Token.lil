@@ -15,7 +15,6 @@ Token["prototype"]["range"] = JS.method2((JsValue self, JsValue endToken, JsValu
   return JS.construct(Token, text, JS.invoke(SourceLocation, "range", self, endToken));
   return undef();
 });
-JsValue __star = emptyObject();
-__star["Token"] = Token;
+JsValue __star = JS.object("Token", Token);
 
 export { __star, Token };

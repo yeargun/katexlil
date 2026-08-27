@@ -6,18 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "hbox";
-JsValue a2 = newArray();
-JS.push(a2, "\\hbox");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-JsValue a4 = newArray();
-JS.push(a4, "text");
-o3["argTypes"] = a4;
-o3["allowedInText"] = true;
-o3["primitive"] = true;
+JsValue o1 = JS.object("type", "hbox", "names", JS.array("\\hbox"));
+JsValue o3 = JS.object("numArgs", 1, "argTypes", JS.array("text"), "allowedInText", true, "primitive", true);
 o1["props"] = o3;
 o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   JsValue op6 = p5;

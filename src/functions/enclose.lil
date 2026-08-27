@@ -23,9 +23,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
   JsValue imgShift = 0;
   JsValue isSingleChar = JS.invoke(utils, "isCharacterBox", group["body"]);
   if (JS.strictEqual(label, "sout")) {
-    JsValue a1 = newArray();
-    JS.push(a1, "stretchy");
-    JS.push(a1, "sout");
+    JsValue a1 = JS.array("stretchy", "sout");
     img = JS.invoke(buildCommon, "makeSpan", a1);
     img["height"] = (toNum(JS.invoke(options, "fontMetrics")["defaultRuleThickness"]) / toNum(scale));
     imgShift = (toNum(JS.number(0) - toNum(0.5)) * toNum(JS.invoke(options, "fontMetrics")["xHeight"]));
@@ -45,18 +43,15 @@ htmlBuilder = (JsValue group, JsValue options) => {
       inner["style"]["paddingLeft"] = JS.call(makeEm, undef(), JS.add((toNum(angleHeight) / toNum(2)), lineWeight));
       JsValue viewBoxHeight = JS.invoke(Math, "floor", (toNum((toNum(1000) * toNum(angleHeight))) * toNum(scale)));
       JsValue path = JS.call(phasePath, undef(), viewBoxHeight);
-      JsValue a4 = newArray();
-      JS.push(a4, JS.construct(PathNode, "phase", path));
+      JsValue a4 = JS.array(JS.construct(PathNode, "phase", path));
       JsValue o5 = emptyObject();
       o5["width"] = "400em";
       o5["height"] = JS.call(makeEm, undef(), (toNum(viewBoxHeight) / toNum(1000)));
       o5["viewBox"] = "0 0 400000 " + toStr(viewBoxHeight);
       o5["preserveAspectRatio"] = "xMinYMin slice";
       JsValue svgNode = JS.construct(SvgNode, a4, o5);
-      JsValue a6 = newArray();
-      JS.push(a6, "hide-tail");
-      JsValue a7 = newArray();
-      JS.push(a7, svgNode);
+      JsValue a6 = JS.array("hide-tail");
+      JsValue a7 = JS.array(svgNode);
       img = JS.invoke(buildCommon, "makeSvgSpan", a6, a7, options);
       img["style"]["height"] = JS.call(makeEm, undef(), angleHeight);
       imgShift = JS.add(JS.add(inner["depth"], lineWeight), clearance);
@@ -140,8 +135,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
   } else {
     JsValue c14 = undef();
     if (JS.invoke(JS.construct(RegExp, "cancel|phase", ""), "test", label).truthy()) {
-      JsValue a15 = newArray();
-      JS.push(a15, "svg-align");
+      JsValue a15 = JS.array("svg-align");
       c14 = a15;
     } else {
       JsValue a16 = newArray();
@@ -170,17 +164,12 @@ htmlBuilder = (JsValue group, JsValue options) => {
     vlist["depth"] = inner["depth"];
   }
   if ((JS.invoke(JS.construct(RegExp, "cancel", ""), "test", label).truthy()) && (!(isSingleChar.truthy()))) {
-    JsValue a21 = newArray();
-    JS.push(a21, "mord");
-    JS.push(a21, "cancel-lap");
-    JsValue a22 = newArray();
-    JS.push(a22, vlist);
+    JsValue a21 = JS.array("mord", "cancel-lap");
+    JsValue a22 = JS.array(vlist);
     return JS.invoke(buildCommon, "makeSpan", a21, a22, options);
   } else {
-    JsValue a23 = newArray();
-    JS.push(a23, "mord");
-    JsValue a24 = newArray();
-    JS.push(a24, vlist);
+    JsValue a23 = JS.array("mord");
+    JsValue a24 = JS.array(vlist);
     return JS.invoke(buildCommon, "makeSpan", a23, a24, options);
   }
   return undef();
@@ -193,8 +182,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   } else {
     c25 = "menclose";
   }
-  JsValue a26 = newArray();
-  JS.push(a26, JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
   JsValue node = JS.construct(mathMLTree["MathNode"], c25, a26);
   JsValue sw27 = group["label"];
   if (JS.strictEqual(sw27, "\\cancel")) {
@@ -235,18 +223,8 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   return node;
   return undef();
 };
-JsValue o28 = emptyObject();
-o28["type"] = "enclose";
-JsValue a29 = newArray();
-JS.push(a29, "\\colorbox");
-o28["names"] = a29;
-JsValue o30 = emptyObject();
-o30["numArgs"] = 2;
-o30["allowedInText"] = true;
-JsValue a31 = newArray();
-JS.push(a31, "color");
-JS.push(a31, "text");
-o30["argTypes"] = a31;
+JsValue o28 = JS.object("type", "enclose", "names", JS.array("\\colorbox"));
+JsValue o30 = JS.object("numArgs", 2, "allowedInText", true, "argTypes", JS.array("color", "text"));
 o28["props"] = o30;
 o28["handler"] = JS.method3((JsValue self, JsValue p32, JsValue args, JsValue optArgs) => {
   JsValue op33 = p32;
@@ -266,19 +244,8 @@ o28["handler"] = JS.method3((JsValue self, JsValue p32, JsValue args, JsValue op
 o28["htmlBuilder"] = htmlBuilder;
 o28["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o28);
-JsValue o35 = emptyObject();
-o35["type"] = "enclose";
-JsValue a36 = newArray();
-JS.push(a36, "\\fcolorbox");
-o35["names"] = a36;
-JsValue o37 = emptyObject();
-o37["numArgs"] = 3;
-o37["allowedInText"] = true;
-JsValue a38 = newArray();
-JS.push(a38, "color");
-JS.push(a38, "color");
-JS.push(a38, "text");
-o37["argTypes"] = a38;
+JsValue o35 = JS.object("type", "enclose", "names", JS.array("\\fcolorbox"));
+JsValue o37 = JS.object("numArgs", 3, "allowedInText", true, "argTypes", JS.array("color", "color", "text"));
 o35["props"] = o37;
 o35["handler"] = JS.method3((JsValue self, JsValue p39, JsValue args, JsValue optArgs) => {
   JsValue op40 = p39;
@@ -300,17 +267,8 @@ o35["handler"] = JS.method3((JsValue self, JsValue p39, JsValue args, JsValue op
 o35["htmlBuilder"] = htmlBuilder;
 o35["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o35);
-JsValue o42 = emptyObject();
-o42["type"] = "enclose";
-JsValue a43 = newArray();
-JS.push(a43, "\\fbox");
-o42["names"] = a43;
-JsValue o44 = emptyObject();
-o44["numArgs"] = 1;
-JsValue a45 = newArray();
-JS.push(a45, "hbox");
-o44["argTypes"] = a45;
-o44["allowedInText"] = true;
+JsValue o42 = JS.object("type", "enclose", "names", JS.array("\\fbox"));
+JsValue o44 = JS.object("numArgs", 1, "argTypes", JS.array("hbox"), "allowedInText", true);
 o42["props"] = o44;
 o42["handler"] = JS.method2((JsValue self, JsValue p46, JsValue args) => {
   JsValue op47 = p46;
@@ -324,17 +282,8 @@ o42["handler"] = JS.method2((JsValue self, JsValue p46, JsValue args) => {
   return undef();
 });
 JS.call(defineFunction, undef(), o42);
-JsValue o49 = emptyObject();
-o49["type"] = "enclose";
-JsValue a50 = newArray();
-JS.push(a50, "\\cancel");
-JS.push(a50, "\\bcancel");
-JS.push(a50, "\\xcancel");
-JS.push(a50, "\\sout");
-JS.push(a50, "\\phase");
-o49["names"] = a50;
-JsValue o51 = emptyObject();
-o51["numArgs"] = 1;
+JsValue o49 = JS.object("type", "enclose", "names", JS.array("\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\phase"));
+JsValue o51 = JS.object("numArgs", 1);
 o49["props"] = o51;
 o49["handler"] = JS.method2((JsValue self, JsValue p52, JsValue args) => {
   JsValue op53 = p52;
@@ -352,17 +301,8 @@ o49["handler"] = JS.method2((JsValue self, JsValue p52, JsValue args) => {
 o49["htmlBuilder"] = htmlBuilder;
 o49["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o49);
-JsValue o55 = emptyObject();
-o55["type"] = "enclose";
-JsValue a56 = newArray();
-JS.push(a56, "\\angl");
-o55["names"] = a56;
-JsValue o57 = emptyObject();
-o57["numArgs"] = 1;
-JsValue a58 = newArray();
-JS.push(a58, "hbox");
-o57["argTypes"] = a58;
-o57["allowedInText"] = false;
+JsValue o55 = JS.object("type", "enclose", "names", JS.array("\\angl"));
+JsValue o57 = JS.object("numArgs", 1, "argTypes", JS.array("hbox"), "allowedInText", false);
 o55["props"] = o57;
 o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
   JsValue op60 = p59;

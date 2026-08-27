@@ -160,21 +160,15 @@ Parser["prototype"]["handleInfixNodes"] = JS.method1((JsValue self, JsValue body
     }
     JsValue node = undef();
     if (JS.strictEqual(funcName, "\\\\abovefrac")) {
-      JsValue a5 = newArray();
-      JS.push(a5, numerNode);
-      JS.push(a5, body[overIndex]);
-      JS.push(a5, denomNode);
+      JsValue a5 = JS.array(numerNode, body[overIndex], denomNode);
       JsValue a6 = newArray();
       node = JS.invoke(self, "callFunction", funcName, a5, a6);
     } else {
-      JsValue a7 = newArray();
-      JS.push(a7, numerNode);
-      JS.push(a7, denomNode);
+      JsValue a7 = JS.array(numerNode, denomNode);
       JsValue a8 = newArray();
       node = JS.invoke(self, "callFunction", funcName, a7, a8);
     }
-    JsValue a9 = newArray();
-    JS.push(a9, node);
+    JsValue a9 = JS.array(node);
     return a9;
   } else {
     return body;
@@ -227,8 +221,7 @@ Parser["prototype"]["formatUnsupportedCmd"] = JS.method1((JsValue self, JsValue 
   o15["type"] = "color";
   o15["mode"] = self["mode"];
   o15["color"] = self["settings"]["errorColor"];
-  JsValue a16 = newArray();
-  JS.push(a16, textNode);
+  JsValue a16 = JS.array(textNode);
   o15["body"] = a16;
   JsValue colorNode = o15;
   return colorNode;
@@ -288,8 +281,7 @@ Parser["prototype"]["parseAtom"] = JS.method1((JsValue self, JsValue breakOnToke
             o18["mode"] = self["mode"];
             o18["text"] = "\\prime";
             JsValue prime = o18;
-            JsValue a19 = newArray();
-            JS.push(a19, prime);
+            JsValue a19 = JS.array(prime);
             JsValue primes = a19;
             JS.invoke(self, "consume");
             while (JS.strictEqual(JS.invoke(self, "fetch")["text"], "'")) {
@@ -475,8 +467,7 @@ Parser["prototype"]["parseGroupOfType"] = JS.method3((JsValue self, JsValue name
       JsValue o38 = emptyObject();
       o38["type"] = "styling";
       o38["mode"] = group["mode"];
-      JsValue a39 = newArray();
-      JS.push(a39, group);
+      JsValue a39 = JS.array(group);
       o38["body"] = a39;
       o38["style"] = "text";
       c37 = o38;
@@ -861,15 +852,8 @@ Parser["prototype"]["parseSymbol"] = JS.method0((JsValue self) => {
   return symbol;
   return undef();
 });
-JsValue a62 = newArray();
-JS.push(a62, "}");
-JS.push(a62, "\\endgroup");
-JS.push(a62, "\\end");
-JS.push(a62, "\\right");
-JS.push(a62, "&");
+JsValue a62 = JS.array("}", "\\endgroup", "\\end", "\\right", "&");
 Parser["endOfExpression"] = a62;
-JsValue __star = emptyObject();
-__star["default"] = Parser;
-__star["Parser"] = Parser;
+JsValue __star = JS.object("default", Parser, "Parser", Parser);
 
 export { __star, Parser as Parser };

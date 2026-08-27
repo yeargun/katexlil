@@ -6,17 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "vcenter";
-JsValue a2 = newArray();
-JS.push(a2, "\\vcenter");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-JsValue a4 = newArray();
-JS.push(a4, "original");
-o3["argTypes"] = a4;
-o3["allowedInText"] = false;
+JsValue o1 = JS.object("type", "vcenter", "names", JS.array("\\vcenter"));
+JsValue o3 = JS.object("numArgs", 1, "argTypes", JS.array("original"), "allowedInText", false);
 o1["props"] = o3;
 o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   JsValue op6 = p5;
@@ -45,10 +36,8 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   return undef();
 });
 o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue a11 = newArray();
-  JS.push(a11, JS.invoke(mml, "buildGroup", group["body"], options));
-  JsValue a12 = newArray();
-  JS.push(a12, "vcenter");
+  JsValue a11 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue a12 = JS.array("vcenter");
   return JS.construct(mathMLTree["MathNode"], "mpadded", a11, a12);
   return undef();
 });

@@ -11,11 +11,7 @@ import { macros } from "./macros.lil";
 JsValue implicitCommands = undef();
 JsValue MacroExpander = undef();
 
-JsValue o1 = emptyObject();
-o1["^"] = true;
-o1["_"] = true;
-o1["\\limits"] = true;
-o1["\\nolimits"] = true;
+JsValue o1 = JS.object("^", true, "_", true, "\\limits", true, "\\nolimits", true);
 implicitCommands = o1;
 MacroExpander = JS.methodRest((JsValue self, JsValue argv) => {
   JsValue input = argv[0];
@@ -80,8 +76,7 @@ MacroExpander["prototype"]["scanArgument"] = JS.method1((JsValue self, JsValue i
       return null;
     }
     start = JS.invoke(self, "popToken");
-    JsValue delims = newArray();
-    JS.push(delims, "]");
+    JsValue delims = JS.array("]");
     JsValue optionalArg = JS.invoke(self, "consumeArg", delims);
     tokens = optionalArg["tokens"];
     end = optionalArg["end"];
@@ -289,8 +284,7 @@ MacroExpander["prototype"]["expandNextToken"] = JS.method0((JsValue self) => {
 MacroExpander["prototype"]["expandMacro"] = JS.method1((JsValue self, JsValue name) => {
   JsValue c19 = undef();
   if (JS.invoke(self["macros"], "has", name).truthy()) {
-    JsValue a20 = newArray();
-    JS.push(a20, JS.construct(Token, name));
+    JsValue a20 = JS.array(JS.construct(Token, name));
     c19 = JS.invoke(self, "expandTokens", a20);
   } else {
     c19 = undef();
@@ -415,9 +409,6 @@ MacroExpander["prototype"]["isExpandable"] = JS.method1((JsValue self, JsValue n
   return c30;
   return undef();
 });
-JsValue __star = emptyObject();
-__star["implicitCommands"] = implicitCommands;
-__star["default"] = MacroExpander;
-__star["MacroExpander"] = MacroExpander;
+JsValue __star = JS.object("implicitCommands", implicitCommands, "default", MacroExpander, "MacroExpander", MacroExpander);
 
 export { __star, implicitCommands, MacroExpander as MacroExpander };

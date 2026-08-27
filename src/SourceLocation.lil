@@ -27,8 +27,6 @@ SourceLocation["range"] = (JsValue first, JsValue second) => {
   }
   return undef();
 };
-JsValue __star = emptyObject();
-__star["default"] = SourceLocation;
-__star["SourceLocation"] = SourceLocation;
+JsValue __star = JS.object("default", SourceLocation, "SourceLocation", SourceLocation);
 
 export { __star, SourceLocation as SourceLocation };

@@ -6,21 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { assertNodeType } from "../parseNode.lil";
 import { calculateSize, makeEm } from "../units.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "rule";
-JsValue a2 = newArray();
-JS.push(a2, "\\rule");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 2;
-o3["numOptionalArgs"] = 1;
-o3["allowedInText"] = true;
-o3["allowedInMath"] = true;
-JsValue a4 = newArray();
-JS.push(a4, "size");
-JS.push(a4, "size");
-JS.push(a4, "size");
-o3["argTypes"] = a4;
+JsValue o1 = JS.object("type", "rule", "names", JS.array("\\rule"));
+JsValue o3 = JS.object("numArgs", 2, "numOptionalArgs", 1, "allowedInText", true, "allowedInMath", true, "argTypes", JS.array("size", "size", "size"));
 o1["props"] = o3;
 o1["handler"] = JS.method3((JsValue self, JsValue p5, JsValue args, JsValue optArgs) => {
   JsValue op6 = p5;
@@ -42,9 +29,7 @@ o1["handler"] = JS.method3((JsValue self, JsValue p5, JsValue args, JsValue optA
   return undef();
 });
 o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue a9 = newArray();
-  JS.push(a9, "mord");
-  JS.push(a9, "rule");
+  JsValue a9 = JS.array("mord", "rule");
   JsValue a10 = newArray();
   JsValue rule = JS.invoke(buildCommon, "makeSpan", a9, a10, options);
   JsValue width = JS.call(calculateSize, undef(), group["width"], options);
@@ -89,8 +74,7 @@ o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   JS.invoke(rule, "setAttribute", "mathbackground", color);
   JS.invoke(rule, "setAttribute", "width", JS.call(makeEm, undef(), width));
   JS.invoke(rule, "setAttribute", "height", JS.call(makeEm, undef(), height));
-  JsValue a15 = newArray();
-  JS.push(a15, rule);
+  JsValue a15 = JS.array(rule);
   JsValue wrapper = JS.construct(mathMLTree["MathNode"], "mpadded", a15);
   if (JS.greaterThanOrEqual(shift, 0)) {
     JS.invoke(wrapper, "setAttribute", "height", JS.call(makeEm, undef(), shift));

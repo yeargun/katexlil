@@ -6,14 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "phantom";
-JsValue a2 = newArray();
-JS.push(a2, "\\phantom");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-o3["allowedInText"] = true;
+JsValue o1 = JS.object("type", "phantom", "names", JS.array("\\phantom"));
+JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
 o1["props"] = o3;
 o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
@@ -37,14 +31,8 @@ o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   return undef();
 };
 JS.call(defineFunction, undef(), o1);
-JsValue o7 = emptyObject();
-o7["type"] = "hphantom";
-JsValue a8 = newArray();
-JS.push(a8, "\\hphantom");
-o7["names"] = a8;
-JsValue o9 = emptyObject();
-o9["numArgs"] = 1;
-o9["allowedInText"] = true;
+JsValue o7 = JS.object("type", "hphantom", "names", JS.array("\\hphantom"));
+JsValue o9 = JS.object("numArgs", 1, "allowedInText", true);
 o7["props"] = o9;
 o7["handler"] = (JsValue p10, JsValue args) => {
   JsValue op11 = p10;
@@ -59,8 +47,7 @@ o7["handler"] = (JsValue p10, JsValue args) => {
 };
 o7["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a13 = newArray();
-  JsValue a14 = newArray();
-  JS.push(a14, JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
+  JsValue a14 = JS.array(JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
   JsValue node = JS.invoke(buildCommon, "makeSpan", a13, a14);
   node["height"] = 0;
   node["depth"] = 0;
@@ -84,18 +71,15 @@ o7["htmlBuilder"] = (JsValue group, JsValue options) => {
   JS.push(a17, o18);
   o16["children"] = a17;
   node = JS.invoke(buildCommon, "makeVList", o16, options);
-  JsValue a19 = newArray();
-  JS.push(a19, "mord");
-  JsValue a20 = newArray();
-  JS.push(a20, node);
+  JsValue a19 = JS.array("mord");
+  JsValue a20 = JS.array(node);
   return JS.invoke(buildCommon, "makeSpan", a19, a20, options);
   return undef();
 };
 o7["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(mml, "buildExpression", JS.call(ordargument, undef(), group["body"]), options);
   JsValue phantom = JS.construct(mathMLTree["MathNode"], "mphantom", inner);
-  JsValue a21 = newArray();
-  JS.push(a21, phantom);
+  JsValue a21 = JS.array(phantom);
   JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a21);
   JS.invoke(node, "setAttribute", "height", "0px");
   JS.invoke(node, "setAttribute", "depth", "0px");
@@ -103,14 +87,8 @@ o7["mathmlBuilder"] = (JsValue group, JsValue options) => {
   return undef();
 };
 JS.call(defineFunction, undef(), o7);
-JsValue o22 = emptyObject();
-o22["type"] = "vphantom";
-JsValue a23 = newArray();
-JS.push(a23, "\\vphantom");
-o22["names"] = a23;
-JsValue o24 = emptyObject();
-o24["numArgs"] = 1;
-o24["allowedInText"] = true;
+JsValue o22 = JS.object("type", "vphantom", "names", JS.array("\\vphantom"));
+JsValue o24 = JS.object("numArgs", 1, "allowedInText", true);
 o22["props"] = o24;
 o22["handler"] = (JsValue p25, JsValue args) => {
   JsValue op26 = p25;
@@ -124,29 +102,21 @@ o22["handler"] = (JsValue p25, JsValue args) => {
   return undef();
 };
 o22["htmlBuilder"] = (JsValue group, JsValue options) => {
-  JsValue a28 = newArray();
-  JS.push(a28, "inner");
-  JsValue a29 = newArray();
-  JS.push(a29, JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
+  JsValue a28 = JS.array("inner");
+  JsValue a29 = JS.array(JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
   JsValue inner = JS.invoke(buildCommon, "makeSpan", a28, a29);
-  JsValue a30 = newArray();
-  JS.push(a30, "fix");
+  JsValue a30 = JS.array("fix");
   JsValue a31 = newArray();
   JsValue fix = JS.invoke(buildCommon, "makeSpan", a30, a31);
-  JsValue a32 = newArray();
-  JS.push(a32, "mord");
-  JS.push(a32, "rlap");
-  JsValue a33 = newArray();
-  JS.push(a33, inner);
-  JS.push(a33, fix);
+  JsValue a32 = JS.array("mord", "rlap");
+  JsValue a33 = JS.array(inner, fix);
   return JS.invoke(buildCommon, "makeSpan", a32, a33, options);
   return undef();
 };
 o22["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(mml, "buildExpression", JS.call(ordargument, undef(), group["body"]), options);
   JsValue phantom = JS.construct(mathMLTree["MathNode"], "mphantom", inner);
-  JsValue a34 = newArray();
-  JS.push(a34, phantom);
+  JsValue a34 = JS.array(phantom);
   JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a34);
   JS.invoke(node, "setAttribute", "width", "0px");
   return node;

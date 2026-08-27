@@ -9,14 +9,8 @@ import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "sqrt";
-JsValue a2 = newArray();
-JS.push(a2, "\\sqrt");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-o3["numOptionalArgs"] = 1;
+JsValue o1 = JS.object("type", "sqrt", "names", JS.array("\\sqrt"));
+JsValue o3 = JS.object("numArgs", 1, "numOptionalArgs", 1);
 o1["props"] = o3;
 o1["handler"] = JS.method3((JsValue self, JsValue p4, JsValue args, JsValue optArgs) => {
   JsValue op5 = p4;
@@ -61,8 +55,7 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   JsValue o10 = emptyObject();
   o10["type"] = "elem";
   o10["elem"] = inner;
-  JsValue a11 = newArray();
-  JS.push(a11, "svg-align");
+  JsValue a11 = JS.array("svg-align");
   o10["wrapperClasses"] = a11;
   JS.push(a9, o10);
   JsValue o12 = emptyObject();
@@ -80,11 +73,8 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   o8["children"] = a9;
   JsValue body = JS.invoke(buildCommon, "makeVList", o8, options);
   if (!(group["index"].truthy())) {
-    JsValue a15 = newArray();
-    JS.push(a15, "mord");
-    JS.push(a15, "sqrt");
-    JsValue a16 = newArray();
-    JS.push(a16, body);
+    JsValue a15 = JS.array("mord", "sqrt");
+    JsValue a16 = JS.array(body);
     return JS.invoke(buildCommon, "makeSpan", a15, a16, options);
   } else {
     JsValue newOptions = JS.invoke(options, "havingStyle", Style["SCRIPTSCRIPT"]);
@@ -100,17 +90,11 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
     JS.push(a18, o19);
     o17["children"] = a18;
     JsValue rootVList = JS.invoke(buildCommon, "makeVList", o17, options);
-    JsValue a20 = newArray();
-    JS.push(a20, "root");
-    JsValue a21 = newArray();
-    JS.push(a21, rootVList);
+    JsValue a20 = JS.array("root");
+    JsValue a21 = JS.array(rootVList);
     JsValue rootVListWrap = JS.invoke(buildCommon, "makeSpan", a20, a21);
-    JsValue a22 = newArray();
-    JS.push(a22, "mord");
-    JS.push(a22, "sqrt");
-    JsValue a23 = newArray();
-    JS.push(a23, rootVListWrap);
-    JS.push(a23, body);
+    JsValue a22 = JS.array("mord", "sqrt");
+    JsValue a23 = JS.array(rootVListWrap, body);
     return JS.invoke(buildCommon, "makeSpan", a22, a23, options);
   }
   return undef();
@@ -121,13 +105,10 @@ o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   JsValue index = op24["index"];
   JsValue c25 = undef();
   if (index.truthy()) {
-    JsValue a26 = newArray();
-    JS.push(a26, JS.invoke(mml, "buildGroup", body, options));
-    JS.push(a26, JS.invoke(mml, "buildGroup", index, options));
+    JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", body, options), JS.invoke(mml, "buildGroup", index, options));
     c25 = JS.construct(mathMLTree["MathNode"], "mroot", a26);
   } else {
-    JsValue a27 = newArray();
-    JS.push(a27, JS.invoke(mml, "buildGroup", body, options));
+    JsValue a27 = JS.array(JS.invoke(mml, "buildGroup", body, options));
     c25 = JS.construct(mathMLTree["MathNode"], "msqrt", a27);
   }
   return c25;

@@ -27,14 +27,8 @@ chooseMathStyle = (JsValue group, JsValue options) => {
   }
   return undef();
 };
-JsValue o2 = emptyObject();
-o2["type"] = "mathchoice";
-JsValue a3 = newArray();
-JS.push(a3, "\\mathchoice");
-o2["names"] = a3;
-JsValue o4 = emptyObject();
-o4["numArgs"] = 4;
-o4["primitive"] = true;
+JsValue o2 = JS.object("type", "mathchoice", "names", JS.array("\\mathchoice"));
+JsValue o4 = JS.object("numArgs", 4, "primitive", true);
 o2["props"] = o4;
 o2["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;

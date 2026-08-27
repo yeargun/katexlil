@@ -41,9 +41,6 @@ defineEnvironment = (JsValue p3) => {
   }
   return undef();
 };
-JsValue __star = emptyObject();
-__star["_environments"] = _environments;
-__star["default"] = defineEnvironment;
-__star["defineEnvironment"] = defineEnvironment;
+JsValue __star = JS.object("_environments", _environments, "default", defineEnvironment, "defineEnvironment", defineEnvironment);
 
 export { __star, _environments, defineEnvironment as defineEnvironment };

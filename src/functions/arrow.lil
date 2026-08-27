@@ -12,8 +12,7 @@ JsValue paddedNode = undef();
 paddedNode = (JsValue group) => {
   JsValue c1 = undef();
   if (group.truthy()) {
-    JsValue a2 = newArray();
-    JS.push(a2, group);
+    JsValue a2 = JS.array(group);
     c1 = a2;
   } else {
     JsValue a3 = newArray();
@@ -25,38 +24,8 @@ paddedNode = (JsValue group) => {
   return node;
   return undef();
 };
-JsValue o4 = emptyObject();
-o4["type"] = "xArrow";
-JsValue a5 = newArray();
-JS.push(a5, "\\xleftarrow");
-JS.push(a5, "\\xrightarrow");
-JS.push(a5, "\\xLeftarrow");
-JS.push(a5, "\\xRightarrow");
-JS.push(a5, "\\xleftrightarrow");
-JS.push(a5, "\\xLeftrightarrow");
-JS.push(a5, "\\xhookleftarrow");
-JS.push(a5, "\\xhookrightarrow");
-JS.push(a5, "\\xmapsto");
-JS.push(a5, "\\xrightharpoondown");
-JS.push(a5, "\\xrightharpoonup");
-JS.push(a5, "\\xleftharpoondown");
-JS.push(a5, "\\xleftharpoonup");
-JS.push(a5, "\\xrightleftharpoons");
-JS.push(a5, "\\xleftrightharpoons");
-JS.push(a5, "\\xlongequal");
-JS.push(a5, "\\xtwoheadrightarrow");
-JS.push(a5, "\\xtwoheadleftarrow");
-JS.push(a5, "\\xtofrom");
-JS.push(a5, "\\xrightleftarrows");
-JS.push(a5, "\\xrightequilibrium");
-JS.push(a5, "\\xleftequilibrium");
-JS.push(a5, "\\\\cdrightarrow");
-JS.push(a5, "\\\\cdleftarrow");
-JS.push(a5, "\\\\cdlongequal");
-o4["names"] = a5;
-JsValue o6 = emptyObject();
-o6["numArgs"] = 1;
-o6["numOptionalArgs"] = 1;
+JsValue o4 = JS.object("type", "xArrow", "names", JS.array("\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow", "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow", "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown", "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup", "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal", "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom", "\\xrightleftarrows", "\\xrightequilibrium", "\\xleftequilibrium", "\\\\cdrightarrow", "\\\\cdleftarrow", "\\\\cdlongequal"));
+JsValue o6 = JS.object("numArgs", 1, "numOptionalArgs", 1);
 o4["props"] = o6;
 o4["handler"] = JS.method3((JsValue self, JsValue p7, JsValue args, JsValue optArgs) => {
   JsValue op8 = p7;
@@ -136,11 +105,8 @@ o4["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
     vlist = JS.invoke(buildCommon, "makeVList", o16, options);
   }
   JS.invoke(vlist["children"][0]["children"][0]["children"][1]["classes"], "push", "svg-align");
-  JsValue a20 = newArray();
-  JS.push(a20, "mrel");
-  JS.push(a20, "x-arrow");
-  JsValue a21 = newArray();
-  JS.push(a21, vlist);
+  JsValue a20 = JS.array("mrel", "x-arrow");
+  JsValue a21 = JS.array(vlist);
   return JS.invoke(buildCommon, "makeSpan", a20, a21, options);
   return undef();
 });
@@ -158,29 +124,20 @@ o4["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
     JsValue upperNode = JS.call(paddedNode, undef(), JS.invoke(mml, "buildGroup", group["body"], options));
     if (group["below"].truthy()) {
       JsValue lowerNode = JS.call(paddedNode, undef(), JS.invoke(mml, "buildGroup", group["below"], options));
-      JsValue a23 = newArray();
-      JS.push(a23, arrowNode);
-      JS.push(a23, lowerNode);
-      JS.push(a23, upperNode);
+      JsValue a23 = JS.array(arrowNode, lowerNode, upperNode);
       node = JS.construct(mathMLTree["MathNode"], "munderover", a23);
     } else {
-      JsValue a24 = newArray();
-      JS.push(a24, arrowNode);
-      JS.push(a24, upperNode);
+      JsValue a24 = JS.array(arrowNode, upperNode);
       node = JS.construct(mathMLTree["MathNode"], "mover", a24);
     }
   } else {
     if (group["below"].truthy()) {
       JsValue lowerNode = JS.call(paddedNode, undef(), JS.invoke(mml, "buildGroup", group["below"], options));
-      JsValue a25 = newArray();
-      JS.push(a25, arrowNode);
-      JS.push(a25, lowerNode);
+      JsValue a25 = JS.array(arrowNode, lowerNode);
       node = JS.construct(mathMLTree["MathNode"], "munder", a25);
     } else {
       node = JS.call(paddedNode, undef());
-      JsValue a26 = newArray();
-      JS.push(a26, arrowNode);
-      JS.push(a26, node);
+      JsValue a26 = JS.array(arrowNode, node);
       node = JS.construct(mathMLTree["MathNode"], "mover", a26);
     }
   }

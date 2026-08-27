@@ -31,19 +31,8 @@ sizeData = (JsValue str) => {
   }
   return undef();
 };
-JsValue o3 = emptyObject();
-o3["type"] = "includegraphics";
-JsValue a4 = newArray();
-JS.push(a4, "\\includegraphics");
-o3["names"] = a4;
-JsValue o5 = emptyObject();
-o5["numArgs"] = 1;
-o5["numOptionalArgs"] = 1;
-JsValue a6 = newArray();
-JS.push(a6, "raw");
-JS.push(a6, "url");
-o5["argTypes"] = a6;
-o5["allowedInText"] = false;
+JsValue o3 = JS.object("type", "includegraphics", "names", JS.array("\\includegraphics"));
+JsValue o5 = JS.object("numArgs", 1, "numOptionalArgs", 1, "argTypes", JS.array("raw", "url"), "allowedInText", false);
 o3["props"] = o5;
 o3["handler"] = (JsValue p7, JsValue args, JsValue optArgs) => {
   JsValue op8 = p7;

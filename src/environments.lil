@@ -6,8 +6,6 @@ import "./environments/array.lil";
 JsValue environments = undef();
 
 environments = _environments;
-JsValue __star = emptyObject();
-__star["default"] = environments;
-__star["environments"] = environments;
+JsValue __star = JS.object("default", environments, "environments", environments);
 
 export { __star, environments as environments };

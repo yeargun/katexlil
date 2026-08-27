@@ -51,8 +51,6 @@ import "./functions/verb.lil";
 JsValue functions = undef();
 
 functions = _functions;
-JsValue __star = emptyObject();
-__star["default"] = functions;
-__star["functions"] = functions;
+JsValue __star = JS.object("default", functions, "functions", functions);
 
 export { __star, functions as functions };

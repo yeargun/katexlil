@@ -7,18 +7,8 @@ import { stretchy } from "../stretchy.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "accentUnder";
-JsValue a2 = newArray();
-JS.push(a2, "\\underleftarrow");
-JS.push(a2, "\\underrightarrow");
-JS.push(a2, "\\underleftrightarrow");
-JS.push(a2, "\\undergroup");
-JS.push(a2, "\\underlinesegment");
-JS.push(a2, "\\utilde");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
+JsValue o1 = JS.object("type", "accentUnder", "names", JS.array("\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow", "\\undergroup", "\\underlinesegment", "\\utilde"));
+JsValue o3 = JS.object("numArgs", 1);
 o1["props"] = o3;
 o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
@@ -50,8 +40,7 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue o10 = emptyObject();
   o10["type"] = "elem";
   o10["elem"] = accentBody;
-  JsValue a11 = newArray();
-  JS.push(a11, "svg-align");
+  JsValue a11 = JS.array("svg-align");
   o10["wrapperClasses"] = a11;
   JS.push(a9, o10);
   JsValue o12 = emptyObject();
@@ -64,19 +53,14 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JS.push(a9, o13);
   o8["children"] = a9;
   JsValue vlist = JS.invoke(buildCommon, "makeVList", o8, options);
-  JsValue a14 = newArray();
-  JS.push(a14, "mord");
-  JS.push(a14, "accentunder");
-  JsValue a15 = newArray();
-  JS.push(a15, vlist);
+  JsValue a14 = JS.array("mord", "accentunder");
+  JsValue a15 = JS.array(vlist);
   return JS.invoke(buildCommon, "makeSpan", a14, a15, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue accentNode = JS.invoke(stretchy, "mathMLnode", group["label"]);
-  JsValue a16 = newArray();
-  JS.push(a16, JS.invoke(mml, "buildGroup", group["base"], options));
-  JS.push(a16, accentNode);
+  JsValue a16 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options), accentNode);
   JsValue node = JS.construct(mathMLTree["MathNode"], "munder", a16);
   JS.invoke(node, "setAttribute", "accentunder", "true");
   return node;

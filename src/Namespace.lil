@@ -102,8 +102,6 @@ Namespace["prototype"]["set"] = JS.method3((JsValue self, JsValue name, JsValue 
   }
   return undef();
 });
-JsValue __star = emptyObject();
-__star["default"] = Namespace;
-__star["Namespace"] = Namespace;
+JsValue __star = JS.object("default", Namespace, "Namespace", Namespace);
 
 export { __star, Namespace as Namespace };

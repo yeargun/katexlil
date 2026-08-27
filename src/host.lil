@@ -180,9 +180,7 @@ export void pushAll(JsValue dest, JsValue items) {
 }
 
 export JsValue spliceSpread(JsValue dest, JsValue start, JsValue deleteCount, JsValue items) {
-  JsValue args = newArray();
-  JS.push(args, start);
-  JS.push(args, deleteCount);
+  JsValue args = JS.array(start, deleteCount);
   int i = 0;
   int n = len(items);
   while (i < n) {
@@ -193,8 +191,7 @@ export JsValue spliceSpread(JsValue dest, JsValue start, JsValue deleteCount, Js
 }
 
 export JsValue maxOfList(JsValue first, JsValue rest) {
-  JsValue args = newArray();
-  JS.push(args, first);
+  JsValue args = JS.array(first);
   int i = 0;
   int n = len(rest);
   while (i < n) {

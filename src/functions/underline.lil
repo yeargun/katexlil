@@ -6,14 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "underline";
-JsValue a2 = newArray();
-JS.push(a2, "\\underline");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-o3["allowedInText"] = true;
+JsValue o1 = JS.object("type", "underline", "names", JS.array("\\underline"));
+JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
 o1["props"] = o3;
 o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
   JsValue op5 = p4;
@@ -51,22 +45,16 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   JS.push(a8, o12);
   o7["children"] = a8;
   JsValue vlist = JS.invoke(buildCommon, "makeVList", o7, options);
-  JsValue a13 = newArray();
-  JS.push(a13, "mord");
-  JS.push(a13, "underline");
-  JsValue a14 = newArray();
-  JS.push(a14, vlist);
+  JsValue a13 = JS.array("mord", "underline");
+  JsValue a14 = JS.array(vlist);
   return JS.invoke(buildCommon, "makeSpan", a13, a14, options);
   return undef();
 });
 o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue a15 = newArray();
-  JS.push(a15, JS.construct(mathMLTree["TextNode"], "‾"));
+  JsValue a15 = JS.array(JS.construct(mathMLTree["TextNode"], "‾"));
   JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a15);
   JS.invoke(operator, "setAttribute", "stretchy", "true");
-  JsValue a16 = newArray();
-  JS.push(a16, JS.invoke(mml, "buildGroup", group["body"], options));
-  JS.push(a16, operator);
+  JsValue a16 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options), operator);
   JsValue node = JS.construct(mathMLTree["MathNode"], "munder", a16);
   JS.invoke(node, "setAttribute", "accentunder", "true");
   return node;

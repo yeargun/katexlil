@@ -27,8 +27,7 @@ parseTree = (JsValue toParse, JsValue settings) => {
     o2["type"] = "tag";
     o2["mode"] = "text";
     o2["body"] = tree;
-    JsValue a3 = newArray();
-    JS.push(a3, JS.construct(Token, "\\df@tag"));
+    JsValue a3 = JS.array(JS.construct(Token, "\\df@tag"));
     o2["tag"] = JS.invoke(parser, "subparse", a3);
     JS.push(a1, o2);
     tree = a1;
@@ -36,8 +35,6 @@ parseTree = (JsValue toParse, JsValue settings) => {
   return tree;
   return undef();
 };
-JsValue __star = emptyObject();
-__star["default"] = parseTree;
-__star["parseTree"] = parseTree;
+JsValue __star = JS.object("default", parseTree, "parseTree", parseTree);
 
 export { __star, parseTree as parseTree };

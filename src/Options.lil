@@ -7,75 +7,9 @@ JsValue sizeMultipliers = undef();
 JsValue sizeAtStyle = undef();
 JsValue Options = undef();
 
-JsValue a1 = newArray();
-JsValue a2 = newArray();
-JS.push(a2, 1);
-JS.push(a2, 1);
-JS.push(a2, 1);
-JS.push(a1, a2);
-JsValue a3 = newArray();
-JS.push(a3, 2);
-JS.push(a3, 1);
-JS.push(a3, 1);
-JS.push(a1, a3);
-JsValue a4 = newArray();
-JS.push(a4, 3);
-JS.push(a4, 1);
-JS.push(a4, 1);
-JS.push(a1, a4);
-JsValue a5 = newArray();
-JS.push(a5, 4);
-JS.push(a5, 2);
-JS.push(a5, 1);
-JS.push(a1, a5);
-JsValue a6 = newArray();
-JS.push(a6, 5);
-JS.push(a6, 2);
-JS.push(a6, 1);
-JS.push(a1, a6);
-JsValue a7 = newArray();
-JS.push(a7, 6);
-JS.push(a7, 3);
-JS.push(a7, 1);
-JS.push(a1, a7);
-JsValue a8 = newArray();
-JS.push(a8, 7);
-JS.push(a8, 4);
-JS.push(a8, 2);
-JS.push(a1, a8);
-JsValue a9 = newArray();
-JS.push(a9, 8);
-JS.push(a9, 6);
-JS.push(a9, 3);
-JS.push(a1, a9);
-JsValue a10 = newArray();
-JS.push(a10, 9);
-JS.push(a10, 7);
-JS.push(a10, 6);
-JS.push(a1, a10);
-JsValue a11 = newArray();
-JS.push(a11, 10);
-JS.push(a11, 8);
-JS.push(a11, 7);
-JS.push(a1, a11);
-JsValue a12 = newArray();
-JS.push(a12, 11);
-JS.push(a12, 10);
-JS.push(a12, 9);
-JS.push(a1, a12);
+JsValue a1 = JS.array(JS.array(1, 1, 1), JS.array(2, 1, 1), JS.array(3, 1, 1), JS.array(4, 2, 1), JS.array(5, 2, 1), JS.array(6, 3, 1), JS.array(7, 4, 2), JS.array(8, 6, 3), JS.array(9, 7, 6), JS.array(10, 8, 7), JS.array(11, 10, 9));
 sizeStyleMap = a1;
-JsValue a13 = newArray();
-JS.push(a13, 0.5);
-JS.push(a13, 0.6);
-JS.push(a13, 0.7);
-JS.push(a13, 0.8);
-JS.push(a13, 0.9);
-JS.push(a13, 1);
-JS.push(a13, 1.2);
-JS.push(a13, 1.44);
-JS.push(a13, 1.728);
-JS.push(a13, 2.074);
-JS.push(a13, 2.488);
+JsValue a13 = JS.array(0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.44, 1.728, 2.074, 2.488);
 sizeMultipliers = a13;
 sizeAtStyle = (JsValue size, JsValue style) => {
   JsValue c14 = undef();
@@ -260,10 +194,7 @@ Options["prototype"]["withTextFontShape"] = JS.method1((JsValue self, JsValue fo
 });
 Options["prototype"]["sizingClasses"] = JS.method1((JsValue self, JsValue oldOptions) => {
   if (JS.strictNotEqual(oldOptions["size"], self["size"])) {
-    JsValue a38 = newArray();
-    JS.push(a38, "sizing");
-    JS.push(a38, JS.add("reset-size", oldOptions["size"]));
-    JS.push(a38, JS.add("size", self["size"]));
+    JsValue a38 = JS.array("sizing", JS.add("reset-size", oldOptions["size"]), JS.add("size", self["size"]));
     return a38;
   } else {
     JsValue a39 = newArray();
@@ -273,10 +204,7 @@ Options["prototype"]["sizingClasses"] = JS.method1((JsValue self, JsValue oldOpt
 });
 Options["prototype"]["baseSizingClasses"] = JS.method0((JsValue self) => {
   if (JS.strictNotEqual(self["size"], Options["BASESIZE"])) {
-    JsValue a40 = newArray();
-    JS.push(a40, "sizing");
-    JS.push(a40, JS.add("reset-size", self["size"]));
-    JS.push(a40, JS.add("size", Options["BASESIZE"]));
+    JsValue a40 = JS.array("sizing", JS.add("reset-size", self["size"]), JS.add("size", Options["BASESIZE"]));
     return a40;
   } else {
     JsValue a41 = newArray();
@@ -300,8 +228,6 @@ Options["prototype"]["getColor"] = JS.method0((JsValue self) => {
   return undef();
 });
 Options["BASESIZE"] = 6;
-JsValue __star = emptyObject();
-__star["default"] = Options;
-__star["Options"] = Options;
+JsValue __star = JS.object("default", Options, "Options", Options);
 
 export { __star, Options as Options };

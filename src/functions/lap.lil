@@ -7,16 +7,8 @@ import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "lap";
-JsValue a2 = newArray();
-JS.push(a2, "\\mathllap");
-JS.push(a2, "\\mathrlap");
-JS.push(a2, "\\mathclap");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-o3["allowedInText"] = true;
+JsValue o1 = JS.object("type", "lap", "names", JS.array("\\mathllap", "\\mathrlap", "\\mathclap"));
+JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
 o1["props"] = o3;
 o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
@@ -35,55 +27,39 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = undef();
   if (JS.strictEqual(group["alignment"], "clap")) {
     JsValue a7 = newArray();
-    JsValue a8 = newArray();
-    JS.push(a8, JS.invoke(html, "buildGroup", group["body"], options));
+    JsValue a8 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
     inner = JS.invoke(buildCommon, "makeSpan", a7, a8);
-    JsValue a9 = newArray();
-    JS.push(a9, "inner");
-    JsValue a10 = newArray();
-    JS.push(a10, inner);
+    JsValue a9 = JS.array("inner");
+    JsValue a10 = JS.array(inner);
     inner = JS.invoke(buildCommon, "makeSpan", a9, a10, options);
   } else {
-    JsValue a11 = newArray();
-    JS.push(a11, "inner");
-    JsValue a12 = newArray();
-    JS.push(a12, JS.invoke(html, "buildGroup", group["body"], options));
+    JsValue a11 = JS.array("inner");
+    JsValue a12 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
     inner = JS.invoke(buildCommon, "makeSpan", a11, a12);
   }
-  JsValue a13 = newArray();
-  JS.push(a13, "fix");
+  JsValue a13 = JS.array("fix");
   JsValue a14 = newArray();
   JsValue fix = JS.invoke(buildCommon, "makeSpan", a13, a14);
-  JsValue a15 = newArray();
-  JS.push(a15, group["alignment"]);
-  JsValue a16 = newArray();
-  JS.push(a16, inner);
-  JS.push(a16, fix);
+  JsValue a15 = JS.array(group["alignment"]);
+  JsValue a16 = JS.array(inner, fix);
   JsValue node = JS.invoke(buildCommon, "makeSpan", a15, a16, options);
-  JsValue a17 = newArray();
-  JS.push(a17, "strut");
+  JsValue a17 = JS.array("strut");
   JsValue strut = JS.invoke(buildCommon, "makeSpan", a17);
   strut["style"]["height"] = JS.call(makeEm, undef(), JS.add(node["height"], node["depth"]));
   if (node["depth"].truthy()) {
     strut["style"]["verticalAlign"] = JS.call(makeEm, undef(), JS.number(0) - toNum(node["depth"]));
   }
   JS.invoke(node["children"], "unshift", strut);
-  JsValue a18 = newArray();
-  JS.push(a18, "thinbox");
-  JsValue a19 = newArray();
-  JS.push(a19, node);
+  JsValue a18 = JS.array("thinbox");
+  JsValue a19 = JS.array(node);
   node = JS.invoke(buildCommon, "makeSpan", a18, a19, options);
-  JsValue a20 = newArray();
-  JS.push(a20, "mord");
-  JS.push(a20, "vbox");
-  JsValue a21 = newArray();
-  JS.push(a21, node);
+  JsValue a20 = JS.array("mord", "vbox");
+  JsValue a21 = JS.array(node);
   return JS.invoke(buildCommon, "makeSpan", a20, a21, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
-  JsValue a22 = newArray();
-  JS.push(a22, JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue a22 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
   JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a22);
   if (JS.strictNotEqual(group["alignment"], "rlap")) {
     JsValue c23 = undef();

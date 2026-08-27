@@ -209,8 +209,7 @@ Img = JS.methodRest((JsValue self, JsValue argv) => {
   JsValue style = argv[2];
   self["alt"] = alt;
   self["src"] = src;
-  JsValue a28 = newArray();
-  JS.push(a28, "mord");
+  JsValue a28 = JS.array("mord");
   self["classes"] = a28;
   self["style"] = style;
   return self;
@@ -259,11 +258,7 @@ Img["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   return markup;
   return undef();
 });
-JsValue o37 = emptyObject();
-o37["î"] = "ı̂";
-o37["ï"] = "ı̈";
-o37["í"] = "ı́";
-o37["ì"] = "ı̀";
+JsValue o37 = JS.object("î", "ı̂", "ï", "ı̈", "í", "ı́", "ì", "ı̀");
 iCombinations = o37;
 SymbolNode = JS.methodRest((JsValue self, JsValue argv) => {
   JsValue text = argv[0];
@@ -558,16 +553,6 @@ assertSpan = (JsValue group) => {
   }
   return undef();
 };
-JsValue __star = emptyObject();
-__star["createClass"] = createClass;
-__star["Span"] = Span;
-__star["Anchor"] = Anchor;
-__star["Img"] = Img;
-__star["SymbolNode"] = SymbolNode;
-__star["SvgNode"] = SvgNode;
-__star["PathNode"] = PathNode;
-__star["LineNode"] = LineNode;
-__star["assertSymbolDomNode"] = assertSymbolDomNode;
-__star["assertSpan"] = assertSpan;
+JsValue __star = JS.object("createClass", createClass, "Span", Span, "Anchor", Anchor, "Img", Img, "SymbolNode", SymbolNode, "SvgNode", SvgNode, "PathNode", PathNode, "LineNode", LineNode, "assertSymbolDomNode", assertSymbolDomNode, "assertSpan", assertSpan);
 
 export { __star, createClass, Span, Anchor, Img, SymbolNode, SvgNode, PathNode, LineNode, assertSymbolDomNode, assertSpan };

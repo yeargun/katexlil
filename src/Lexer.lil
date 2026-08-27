@@ -78,9 +78,6 @@ Lexer["prototype"]["lex"] = JS.method0((JsValue self) => {
   return JS.construct(Token, text, JS.construct(SourceLocation, self, pos, self["tokenRegex"]["lastIndex"]));
   return undef();
 });
-JsValue __star = emptyObject();
-__star["combiningDiacriticalMarksEndRegex"] = combiningDiacriticalMarksEndRegex;
-__star["default"] = Lexer;
-__star["Lexer"] = Lexer;
+JsValue __star = JS.object("combiningDiacriticalMarksEndRegex", combiningDiacriticalMarksEndRegex, "default", Lexer, "Lexer", Lexer);
 
 export { __star, combiningDiacriticalMarksEndRegex, Lexer as Lexer };

@@ -68,10 +68,8 @@ htmlBuilder = (JsValue grp, JsValue options) => {
         clearance = JS.add(clearance, accent["depth"]);
       }
     }
-    JsValue a4 = newArray();
-    JS.push(a4, "accent-body");
-    JsValue a5 = newArray();
-    JS.push(a5, accent);
+    JsValue a4 = JS.array("accent-body");
+    JsValue a5 = JS.array(accent);
     accentBody = JS.invoke(buildCommon, "makeSpan", a4, a5);
     JsValue accentFull = JS.strictEqual(group["label"], "\\textcircled");
     if (accentFull.truthy()) {
@@ -115,8 +113,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     JsValue o14 = emptyObject();
     o14["type"] = "elem";
     o14["elem"] = accentBody;
-    JsValue a15 = newArray();
-    JS.push(a15, "svg-align");
+    JsValue a15 = JS.array("svg-align");
     o14["wrapperClasses"] = a15;
     JsValue c16 = undef();
     if (JS.greaterThan(skew, 0)) {
@@ -132,11 +129,8 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     o11["children"] = a12;
     accentBody = JS.invoke(buildCommon, "makeVList", o11, options);
   }
-  JsValue a18 = newArray();
-  JS.push(a18, "mord");
-  JS.push(a18, "accent");
-  JsValue a19 = newArray();
-  JS.push(a19, accentBody);
+  JsValue a18 = JS.array("mord", "accent");
+  JsValue a19 = JS.array(accentBody);
   JsValue accentWrap = JS.invoke(buildCommon, "makeSpan", a18, a19, options);
   if (supSubGroup.truthy()) {
     supSubGroup["children"][0] = accentWrap;
@@ -153,62 +147,22 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   if (group["isStretchy"].truthy()) {
     c20 = JS.invoke(stretchy, "mathMLnode", group["label"]);
   } else {
-    JsValue a21 = newArray();
-    JS.push(a21, JS.invoke(mml, "makeText", group["label"], group["mode"]));
+    JsValue a21 = JS.array(JS.invoke(mml, "makeText", group["label"], group["mode"]));
     c20 = JS.construct(mathMLTree["MathNode"], "mo", a21);
   }
   JsValue accentNode = c20;
-  JsValue a22 = newArray();
-  JS.push(a22, JS.invoke(mml, "buildGroup", group["base"], options));
-  JS.push(a22, accentNode);
+  JsValue a22 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options), accentNode);
   JsValue node = JS.construct(mathMLTree["MathNode"], "mover", a22);
   JS.invoke(node, "setAttribute", "accent", "true");
   return node;
   return undef();
 };
-JsValue a23 = newArray();
-JS.push(a23, "\\acute");
-JS.push(a23, "\\grave");
-JS.push(a23, "\\ddot");
-JS.push(a23, "\\tilde");
-JS.push(a23, "\\bar");
-JS.push(a23, "\\breve");
-JS.push(a23, "\\check");
-JS.push(a23, "\\hat");
-JS.push(a23, "\\vec");
-JS.push(a23, "\\dot");
-JS.push(a23, "\\mathring");
+JsValue a23 = JS.array("\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve", "\\check", "\\hat", "\\vec", "\\dot", "\\mathring");
 NON_STRETCHY_ACCENT_REGEX = JS.construct(RegExp, JS.invoke(JS.invoke(a23, "map", (JsValue accent) => {
   return "\\" + toStr(accent);
 }), "join", "|"));
-JsValue o24 = emptyObject();
-o24["type"] = "accent";
-JsValue a25 = newArray();
-JS.push(a25, "\\acute");
-JS.push(a25, "\\grave");
-JS.push(a25, "\\ddot");
-JS.push(a25, "\\tilde");
-JS.push(a25, "\\bar");
-JS.push(a25, "\\breve");
-JS.push(a25, "\\check");
-JS.push(a25, "\\hat");
-JS.push(a25, "\\vec");
-JS.push(a25, "\\dot");
-JS.push(a25, "\\mathring");
-JS.push(a25, "\\widecheck");
-JS.push(a25, "\\widehat");
-JS.push(a25, "\\widetilde");
-JS.push(a25, "\\overrightarrow");
-JS.push(a25, "\\overleftarrow");
-JS.push(a25, "\\Overrightarrow");
-JS.push(a25, "\\overleftrightarrow");
-JS.push(a25, "\\overgroup");
-JS.push(a25, "\\overlinesegment");
-JS.push(a25, "\\overleftharpoon");
-JS.push(a25, "\\overrightharpoon");
-o24["names"] = a25;
-JsValue o26 = emptyObject();
-o26["numArgs"] = 1;
+JsValue o24 = JS.object("type", "accent", "names", JS.array("\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve", "\\check", "\\hat", "\\vec", "\\dot", "\\mathring", "\\widecheck", "\\widehat", "\\widetilde", "\\overrightarrow", "\\overleftarrow", "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup", "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon"));
+JsValue o26 = JS.object("numArgs", 1);
 o24["props"] = o26;
 o24["handler"] = (JsValue context, JsValue args) => {
   JsValue base = JS.call(normalizeArgument, undef(), args[0]);
@@ -239,30 +193,8 @@ o24["handler"] = (JsValue context, JsValue args) => {
 o24["htmlBuilder"] = htmlBuilder;
 o24["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o24);
-JsValue o31 = emptyObject();
-o31["type"] = "accent";
-JsValue a32 = newArray();
-JS.push(a32, "\\'");
-JS.push(a32, "\\`");
-JS.push(a32, "\\^");
-JS.push(a32, "\\~");
-JS.push(a32, "\\=");
-JS.push(a32, "\\u");
-JS.push(a32, "\\.");
-JS.push(a32, "\\\"");
-JS.push(a32, "\\c");
-JS.push(a32, "\\r");
-JS.push(a32, "\\H");
-JS.push(a32, "\\v");
-JS.push(a32, "\\textcircled");
-o31["names"] = a32;
-JsValue o33 = emptyObject();
-o33["numArgs"] = 1;
-o33["allowedInText"] = true;
-o33["allowedInMath"] = true;
-JsValue a34 = newArray();
-JS.push(a34, "primitive");
-o33["argTypes"] = a34;
+JsValue o31 = JS.object("type", "accent", "names", JS.array("\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", "\\\"", "\\c", "\\r", "\\H", "\\v", "\\textcircled"));
+JsValue o33 = JS.object("numArgs", 1, "allowedInText", true, "allowedInMath", true, "argTypes", JS.array("primitive"));
 o31["props"] = o33;
 o31["handler"] = (JsValue context, JsValue args) => {
   JsValue base = args[0];
@@ -284,7 +216,6 @@ o31["handler"] = (JsValue context, JsValue args) => {
 o31["htmlBuilder"] = htmlBuilder;
 o31["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o31);
-JsValue __star = emptyObject();
-__star["htmlBuilder"] = htmlBuilder;
+JsValue __star = JS.object("htmlBuilder", htmlBuilder);
 
 export { __star, htmlBuilder };

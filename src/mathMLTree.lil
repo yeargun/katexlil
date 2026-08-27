@@ -199,18 +199,9 @@ SpaceNode["prototype"]["toText"] = JS.method0((JsValue self) => {
   }
   return undef();
 });
-JsValue o19 = emptyObject();
-o19["MathNode"] = MathNode;
-o19["TextNode"] = TextNode;
-o19["SpaceNode"] = SpaceNode;
-o19["newDocumentFragment"] = newDocumentFragment;
+JsValue o19 = JS.object("MathNode", MathNode, "TextNode", TextNode, "SpaceNode", SpaceNode, "newDocumentFragment", newDocumentFragment);
 JsValue mathMLTree = undef();
 mathMLTree = o19;
-JsValue __star = emptyObject();
-__star["newDocumentFragment"] = newDocumentFragment;
-__star["MathNode"] = MathNode;
-__star["TextNode"] = TextNode;
-__star["default"] = mathMLTree;
-__star["mathMLTree"] = mathMLTree;
+JsValue __star = JS.object("newDocumentFragment", newDocumentFragment, "MathNode", MathNode, "TextNode", TextNode, "default", mathMLTree, "mathMLTree", mathMLTree);
 
 export { __star, newDocumentFragment, MathNode, TextNode, mathMLTree as mathMLTree };

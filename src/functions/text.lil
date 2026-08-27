@@ -10,20 +10,11 @@ JsValue textFontWeights = undef();
 JsValue textFontShapes = undef();
 JsValue optionsWithFont = undef();
 
-JsValue o1 = emptyObject();
-o1["\\text"] = undef();
-o1["\\textrm"] = "textrm";
-o1["\\textsf"] = "textsf";
-o1["\\texttt"] = "texttt";
-o1["\\textnormal"] = "textrm";
+JsValue o1 = JS.object("\\text", undef(), "\\textrm", "textrm", "\\textsf", "textsf", "\\texttt", "texttt", "\\textnormal", "textrm");
 textFontFamilies = o1;
-JsValue o2 = emptyObject();
-o2["\\textbf"] = "textbf";
-o2["\\textmd"] = "textmd";
+JsValue o2 = JS.object("\\textbf", "textbf", "\\textmd", "textmd");
 textFontWeights = o2;
-JsValue o3 = emptyObject();
-o3["\\textit"] = "textit";
-o3["\\textup"] = "textup";
+JsValue o3 = JS.object("\\textit", "textit", "\\textup", "textup");
 textFontShapes = o3;
 optionsWithFont = (JsValue group, JsValue options) => {
   JsValue font = group["font"];
@@ -51,27 +42,8 @@ optionsWithFont = (JsValue group, JsValue options) => {
   return JS.invoke(options, "withTextFontShape", textFontShapes[font]);
   return undef();
 };
-JsValue o5 = emptyObject();
-o5["type"] = "text";
-JsValue a6 = newArray();
-JS.push(a6, "\\text");
-JS.push(a6, "\\textrm");
-JS.push(a6, "\\textsf");
-JS.push(a6, "\\texttt");
-JS.push(a6, "\\textnormal");
-JS.push(a6, "\\textbf");
-JS.push(a6, "\\textmd");
-JS.push(a6, "\\textit");
-JS.push(a6, "\\textup");
-JS.push(a6, "\\emph");
-o5["names"] = a6;
-JsValue o7 = emptyObject();
-o7["numArgs"] = 1;
-JsValue a8 = newArray();
-JS.push(a8, "text");
-o7["argTypes"] = a8;
-o7["allowedInArgument"] = true;
-o7["allowedInText"] = true;
+JsValue o5 = JS.object("type", "text", "names", JS.array("\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal", "\\textbf", "\\textmd", "\\textit", "\\textup", "\\emph"));
+JsValue o7 = JS.object("numArgs", 1, "argTypes", JS.array("text"), "allowedInArgument", true, "allowedInText", true);
 o5["props"] = o7;
 o5["handler"] = JS.method2((JsValue self, JsValue p9, JsValue args) => {
   JsValue op10 = p9;
@@ -89,9 +61,7 @@ o5["handler"] = JS.method2((JsValue self, JsValue p9, JsValue args) => {
 o5["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue newOptions = JS.call(optionsWithFont, undef(), group, options);
   JsValue inner = JS.invoke(html, "buildExpression", group["body"], newOptions, true);
-  JsValue a12 = newArray();
-  JS.push(a12, "mord");
-  JS.push(a12, "text");
+  JsValue a12 = JS.array("mord", "text");
   return JS.invoke(buildCommon, "makeSpan", a12, inner, newOptions);
   return undef();
 });

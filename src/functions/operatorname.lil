@@ -53,25 +53,15 @@ htmlBuilder = (JsValue grp, JsValue options) => {
         i = JS.add(i, 1);
       }
     }
-    JsValue a3 = newArray();
-    JS.push(a3, "mop");
+    JsValue a3 = JS.array("mop");
     base = JS.invoke(buildCommon, "makeSpan", a3, expression, options);
   } else {
-    JsValue a4 = newArray();
-    JS.push(a4, "mop");
+    JsValue a4 = JS.array("mop");
     JsValue a5 = newArray();
     base = JS.invoke(buildCommon, "makeSpan", a4, a5, options);
   }
   if (hasLimits.truthy()) {
-    JsValue ca6 = newArray();
-    JS.push(ca6, base);
-    JS.push(ca6, supGroup);
-    JS.push(ca6, subGroup);
-    JS.push(ca6, options);
-    JS.push(ca6, options["style"]);
-    JS.push(ca6, 0);
-    JS.push(ca6, 0);
-    return apply(assembleSupSub, undef(), ca6);
+    return JS.call(assembleSupSub, undef(), base, supGroup, subGroup, options, options["style"], 0, 0);
   } else {
     return base;
   }
@@ -113,36 +103,24 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     JsValue word = JS.invoke(JS.invoke(expression, "map", (JsValue node) => {
   return JS.invoke(node, "toText");
     }), "join", "");
-    JsValue a9 = newArray();
-    JS.push(a9, JS.construct(mathMLTree["TextNode"], word));
+    JsValue a9 = JS.array(JS.construct(mathMLTree["TextNode"], word));
     expression = a9;
   }
   JsValue identifier = JS.construct(mathMLTree["MathNode"], "mi", expression);
   JS.invoke(identifier, "setAttribute", "mathvariant", "normal");
-  JsValue a10 = newArray();
-  JS.push(a10, JS.invoke(mml, "makeText", "⁡", "text"));
+  JsValue a10 = JS.array(JS.invoke(mml, "makeText", "⁡", "text"));
   JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a10);
   if (group["parentIsSupSub"].truthy()) {
-    JsValue a11 = newArray();
-    JS.push(a11, identifier);
-    JS.push(a11, operator);
+    JsValue a11 = JS.array(identifier, operator);
     return JS.construct(mathMLTree["MathNode"], "mrow", a11);
   } else {
-    JsValue a12 = newArray();
-    JS.push(a12, identifier);
-    JS.push(a12, operator);
+    JsValue a12 = JS.array(identifier, operator);
     return JS.invoke(mathMLTree, "newDocumentFragment", a12);
   }
   return undef();
 };
-JsValue o13 = emptyObject();
-o13["type"] = "operatorname";
-JsValue a14 = newArray();
-JS.push(a14, "\\operatorname@");
-JS.push(a14, "\\operatornamewithlimits");
-o13["names"] = a14;
-JsValue o15 = emptyObject();
-o15["numArgs"] = 1;
+JsValue o13 = JS.object("type", "operatorname", "names", JS.array("\\operatorname@", "\\operatornamewithlimits"));
+JsValue o15 = JS.object("numArgs", 1);
 o13["props"] = o15;
 o13["handler"] = (JsValue p16, JsValue args) => {
   JsValue op17 = p16;
@@ -163,7 +141,6 @@ o13["htmlBuilder"] = htmlBuilder;
 o13["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o13);
 JS.call(defineMacro, undef(), "\\operatorname", "\\@ifstar\\operatornamewithlimits\\operatorname@");
-JsValue __star = emptyObject();
-__star["htmlBuilder"] = htmlBuilder;
+JsValue __star = JS.object("htmlBuilder", htmlBuilder);
 
 export { __star, htmlBuilder };

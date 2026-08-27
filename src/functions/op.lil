@@ -18,8 +18,7 @@ JsValue mathmlBuilder = undef();
 JsValue singleCharBigOps = undef();
 JsValue singleCharIntegrals = undef();
 
-JsValue a1 = newArray();
-JS.push(a1, "\\smallint");
+JsValue a1 = JS.array("\\smallint");
 noSuccessor = a1;
 htmlBuilder = (JsValue grp, JsValue options) => {
   JsValue supGroup = undef();
@@ -59,9 +58,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
       }
       group["name"] = c3;
     }
-    JsValue a4 = newArray();
-    JS.push(a4, "mop");
-    JS.push(a4, "op-symbol");
+    JsValue a4 = JS.array("mop", "op-symbol");
     JsValue c5 = undef();
     if (large.truthy()) {
       c5 = "large-op";
@@ -111,8 +108,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
         base = inner[0];
         base["classes"][0] = "mop";
       } else {
-        JsValue a12 = newArray();
-        JS.push(a12, "mop");
+        JsValue a12 = JS.array("mop");
         base = JS.invoke(buildCommon, "makeSpan", a12, inner, options);
       }
     } else {
@@ -126,8 +122,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
           i = JS.add(i, 1);
         }
       }
-      JsValue a15 = newArray();
-      JS.push(a15, "mop");
+      JsValue a15 = JS.array("mop");
       base = JS.invoke(buildCommon, "makeSpan", a15, output, options);
     }
   }
@@ -138,15 +133,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     slant = base["italic"];
   }
   if (hasLimits.truthy()) {
-    JsValue ca16 = newArray();
-    JS.push(ca16, base);
-    JS.push(ca16, supGroup);
-    JS.push(ca16, subGroup);
-    JS.push(ca16, options);
-    JS.push(ca16, style);
-    JS.push(ca16, slant);
-    JS.push(ca16, baseShift);
-    return apply(assembleSupSub, undef(), ca16);
+    return JS.call(assembleSupSub, undef(), base, supGroup, subGroup, options, style, slant, baseShift);
   } else {
     if (baseShift.truthy()) {
       base["style"]["position"] = "relative";
@@ -159,8 +146,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
 mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue node = undef();
   if (group["symbol"].truthy()) {
-    JsValue a17 = newArray();
-    JS.push(a17, JS.invoke(mml, "makeText", group["name"], group["mode"]));
+    JsValue a17 = JS.array(JS.invoke(mml, "makeText", group["name"], group["mode"]));
     node = JS.construct(mathMLTree["MathNode"], "mo", a17);
     if (JS.invoke(utils, "contains", noSuccessor, group["name"]).truthy()) {
       JS.invoke(node, "setAttribute", "largeop", "false");
@@ -169,21 +155,15 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     if (group["body"].truthy()) {
       node = JS.construct(mathMLTree["MathNode"], "mo", JS.invoke(mml, "buildExpression", group["body"], options));
     } else {
-      JsValue a18 = newArray();
-      JS.push(a18, JS.construct(mathMLTree["TextNode"], JS.invoke(group["name"], "slice", 1)));
+      JsValue a18 = JS.array(JS.construct(mathMLTree["TextNode"], JS.invoke(group["name"], "slice", 1)));
       node = JS.construct(mathMLTree["MathNode"], "mi", a18);
-      JsValue a19 = newArray();
-      JS.push(a19, JS.invoke(mml, "makeText", "⁡", "text"));
+      JsValue a19 = JS.array(JS.invoke(mml, "makeText", "⁡", "text"));
       JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a19);
       if (group["parentIsSupSub"].truthy()) {
-        JsValue a20 = newArray();
-        JS.push(a20, node);
-        JS.push(a20, operator);
+        JsValue a20 = JS.array(node, operator);
         node = JS.construct(mathMLTree["MathNode"], "mrow", a20);
       } else {
-        JsValue a21 = newArray();
-        JS.push(a21, node);
-        JS.push(a21, operator);
+        JsValue a21 = JS.array(node, operator);
         node = JS.invoke(mathMLTree, "newDocumentFragment", a21);
       }
     }
@@ -191,52 +171,10 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   return node;
   return undef();
 };
-JsValue o22 = emptyObject();
-o22["∏"] = "\\prod";
-o22["∐"] = "\\coprod";
-o22["∑"] = "\\sum";
-o22["⋀"] = "\\bigwedge";
-o22["⋁"] = "\\bigvee";
-o22["⋂"] = "\\bigcap";
-o22["⋃"] = "\\bigcup";
-o22["⨀"] = "\\bigodot";
-o22["⨁"] = "\\bigoplus";
-o22["⨂"] = "\\bigotimes";
-o22["⨄"] = "\\biguplus";
-o22["⨆"] = "\\bigsqcup";
+JsValue o22 = JS.object("∏", "\\prod", "∐", "\\coprod", "∑", "\\sum", "⋀", "\\bigwedge", "⋁", "\\bigvee", "⋂", "\\bigcap", "⋃", "\\bigcup", "⨀", "\\bigodot", "⨁", "\\bigoplus", "⨂", "\\bigotimes", "⨄", "\\biguplus", "⨆", "\\bigsqcup");
 singleCharBigOps = o22;
-JsValue o23 = emptyObject();
-o23["type"] = "op";
-JsValue a24 = newArray();
-JS.push(a24, "\\coprod");
-JS.push(a24, "\\bigvee");
-JS.push(a24, "\\bigwedge");
-JS.push(a24, "\\biguplus");
-JS.push(a24, "\\bigcap");
-JS.push(a24, "\\bigcup");
-JS.push(a24, "\\intop");
-JS.push(a24, "\\prod");
-JS.push(a24, "\\sum");
-JS.push(a24, "\\bigotimes");
-JS.push(a24, "\\bigoplus");
-JS.push(a24, "\\bigodot");
-JS.push(a24, "\\bigsqcup");
-JS.push(a24, "\\smallint");
-JS.push(a24, "∏");
-JS.push(a24, "∐");
-JS.push(a24, "∑");
-JS.push(a24, "⋀");
-JS.push(a24, "⋁");
-JS.push(a24, "⋂");
-JS.push(a24, "⋃");
-JS.push(a24, "⨀");
-JS.push(a24, "⨁");
-JS.push(a24, "⨂");
-JS.push(a24, "⨄");
-JS.push(a24, "⨆");
-o23["names"] = a24;
-JsValue o25 = emptyObject();
-o25["numArgs"] = 0;
+JsValue o23 = JS.object("type", "op", "names", JS.array("\\coprod", "\\bigvee", "\\bigwedge", "\\biguplus", "\\bigcap", "\\bigcup", "\\intop", "\\prod", "\\sum", "\\bigotimes", "\\bigoplus", "\\bigodot", "\\bigsqcup", "\\smallint", "∏", "∐", "∑", "⋀", "⋁", "⋂", "⋃", "⨀", "⨁", "⨂", "⨄", "⨆"));
+JsValue o25 = JS.object("numArgs", 0);
 o23["props"] = o25;
 o23["handler"] = (JsValue p26, JsValue args) => {
   JsValue op27 = p26;
@@ -259,14 +197,8 @@ o23["handler"] = (JsValue p26, JsValue args) => {
 o23["htmlBuilder"] = htmlBuilder;
 o23["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o23);
-JsValue o29 = emptyObject();
-o29["type"] = "op";
-JsValue a30 = newArray();
-JS.push(a30, "\\mathop");
-o29["names"] = a30;
-JsValue o31 = emptyObject();
-o31["numArgs"] = 1;
-o31["primitive"] = true;
+JsValue o29 = JS.object("type", "op", "names", JS.array("\\mathop"));
+JsValue o31 = JS.object("numArgs", 1, "primitive", true);
 o29["props"] = o31;
 o29["handler"] = (JsValue p32, JsValue args) => {
   JsValue op33 = p32;
@@ -285,52 +217,10 @@ o29["handler"] = (JsValue p32, JsValue args) => {
 o29["htmlBuilder"] = htmlBuilder;
 o29["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o29);
-JsValue o35 = emptyObject();
-o35["∫"] = "\\int";
-o35["∬"] = "\\iint";
-o35["∭"] = "\\iiint";
-o35["∮"] = "\\oint";
-o35["∯"] = "\\oiint";
-o35["∰"] = "\\oiiint";
+JsValue o35 = JS.object("∫", "\\int", "∬", "\\iint", "∭", "\\iiint", "∮", "\\oint", "∯", "\\oiint", "∰", "\\oiiint");
 singleCharIntegrals = o35;
-JsValue o36 = emptyObject();
-o36["type"] = "op";
-JsValue a37 = newArray();
-JS.push(a37, "\\arcsin");
-JS.push(a37, "\\arccos");
-JS.push(a37, "\\arctan");
-JS.push(a37, "\\arctg");
-JS.push(a37, "\\arcctg");
-JS.push(a37, "\\arg");
-JS.push(a37, "\\ch");
-JS.push(a37, "\\cos");
-JS.push(a37, "\\cosec");
-JS.push(a37, "\\cosh");
-JS.push(a37, "\\cot");
-JS.push(a37, "\\cotg");
-JS.push(a37, "\\coth");
-JS.push(a37, "\\csc");
-JS.push(a37, "\\ctg");
-JS.push(a37, "\\cth");
-JS.push(a37, "\\deg");
-JS.push(a37, "\\dim");
-JS.push(a37, "\\exp");
-JS.push(a37, "\\hom");
-JS.push(a37, "\\ker");
-JS.push(a37, "\\lg");
-JS.push(a37, "\\ln");
-JS.push(a37, "\\log");
-JS.push(a37, "\\sec");
-JS.push(a37, "\\sin");
-JS.push(a37, "\\sinh");
-JS.push(a37, "\\sh");
-JS.push(a37, "\\tan");
-JS.push(a37, "\\tanh");
-JS.push(a37, "\\tg");
-JS.push(a37, "\\th");
-o36["names"] = a37;
-JsValue o38 = emptyObject();
-o38["numArgs"] = 0;
+JsValue o36 = JS.object("type", "op", "names", JS.array("\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg", "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg", "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp", "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin", "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th"));
+JsValue o38 = JS.object("numArgs", 0);
 o36["props"] = o38;
 o36["handler"] = JS.method1((JsValue self, JsValue p39) => {
   JsValue op40 = p39;
@@ -349,20 +239,8 @@ o36["handler"] = JS.method1((JsValue self, JsValue p39) => {
 o36["htmlBuilder"] = htmlBuilder;
 o36["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o36);
-JsValue o42 = emptyObject();
-o42["type"] = "op";
-JsValue a43 = newArray();
-JS.push(a43, "\\det");
-JS.push(a43, "\\gcd");
-JS.push(a43, "\\inf");
-JS.push(a43, "\\lim");
-JS.push(a43, "\\max");
-JS.push(a43, "\\min");
-JS.push(a43, "\\Pr");
-JS.push(a43, "\\sup");
-o42["names"] = a43;
-JsValue o44 = emptyObject();
-o44["numArgs"] = 0;
+JsValue o42 = JS.object("type", "op", "names", JS.array("\\det", "\\gcd", "\\inf", "\\lim", "\\max", "\\min", "\\Pr", "\\sup"));
+JsValue o44 = JS.object("numArgs", 0);
 o42["props"] = o44;
 o42["handler"] = JS.method1((JsValue self, JsValue p45) => {
   JsValue op46 = p45;
@@ -381,24 +259,8 @@ o42["handler"] = JS.method1((JsValue self, JsValue p45) => {
 o42["htmlBuilder"] = htmlBuilder;
 o42["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o42);
-JsValue o48 = emptyObject();
-o48["type"] = "op";
-JsValue a49 = newArray();
-JS.push(a49, "\\int");
-JS.push(a49, "\\iint");
-JS.push(a49, "\\iiint");
-JS.push(a49, "\\oint");
-JS.push(a49, "\\oiint");
-JS.push(a49, "\\oiiint");
-JS.push(a49, "∫");
-JS.push(a49, "∬");
-JS.push(a49, "∭");
-JS.push(a49, "∮");
-JS.push(a49, "∯");
-JS.push(a49, "∰");
-o48["names"] = a49;
-JsValue o50 = emptyObject();
-o50["numArgs"] = 0;
+JsValue o48 = JS.object("type", "op", "names", JS.array("\\int", "\\iint", "\\iiint", "\\oint", "\\oiint", "\\oiiint", "∫", "∬", "∭", "∮", "∯", "∰"));
+JsValue o50 = JS.object("numArgs", 0);
 o48["props"] = o50;
 o48["handler"] = JS.method1((JsValue self, JsValue p51) => {
   JsValue op52 = p51;
@@ -421,7 +283,6 @@ o48["handler"] = JS.method1((JsValue self, JsValue p51) => {
 o48["htmlBuilder"] = htmlBuilder;
 o48["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o48);
-JsValue __star = emptyObject();
-__star["htmlBuilder"] = htmlBuilder;
+JsValue __star = JS.object("htmlBuilder", htmlBuilder);
 
 export { __star, htmlBuilder };

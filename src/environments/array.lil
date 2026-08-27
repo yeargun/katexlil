@@ -88,8 +88,7 @@ parseArray = (JsValue parser, JsValue p3, JsValue style) => {
   JS.invoke(parser["gullet"], "beginGroup");
   JsValue a5 = newArray();
   JsValue row = a5;
-  JsValue a6 = newArray();
-  JS.push(a6, row);
+  JsValue a6 = JS.array(row);
   JsValue body = a6;
   JsValue a7 = newArray();
   JsValue rowGaps = a7;
@@ -114,8 +113,7 @@ parseArray = (JsValue parser, JsValue p3, JsValue style) => {
   endRow = () => {
   if (tags.truthy()) {
     if (JS.invoke(parser["gullet"]["macros"], "get", "\\df@tag").truthy()) {
-      JsValue a11 = newArray();
-      JS.push(a11, JS.construct(Token, "\\df@tag"));
+      JsValue a11 = JS.array(JS.construct(Token, "\\df@tag"));
       JS.invoke(tags, "push", JS.invoke(parser, "subparse", a11));
       JS.invoke(parser["gullet"]["macros"], "set", "\\df@tag", undef(), true);
     } else {
@@ -150,8 +148,7 @@ parseArray = (JsValue parser, JsValue p3, JsValue style) => {
       o15["type"] = "styling";
       o15["mode"] = parser["mode"];
       o15["style"] = style;
-      JsValue a16 = newArray();
-      JS.push(a16, cell);
+      JsValue a16 = JS.array(cell);
       o15["body"] = a16;
       cell = o15;
     }
@@ -354,8 +351,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
         JsValue tag = group["tags"][r];
         JsValue tagSpan = undef();
         if (JS.strictEqual(tag, true)) {
-          JsValue a32 = newArray();
-          JS.push(a32, "eqn-num");
+          JsValue a32 = JS.array("eqn-num");
           JsValue a33 = newArray();
           tagSpan = JS.invoke(buildCommon, "makeSpan", a32, a33, options);
         } else {
@@ -393,8 +389,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       JsValue firstSeparator = true;
       while (JS.strictEqual(colDescr["type"], "separator")) {
         if (!(firstSeparator.truthy())) {
-          JsValue a41 = newArray();
-          JS.push(a41, "arraycolsep");
+          JsValue a41 = JS.array("arraycolsep");
           JsValue a42 = newArray();
           colSep = JS.invoke(buildCommon, "makeSpan", a41, a42);
           colSep["style"]["width"] = JS.call(makeEm, undef(), JS.invoke(options, "fontMetrics")["doubleRuleSep"]);
@@ -408,8 +403,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
             c43 = "dashed";
           }
           JsValue lineType = c43;
-          JsValue a44 = newArray();
-          JS.push(a44, "vertical-separator");
+          JsValue a44 = JS.array("vertical-separator");
           JsValue a45 = newArray();
           JsValue separator = JS.invoke(buildCommon, "makeSpan", a44, a45, options);
           separator["style"]["height"] = JS.call(makeEm, undef(), totalHeight);
@@ -443,8 +437,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       if ((JS.greaterThan(c, 0)) || (group["hskipBeforeAndAfter"].truthy())) {
         sepwidth = JS.invoke(utils, "deflt", colDescr["pregap"], arraycolsep);
         if (JS.strictNotEqual(sepwidth, 0)) {
-          JsValue a49 = newArray();
-          JS.push(a49, "arraycolsep");
+          JsValue a49 = JS.array("arraycolsep");
           JsValue a50 = newArray();
           colSep = JS.invoke(buildCommon, "makeSpan", a49, a50);
           colSep["style"]["width"] = JS.call(makeEm, undef(), sepwidth);
@@ -484,15 +477,13 @@ htmlBuilder = (JsValue group, JsValue options) => {
         or56 = "c";
       }
       JS.push(a55, JS.add("col-align-", or56));
-      JsValue a57 = newArray();
-      JS.push(a57, col);
+      JsValue a57 = JS.array(col);
       col = JS.invoke(buildCommon, "makeSpan", a55, a57);
       JS.invoke(cols, "push", col);
       if ((JS.lessThan(c, (toNum(nc) - toNum(1)))) || (group["hskipBeforeAndAfter"].truthy())) {
         sepwidth = JS.invoke(utils, "deflt", colDescr["postgap"], arraycolsep);
         if (JS.strictNotEqual(sepwidth, 0)) {
-          JsValue a58 = newArray();
-          JS.push(a58, "arraycolsep");
+          JsValue a58 = JS.array("arraycolsep");
           JsValue a59 = newArray();
           colSep = JS.invoke(buildCommon, "makeSpan", a58, a59);
           colSep["style"]["width"] = JS.call(makeEm, undef(), sepwidth);
@@ -504,8 +495,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       colDescrNum;
     }
   }
-  JsValue a62 = newArray();
-  JS.push(a62, "mtable");
+  JsValue a62 = JS.array("mtable");
   body = JS.invoke(buildCommon, "makeSpan", a62, cols);
   if (JS.greaterThan(hlines["length"], 0)) {
     JsValue line = JS.invoke(buildCommon, "makeLineSpan", "hline", options, ruleThickness);
@@ -540,43 +530,32 @@ htmlBuilder = (JsValue group, JsValue options) => {
     body = JS.invoke(buildCommon, "makeVList", o67, options);
   }
   if (JS.strictEqual(tagSpans["length"], 0)) {
-    JsValue a68 = newArray();
-    JS.push(a68, "mord");
-    JsValue a69 = newArray();
-    JS.push(a69, body);
+    JsValue a68 = JS.array("mord");
+    JsValue a69 = JS.array(body);
     return JS.invoke(buildCommon, "makeSpan", a68, a69, options);
   } else {
     JsValue o70 = emptyObject();
     o70["positionType"] = "individualShift";
     o70["children"] = tagSpans;
     JsValue eqnNumCol = JS.invoke(buildCommon, "makeVList", o70, options);
-    JsValue a71 = newArray();
-    JS.push(a71, "tag");
-    JsValue a72 = newArray();
-    JS.push(a72, eqnNumCol);
+    JsValue a71 = JS.array("tag");
+    JsValue a72 = JS.array(eqnNumCol);
     eqnNumCol = JS.invoke(buildCommon, "makeSpan", a71, a72, options);
-    JsValue a73 = newArray();
-    JS.push(a73, body);
-    JS.push(a73, eqnNumCol);
+    JsValue a73 = JS.array(body, eqnNumCol);
     return JS.invoke(buildCommon, "makeFragment", a73);
   }
   return undef();
 };
-JsValue o74 = emptyObject();
-o74["c"] = "center ";
-o74["l"] = "left ";
-o74["r"] = "right ";
+JsValue o74 = JS.object("c", "center ", "l", "left ", "r", "right ");
 alignMap = o74;
 mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue a75 = newArray();
   JsValue tbl = a75;
   JsValue a76 = newArray();
-  JsValue a77 = newArray();
-  JS.push(a77, "mtr-glue");
+  JsValue a77 = JS.array("mtr-glue");
   JsValue glue = JS.construct(mathMLTree["MathNode"], "mtd", a76, a77);
   JsValue a78 = newArray();
-  JsValue a79 = newArray();
-  JS.push(a79, "mml-eqn-num");
+  JsValue a79 = JS.array("mml-eqn-num");
   JsValue tag = JS.construct(mathMLTree["MathNode"], "mtd", a78, a79);
   {
     JsValue i = 0;
@@ -587,8 +566,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
       {
         JsValue j = 0;
         while (JS.lessThan(j, rw["length"])) {
-          JsValue a81 = newArray();
-          JS.push(a81, JS.invoke(mml, "buildGroup", rw[j], options));
+          JsValue a81 = JS.array(JS.invoke(mml, "buildGroup", rw[j], options));
           JS.invoke(row, "push", JS.construct(mathMLTree["MathNode"], "mtd", a81));
           JsValue u82 = j;
           j = JS.add(j, 1);
@@ -785,14 +763,12 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     JS.invoke(table, "setAttribute", "rowlines", JS.invoke(rowLines, "trim"));
   }
   if (JS.strictNotEqual(menclose, "")) {
-    JsValue a103 = newArray();
-    JS.push(a103, table);
+    JsValue a103 = JS.array(table);
     table = JS.construct(mathMLTree["MathNode"], "menclose", a103);
     JS.invoke(table, "setAttribute", "notation", JS.invoke(menclose, "trim"));
   }
   if ((group["arraystretch"].truthy()) && (JS.lessThan(group["arraystretch"], 1))) {
-    JsValue a104 = newArray();
-    JS.push(a104, table);
+    JsValue a104 = JS.array(table);
     table = JS.construct(mathMLTree["MathNode"], "mstyle", a104);
     JS.invoke(table, "setAttribute", "scriptlevel", "1");
   }
@@ -910,21 +886,14 @@ alignedHandler = (JsValue context, JsValue args) => {
   return res;
   return undef();
 };
-JsValue o116 = emptyObject();
-o116["type"] = "array";
-JsValue a117 = newArray();
-JS.push(a117, "array");
-JS.push(a117, "darray");
-o116["names"] = a117;
-JsValue o118 = emptyObject();
-o118["numArgs"] = 1;
+JsValue o116 = JS.object("type", "array", "names", JS.array("array", "darray"));
+JsValue o118 = JS.object("numArgs", 1);
 o116["props"] = o118;
 o116["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
   JsValue symNode = JS.call(checkSymbolNodeType, undef(), args[0]);
   JsValue c119 = undef();
   if (symNode.truthy()) {
-    JsValue a120 = newArray();
-    JS.push(a120, args[0]);
+    JsValue a120 = JS.array(args[0]);
     c119 = a120;
   } else {
     c119 = JS.call(assertNodeType, undef(), args[0], "ordgroup")["body"];
@@ -967,47 +936,21 @@ o116["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
 o116["htmlBuilder"] = htmlBuilder;
 o116["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o116);
-JsValue o125 = emptyObject();
-o125["type"] = "array";
-JsValue a126 = newArray();
-JS.push(a126, "matrix");
-JS.push(a126, "pmatrix");
-JS.push(a126, "bmatrix");
-JS.push(a126, "Bmatrix");
-JS.push(a126, "vmatrix");
-JS.push(a126, "Vmatrix");
-JS.push(a126, "matrix*");
-JS.push(a126, "pmatrix*");
-JS.push(a126, "bmatrix*");
-JS.push(a126, "Bmatrix*");
-JS.push(a126, "vmatrix*");
-JS.push(a126, "Vmatrix*");
-o125["names"] = a126;
-JsValue o127 = emptyObject();
-o127["numArgs"] = 0;
+JsValue o125 = JS.object("type", "array", "names", JS.array("matrix", "pmatrix", "bmatrix", "Bmatrix", "vmatrix", "Vmatrix", "matrix*", "pmatrix*", "bmatrix*", "Bmatrix*", "vmatrix*", "Vmatrix*"));
+JsValue o127 = JS.object("numArgs", 0);
 o125["props"] = o127;
 o125["handler"] = JS.method1((JsValue self, JsValue context) => {
   JsValue o128 = emptyObject();
   o128["matrix"] = null;
-  JsValue a129 = newArray();
-  JS.push(a129, "(");
-  JS.push(a129, ")");
+  JsValue a129 = JS.array("(", ")");
   o128["pmatrix"] = a129;
-  JsValue a130 = newArray();
-  JS.push(a130, "[");
-  JS.push(a130, "]");
+  JsValue a130 = JS.array("[", "]");
   o128["bmatrix"] = a130;
-  JsValue a131 = newArray();
-  JS.push(a131, "\\{");
-  JS.push(a131, "\\}");
+  JsValue a131 = JS.array("\\{", "\\}");
   o128["Bmatrix"] = a131;
-  JsValue a132 = newArray();
-  JS.push(a132, "|");
-  JS.push(a132, "|");
+  JsValue a132 = JS.array("|", "|");
   o128["vmatrix"] = a132;
-  JsValue a133 = newArray();
-  JS.push(a133, "\\Vert");
-  JS.push(a133, "\\Vert");
+  JsValue a133 = JS.array("\\Vert", "\\Vert");
   o128["Vmatrix"] = a133;
   JsValue delimiters = o128[JS.invoke(context["envName"], "replace", "*", "")];
   JsValue colAlign = "c";
@@ -1055,8 +998,7 @@ o125["handler"] = JS.method1((JsValue self, JsValue context) => {
     JsValue o141 = emptyObject();
     o141["type"] = "leftright";
     o141["mode"] = context["mode"];
-    JsValue a142 = newArray();
-    JS.push(a142, res);
+    JsValue a142 = JS.array(res);
     o141["body"] = a142;
     o141["left"] = delimiters[0];
     o141["right"] = delimiters[1];
@@ -1071,13 +1013,8 @@ o125["handler"] = JS.method1((JsValue self, JsValue context) => {
 o125["htmlBuilder"] = htmlBuilder;
 o125["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o125);
-JsValue o143 = emptyObject();
-o143["type"] = "array";
-JsValue a144 = newArray();
-JS.push(a144, "smallmatrix");
-o143["names"] = a144;
-JsValue o145 = emptyObject();
-o145["numArgs"] = 0;
+JsValue o143 = JS.object("type", "array", "names", JS.array("smallmatrix"));
+JsValue o145 = JS.object("numArgs", 0);
 o143["props"] = o145;
 o143["handler"] = JS.method1((JsValue self, JsValue context) => {
   JsValue o146 = emptyObject();
@@ -1091,20 +1028,14 @@ o143["handler"] = JS.method1((JsValue self, JsValue context) => {
 o143["htmlBuilder"] = htmlBuilder;
 o143["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o143);
-JsValue o147 = emptyObject();
-o147["type"] = "array";
-JsValue a148 = newArray();
-JS.push(a148, "subarray");
-o147["names"] = a148;
-JsValue o149 = emptyObject();
-o149["numArgs"] = 1;
+JsValue o147 = JS.object("type", "array", "names", JS.array("subarray"));
+JsValue o149 = JS.object("numArgs", 1);
 o147["props"] = o149;
 o147["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
   JsValue symNode = JS.call(checkSymbolNodeType, undef(), args[0]);
   JsValue c150 = undef();
   if (symNode.truthy()) {
-    JsValue a151 = newArray();
-    JS.push(a151, args[0]);
+    JsValue a151 = JS.array(args[0]);
     c150 = a151;
   } else {
     c150 = JS.call(assertNodeType, undef(), args[0], "ordgroup")["body"];
@@ -1140,16 +1071,8 @@ o147["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
 o147["htmlBuilder"] = htmlBuilder;
 o147["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o147);
-JsValue o154 = emptyObject();
-o154["type"] = "array";
-JsValue a155 = newArray();
-JS.push(a155, "cases");
-JS.push(a155, "dcases");
-JS.push(a155, "rcases");
-JS.push(a155, "drcases");
-o154["names"] = a155;
-JsValue o156 = emptyObject();
-o156["numArgs"] = 0;
+JsValue o154 = JS.object("type", "array", "names", JS.array("cases", "dcases", "rcases", "drcases"));
+JsValue o156 = JS.object("numArgs", 0);
 o154["props"] = o156;
 o154["handler"] = JS.method1((JsValue self, JsValue context) => {
   JsValue o157 = emptyObject();
@@ -1173,8 +1096,7 @@ o154["handler"] = JS.method1((JsValue self, JsValue context) => {
   JsValue o161 = emptyObject();
   o161["type"] = "leftright";
   o161["mode"] = context["mode"];
-  JsValue a162 = newArray();
-  JS.push(a162, res);
+  JsValue a162 = JS.array(res);
   o161["body"] = a162;
   JsValue c163 = undef();
   if (JS.greaterThan(JS.invoke(context["envName"], "indexOf", "r"), JS.number(0) - toNum(1))) {
@@ -1197,35 +1119,18 @@ o154["handler"] = JS.method1((JsValue self, JsValue context) => {
 o154["htmlBuilder"] = htmlBuilder;
 o154["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o154);
-JsValue o165 = emptyObject();
-o165["type"] = "array";
-JsValue a166 = newArray();
-JS.push(a166, "align");
-JS.push(a166, "align*");
-JS.push(a166, "aligned");
-JS.push(a166, "split");
-o165["names"] = a166;
-JsValue o167 = emptyObject();
-o167["numArgs"] = 0;
+JsValue o165 = JS.object("type", "array", "names", JS.array("align", "align*", "aligned", "split"));
+JsValue o167 = JS.object("numArgs", 0);
 o165["props"] = o167;
 o165["handler"] = alignedHandler;
 o165["htmlBuilder"] = htmlBuilder;
 o165["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o165);
-JsValue o168 = emptyObject();
-o168["type"] = "array";
-JsValue a169 = newArray();
-JS.push(a169, "gathered");
-JS.push(a169, "gather");
-JS.push(a169, "gather*");
-o168["names"] = a169;
-JsValue o170 = emptyObject();
-o170["numArgs"] = 0;
+JsValue o168 = JS.object("type", "array", "names", JS.array("gathered", "gather", "gather*"));
+JsValue o170 = JS.object("numArgs", 0);
 o168["props"] = o170;
 o168["handler"] = JS.method1((JsValue self, JsValue context) => {
-  JsValue a171 = newArray();
-  JS.push(a171, "gather");
-  JS.push(a171, "gather*");
+  JsValue a171 = JS.array("gather", "gather*");
   if (JS.invoke(utils, "contains", a171, context["envName"]).truthy()) {
     JS.call(validateAmsEnvironmentContext, undef(), context);
   }
@@ -1248,28 +1153,15 @@ o168["handler"] = JS.method1((JsValue self, JsValue context) => {
 o168["htmlBuilder"] = htmlBuilder;
 o168["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o168);
-JsValue o175 = emptyObject();
-o175["type"] = "array";
-JsValue a176 = newArray();
-JS.push(a176, "alignat");
-JS.push(a176, "alignat*");
-JS.push(a176, "alignedat");
-o175["names"] = a176;
-JsValue o177 = emptyObject();
-o177["numArgs"] = 1;
+JsValue o175 = JS.object("type", "array", "names", JS.array("alignat", "alignat*", "alignedat"));
+JsValue o177 = JS.object("numArgs", 1);
 o175["props"] = o177;
 o175["handler"] = alignedHandler;
 o175["htmlBuilder"] = htmlBuilder;
 o175["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o175);
-JsValue o178 = emptyObject();
-o178["type"] = "array";
-JsValue a179 = newArray();
-JS.push(a179, "equation");
-JS.push(a179, "equation*");
-o178["names"] = a179;
-JsValue o180 = emptyObject();
-o180["numArgs"] = 0;
+JsValue o178 = JS.object("type", "array", "names", JS.array("equation", "equation*"));
+JsValue o180 = JS.object("numArgs", 0);
 o178["props"] = o180;
 o178["handler"] = JS.method1((JsValue self, JsValue context) => {
   JS.call(validateAmsEnvironmentContext, undef(), context);
@@ -1286,13 +1178,8 @@ o178["handler"] = JS.method1((JsValue self, JsValue context) => {
 o178["htmlBuilder"] = htmlBuilder;
 o178["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o178);
-JsValue o182 = emptyObject();
-o182["type"] = "array";
-JsValue a183 = newArray();
-JS.push(a183, "CD");
-o182["names"] = a183;
-JsValue o184 = emptyObject();
-o184["numArgs"] = 0;
+JsValue o182 = JS.object("type", "array", "names", JS.array("CD"));
+JsValue o184 = JS.object("numArgs", 0);
 o182["props"] = o184;
 o182["handler"] = JS.method1((JsValue self, JsValue context) => {
   JS.call(validateAmsEnvironmentContext, undef(), context);
@@ -1304,16 +1191,8 @@ o182["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), o182);
 JS.call(defineMacro, undef(), "\\nonumber", "\\gdef\\@eqnsw{0}");
 JS.call(defineMacro, undef(), "\\notag", "\\nonumber");
-JsValue o185 = emptyObject();
-o185["type"] = "text";
-JsValue a186 = newArray();
-JS.push(a186, "\\hline");
-JS.push(a186, "\\hdashline");
-o185["names"] = a186;
-JsValue o187 = emptyObject();
-o187["numArgs"] = 0;
-o187["allowedInText"] = true;
-o187["allowedInMath"] = true;
+JsValue o185 = JS.object("type", "text", "names", JS.array("\\hline", "\\hdashline"));
+JsValue o187 = JS.object("numArgs", 0, "allowedInText", true, "allowedInMath", true);
 o185["props"] = o187;
 o185["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
   throw JS.construct(ParseError, toStr(context["funcName"]) + " valid only within array environment");

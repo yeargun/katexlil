@@ -40,9 +40,6 @@ checkSymbolNodeType = (JsValue node) => {
   return null;
   return undef();
 };
-JsValue __star = emptyObject();
-__star["assertNodeType"] = assertNodeType;
-__star["assertSymbolNodeType"] = assertSymbolNodeType;
-__star["checkSymbolNodeType"] = checkSymbolNodeType;
+JsValue __star = JS.object("assertNodeType", assertNodeType, "assertSymbolNodeType", assertSymbolNodeType, "checkSymbolNodeType", checkSymbolNodeType);
 
 export { __star, assertNodeType, assertSymbolNodeType, checkSymbolNodeType };

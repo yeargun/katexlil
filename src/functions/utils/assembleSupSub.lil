@@ -9,8 +9,7 @@ JsValue assembleSupSub = undef();
 
 assembleSupSub = (JsValue base, JsValue supGroup, JsValue subGroup, JsValue options, JsValue style, JsValue slant, JsValue baseShift) => {
   JsValue a1 = newArray();
-  JsValue a2 = newArray();
-  JS.push(a2, base);
+  JsValue a2 = JS.array(base);
   base = JS.invoke(buildCommon, "makeSpan", a1, a2);
   JsValue and3 = subGroup;
   if (and3.truthy()) {
@@ -129,24 +128,19 @@ assembleSupSub = (JsValue base, JsValue supGroup, JsValue subGroup, JsValue opti
       }
     }
   }
-  JsValue a27 = newArray();
-  JS.push(a27, finalGroup);
+  JsValue a27 = JS.array(finalGroup);
   JsValue parts = a27;
   if (((sub.truthy()) && (JS.strictNotEqual(slant, 0))) && (!(subIsSingleCharacter.truthy()))) {
-    JsValue a28 = newArray();
-    JS.push(a28, "mspace");
+    JsValue a28 = JS.array("mspace");
     JsValue a29 = newArray();
     JsValue spacer = JS.invoke(buildCommon, "makeSpan", a28, a29, options);
     spacer["style"]["marginRight"] = JS.call(makeEm, undef(), slant);
     JS.invoke(parts, "unshift", spacer);
   }
-  JsValue a30 = newArray();
-  JS.push(a30, "mop");
-  JS.push(a30, "op-limits");
+  JsValue a30 = JS.array("mop", "op-limits");
   return JS.invoke(buildCommon, "makeSpan", a30, parts, options);
   return undef();
 };
-JsValue __star = emptyObject();
-__star["assembleSupSub"] = assembleSupSub;
+JsValue __star = JS.object("assembleSupSub", assembleSupSub);
 
 export { __star, assembleSupSub };

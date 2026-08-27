@@ -22,18 +22,8 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   return node;
   return undef();
 };
-JsValue o1 = emptyObject();
-o1["type"] = "color";
-JsValue a2 = newArray();
-JS.push(a2, "\\textcolor");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 2;
-o3["allowedInText"] = true;
-JsValue a4 = newArray();
-JS.push(a4, "color");
-JS.push(a4, "original");
-o3["argTypes"] = a4;
+JsValue o1 = JS.object("type", "color", "names", JS.array("\\textcolor"));
+JsValue o3 = JS.object("numArgs", 2, "allowedInText", true, "argTypes", JS.array("color", "original"));
 o1["props"] = o3;
 o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   JsValue op6 = p5;
@@ -51,17 +41,8 @@ o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
 o1["htmlBuilder"] = htmlBuilder;
 o1["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o1);
-JsValue o8 = emptyObject();
-o8["type"] = "color";
-JsValue a9 = newArray();
-JS.push(a9, "\\color");
-o8["names"] = a9;
-JsValue o10 = emptyObject();
-o10["numArgs"] = 1;
-o10["allowedInText"] = true;
-JsValue a11 = newArray();
-JS.push(a11, "color");
-o10["argTypes"] = a11;
+JsValue o8 = JS.object("type", "color", "names", JS.array("\\color"));
+JsValue o10 = JS.object("numArgs", 1, "allowedInText", true, "argTypes", JS.array("color"));
 o8["props"] = o10;
 o8["handler"] = JS.method2((JsValue self, JsValue p12, JsValue args) => {
   JsValue op13 = p12;

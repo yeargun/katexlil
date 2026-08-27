@@ -26,41 +26,17 @@ JsValue buildHTMLUnbreakable = undef();
 JsValue buildHTML = undef();
 
 makeSpan = buildCommon["makeSpan"];
-JsValue a1 = newArray();
-JS.push(a1, "leftmost");
-JS.push(a1, "mbin");
-JS.push(a1, "mopen");
-JS.push(a1, "mrel");
-JS.push(a1, "mop");
-JS.push(a1, "mpunct");
+JsValue a1 = JS.array("leftmost", "mbin", "mopen", "mrel", "mop", "mpunct");
 binLeftCanceller = a1;
-JsValue a2 = newArray();
-JS.push(a2, "rightmost");
-JS.push(a2, "mrel");
-JS.push(a2, "mclose");
-JS.push(a2, "mpunct");
+JsValue a2 = JS.array("rightmost", "mrel", "mclose", "mpunct");
 binRightCanceller = a2;
-JsValue o3 = emptyObject();
-o3["display"] = Style["DISPLAY"];
-o3["text"] = Style["TEXT"];
-o3["script"] = Style["SCRIPT"];
-o3["scriptscript"] = Style["SCRIPTSCRIPT"];
+JsValue o3 = JS.object("display", Style["DISPLAY"], "text", Style["TEXT"], "script", Style["SCRIPT"], "scriptscript", Style["SCRIPTSCRIPT"]);
 styleMap = o3;
-JsValue o4 = emptyObject();
-o4["mord"] = "mord";
-o4["mop"] = "mop";
-o4["mbin"] = "mbin";
-o4["mrel"] = "mrel";
-o4["mopen"] = "mopen";
-o4["mclose"] = "mclose";
-o4["mpunct"] = "mpunct";
-o4["minner"] = "minner";
+JsValue o4 = JS.object("mord", "mord", "mop", "mop", "mbin", "mbin", "mrel", "mrel", "mopen", "mopen", "mclose", "mclose", "mpunct", "mpunct", "minner", "minner");
 DomEnum = o4;
 buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsValue surrounding) => {
   if (isUndef(surrounding)) {
-    JsValue a5 = newArray();
-    JS.push(a5, null);
-    JS.push(a5, null);
+    JsValue a5 = JS.array(null, null);
     surrounding = a5;
   }
   JsValue a6 = newArray();
@@ -182,8 +158,7 @@ traverseNonSpaceNodes = (JsValue nodes, JsValue callback, JsValue prev, JsValue 
         prev["node"] = node;
       } else {
         if ((isRoot.truthy()) && (JS.invoke(node, "hasClass", "newline").truthy())) {
-          JsValue a19 = newArray();
-          JS.push(a19, "leftmost");
+          JsValue a19 = JS.array("leftmost");
           prev["node"] = JS.call(makeSpan, undef(), a19);
         }
       }
@@ -243,8 +218,7 @@ getTypeOfDomTree = (JsValue node, JsValue side) => {
   return undef();
 };
 makeNullDelimiter = (JsValue options, JsValue classes) => {
-  JsValue a23 = newArray();
-  JS.push(a23, "nulldelimiter");
+  JsValue a23 = JS.array("nulldelimiter");
   JsValue moreClasses = JS.invoke(a23, "concat", JS.invoke(options, "baseSizingClasses"));
   return JS.call(makeSpan, undef(), JS.invoke(classes, "concat", moreClasses));
   return undef();
@@ -256,8 +230,7 @@ buildGroup = (JsValue group, JsValue options, JsValue baseOptions) => {
   if (groupBuilders[group["type"]].truthy()) {
     JsValue groupNode = JS.call(groupBuilders[group["type"]], groupBuilders, group, options);
     if ((baseOptions.truthy()) && (JS.strictNotEqual(options["size"], baseOptions["size"]))) {
-      JsValue a24 = newArray();
-      JS.push(a24, groupNode);
+      JsValue a24 = JS.array(groupNode);
       groupNode = JS.call(makeSpan, undef(), JS.invoke(options, "sizingClasses", baseOptions), a24, options);
       JsValue multiplier = (toNum(options["sizeMultiplier"]) / toNum(baseOptions["sizeMultiplier"]));
       JsValue as25 = groupNode["height"];
@@ -272,11 +245,9 @@ buildGroup = (JsValue group, JsValue options, JsValue baseOptions) => {
   return undef();
 };
 buildHTMLUnbreakable = (JsValue children, JsValue options) => {
-  JsValue a27 = newArray();
-  JS.push(a27, "base");
+  JsValue a27 = JS.array("base");
   JsValue body = JS.call(makeSpan, undef(), a27, children, options);
-  JsValue a28 = newArray();
-  JS.push(a28, "strut");
+  JsValue a28 = JS.array("strut");
   JsValue strut = JS.call(makeSpan, undef(), a28);
   strut["style"]["height"] = JS.call(makeEm, undef(), JS.add(body["height"], body["depth"]));
   if (body["depth"].truthy()) {
@@ -341,8 +312,7 @@ buildHTML = (JsValue tree, JsValue options) => {
   JsValue tagChild = undef();
   if (tag.truthy()) {
     tagChild = JS.call(buildHTMLUnbreakable, undef(), JS.call(buildExpression, undef(), tag, options, true));
-    JsValue a35 = newArray();
-    JS.push(a35, "tag");
+    JsValue a35 = JS.array("tag");
     tagChild["classes"] = a35;
     JS.invoke(children, "push", tagChild);
   } else {
@@ -350,8 +320,7 @@ buildHTML = (JsValue tree, JsValue options) => {
       JS.invoke(children, "push", eqnNum);
     }
   }
-  JsValue a36 = newArray();
-  JS.push(a36, "katex-html");
+  JsValue a36 = JS.array("katex-html");
   JsValue htmlNode = JS.call(makeSpan, undef(), a36, children);
   JS.invoke(htmlNode, "setAttribute", "aria-hidden", "true");
   if (tagChild.truthy()) {
@@ -364,12 +333,6 @@ buildHTML = (JsValue tree, JsValue options) => {
   return htmlNode;
   return undef();
 };
-JsValue __star = emptyObject();
-__star["buildExpression"] = buildExpression;
-__star["getTypeOfDomTree"] = getTypeOfDomTree;
-__star["makeNullDelimiter"] = makeNullDelimiter;
-__star["buildGroup"] = buildGroup;
-__star["default"] = buildHTML;
-__star["buildHTML"] = buildHTML;
+JsValue __star = JS.object("buildExpression", buildExpression, "getTypeOfDomTree", getTypeOfDomTree, "makeNullDelimiter", makeNullDelimiter, "buildGroup", buildGroup, "default", buildHTML, "buildHTML", buildHTML);
 
 export { __star, buildExpression, getTypeOfDomTree, makeNullDelimiter, buildGroup, buildHTML as buildHTML };

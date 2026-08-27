@@ -97,21 +97,12 @@ ordargument = (JsValue arg) => {
   if (JS.strictEqual(arg["type"], "ordgroup")) {
     c18 = arg["body"];
   } else {
-    JsValue a19 = newArray();
-    JS.push(a19, arg);
+    JsValue a19 = JS.array(arg);
     c18 = a19;
   }
   return c18;
   return undef();
 };
-JsValue __star = emptyObject();
-__star["_functions"] = _functions;
-__star["_htmlGroupBuilders"] = _htmlGroupBuilders;
-__star["_mathmlGroupBuilders"] = _mathmlGroupBuilders;
-__star["defineFunctionBuilders"] = defineFunctionBuilders;
-__star["normalizeArgument"] = normalizeArgument;
-__star["ordargument"] = ordargument;
-__star["default"] = defineFunction;
-__star["defineFunction"] = defineFunction;
+JsValue __star = JS.object("_functions", _functions, "_htmlGroupBuilders", _htmlGroupBuilders, "_mathmlGroupBuilders", _mathmlGroupBuilders, "defineFunctionBuilders", defineFunctionBuilders, "normalizeArgument", normalizeArgument, "ordargument", ordargument, "default", defineFunction, "defineFunction", defineFunction);
 
 export { __star, _functions, _htmlGroupBuilders, _mathmlGroupBuilders, defineFunctionBuilders, normalizeArgument, ordargument, defineFunction as defineFunction };

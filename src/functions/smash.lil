@@ -7,15 +7,8 @@ import { assertNodeType } from "../parseNode.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "smash";
-JsValue a2 = newArray();
-JS.push(a2, "\\smash");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 1;
-o3["numOptionalArgs"] = 1;
-o3["allowedInText"] = true;
+JsValue o1 = JS.object("type", "smash", "names", JS.array("\\smash"));
+JsValue o3 = JS.object("numArgs", 1, "numOptionalArgs", 1, "allowedInText", true);
 o1["props"] = o3;
 o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
   JsValue op5 = p4;
@@ -64,8 +57,7 @@ o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
 };
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a9 = newArray();
-  JsValue a10 = newArray();
-  JS.push(a10, JS.invoke(html, "buildGroup", group["body"], options));
+  JsValue a10 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
   JsValue node = JS.invoke(buildCommon, "makeSpan", a9, a10);
   if ((!(group["smashHeight"].truthy())) && (!(group["smashDepth"].truthy()))) {
     return node;
@@ -105,16 +97,13 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JS.push(a14, o15);
   o13["children"] = a14;
   JsValue smashedNode = JS.invoke(buildCommon, "makeVList", o13, options);
-  JsValue a16 = newArray();
-  JS.push(a16, "mord");
-  JsValue a17 = newArray();
-  JS.push(a17, smashedNode);
+  JsValue a16 = JS.array("mord");
+  JsValue a17 = JS.array(smashedNode);
   return JS.invoke(buildCommon, "makeSpan", a16, a17, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
-  JsValue a18 = newArray();
-  JS.push(a18, JS.invoke(mml, "buildGroup", group["body"], options));
+  JsValue a18 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
   JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a18);
   if (group["smashHeight"].truthy()) {
     JS.invoke(node, "setAttribute", "height", "0px");

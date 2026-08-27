@@ -9,24 +9,9 @@ JsValue validUnit = undef();
 JsValue calculateSize = undef();
 JsValue makeEm = undef();
 
-JsValue o1 = emptyObject();
-o1["pt"] = 1;
-o1["mm"] = (toNum(7227) / toNum(2540));
-o1["cm"] = (toNum(7227) / toNum(254));
-o1["in"] = 72.27;
-o1["bp"] = (toNum(803) / toNum(800));
-o1["pc"] = 12;
-o1["dd"] = (toNum(1238) / toNum(1157));
-o1["cc"] = (toNum(14856) / toNum(1157));
-o1["nd"] = (toNum(685) / toNum(642));
-o1["nc"] = (toNum(1370) / toNum(107));
-o1["sp"] = (toNum(1) / toNum(65536));
-o1["px"] = (toNum(803) / toNum(800));
+JsValue o1 = JS.object("pt", 1, "mm", (toNum(7227) / toNum(2540)), "cm", (toNum(7227) / toNum(254)), "in", 72.27, "bp", (toNum(803) / toNum(800)), "pc", 12, "dd", (toNum(1238) / toNum(1157)), "cc", (toNum(14856) / toNum(1157)), "nd", (toNum(685) / toNum(642)), "nc", (toNum(1370) / toNum(107)), "sp", (toNum(1) / toNum(65536)), "px", (toNum(803) / toNum(800)));
 ptPerUnit = o1;
-JsValue o2 = emptyObject();
-o2["ex"] = true;
-o2["em"] = true;
-o2["mu"] = true;
+JsValue o2 = JS.object("ex", true, "em", true, "mu", true);
 relativeUnit = o2;
 validUnit = (JsValue unit) => {
   if (JS.strictNotEqual(JS.typeOf(unit), "string")) {
@@ -78,9 +63,6 @@ makeEm = (JsValue n) => {
   return JS.add(toNum(JS.invoke(n, "toFixed", 4)), "em");
   return undef();
 };
-JsValue __star = emptyObject();
-__star["validUnit"] = validUnit;
-__star["calculateSize"] = calculateSize;
-__star["makeEm"] = makeEm;
+JsValue __star = JS.object("validUnit", validUnit, "calculateSize", calculateSize, "makeEm", makeEm);
 
 export { __star, validUnit, calculateSize, makeEm };

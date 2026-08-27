@@ -72,8 +72,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     JS.invoke(vlist["children"][0]["children"][0]["children"][0]["classes"], "push", "svg-align");
   }
   if (supSubGroup.truthy()) {
-    JsValue a12 = newArray();
-    JS.push(a12, "mord");
+    JsValue a12 = JS.array("mord");
     JsValue c13 = undef();
     if (group["isOver"].truthy()) {
       c13 = "mover";
@@ -81,8 +80,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
       c13 = "munder";
     }
     JS.push(a12, c13);
-    JsValue a14 = newArray();
-    JS.push(a14, vlist);
+    JsValue a14 = JS.array(vlist);
     JsValue vSpan = JS.invoke(buildCommon, "makeSpan", a12, a14, options);
     if (group["isOver"].truthy()) {
       JsValue o15 = emptyObject();
@@ -123,8 +121,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
       vlist = JS.invoke(buildCommon, "makeVList", o20, options);
     }
   }
-  JsValue a25 = newArray();
-  JS.push(a25, "mord");
+  JsValue a25 = JS.array("mord");
   JsValue c26 = undef();
   if (group["isOver"].truthy()) {
     c26 = "mover";
@@ -132,8 +129,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     c26 = "munder";
   }
   JS.push(a25, c26);
-  JsValue a27 = newArray();
-  JS.push(a27, vlist);
+  JsValue a27 = JS.array(vlist);
   return JS.invoke(buildCommon, "makeSpan", a25, a27, options);
   return undef();
 };
@@ -145,20 +141,12 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   } else {
     c28 = "munder";
   }
-  JsValue a29 = newArray();
-  JS.push(a29, JS.invoke(mml, "buildGroup", group["base"], options));
-  JS.push(a29, accentNode);
+  JsValue a29 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options), accentNode);
   return JS.construct(mathMLTree["MathNode"], c28, a29);
   return undef();
 };
-JsValue o30 = emptyObject();
-o30["type"] = "horizBrace";
-JsValue a31 = newArray();
-JS.push(a31, "\\overbrace");
-JS.push(a31, "\\underbrace");
-o30["names"] = a31;
-JsValue o32 = emptyObject();
-o32["numArgs"] = 1;
+JsValue o30 = JS.object("type", "horizBrace", "names", JS.array("\\overbrace", "\\underbrace"));
+JsValue o32 = JS.object("numArgs", 1);
 o30["props"] = o32;
 o30["handler"] = JS.method2((JsValue self, JsValue p33, JsValue args) => {
   JsValue op34 = p33;
@@ -176,7 +164,6 @@ o30["handler"] = JS.method2((JsValue self, JsValue p33, JsValue args) => {
 o30["htmlBuilder"] = htmlBuilder;
 o30["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o30);
-JsValue __star = emptyObject();
-__star["htmlBuilder"] = htmlBuilder;
+JsValue __star = JS.object("htmlBuilder", htmlBuilder);
 
 export { __star, htmlBuilder };

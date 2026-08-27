@@ -6,15 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { calculateSize, makeEm } from "../units.lil";
 import { assertNodeType } from "../parseNode.lil";
 
-JsValue o1 = emptyObject();
-o1["type"] = "cr";
-JsValue a2 = newArray();
-JS.push(a2, "\\\\");
-o1["names"] = a2;
-JsValue o3 = emptyObject();
-o3["numArgs"] = 0;
-o3["numOptionalArgs"] = 0;
-o3["allowedInText"] = true;
+JsValue o1 = JS.object("type", "cr", "names", JS.array("\\\\"));
+JsValue o3 = JS.object("numArgs", 0, "numOptionalArgs", 0, "allowedInText", true);
 o1["props"] = o3;
 o1["handler"] = JS.method3((JsValue self, JsValue p4, JsValue args, JsValue optArgs) => {
   JsValue op5 = p4;
@@ -44,8 +37,7 @@ o1["handler"] = JS.method3((JsValue self, JsValue p4, JsValue args, JsValue optA
   return undef();
 });
 o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue a10 = newArray();
-  JS.push(a10, "mspace");
+  JsValue a10 = JS.array("mspace");
   JsValue a11 = newArray();
   JsValue span = JS.invoke(buildCommon, "makeSpan", a10, a11, options);
   if (group["newLine"].truthy()) {

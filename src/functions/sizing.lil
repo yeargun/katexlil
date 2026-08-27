@@ -36,30 +36,15 @@ sizingGroup = (JsValue value, JsValue options, JsValue baseOptions) => {
   return JS.invoke(buildCommon, "makeFragment", inner);
   return undef();
 };
-JsValue a4 = newArray();
-JS.push(a4, "\\tiny");
-JS.push(a4, "\\sixptsize");
-JS.push(a4, "\\scriptsize");
-JS.push(a4, "\\footnotesize");
-JS.push(a4, "\\small");
-JS.push(a4, "\\normalsize");
-JS.push(a4, "\\large");
-JS.push(a4, "\\Large");
-JS.push(a4, "\\LARGE");
-JS.push(a4, "\\huge");
-JS.push(a4, "\\Huge");
+JsValue a4 = JS.array("\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge");
 sizeFuncs = a4;
 htmlBuilder = (JsValue group, JsValue options) => {
   JsValue newOptions = JS.invoke(options, "havingSize", group["size"]);
   return JS.call(sizingGroup, undef(), group["body"], newOptions, options);
   return undef();
 };
-JsValue o5 = emptyObject();
-o5["type"] = "sizing";
-o5["names"] = sizeFuncs;
-JsValue o6 = emptyObject();
-o6["numArgs"] = 0;
-o6["allowedInText"] = true;
+JsValue o5 = JS.object("type", "sizing", "names", sizeFuncs);
+JsValue o6 = JS.object("numArgs", 0, "allowedInText", true);
 o5["props"] = o6;
 o5["handler"] = (JsValue p7, JsValue args) => {
   JsValue op8 = p7;
@@ -85,8 +70,6 @@ o5["mathmlBuilder"] = (JsValue group, JsValue options) => {
   return undef();
 };
 JS.call(defineFunction, undef(), o5);
-JsValue __star = emptyObject();
-__star["sizingGroup"] = sizingGroup;
-__star["htmlBuilder"] = htmlBuilder;
+JsValue __star = JS.object("sizingGroup", sizingGroup, "htmlBuilder", htmlBuilder);
 
 export { __star, sizingGroup, htmlBuilder };

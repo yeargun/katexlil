@@ -50,8 +50,6 @@ ParseError = JS.methodRest((JsValue self, JsValue argv) => {
   return selfRet;
 });
 ParseError["prototype"]["__proto__"] = Error["prototype"];
-JsValue __star = emptyObject();
-__star["default"] = ParseError;
-__star["ParseError"] = ParseError;
+JsValue __star = JS.object("default", ParseError, "ParseError", ParseError);
 
 export { __star, ParseError as ParseError };
