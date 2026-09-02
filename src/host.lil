@@ -171,32 +171,26 @@ export JsValue push(JsValue arr, JsValue item) {
 }
 
 export void pushAll(JsValue dest, JsValue items) {
-  int i = 0;
   int n = len(items);
-  while (i < n) {
+  for (int i = 0; i < n; i++) {
     JS.push(dest, items[i]);
-    i = i + 1;
   }
 }
 
 export JsValue spliceSpread(JsValue dest, JsValue start, JsValue deleteCount, JsValue items) {
   JsValue args = JS.array(start, deleteCount);
-  int i = 0;
   int n = len(items);
-  while (i < n) {
+  for (int i = 0; i < n; i++) {
     JS.push(args, items[i]);
-    i = i + 1;
   }
   return apply(dest["splice"], dest, args);
 }
 
 export JsValue maxOfList(JsValue first, JsValue rest) {
   JsValue args = JS.array(first);
-  int i = 0;
   int n = len(rest);
-  while (i < n) {
+  for (int i = 0; i < n; i++) {
     JS.push(args, rest[i]);
-    i = i + 1;
   }
   return apply(Math["max"], Math, args);
 }

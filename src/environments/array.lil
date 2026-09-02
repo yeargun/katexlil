@@ -192,13 +192,11 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
   number totalHeight = 0.0;
   JsValue setHLinePos = (JsValue hlinesInGap) => {
   {
-    int i = 0;
-    while (i < len(hlinesInGap)) {
+    for (int i = 0; i < len(hlinesInGap); i++) {
       if (i > 0) {
         totalHeight = totalHeight + 0.25;
       }
       JS.push(hlines, JS.object("pos", totalHeight, "isDashed", hlinesInGap[i]));
-      i = i + 1;
     }
   }
   return undef();
@@ -206,8 +204,7 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
   JS.call(setHLinePos, undef(), hLinesBeforeRow[0]);
   number depth = 0.0;
   {
-    int r = 0;
-    while (r < len(group["body"])) {
+    for (int r = 0; r < len(group["body"]); r++) {
       JsValue inrow = group["body"][r];
       depth = arstrutDepth;
       if (nc < len(inrow)) {
@@ -250,7 +247,6 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
       totalHeight = totalHeight + depth + gap;
       body[r] = outrow;
       JS.call(setHLinePos, undef(), hLinesBeforeRow[r + 1]);
-      r = r + 1;
     }
   }
   number offset = totalHeight / 2.0 + toNum(JS.invoke(options, "fontMetrics")["axisHeight"]);
@@ -265,8 +261,7 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
   return tag;
   }).truthy())) {
     {
-      int r = 0;
-      while (r < nr) {
+      for (int r = 0; r < nr; r++) {
         JsValue rw = body[r];
         number shift = toNum(rw["pos"]) - offset;
         JsValue tag = group["tags"][r];
@@ -281,7 +276,6 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
         tagSpan["depth"] = rw["depth"];
         tagSpan["height"] = rw["height"];
         JS.push(tagSpans, JS.object("type", "elem", "elem", tagSpan, "shift", shift));
-        r = r + 1;
       }
     }
   }
@@ -405,8 +399,7 @@ JsValue mathmlBuilder(JsValue group, JsValue options) {
   JsValue glue = JS.construct(mathMLTree["MathNode"], "mtd", JS.array(), JS.array("mtr-glue"));
   JsValue tag = JS.construct(mathMLTree["MathNode"], "mtd", JS.array(), JS.array("mml-eqn-num"));
   {
-    int i = 0;
-    while (i < len(group["body"])) {
+    for (int i = 0; i < len(group["body"]); i++) {
       JsValue rw = group["body"][i];
       JsValue row = JS.array();
       {
@@ -426,7 +419,6 @@ JsValue mathmlBuilder(JsValue group, JsValue options) {
         }
       }
       JS.push(tbl, JS.construct(mathMLTree["MathNode"], "mtr", row));
-      i = i + 1;
     }
   }
   JsValue table = JS.construct(mathMLTree["MathNode"], "mtable", tbl);
@@ -574,11 +566,9 @@ JsValue alignedHandler(JsValue context, JsValue args) {
   if ((args[0].truthy()) && (JS.strictEqual(args[0]["type"], "ordgroup"))) {
     string arg0 = "";
     {
-      int i = 0;
-      while (i < len(args[0]["body"])) {
+      for (int i = 0; i < len(args[0]["body"]); i++) {
         JsValue textord = JS.call(assertNodeType, undef(), args[0]["body"][i], "textord");
         arg0 = arg0 + toStr(textord["text"]);
-        i = i + 1;
       }
     }
     numMaths = toNum(arg0);
@@ -608,8 +598,7 @@ JsValue alignedHandler(JsValue context, JsValue args) {
   return undef();
   });
   {
-    int i = 0;
-    while (i < numCols) {
+    for (int i = 0; i < numCols; i++) {
       string align = "r";
       int pregap = 0;
       if (i % 2 == 1) {
@@ -618,7 +607,6 @@ JsValue alignedHandler(JsValue context, JsValue args) {
         pregap = 1;
       }
       cols[i] = JS.object("type", "align", "align", align, "pregap", pregap, "postgap", 0);
-      i = i + 1;
     }
   }
   if (isAligned) {

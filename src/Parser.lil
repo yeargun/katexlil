@@ -117,8 +117,7 @@ Parser["prototype"]["handleInfixNodes"] = JS.method1((JsValue self, JsValue body
   int overIndex = -1;
   JsValue funcName = undef();
   {
-    int i = 0;
-    while (i < len(body)) {
+    for (int i = 0; i < len(body); i++) {
       if (JS.strictEqual(body[i]["type"], "infix")) {
         if (overIndex != -1) {
           throw JS.construct(ParseError, "only one infix operator per group", body[i]["token"]);
@@ -126,7 +125,6 @@ Parser["prototype"]["handleInfixNodes"] = JS.method1((JsValue self, JsValue body
         overIndex = i;
         funcName = body[i]["replaceWith"];
       }
-      i = i + 1;
     }
   }
   if (overIndex != -1 && funcName.truthy()) {
@@ -177,10 +175,8 @@ Parser["prototype"]["handleSupSubscript"] = JS.method1((JsValue self, JsValue na
 Parser["prototype"]["formatUnsupportedCmd"] = JS.method1((JsValue self, JsValue text) => {
   JsValue textordArray = JS.array();
   {
-    int i = 0;
-    while (i < len(text)) {
+    for (int i = 0; i < len(text); i++) {
       JS.push(textordArray, JS.object("type", "textord", "mode", "text", "text", text[i]));
-      i = i + 1;
     }
   }
   JsValue textNode = JS.object("type", "text", "mode", self["mode"], "body", textordArray);
@@ -546,8 +542,7 @@ Parser["prototype"]["parseGroup"] = JS.method2((JsValue self, JsValue name, JsVa
 Parser["prototype"]["formLigatures"] = JS.method1((JsValue self, JsValue group) => {
   int n = len(group) - 1;
   {
-    int i = 0;
-    while (i < n) {
+    for (int i = 0; i < n; i++) {
       JsValue a = group[i];
       string v = toStr(a["text"]);
       if (v == "-" && JS.strictEqual(group[i + 1]["text"], "-")) {
@@ -563,7 +558,6 @@ Parser["prototype"]["formLigatures"] = JS.method1((JsValue self, JsValue group) 
         JS.invoke(group, "splice", i, 2, JS.object("type", "textord", "mode", "text", "loc", JS.invoke(SourceLocation, "range", a, group[i + 1]), "text", v + v));
         n = n - 1;
       }
-      i = i + 1;
     }
   }
   return undef();
@@ -629,8 +623,7 @@ Parser["prototype"]["parseSymbol"] = JS.method0((JsValue self) => {
   JS.invoke(self, "consume");
   if (matched.truthy()) {
     {
-      int i = 0;
-      while (i < len(matched[0])) {
+      for (int i = 0; i < len(matched[0]); i++) {
         string accent = toStr(matched[0][i]);
         if (!(unicodeAccents[accent].truthy())) {
           throw JS.construct(ParseError, "Unknown accent ' " + toStr(accent) + "'", nucleus);
@@ -643,7 +636,6 @@ Parser["prototype"]["parseSymbol"] = JS.method0((JsValue self) => {
           throw JS.construct(ParseError, "Accent " + toStr(accent) + " unsupported in " + toStr(self["mode"]) + " mode", nucleus);
         }
         symbol = JS.object("type", "accent", "mode", self["mode"], "loc", JS.invoke(SourceLocation, "range", nucleus), "label", command, "isStretchy", false, "isShifty", true, "base", symbol);
-        i = i + 1;
       }
     }
   }

@@ -11,8 +11,7 @@ JsValue buildUnicodeSymbols() {
   JsValue accents = objectKeys(unicodeAccents);
   int letterCount = letters.length;
   int accentCount = len(accents);
-  int i = 0;
-  while (i < letterCount) {
+  for (int i = 0; i < letterCount; i++) {
     string letter = letters.charAt(i);
     int j = 0;
     while (j < accentCount) {
@@ -35,7 +34,6 @@ JsValue buildUnicodeSymbols() {
       }
       j = j + 1;
     }
-    i = i + 1;
   }
   return result;
 }

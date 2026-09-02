@@ -87,10 +87,8 @@ MathNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   }
   markup = markup + ">";
   {
-    int i = 0;
-    while (i < len(self["children"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       markup = markup + toStr(JS.invoke(self["children"][i], "toMarkup"));
-      i = i + 1;
     }
   }
   markup = markup + "</" + toStr(self["type"]) + ">";

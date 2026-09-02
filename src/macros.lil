@@ -562,25 +562,19 @@ braketHelper = (JsValue one) => {
   JsValue arg = JS.invoke(context, "consumeArg")["tokens"];
   JsValue a18 = newArray();
   JsValue ss21 = right;
-  int si19 = 0;
   int sn20 = len(ss21);
-  while (si19 < sn20) {
+  for (int si19 = 0; si19 < sn20; si19++) {
     JS.push(a18, ss21[si19]);
-    si19 = si19 + 1;
   }
   JsValue ss24 = arg;
-  int si22 = 0;
   int sn23 = len(ss24);
-  while (si22 < sn23) {
+  for (int si22 = 0; si22 < sn23; si22++) {
     JS.push(a18, ss24[si22]);
-    si22 = si22 + 1;
   }
   JsValue ss27 = left;
-  int si25 = 0;
   int sn26 = len(ss27);
-  while (si25 < sn26) {
+  for (int si25 = 0; si25 < sn26; si25++) {
     JS.push(a18, ss27[si25]);
-    si25 = si25 + 1;
   }
   JsValue expanded = JS.invoke(context, "expandTokens", a18);
   JS.invoke(context["macros"], "endGroup");
