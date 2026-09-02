@@ -1,0 +1,10 @@
+[javascript]
+optimization_level = 0
+cost_model = "raw"
+candidate_search = "off"
+
+[mangle]
+identifiers = true
+properties = true
+exports = false
+extern_fields = true

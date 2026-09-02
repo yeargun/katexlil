@@ -1,16 +1,12 @@
 # closed LilScript world — extern class keys may mangle
 [javascript]
 priority = "size-first"
-optimization_level = 13
-# 290 KB of artifact gets `level_limit.div_ceil(12)` probes by default, which
-# exhausts before the terminal cleanup families are scored. Measured on this
-# port: 63,146 -> 62,505 Brotli, converged by 256.
-terminal_codec_probe_limit = 256
+optimization_level = 8
 cost_model = "brotli"
 assume_pristine_builtins = true
 strip_console = true
 local_name_reserve = 48
-candidate_search = "always"
+candidate_search = "production"
 function_spelling = "arrow"
 public_aggregate_abi = "named"
 

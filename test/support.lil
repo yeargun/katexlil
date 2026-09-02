@@ -1,0 +1,3 @@
+import { splitAtDelimiters } from "../contrib/auto-render/splitAtDelimiters.lil";
+
+export { splitAtDelimiters };

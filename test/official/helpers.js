@@ -1,7 +1,7 @@
-import katex from "../../dist/katex.esm.js";
-import { ParseError } from "../../dist/katex.esm.js";
-import { parseTree } from "../../dist/katex.esm.js";
-import { Settings } from "../../dist/katex.esm.js";
+import katex from "../../dist/katex.test.js";
+import { ParseError } from "../../dist/katex.test.js";
+import { parseTree } from "../../dist/katex.test.js";
+import { Settings } from "../../dist/katex.test.js";
 
 import {diff} from 'jest-diff';
 import {RECEIVED_COLOR, printReceived, printExpected} from 'jest-matcher-utils';

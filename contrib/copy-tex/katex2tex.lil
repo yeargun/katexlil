@@ -1,0 +1,47 @@
+export JsValue defaultCopyDelimiters = JS.object(
+  "inline", JS.array("$", "$"),
+  "display", JS.array("$$", "$$")
+);
+
+int length(JsValue value) {
+  return JS.number(value["length"]).toInt();
+}
+
+export JsValue katexReplaceWithTex(JsValue fragment, JsValue copyDelimiters = null) {
+  JsValue delimiters = defaultCopyDelimiters;
+  if (!JS.isNullish(copyDelimiters)) delimiters = copyDelimiters;
+  JsValue katexHtml = JS.invoke(fragment, "querySelectorAll", ".katex-mathml + .katex-html");
+  int i = 0;
+  while (i < length(katexHtml)) {
+    JsValue element = katexHtml[i];
+    if (element["remove"].truthy()) JS.invoke(element, "remove");
+    else if (element["parentNode"].truthy()) JS.invoke(element["parentNode"], "removeChild", element);
+    i += 1;
+  }
+  JsValue katexMathml = JS.invoke(fragment, "querySelectorAll", ".katex-mathml");
+  i = 0;
+  while (i < length(katexMathml)) {
+    JsValue element = katexMathml[i];
+    JsValue texSource = JS.invoke(element, "querySelector", "annotation");
+    if (texSource.truthy()) {
+      if (element["replaceWith"].truthy()) JS.invoke(element, "replaceWith", texSource);
+      else if (element["parentNode"].truthy()) JS.invoke(element["parentNode"], "replaceChild", texSource, element);
+      texSource["innerHTML"] = JS.add(JS.add(delimiters["inline"][0], texSource["innerHTML"]), delimiters["inline"][1]);
+    }
+    i += 1;
+  }
+  JsValue displays = JS.invoke(fragment, "querySelectorAll", ".katex-display annotation");
+  i = 0;
+  while (i < length(displays)) {
+    JsValue element = displays[i];
+    string html = JS.string(element["innerHTML"]);
+    string inlineLeft = JS.string(delimiters["inline"][0]);
+    string inlineRight = JS.string(delimiters["inline"][1]);
+    string middle = html.slice(inlineLeft.length, html.length - inlineRight.length);
+    element["innerHTML"] = JS.add(JS.add(delimiters["display"][0], middle), delimiters["display"][1]);
+    i += 1;
+  }
+  return fragment;
+}
+
+export { katexReplaceWithTex as default };

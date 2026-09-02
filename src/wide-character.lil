@@ -1,51 +1,64 @@
-import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
-
+import { toStr, Math } from "./host.lil";
 import { ParseError } from "./ParseError.lil";
 
-JsValue wideLatinLetterData = undef();
-JsValue wideNumeralData = undef();
-JsValue wideCharacterFont = undef();
+string[][] wideLatinLetterData = [
+  ["mathbf", "textbf", "Main-Bold"],
+  ["mathbf", "textbf", "Main-Bold"],
+  ["mathnormal", "textit", "Math-Italic"],
+  ["mathnormal", "textit", "Math-Italic"],
+  ["boldsymbol", "boldsymbol", "Main-BoldItalic"],
+  ["boldsymbol", "boldsymbol", "Main-BoldItalic"],
+  ["mathscr", "textscr", "Script-Regular"],
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""],
+  ["mathfrak", "textfrak", "Fraktur-Regular"],
+  ["mathfrak", "textfrak", "Fraktur-Regular"],
+  ["mathbb", "textbb", "AMS-Regular"],
+  ["mathbb", "textbb", "AMS-Regular"],
+  ["mathboldfrak", "textboldfrak", "Fraktur-Regular"],
+  ["mathboldfrak", "textboldfrak", "Fraktur-Regular"],
+  ["mathsf", "textsf", "SansSerif-Regular"],
+  ["mathsf", "textsf", "SansSerif-Regular"],
+  ["mathboldsf", "textboldsf", "SansSerif-Bold"],
+  ["mathboldsf", "textboldsf", "SansSerif-Bold"],
+  ["mathitsf", "textitsf", "SansSerif-Italic"],
+  ["mathitsf", "textitsf", "SansSerif-Italic"],
+  ["", "", ""],
+  ["", "", ""],
+  ["mathtt", "texttt", "Typewriter-Regular"],
+  ["mathtt", "texttt", "Typewriter-Regular"]
+];
 
-JsValue a1 = JS.array(JS.array("mathbf", "textbf", "Main-Bold"), JS.array("mathbf", "textbf", "Main-Bold"), JS.array("mathnormal", "textit", "Math-Italic"), JS.array("mathnormal", "textit", "Math-Italic"), JS.array("boldsymbol", "boldsymbol", "Main-BoldItalic"), JS.array("boldsymbol", "boldsymbol", "Main-BoldItalic"), JS.array("mathscr", "textscr", "Script-Regular"), JS.array("", "", ""), JS.array("", "", ""), JS.array("", "", ""), JS.array("mathfrak", "textfrak", "Fraktur-Regular"), JS.array("mathfrak", "textfrak", "Fraktur-Regular"), JS.array("mathbb", "textbb", "AMS-Regular"), JS.array("mathbb", "textbb", "AMS-Regular"), JS.array("mathboldfrak", "textboldfrak", "Fraktur-Regular"), JS.array("mathboldfrak", "textboldfrak", "Fraktur-Regular"), JS.array("mathsf", "textsf", "SansSerif-Regular"), JS.array("mathsf", "textsf", "SansSerif-Regular"), JS.array("mathboldsf", "textboldsf", "SansSerif-Bold"), JS.array("mathboldsf", "textboldsf", "SansSerif-Bold"), JS.array("mathitsf", "textitsf", "SansSerif-Italic"), JS.array("mathitsf", "textitsf", "SansSerif-Italic"), JS.array("", "", ""), JS.array("", "", ""), JS.array("mathtt", "texttt", "Typewriter-Regular"), JS.array("mathtt", "texttt", "Typewriter-Regular"));
-wideLatinLetterData = a1;
-JsValue a28 = JS.array(JS.array("mathbf", "textbf", "Main-Bold"), JS.array("", "", ""), JS.array("mathsf", "textsf", "SansSerif-Regular"), JS.array("mathboldsf", "textboldsf", "SansSerif-Bold"), JS.array("mathtt", "texttt", "Typewriter-Regular"));
-wideNumeralData = a28;
-wideCharacterFont = (JsValue wideChar, JsValue mode) => {
-  JsValue H = JS.invoke(wideChar, "charCodeAt", 0);
-  JsValue L = JS.invoke(wideChar, "charCodeAt", 1);
-  JsValue codePoint = JS.add(JS.add((toNum((toNum(H) - toNum(55296))) * toNum(1024)), (toNum(L) - toNum(56320))), 65536);
-  JsValue c34 = undef();
-  if (JS.strictEqual(mode, "math")) {
-    c34 = 0;
-  } else {
-    c34 = 1;
-  }
-  JsValue j = c34;
-  if ((JS.lessThanOrEqual(119808, codePoint)) && (JS.lessThan(codePoint, 120484))) {
-    JsValue i = JS.invoke(Math, "floor", (toNum((toNum(codePoint) - toNum(119808))) / toNum(26)));
-    JsValue a35 = JS.array(wideLatinLetterData[i][2], wideLatinLetterData[i][j]);
-    return a35;
-  } else {
-    if ((JS.lessThanOrEqual(120782, codePoint)) && (JS.lessThanOrEqual(codePoint, 120831))) {
-      JsValue i = JS.invoke(Math, "floor", (toNum((toNum(codePoint) - toNum(120782))) / toNum(10)));
-      JsValue a36 = JS.array(wideNumeralData[i][2], wideNumeralData[i][j]);
-      return a36;
-    } else {
-      if ((JS.strictEqual(codePoint, 120485)) || (JS.strictEqual(codePoint, 120486))) {
-        JsValue a37 = JS.array(wideLatinLetterData[0][2], wideLatinLetterData[0][j]);
-        return a37;
-      } else {
-        if ((JS.lessThan(120486, codePoint)) && (JS.lessThan(codePoint, 120782))) {
-          JsValue a38 = JS.array("", "");
-          return a38;
-        } else {
-          throw JS.construct(ParseError, JS.add("Unsupported character: ", wideChar));
-        }
-      }
-    }
-  }
-  return undef();
-};
-JsValue __star = JS.object("wideCharacterFont", wideCharacterFont);
+string[][] wideNumeralData = [
+  ["mathbf", "textbf", "Main-Bold"],
+  ["", "", ""],
+  ["mathsf", "textsf", "SansSerif-Regular"],
+  ["mathboldsf", "textboldsf", "SansSerif-Bold"],
+  ["mathtt", "texttt", "Typewriter-Regular"]
+];
 
-export { __star, wideCharacterFont };
+string[] wideCharacterFont(string wideChar, string mode) {
+  int high = wideChar.charCodeAt(0);
+  int low = wideChar.charCodeAt(1);
+  int codePoint = (high - 55296) * 1024 + low - 56320 + 65536;
+  int column = 1;
+  if (mode == "math") {
+    column = 0;
+  }
+  if (codePoint >= 119808 && codePoint < 120484) {
+    int index = JS.number(JS.invoke(Math, "floor", (codePoint - 119808) / 26.0)).toInt();
+    return [wideLatinLetterData[index][2], wideLatinLetterData[index][column]];
+  }
+  if (codePoint >= 120782 && codePoint <= 120831) {
+    int index = JS.number(JS.invoke(Math, "floor", (codePoint - 120782) / 10.0)).toInt();
+    return [wideNumeralData[index][2], wideNumeralData[index][column]];
+  }
+  if (codePoint == 120485 || codePoint == 120486) {
+    return [wideLatinLetterData[0][2], wideLatinLetterData[0][column]];
+  }
+  if (codePoint > 120486 && codePoint < 120782) return ["", ""];
+  throw JS.construct(ParseError, "Unsupported character: " + wideChar);
+}
+
+export { wideCharacterFont };

@@ -1,6 +1,6 @@
 {
   "name": "@itslil/katex",
-  "version": "0.16.23",
+  "version": "0.16.24",
   "description": "KaTeX reimplemented in LilScript",
   "keywords": [
     "katex",
@@ -23,33 +23,72 @@
   },
   "type": "module",
   "main": "./dist/katex.cjs",
-  "module": "./dist/katex.esm.js",
+  "module": "./dist/katex.mjs",
   "types": "./dist/katex.d.ts",
-  "unpkg": "./dist/katex.umd.js",
-  "jsdelivr": "./dist/katex.umd.js",
+  "unpkg": "./dist/katex.min.js",
+  "jsdelivr": "./dist/katex.min.js",
   "exports": {
     ".": {
       "types": "./dist/katex.d.ts",
-      "import": "./dist/katex.esm.js",
+      "import": "./dist/katex.mjs",
       "require": "./dist/katex.cjs",
-      "default": "./dist/katex.esm.js"
+      "default": "./dist/katex.mjs"
     },
-    "./closed": "./dist/katex.closed.js",
-    "./dist/*": "./dist/*",
-    "./package.json": "./package.json"
+    "./closed": {
+      "import": "./dist/katex.closed.js",
+      "default": "./dist/katex.closed.js"
+    },
+    "./contrib/auto-render": {
+      "import": "./dist/contrib/auto-render.mjs",
+      "require": "./dist/contrib/auto-render.cjs"
+    },
+    "./contrib/mhchem": {
+      "import": "./dist/contrib/mhchem.mjs",
+      "require": "./dist/contrib/mhchem.cjs"
+    },
+    "./contrib/copy-tex": {
+      "import": "./dist/contrib/copy-tex.mjs",
+      "require": "./dist/contrib/copy-tex.cjs"
+    },
+    "./contrib/mathtex-script-type": {
+      "import": "./dist/contrib/mathtex-script-type.mjs",
+      "require": "./dist/contrib/mathtex-script-type.cjs"
+    },
+    "./contrib/render-a11y-string": {
+      "import": "./dist/contrib/render-a11y-string.mjs",
+      "require": "./dist/contrib/render-a11y-string.cjs"
+    },
+    "./katex.js": "./katex.js",
+    "./dist/katex.js": "./dist/katex.cjs",
+    "./*": "./*"
   },
+  "bin": "./cli.js",
   "files": [
     "src",
+    "katex.js",
+    "cli.js",
+    "contrib",
     "dist/katex.esm.js",
+    "dist/katex.mjs",
     "dist/katex.cjs",
     "dist/katex.umd.js",
+    "dist/katex.min.js",
     "dist/katex.closed.js",
     "dist/katex.d.ts",
+    "dist/katex.css",
+    "dist/katex.min.css",
+    "dist/contrib",
+    "dist/fonts",
+    "types",
     "LICENSE",
     "NOTICE.md",
     "README.md"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/contrib/mhchem.*",
+    "./dist/contrib/copy-tex.*",
+    "./dist/contrib/mathtex-script-type.*"
+  ],
   "engines": {
     "node": ">=18"
   },
@@ -58,9 +97,12 @@
     "build:site": "node scripts/build-site.mjs",
     "test": "node --test test/*.test.mjs && node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/official/jest.config.mjs --runInBand",
     "test:official": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/official/jest.config.mjs",
+    "check:type": "tsc --noEmit -p test/types/tsconfig.json",
     "check:site": "npm run build:site && node --test test/site.test.mjs",
     "check:pack": "node scripts/check-pack.mjs",
-    "prepublishOnly": "npm test && npm run check:pack && npm run check:site"
+    "audit": "node scripts/audit-parity.mjs",
+    "check": "npm run build && npm run check:type && npm test && npm run check:pack && npm run check:site && npm run audit",
+    "prepublishOnly": "npm run check:type && npm test && npm run check:pack && npm run check:site && npm run audit"
   },
   "devDependencies": {
     "@babel/parser": "^7.26.10",
@@ -69,9 +111,17 @@
     "esbuild": "0.28.1",
     "jest": "^29.7.0",
     "jest-diff": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "jest-matcher-utils": "^29.7.0",
     "jest-message-util": "^29.7.0",
     "jest-serializer-html": "^7.1.0",
-    "json-stable-stringify": "^1.1.1"
+    "js-yaml": "^4.3.2",
+    "json-stable-stringify": "^1.1.1",
+    "katex": "0.16.22",
+    "terser": "5.44.0",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "commander": "^8.3.0"
   }
 }

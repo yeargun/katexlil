@@ -19,7 +19,7 @@ import "./environments.lil";
 
 import { emptyObject, getDocument, isUndef, instanceOf, isNullish } from "./host.lil";
 
-string version = "0.16.22";
+string katexVersion = "0.16.22";
 
 JsValue renderToDomTree(JsValue expression, JsValue options) {
   JsValue settings = JS.construct(Settings, options);
@@ -93,13 +93,13 @@ __domTree["SvgNode"] = SvgNode;
 __domTree["PathNode"] = PathNode;
 __domTree["LineNode"] = LineNode;
 
-JsValue katexApi = JS.object("version", version, "render", render, "renderToString", renderToString, "ParseError", ParseError, "SETTINGS_SCHEMA", SETTINGS_SCHEMA, "__parse", __parse, "__renderToDomTree", __renderToDomTree, "__renderToHTMLTree", __renderToHTMLTree, "__setFontMetrics", setFontMetrics, "__defineSymbol", defineSymbol, "__defineFunction", defineFunction, "__defineMacro", defineMacro, "__domTree", __domTree);
+JsValue katexApi = JS.object("version", katexVersion, "render", render, "renderToString", renderToString, "ParseError", ParseError, "SETTINGS_SCHEMA", SETTINGS_SCHEMA, "__parse", __parse, "__renderToDomTree", __renderToDomTree, "__renderToHTMLTree", __renderToHTMLTree, "__setFontMetrics", setFontMetrics, "__defineSymbol", defineSymbol, "__defineFunction", defineFunction, "__defineMacro", defineMacro, "__domTree", __domTree);
 
 export JsValue __setFontMetrics = setFontMetrics;
 export JsValue __defineSymbol = defineSymbol;
 export JsValue __defineFunction = defineFunction;
 export JsValue __defineMacro = defineMacro;
-export { version, ParseError, SETTINGS_SCHEMA, __domTree };
+export { ParseError, SETTINGS_SCHEMA, __domTree };
 export { parseTree, Settings, Options, Style, buildTree, buildMathML, symbols, macros, Lexer };
 export { scriptFromCodepoint, supportedCodepoint };
 export { katexApi as default };

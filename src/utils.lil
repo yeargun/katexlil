@@ -37,7 +37,10 @@ o2["'"] = "&#x27;";
 ESCAPE_LOOKUP = o2;
 ESCAPE_REGEX = JS.construct(RegExp, "[&><\"']", "g");
 escape = (JsValue text) => {
-  return JS.invoke(toStr(text), "replace", ESCAPE_REGEX, (JsValue matched) => {
+  // Keep the explicit host coercion: String(undefined) is observable here and
+  // is required by upstream's MathML fallback for unmapped stretchy glyphs.
+  JsValue stringText = JS.call(String, undef(), text);
+  return JS.invoke(stringText, "replace", ESCAPE_REGEX, (JsValue matched) => {
   return ESCAPE_LOOKUP[matched];
   });
   return undef();

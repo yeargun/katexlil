@@ -1,13 +1,12 @@
-import { jest } from '@jest/globals';
+import { jest } from "@jest/globals";
+globalThis.jest = jest;
 import stringify from 'json-stable-stringify';
-import { Lexer } from "../../dist/katex.esm.js";
-import { ParseError } from "../../dist/katex.esm.js";
+import { Lexer } from "../../dist/katex.test.js";
+import { ParseError } from "../../dist/katex.test.js";
 import {
     Mode, ConsoleWarning,
     expectKaTeX, expectEquivalent,
 } from "./helpers";
-
-globalThis.jest = jest;
 
 // JSON serializer
 

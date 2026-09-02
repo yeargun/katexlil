@@ -1,0 +1,36 @@
+import { katexReplaceWithTex } from "./katex2tex.lil";
+
+extern JsValue globalThis;
+extern JsValue Array;
+
+bool instanceOfHost(JsValue value, JsValue constructor) {
+  return !JS.isNullish(value) && JS.call(constructor["prototype"]["isPrototypeOf"], constructor["prototype"], value).truthy();
+}
+
+JsValue closestKatex(JsValue node) {
+  JsValue element = node["parentElement"];
+  if (instanceOfHost(node, globalThis["Element"])) element = node;
+  if (element.truthy()) return JS.invoke(element, "closest", ".katex");
+  return null;
+}
+
+JsValue document = globalThis["document"];
+JS.invoke(document, "addEventListener", "copy", (JsValue event) => {
+  JsValue selection = JS.invoke(globalThis, "getSelection");
+  if (selection["isCollapsed"].truthy() || !event["clipboardData"].truthy()) return;
+  JsValue clipboardData = event["clipboardData"];
+  JsValue range = JS.invoke(selection, "getRangeAt", 0);
+  JsValue startKatex = closestKatex(range["startContainer"]);
+  if (startKatex.truthy()) JS.invoke(range, "setStartBefore", startKatex);
+  JsValue endKatex = closestKatex(range["endContainer"]);
+  if (endKatex.truthy()) JS.invoke(range, "setEndAfter", endKatex);
+  JsValue fragment = JS.invoke(range, "cloneContents");
+  if (!JS.invoke(fragment, "querySelector", ".katex-mathml").truthy()) return;
+  JsValue mapped = JS.call(Array["prototype"]["map"], fragment["childNodes"], (JsValue element) => {
+    if (instanceOfHost(element, globalThis["Text"])) return element["textContent"];
+    return element["outerHTML"];
+  });
+  JS.invoke(clipboardData, "setData", "text/html", JS.invoke(mapped, "join", ""));
+  JS.invoke(clipboardData, "setData", "text/plain", katexReplaceWithTex(fragment)["textContent"]);
+  JS.invoke(event, "preventDefault");
+});

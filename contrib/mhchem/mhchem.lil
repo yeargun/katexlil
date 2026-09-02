@@ -1,0 +1,1196 @@
+// KaTeX mhchem 3.3.0 parser, ported file-for-file from KaTeX 0.16.22.
+// Copyright (c) 2011-2015 The MathJax Consortium and 2015-2018 Martin Hensel.
+// Licensed under Apache-2.0; KaTeX adaptations are MIT licensed.
+import extern { default as katex } from "../../dist/katex.mjs";
+
+extern JsValue katex;
+extern JsValue RegExp;
+extern JsValue Object;
+
+JsValue mhchemParser = JS.undefined();
+JsValue texify = JS.undefined();
+
+struct UnitParts {
+  JsValue numerator;
+  JsValue denominator;
+}
+
+string parseChemTokens(JsValue tokens, string stateMachine) {
+  string input = "";
+  int tokenCount = JS.number(tokens["length"]).toInt();
+  int expectedLoc = 0;
+  if (tokenCount > 0) expectedLoc = JS.number(tokens[tokenCount - 1]["loc"]["start"]).toInt();
+  int i = tokenCount - 1;
+  while (i >= 0) {
+    int start = JS.number(tokens[i]["loc"]["start"]).toInt();
+    if (start > expectedLoc) {
+      input += " ";
+      expectedLoc = start;
+    }
+    string text = JS.string(tokens[i]["text"]);
+    input += text;
+    expectedLoc += text.length;
+    i -= 1;
+  }
+  return JS.string(JS.invoke(texify, "go", JS.invoke(mhchemParser, "go", input, stateMachine)));
+}
+mhchemParser = JS.object("go", (JsValue inputValue, JsValue stateMachineValue) => {
+  if (!inputValue.truthy()) {
+    return JS.array();
+  }
+  string input = JS.string(inputValue);
+  string stateMachine = "ce";
+  if (!JS.isUndefined(stateMachineValue)) {
+    stateMachine = JS.string(stateMachineValue);
+  }
+  string state = "0";
+  JsValue buffer = JS.object();
+  buffer["parenthesisLevel"] = 0;
+  input = JS.string(JS.invoke(input, "replace", JS.construct(RegExp, "\\n", "g"), " "));
+  input = JS.string(JS.invoke(input, "replace", JS.construct(RegExp, "[\\u2212\\u2013\\u2014\\u2010]", "g"), "-"));
+  input = JS.string(JS.invoke(input, "replace", JS.construct(RegExp, "[\\u2026]", "g"), "..."));
+  string lastInput = "";
+  int watchdog = 10;
+  JsValue output = JS.array();
+  while (true) {
+    if (lastInput != input) {
+      watchdog = 10;
+      lastInput = input;
+    } else {
+      watchdog -= 1;
+    }
+    JsValue machine = mhchemParser["stateMachines"][stateMachine];
+    JsValue t = JS.call((JsValue logical) => { if (logical.truthy()) return logical; return machine["transitions"]["*"]; }, JS.undefined(), machine["transitions"][state]);
+    {
+      int i = 0;
+      while (i < JS.number(t["length"]).toInt()) {
+        JsValue matches = JS.invoke(mhchemParser["patterns"], "match_", t[i]["pattern"], input);
+        if (matches.truthy()) {
+          JsValue task = t[i]["task"];
+          {
+            int actionIndex = 0;
+            while (actionIndex < JS.number(task["action_"]["length"]).toInt()) {
+              JsValue action = task["action_"][actionIndex];
+              JsValue outputValue = JS.undefined();
+              if (machine["actions"][action["type_"]].truthy()) {
+                outputValue = JS.call(machine["actions"][action["type_"]], machine["actions"], buffer, matches["match_"], action["option"]);
+              } else if (mhchemParser["actions"][action["type_"]].truthy()) {
+                outputValue = JS.call(mhchemParser["actions"][action["type_"]], mhchemParser["actions"], buffer, matches["match_"], action["option"]);
+              } else {
+                throw JS.array("MhchemBugA", JS.add(JS.add("mhchem bug A. Please report. (", action["type_"]), ")"));
+              }
+              JS.invoke(mhchemParser, "concatArray", output, outputValue);
+              actionIndex += 1;
+            }
+          }
+          if (task["nextState"].truthy()) {
+            state = JS.string(task["nextState"]);
+          }
+          if (input.length > 0) {
+            if (!(task["revisit"].truthy())) {
+              input = JS.string(matches["remainder"]);
+            }
+            if (!(task["toContinue"].truthy())) {
+              break;
+            }
+          } else {
+            return output;
+          }
+        }
+        i += 1;
+      }
+    }
+    if (watchdog <= 0) {
+      throw JS.array("MhchemBugU", "mhchem bug U. Please report.");
+    }
+  }
+}, "concatArray", (JsValue a, JsValue b) => {
+  if (b.truthy()) {
+    if (JS.isArray(b)) {
+      {
+        int iB = 0;
+        while (iB < JS.number(b["length"]).toInt()) {
+          JS.invoke(a, "push", b[iB]);
+          iB += 1;
+        }
+      }
+    } else {
+      JS.invoke(a, "push", b);
+    }
+  }
+}, "patterns", JS.object("patterns", JS.object("empty", JS.construct(RegExp, "^$", ""), "else", JS.construct(RegExp, "^.", ""), "else2", JS.construct(RegExp, "^.", ""), "space", JS.construct(RegExp, "^\\s", ""), "space A", JS.construct(RegExp, "^\\s(?=[A-Z\\\\$])", ""), "space$", JS.construct(RegExp, "^\\s$", ""), "a-z", JS.construct(RegExp, "^[a-z]", ""), "x", JS.construct(RegExp, "^x", ""), "x$", JS.construct(RegExp, "^x$", ""), "i$", JS.construct(RegExp, "^i$", ""), "letters", JS.construct(RegExp, "^(?:[a-zA-Z\\u03B1-\\u03C9\\u0391-\\u03A9?@]|(?:\\\\(?:alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|omicron|pi|rho|sigma|tau|upsilon|phi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega)(?:\\s+|\\{\\}|(?![a-zA-Z]))))+", ""), "\\greek", JS.construct(RegExp, "^\\\\(?:alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|omicron|pi|rho|sigma|tau|upsilon|phi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega)(?:\\s+|\\{\\}|(?![a-zA-Z]))", ""), "one lowercase latin letter $", JS.construct(RegExp, "^(?:([a-z])(?:$|[^a-zA-Z]))$", ""), "$one lowercase latin letter$ $", JS.construct(RegExp, "^\\$(?:([a-z])(?:$|[^a-zA-Z]))\\$$", ""), "one lowercase greek letter $", JS.construct(RegExp, "^(?:\\$?[\\u03B1-\\u03C9]\\$?|\\$?\\\\(?:alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|omicron|pi|rho|sigma|tau|upsilon|phi|chi|psi|omega)\\s*\\$?)(?:\\s+|\\{\\}|(?![a-zA-Z]))$", ""), "digits", JS.construct(RegExp, "^[0-9]+", ""), "-9.,9", JS.construct(RegExp, "^[+\\-]?(?:[0-9]+(?:[,.][0-9]+)?|[0-9]*(?:\\.[0-9]+))", ""), "-9.,9 no missing 0", JS.construct(RegExp, "^[+\\-]?[0-9]+(?:[.,][0-9]+)?", ""), "(-)(9.,9)(e)(99)", (JsValue input) => {
+  JsValue m = JS.undefined();
+  m = JS.invoke(input, "match", JS.construct(RegExp, "^(\\+\\-|\\+\\/\\-|\\+|\\-|\\\\pm\\s?)?([0-9]+(?:[,.][0-9]+)?|[0-9]*(?:\\.[0-9]+))?(\\((?:[0-9]+(?:[,.][0-9]+)?|[0-9]*(?:\\.[0-9]+))\\))?(?:([eE]|\\s*(\\*|x|\\\\times|\\u00D7)\\s*10\\^)([+\\-]?[0-9]+|\\{[+\\-]?[0-9]+\\}))?", ""));
+  if ((m.truthy() && m[0].truthy())) {
+    return JS.object("match_", JS.invoke(m, "splice", 1), "remainder", JS.invoke(input, "substr", m[0]["length"]));
+  }
+  return null;
+}, "(-)(9)^(-9)", (JsValue input) => {
+  JsValue m = JS.undefined();
+  m = JS.invoke(input, "match", JS.construct(RegExp, "^(\\+\\-|\\+\\/\\-|\\+|\\-|\\\\pm\\s?)?([0-9]+(?:[,.][0-9]+)?|[0-9]*(?:\\.[0-9]+)?)\\^([+\\-]?[0-9]+|\\{[+\\-]?[0-9]+\\})", ""));
+  if ((m.truthy() && m[0].truthy())) {
+    return JS.object("match_", JS.invoke(m, "splice", 1), "remainder", JS.invoke(input, "substr", m[0]["length"]));
+  }
+  return null;
+}, "state of aggregation $", (JsValue input) => {
+  JsValue a = JS.undefined();
+  JsValue m = JS.undefined();
+  a = JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "", JS.construct(RegExp, "^\\([a-z]{1,3}(?=[\\),])", ""), ")", "");
+  if ((a.truthy() && JS.invoke(a["remainder"], "match", JS.construct(RegExp, "^($|[\\s,;\\)\\]\\}])", "")).truthy())) {
+    return a;
+  }
+  m = JS.invoke(input, "match", JS.construct(RegExp, "^(?:\\((?:\\\\ca\\s?)?\\$[amothc]\\$\\))", ""));
+  if (m.truthy()) {
+    return JS.object("match_", m[0], "remainder", JS.invoke(input, "substr", m[0]["length"]));
+  }
+  return null;
+}, "_{(state of aggregation)}$", JS.construct(RegExp, "^_\\{(\\([a-z]{1,3}\\))\\}", ""), "{[(", JS.construct(RegExp, "^(?:\\\\\\{|\\[|\\()", ""), ")]}", JS.construct(RegExp, "^(?:\\)|\\]|\\\\\\})", ""), ", ", JS.construct(RegExp, "^[,;]\\s*", ""), ",", JS.construct(RegExp, "^[,;]", ""), ".", JS.construct(RegExp, "^[.]", ""), ". ", JS.construct(RegExp, "^([.\\u22C5\\u00B7\\u2022])\\s*", ""), "...", JS.construct(RegExp, "^\\.\\.\\.(?=$|[^.])", ""), "* ", JS.construct(RegExp, "^([*])\\s*", ""), "^{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "^{", "", "", "}");
+}, "^($...$)", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "^", "$", "$", "");
+}, "^a", JS.construct(RegExp, "^\\^([0-9]+|[^\\\\_])", ""), "^\\x{}{}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "^", JS.construct(RegExp, "^\\\\[a-zA-Z]+\\{", ""), "}", "", "", "{", "}", "", true);
+}, "^\\x{}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "^", JS.construct(RegExp, "^\\\\[a-zA-Z]+\\{", ""), "}", "");
+}, "^\\x", JS.construct(RegExp, "^\\^(\\\\[a-zA-Z]+)\\s*", ""), "^(-1)", JS.construct(RegExp, "^\\^(-?\\d+)", ""), "'", JS.construct(RegExp, "^'", ""), "_{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "_{", "", "", "}");
+}, "_($...$)", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "_", "$", "$", "");
+}, "_9", JS.construct(RegExp, "^_([+\\-]?[0-9]+|[^\\\\])", ""), "_\\x{}{}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "_", JS.construct(RegExp, "^\\\\[a-zA-Z]+\\{", ""), "}", "", "", "{", "}", "", true);
+}, "_\\x{}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "_", JS.construct(RegExp, "^\\\\[a-zA-Z]+\\{", ""), "}", "");
+}, "_\\x", JS.construct(RegExp, "^_(\\\\[a-zA-Z]+)\\s*", ""), "^_", JS.construct(RegExp, "^(?:\\^(?=_)|\\_(?=\\^)|[\\^_]$)", ""), "{}", JS.construct(RegExp, "^\\{\\}", ""), "{...}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "", "{", "}", "");
+}, "{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "{", "", "", "}");
+}, "$...$", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "", "$", "$", "");
+}, "${(...)}$", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "${", "", "", "}$");
+}, "$(...)$", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "$", "", "", "$");
+}, "=<>", JS.construct(RegExp, "^[=<>]", ""), "#", JS.construct(RegExp, "^[#\\u2261]", ""), "+", JS.construct(RegExp, "^\\+", ""), "-$", JS.construct(RegExp, "^-(?=[\\s_},;\\]/]|$|\\([a-z]+\\))", ""), "-9", JS.construct(RegExp, "^-(?=[0-9])", ""), "- orbital overlap", JS.construct(RegExp, "^-(?=(?:[spd]|sp)(?:$|[\\s,;\\)\\]\\}]))", ""), "-", JS.construct(RegExp, "^-", ""), "pm-operator", JS.construct(RegExp, "^(?:\\\\pm|\\$\\\\pm\\$|\\+-|\\+\\/-)", ""), "operator", JS.construct(RegExp, "^(?:\\+|(?:[\\-=<>]|<<|>>|\\\\approx|\\$\\\\approx\\$)(?=\\s|$|-?[0-9]))", ""), "arrowUpDown", JS.construct(RegExp, "^(?:v|\\(v\\)|\\^|\\(\\^\\))(?=$|[\\s,;\\)\\]\\}])", ""), "\\bond{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\bond{", "", "", "}");
+}, "->", JS.construct(RegExp, "^(?:<->|<-->|->|<-|<=>>|<<=>|<=>|[\\u2192\\u27F6\\u21CC])", ""), "CMT", JS.construct(RegExp, "^[CMT](?=\\[)", ""), "[(...)]", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "[", "", "", "]");
+}, "1st-level escape", JS.construct(RegExp, "^(&|\\\\\\\\|\\\\hline)\\s*", ""), "\\,", JS.construct(RegExp, "^(?:\\\\[,\\ ;:])", ""), "\\x{}{}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "", JS.construct(RegExp, "^\\\\[a-zA-Z]+\\{", ""), "}", "", "", "{", "}", "", true);
+}, "\\x{}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "", JS.construct(RegExp, "^\\\\[a-zA-Z]+\\{", ""), "}", "");
+}, "\\ca", JS.construct(RegExp, "^\\\\ca(?:\\s+|(?![a-zA-Z]))", ""), "\\x", JS.construct(RegExp, "^(?:\\\\[a-zA-Z]+\\s*|\\\\[_&{}%])", ""), "orbital", JS.construct(RegExp, "^(?:[0-9]{1,2}[spdfgh]|[0-9]{0,2}sp)(?=$|[^a-zA-Z])", ""), "others", JS.construct(RegExp, "^[\\/~|]", ""), "\\frac{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\frac{", "", "", "}", "{", "", "", "}");
+}, "\\overset{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\overset{", "", "", "}", "{", "", "", "}");
+}, "\\underset{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\underset{", "", "", "}", "{", "", "", "}");
+}, "\\underbrace{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\underbrace{", "", "", "}_", "{", "", "", "}");
+}, "\\color{(...)}0", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\color{", "", "", "}");
+}, "\\color{(...)}{(...)}1", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\color{", "", "", "}", "{", "", "", "}");
+}, "\\color(...){(...)}2", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\color", "\\", "", JS.construct(RegExp, "^(?=\\{)", ""), "{", "", "", "}");
+}, "\\ce{(...)}", (JsValue input) => {
+  return JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "\\ce{", "", "", "}");
+}, "oxidation$", JS.construct(RegExp, "^(?:[+-][IVX]+|\\\\pm\\s*0|\\$\\\\pm\\$\\s*0)$", ""), "d-oxidation$", JS.construct(RegExp, "^(?:[+-]?\\s?[IVX]+|\\\\pm\\s*0|\\$\\\\pm\\$\\s*0)$", ""), "roman numeral", JS.construct(RegExp, "^[IVX]+", ""), "1/2$", JS.construct(RegExp, "^[+\\-]?(?:[0-9]+|\\$[a-z]\\$|[a-z])\\/[0-9]+(?:\\$[a-z]\\$|[a-z])?$", ""), "amount", (JsValue input) => {
+  JsValue matchedValue = JS.undefined();
+  JsValue a = JS.undefined();
+  matchedValue = JS.invoke(input, "match", JS.construct(RegExp, "^(?:(?:(?:\\([+\\-]?[0-9]+\\/[0-9]+\\)|[+\\-]?(?:[0-9]+|\\$[a-z]\\$|[a-z])\\/[0-9]+|[+\\-]?[0-9]+[.,][0-9]+|[+\\-]?\\.[0-9]+|[+\\-]?[0-9]+)(?:[a-z](?=\\s*[A-Z]))?)|[+\\-]?[a-z](?=\\s*[A-Z])|\\+(?!\\s))", ""));
+  if (matchedValue.truthy()) {
+    return JS.object("match_", matchedValue[0], "remainder", JS.invoke(input, "substr", matchedValue[0]["length"]));
+  }
+  a = JS.invoke(mhchemParser["patterns"], "findObserveGroups", input, "", "$", "$", "");
+  if (a.truthy()) {
+    matchedValue = JS.invoke(a["match_"], "match", JS.construct(RegExp, "^\\$(?:\\(?[+\\-]?(?:[0-9]*[a-z]?[+\\-])?[0-9]*[a-z](?:[+\\-][0-9]*[a-z]?)?\\)?|\\+|-)\\$$", ""));
+    if (matchedValue.truthy()) {
+      return JS.object("match_", matchedValue[0], "remainder", JS.invoke(input, "substr", matchedValue[0]["length"]));
+    }
+  }
+  return null;
+}, "amount2", (JsValue input) => {
+  return JS.call(mhchemParser["patterns"]["patterns"]["amount"], JS.undefined(), input);
+}, "(KV letters),", JS.construct(RegExp, "^(?:[A-Z][a-z]{0,2}|i)(?=,)", ""), "formula$", (JsValue input) => {
+  JsValue matchedValue = JS.undefined();
+  if (JS.invoke(input, "match", JS.construct(RegExp, "^\\([a-z]+\\)$", "")).truthy()) {
+    return null;
+  }
+  matchedValue = JS.invoke(input, "match", JS.construct(RegExp, "^(?:[a-z]|(?:[0-9\\ \\+\\-\\,\\.\\(\\)]+[a-z])+[0-9\\ \\+\\-\\,\\.\\(\\)]*|(?:[a-z][0-9\\ \\+\\-\\,\\.\\(\\)]+)+[a-z]?)$", ""));
+  if (matchedValue.truthy()) {
+    return JS.object("match_", matchedValue[0], "remainder", JS.invoke(input, "substr", matchedValue[0]["length"]));
+  }
+  return null;
+}, "uprightEntities", JS.construct(RegExp, "^(?:pH|pOH|pC|pK|iPr|iBu)(?=$|[^a-zA-Z])", ""), "/", JS.construct(RegExp, "^\\s*(\\/)\\s*", ""), "//", JS.construct(RegExp, "^\\s*(\\/\\/)\\s*", ""), "*", JS.construct(RegExp, "^\\s*[*.]\\s*", "")), "findObserveGroups", (JsValue input, JsValue begExcl, JsValue begIncl, JsValue endIncl, JsValue endExcl, JsValue beg2Excl, JsValue beg2Incl, JsValue end2Incl, JsValue end2Excl, JsValue combine) => {
+  JsValue _match = JS.undefined();
+  JsValue _findObserveGroups = JS.undefined();
+  JsValue matchedValue = JS.undefined();
+  JsValue e = JS.undefined();
+  JsValue match1 = JS.undefined();
+  JsValue group2 = JS.undefined();
+  JsValue matchRet = JS.undefined();
+  _match = (JsValue input, JsValue pattern) => {
+    JsValue matchedValue = JS.undefined();
+    if (JS.strictEqual(JS.typeOf(pattern), "string")) {
+      if (JS.strictNotEqual(JS.invoke(input, "indexOf", pattern), 0)) {
+        return null;
+      }
+      return pattern;
+    } else {
+      matchedValue = JS.invoke(input, "match", pattern);
+      if (!(matchedValue.truthy())) {
+        return null;
+      }
+      return matchedValue[0];
+    }
+  };
+  _findObserveGroups = (JsValue input, JsValue offset, JsValue endChars) => {
+    JsValue matchedValue = JS.undefined();
+    int braces = 0;
+    int index = JS.number(offset).toInt();
+    int inputLength = JS.number(input["length"]).toInt();
+    while (index < inputLength) {
+      string character = JS.string(JS.invoke(input, "charAt", index));
+      matchedValue = JS.call(_match, JS.undefined(), JS.invoke(input, "substr", index), endChars);
+      if (JS.strictNotEqual(matchedValue, null) && braces == 0) {
+        return JS.object("endMatchBegin", index, "endMatchEnd", index + JS.number(matchedValue["length"]).toInt());
+      } else if (character == "{") {
+        braces += 1;
+      } else if (character == "}") {
+        if (braces == 0) {
+          throw JS.array("ExtraCloseMissingOpen", "Extra close brace or missing open brace");
+        } else {
+          braces -= 1;
+        }
+      }
+      index += 1;
+    }
+    if (braces > 0) {
+      return null;
+    }
+    return null;
+  };
+  matchedValue = JS.call(_match, JS.undefined(), input, begExcl);
+  if (JS.strictEqual(matchedValue, null)) {
+    return null;
+  }
+  input = JS.invoke(input, "substr", matchedValue["length"]);
+  matchedValue = JS.call(_match, JS.undefined(), input, begIncl);
+  if (JS.strictEqual(matchedValue, null)) {
+    return null;
+  }
+  e = JS.call(_findObserveGroups, JS.undefined(), input, matchedValue["length"], JS.call((JsValue logical) => { if (logical.truthy()) return logical; return endExcl; }, JS.undefined(), endIncl));
+  if (JS.strictEqual(e, null)) {
+    return null;
+  }
+  match1 = JS.invoke(input, "substring", 0, JS.call((JsValue ignored) => { if (endIncl.truthy()) return e["endMatchEnd"]; return e["endMatchBegin"]; }, JS.undefined(), 0));
+  if (!((beg2Excl.truthy() || beg2Incl.truthy()))) {
+    return JS.object("match_", match1, "remainder", JS.invoke(input, "substr", e["endMatchEnd"]));
+  } else {
+    group2 = JS.call(mhchemParser["patterns"]["findObserveGroups"], JS.undefined(), JS.invoke(input, "substr", e["endMatchEnd"]), beg2Excl, beg2Incl, end2Incl, end2Excl);
+    if (JS.strictEqual(group2, null)) {
+      return null;
+    }
+    matchRet = JS.array(match1, group2["match_"]);
+    return JS.object("match_", JS.call((JsValue ignored) => { if (combine.truthy()) return JS.invoke(matchRet, "join", ""); return matchRet; }, JS.undefined(), 0), "remainder", group2["remainder"]);
+  }
+}, "match_", (JsValue m, JsValue input) => {
+  JsValue pattern = JS.undefined();
+  JsValue matchedValue = JS.undefined();
+  JsValue mm = JS.undefined();
+  pattern = mhchemParser["patterns"]["patterns"][m];
+  if (JS.strictEqual(pattern, JS.undefined())) {
+    throw JS.array("MhchemBugP", JS.add(JS.add("mhchem bug P. Please report. (", m), ")"));
+  } else if (JS.strictEqual(JS.typeOf(pattern), "function")) {
+    return JS.call(mhchemParser["patterns"]["patterns"][m], mhchemParser["patterns"]["patterns"], input);
+  } else {
+    matchedValue = JS.invoke(input, "match", pattern);
+    if (matchedValue.truthy()) {
+      if (matchedValue[2].truthy()) {
+        mm = JS.array(matchedValue[1], matchedValue[2]);
+      } else if (matchedValue[1].truthy()) {
+        mm = matchedValue[1];
+      } else {
+        mm = matchedValue[0];
+      }
+      return JS.object("match_", mm, "remainder", JS.invoke(input, "substr", matchedValue[0]["length"]));
+    }
+    return null;
+  }
+}), "actions", JS.object("a=", (JsValue buffer, JsValue m) => {
+  buffer["a"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["a"]), m);
+}, "b=", (JsValue buffer, JsValue m) => {
+  buffer["b"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["b"]), m);
+}, "p=", (JsValue buffer, JsValue m) => {
+  buffer["p"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["p"]), m);
+}, "o=", (JsValue buffer, JsValue m) => {
+  buffer["o"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["o"]), m);
+}, "q=", (JsValue buffer, JsValue m) => {
+  buffer["q"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["q"]), m);
+}, "d=", (JsValue buffer, JsValue m) => {
+  buffer["d"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["d"]), m);
+}, "rm=", (JsValue buffer, JsValue m) => {
+  buffer["rm"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["rm"]), m);
+}, "text=", (JsValue buffer, JsValue m) => {
+  buffer["text_"] = JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["text_"]), m);
+}, "insert", (JsValue buffer, JsValue m, JsValue a) => {
+  return JS.object("type_", a);
+}, "insert+p1", (JsValue buffer, JsValue m, JsValue a) => {
+  return JS.object("type_", a, "p1", m);
+}, "insert+p1+p2", (JsValue buffer, JsValue m, JsValue a) => {
+  return JS.object("type_", a, "p1", m[0], "p2", m[1]);
+}, "copy", (JsValue buffer, JsValue m) => {
+  return m;
+}, "rm", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "rm", "p1", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), m));
+}, "text", (JsValue buffer, JsValue m) => {
+  return JS.invoke(mhchemParser, "go", m, "text");
+}, "{text}", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  ret = JS.array("{");
+  JS.invoke(mhchemParser, "concatArray", ret, JS.invoke(mhchemParser, "go", m, "text"));
+  JS.invoke(ret, "push", "}");
+  return ret;
+}, "tex-math", (JsValue buffer, JsValue m) => {
+  return JS.invoke(mhchemParser, "go", m, "tex-math");
+}, "tex-math tight", (JsValue buffer, JsValue m) => {
+  return JS.invoke(mhchemParser, "go", m, "tex-math tight");
+}, "bond", (JsValue buffer, JsValue m, JsValue k) => {
+  return JS.object("type_", "bond", "kind_", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return m; }, JS.undefined(), k));
+}, "color0-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "color0", "color", m[0]);
+}, "ce", (JsValue buffer, JsValue m) => {
+  return JS.invoke(mhchemParser, "go", m);
+}, "1/2", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  JsValue n = JS.undefined();
+  ret = JS.array();
+  if (JS.invoke(m, "match", JS.construct(RegExp, "^[+\\-]", "")).truthy()) {
+    JS.invoke(ret, "push", JS.invoke(m, "substr", 0, 1));
+    m = JS.invoke(m, "substr", 1);
+  }
+  n = JS.invoke(m, "match", JS.construct(RegExp, "^([0-9]+|\\$[a-z]\\$|[a-z])\\/([0-9]+)(\\$[a-z]\\$|[a-z])?$", ""));
+  n[1] = JS.invoke(n[1], "replace", JS.construct(RegExp, "\\$", "g"), "");
+  JS.invoke(ret, "push", JS.object("type_", "frac", "p1", n[1], "p2", n[2]));
+  if (n[3].truthy()) {
+    n[3] = JS.invoke(n[3], "replace", JS.construct(RegExp, "\\$", "g"), "");
+    JS.invoke(ret, "push", JS.object("type_", "tex-math", "p1", n[3]));
+  }
+  return ret;
+}, "9,9", (JsValue buffer, JsValue m) => {
+  return JS.invoke(mhchemParser, "go", m, "9,9");
+}), "createTransitions", (JsValue o) => {
+  JsValue stateArray = JS.undefined();
+  JsValue transitions = JS.object();
+  JsValue p = JS.undefined();
+  JsValue patternArray = JS.undefined();
+  {
+    JsValue keys0 = JS.invoke(Object, "keys", o);
+    int keyIndex0 = 0;
+    while (keyIndex0 < JS.number(keys0["length"]).toInt()) {
+      string pattern = JS.string(keys0[keyIndex0]);
+      {
+        JsValue keys1 = JS.invoke(Object, "keys", o[pattern]);
+        int keyIndex1 = 0;
+        while (keyIndex1 < JS.number(keys1["length"]).toInt()) {
+          string state = JS.string(keys1[keyIndex1]);
+          stateArray = JS.invoke(state, "split", "|");
+          o[pattern][state]["stateArray"] = stateArray;
+          {
+            int i = 0;
+            while (i < JS.number(stateArray["length"]).toInt()) {
+              transitions[stateArray[i]] = JS.array();
+              i += 1;
+            }
+          }
+          keyIndex1 += 1;
+        }
+      }
+      keyIndex0 += 1;
+    }
+  }
+  {
+    JsValue keys2 = JS.invoke(Object, "keys", o);
+    int keyIndex2 = 0;
+    while (keyIndex2 < JS.number(keys2["length"]).toInt()) {
+      string pattern = JS.string(keys2[keyIndex2]);
+      {
+        JsValue keys3 = JS.invoke(Object, "keys", o[pattern]);
+        int keyIndex3 = 0;
+        while (keyIndex3 < JS.number(keys3["length"]).toInt()) {
+          string state = JS.string(keys3[keyIndex3]);
+          stateArray = JS.call((JsValue logical) => { if (logical.truthy()) return logical; return JS.array(); }, JS.undefined(), o[pattern][state]["stateArray"]);
+          {
+            int i = 0;
+            while (i < JS.number(stateArray["length"]).toInt()) {
+              p = o[pattern][state];
+              if (p["action_"].truthy()) {
+                p["action_"] = JS.invoke(JS.array(), "concat", p["action_"]);
+                {
+                  int k = 0;
+                  while (k < JS.number(p["action_"]["length"]).toInt()) {
+                    if (JS.strictEqual(JS.typeOf(p["action_"][k]), "string")) {
+                      p["action_"][k] = JS.object("type_", p["action_"][k]);
+                    }
+                    k += 1;
+                  }
+                }
+              } else {
+                p["action_"] = JS.array();
+              }
+              patternArray = JS.invoke(pattern, "split", "|");
+              {
+                int j = 0;
+                while (j < JS.number(patternArray["length"]).toInt()) {
+                  if (JS.strictEqual(stateArray[i], "*")) {
+                    {
+                      JsValue keys4 = JS.invoke(Object, "keys", transitions);
+                      int keyIndex4 = 0;
+                      while (keyIndex4 < JS.number(keys4["length"]).toInt()) {
+                        string transitionState = JS.string(keys4[keyIndex4]);
+                        JS.invoke(transitions[transitionState], "push", JS.object("pattern", patternArray[j], "task", p));
+                        keyIndex4 += 1;
+                      }
+                    }
+                  } else {
+                    JS.invoke(transitions[stateArray[i]], "push", JS.object("pattern", patternArray[j], "task", p));
+                  }
+                  j += 1;
+                }
+              }
+              i += 1;
+            }
+          }
+          keyIndex3 += 1;
+        }
+      }
+      keyIndex2 += 1;
+    }
+  }
+  return transitions;
+}, "stateMachines", JS.object());
+mhchemParser["stateMachines"] = JS.object("ce", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object("action_", "output")), "else", JS.object("0|1|2", JS.object("action_", "beginsWithBond=false", "revisit", true, "toContinue", true)), "oxidation$", JS.object("0", JS.object("action_", "oxidation-output")), "CMT", JS.object("r", JS.object("action_", "rdt=", "nextState", "rt"), "rd", JS.object("action_", "rqt=", "nextState", "rdt")), "arrowUpDown", JS.object("0|1|2|as", JS.object("action_", JS.array("sb=false", "output", "operator"), "nextState", "1")), "uprightEntities", JS.object("0|1|2", JS.object("action_", JS.array("o=", "output"), "nextState", "1")), "orbital", JS.object("0|1|2|3", JS.object("action_", "o=", "nextState", "o")), "->", JS.object("0|1|2|3", JS.object("action_", "r=", "nextState", "r"), "a|as", JS.object("action_", JS.array("output", "r="), "nextState", "r"), "*", JS.object("action_", JS.array("output", "r="), "nextState", "r")), "+", JS.object("o", JS.object("action_", "d= kv", "nextState", "d"), "d|D", JS.object("action_", "d=", "nextState", "d"), "q", JS.object("action_", "d=", "nextState", "qd"), "qd|qD", JS.object("action_", "d=", "nextState", "qd"), "dq", JS.object("action_", JS.array("output", "d="), "nextState", "d"), "3", JS.object("action_", JS.array("sb=false", "output", "operator"), "nextState", "0")), "amount", JS.object("0|2", JS.object("action_", "a=", "nextState", "a")), "pm-operator", JS.object("0|1|2|a|as", JS.object("action_", JS.array("sb=false", "output", JS.object("type_", "operator", "option", "\\pm")), "nextState", "0")), "operator", JS.object("0|1|2|a|as", JS.object("action_", JS.array("sb=false", "output", "operator"), "nextState", "0")), "-$", JS.object("o|q", JS.object("action_", JS.array("charge or bond", "output"), "nextState", "qd"), "d", JS.object("action_", "d=", "nextState", "d"), "D", JS.object("action_", JS.array("output", JS.object("type_", "bond", "option", "-")), "nextState", "3"), "q", JS.object("action_", "d=", "nextState", "qd"), "qd", JS.object("action_", "d=", "nextState", "qd"), "qD|dq", JS.object("action_", JS.array("output", JS.object("type_", "bond", "option", "-")), "nextState", "3")), "-9", JS.object("3|o", JS.object("action_", JS.array("output", JS.object("type_", "insert", "option", "hyphen")), "nextState", "3")), "- orbital overlap", JS.object("o", JS.object("action_", JS.array("output", JS.object("type_", "insert", "option", "hyphen")), "nextState", "2"), "d", JS.object("action_", JS.array("output", JS.object("type_", "insert", "option", "hyphen")), "nextState", "2")), "-", JS.object("0|1|2", JS.object("action_", JS.array(JS.object("type_", "output", "option", 1), "beginsWithBond=true", JS.object("type_", "bond", "option", "-")), "nextState", "3"), "3", JS.object("action_", JS.object("type_", "bond", "option", "-")), "a", JS.object("action_", JS.array("output", JS.object("type_", "insert", "option", "hyphen")), "nextState", "2"), "as", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), JS.object("type_", "bond", "option", "-")), "nextState", "3"), "b", JS.object("action_", "b="), "o", JS.object("action_", JS.object("type_", "- after o/d", "option", false), "nextState", "2"), "q", JS.object("action_", JS.object("type_", "- after o/d", "option", false), "nextState", "2"), "d|qd|dq", JS.object("action_", JS.object("type_", "- after o/d", "option", true), "nextState", "2"), "D|qD|p", JS.object("action_", JS.array("output", JS.object("type_", "bond", "option", "-")), "nextState", "3")), "amount2", JS.object("1|3", JS.object("action_", "a=", "nextState", "a")), "letters", JS.object("0|1|2|3|a|as|b|p|bp|o", JS.object("action_", "o=", "nextState", "o"), "q|dq", JS.object("action_", JS.array("output", "o="), "nextState", "o"), "d|D|qd|qD", JS.object("action_", "o after d", "nextState", "o")), "digits", JS.object("o", JS.object("action_", "q=", "nextState", "q"), "d|D", JS.object("action_", "q=", "nextState", "dq"), "q", JS.object("action_", JS.array("output", "o="), "nextState", "o"), "a", JS.object("action_", "o=", "nextState", "o")), "space A", JS.object("b|p|bp", JS.object()), "space", JS.object("a", JS.object("nextState", "as"), "0", JS.object("action_", "sb=false"), "1|2", JS.object("action_", "sb=true"), "r|rt|rd|rdt|rdq", JS.object("action_", "output", "nextState", "0"), "*", JS.object("action_", JS.array("output", "sb=true"), "nextState", "1")), "1st-level escape", JS.object("1|2", JS.object("action_", JS.array("output", JS.object("type_", "insert+p1", "option", "1st-level escape"))), "*", JS.object("action_", JS.array("output", JS.object("type_", "insert+p1", "option", "1st-level escape")), "nextState", "0")), "[(...)]", JS.object("r|rt", JS.object("action_", "rd=", "nextState", "rd"), "rd|rdt", JS.object("action_", "rq=", "nextState", "rdq")), "...", JS.object("o|d|D|dq|qd|qD", JS.object("action_", JS.array("output", JS.object("type_", "bond", "option", "...")), "nextState", "3"), "*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 1), JS.object("type_", "insert", "option", "ellipsis")), "nextState", "1")), ". |* ", JS.object("*", JS.object("action_", JS.array("output", JS.object("type_", "insert", "option", "addition compound")), "nextState", "1")), "state of aggregation $", JS.object("*", JS.object("action_", JS.array("output", "state of aggregation"), "nextState", "1")), "{[(", JS.object("a|as|o", JS.object("action_", JS.array("o=", "output", "parenthesisLevel++"), "nextState", "2"), "0|1|2|3", JS.object("action_", JS.array("o=", "output", "parenthesisLevel++"), "nextState", "2"), "*", JS.object("action_", JS.array("output", "o=", "output", "parenthesisLevel++"), "nextState", "2")), ")]}", JS.object("0|1|2|3|b|p|bp|o", JS.object("action_", JS.array("o=", "parenthesisLevel--"), "nextState", "o"), "a|as|d|D|q|qd|qD|dq", JS.object("action_", JS.array("output", "o=", "parenthesisLevel--"), "nextState", "o")), ", ", JS.object("*", JS.object("action_", JS.array("output", "comma"), "nextState", "0")), "^_", JS.object("*", JS.object()), "^{(...)}|^($...$)", JS.object("0|1|2|as", JS.object("action_", "b=", "nextState", "b"), "p", JS.object("action_", "b=", "nextState", "bp"), "3|o", JS.object("action_", "d= kv", "nextState", "D"), "q", JS.object("action_", "d=", "nextState", "qD"), "d|D|qd|qD|dq", JS.object("action_", JS.array("output", "d="), "nextState", "D")), "^a|^\\x{}{}|^\\x{}|^\\x|'", JS.object("0|1|2|as", JS.object("action_", "b=", "nextState", "b"), "p", JS.object("action_", "b=", "nextState", "bp"), "3|o", JS.object("action_", "d= kv", "nextState", "d"), "q", JS.object("action_", "d=", "nextState", "qd"), "d|qd|D|qD", JS.object("action_", "d="), "dq", JS.object("action_", JS.array("output", "d="), "nextState", "d")), "_{(state of aggregation)}$", JS.object("d|D|q|qd|qD|dq", JS.object("action_", JS.array("output", "q="), "nextState", "q")), "_{(...)}|_($...$)|_9|_\\x{}{}|_\\x{}|_\\x", JS.object("0|1|2|as", JS.object("action_", "p=", "nextState", "p"), "b", JS.object("action_", "p=", "nextState", "bp"), "3|o", JS.object("action_", "q=", "nextState", "q"), "d|D", JS.object("action_", "q=", "nextState", "dq"), "q|qd|qD|dq", JS.object("action_", JS.array("output", "q="), "nextState", "q")), "=<>", JS.object("0|1|2|3|a|as|o|q|d|D|qd|qD|dq", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "bond"), "nextState", "3")), "#", JS.object("0|1|2|3|a|as|o", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), JS.object("type_", "bond", "option", "#")), "nextState", "3")), "{}", JS.object("*", JS.object("action_", JS.object("type_", "output", "option", 1), "nextState", "1")), "{...}", JS.object("0|1|2|3|a|as|b|p|bp", JS.object("action_", "o=", "nextState", "o"), "o|d|D|q|qd|qD|dq", JS.object("action_", JS.array("output", "o="), "nextState", "o")), "$...$", JS.object("a", JS.object("action_", "a="), "0|1|2|3|as|b|p|bp|o", JS.object("action_", "o=", "nextState", "o"), "as|o", JS.object("action_", "o="), "q|d|D|qd|qD|dq", JS.object("action_", JS.array("output", "o="), "nextState", "o")), "\\bond{(...)}", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "bond"), "nextState", "3")), "\\frac{(...)}", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 1), "frac-output"), "nextState", "3")), "\\overset{(...)}", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "overset-output"), "nextState", "3")), "\\underset{(...)}", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "underset-output"), "nextState", "3")), "\\underbrace{(...)}", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "underbrace-output"), "nextState", "3")), "\\color{(...)}{(...)}1|\\color(...){(...)}2", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "color-output"), "nextState", "3")), "\\color{(...)}0", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "color0-output"))), "\\ce{(...)}", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 2), "ce"), "nextState", "3")), "\\,", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 1), "copy"), "nextState", "1")), "\\x{}{}|\\x{}|\\x", JS.object("0|1|2|3|a|as|b|p|bp|o|c0", JS.object("action_", JS.array("o=", "output"), "nextState", "3"), "*", JS.object("action_", JS.array("output", "o=", "output"), "nextState", "3")), "others", JS.object("*", JS.object("action_", JS.array(JS.object("type_", "output", "option", 1), "copy"), "nextState", "3")), "else2", JS.object("a", JS.object("action_", "a to o", "nextState", "o", "revisit", true), "as", JS.object("action_", JS.array("output", "sb=true"), "nextState", "1", "revisit", true), "r|rt|rd|rdt|rdq", JS.object("action_", JS.array("output"), "nextState", "0", "revisit", true), "*", JS.object("action_", JS.array("output", "copy"), "nextState", "3")))), "actions", JS.object("o after d", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  JsValue tmp = JS.undefined();
+  if (JS.invoke(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["d"]), "match", JS.construct(RegExp, "^[0-9]+$", "")).truthy()) {
+    tmp = buffer["d"];
+    buffer["d"] = JS.undefined();
+    ret = JS.call(mhchemParser["stateMachines"]["ce"]["actions"]["output"], JS.undefined(), buffer);
+    buffer["b"] = tmp;
+  } else {
+    ret = JS.call(mhchemParser["stateMachines"]["ce"]["actions"]["output"], JS.undefined(), buffer);
+  }
+  JS.call(mhchemParser["actions"]["o="], mhchemParser["actions"], buffer, m);
+  return ret;
+}, "d= kv", (JsValue buffer, JsValue m) => {
+  buffer["d"] = m;
+  buffer["dType"] = "kv";
+}, "charge or bond", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  if (buffer["beginsWithBond"].truthy()) {
+    ret = JS.array();
+    JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["stateMachines"]["ce"]["actions"]["output"], JS.undefined(), buffer));
+    JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["actions"]["bond"], mhchemParser["actions"], buffer, m, "-"));
+    return ret;
+  } else {
+    buffer["d"] = m;
+  }
+}, "- after o/d", (JsValue buffer, JsValue m, JsValue isAfterD) => {
+  JsValue c1 = JS.undefined();
+  JsValue c2 = JS.undefined();
+  JsValue c3 = JS.undefined();
+  JsValue c4 = JS.undefined();
+  JsValue ret = JS.undefined();
+  c1 = JS.invoke(mhchemParser["patterns"], "match_", "orbital", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["o"]));
+  c2 = JS.invoke(mhchemParser["patterns"], "match_", "one lowercase greek letter $", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["o"]));
+  c3 = JS.invoke(mhchemParser["patterns"], "match_", "one lowercase latin letter $", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["o"]));
+  c4 = JS.invoke(mhchemParser["patterns"], "match_", "$one lowercase latin letter$ $", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["o"]));
+  bool hyphenFollows = JS.call((JsValue logical) => { if (logical.truthy()) return JS.call((JsValue logical) => { if (logical.truthy()) return logical; return c4; }, JS.undefined(), JS.call((JsValue logical) => { if (logical.truthy()) return logical; return c3; }, JS.undefined(), JS.call((JsValue logical) => { if (logical.truthy()) return logical; return c2; }, JS.undefined(), JS.call((JsValue logical) => { if (logical.truthy()) return JS.strictEqual(c1["remainder"], ""); return logical; }, JS.undefined(), c1)))); return logical; }, JS.undefined(), JS.strictEqual(m, "-")).truthy();
+  if (hyphenFollows && !buffer["a"].truthy() && !buffer["b"].truthy() && !buffer["p"].truthy() && !buffer["d"].truthy() && !buffer["q"].truthy() && !c1.truthy() && c3.truthy()) {
+    buffer["o"] = JS.add(JS.add("$", buffer["o"]), "$");
+  }
+  ret = JS.array();
+  if (hyphenFollows) {
+    JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["stateMachines"]["ce"]["actions"]["output"], JS.undefined(), buffer));
+    JS.invoke(ret, "push", JS.object("type_", "hyphen"));
+  } else {
+    c1 = JS.invoke(mhchemParser["patterns"], "match_", "digits", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["d"]));
+    if (((isAfterD.truthy() && c1.truthy()) && JS.strictEqual(c1["remainder"], ""))) {
+      JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["actions"]["d="], mhchemParser["actions"], buffer, m));
+      JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["stateMachines"]["ce"]["actions"]["output"], JS.undefined(), buffer));
+    } else {
+      JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["stateMachines"]["ce"]["actions"]["output"], JS.undefined(), buffer));
+      JS.invoke(mhchemParser, "concatArray", ret, JS.call(mhchemParser["actions"]["bond"], mhchemParser["actions"], buffer, m, "-"));
+    }
+  }
+  return ret;
+}, "a to o", (JsValue buffer) => {
+  buffer["o"] = buffer["a"];
+  buffer["a"] = JS.undefined();
+}, "sb=true", (JsValue buffer) => {
+  buffer["sb"] = true;
+}, "sb=false", (JsValue buffer) => {
+  buffer["sb"] = false;
+}, "beginsWithBond=true", (JsValue buffer) => {
+  buffer["beginsWithBond"] = true;
+}, "beginsWithBond=false", (JsValue buffer) => {
+  buffer["beginsWithBond"] = false;
+}, "parenthesisLevel++", (JsValue buffer) => {
+  buffer["parenthesisLevel"] = JS.add(buffer["parenthesisLevel"], 1);
+}, "parenthesisLevel--", (JsValue buffer) => {
+  buffer["parenthesisLevel"] = JS.add(buffer["parenthesisLevel"], -1);
+}, "state of aggregation", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "state of aggregation", "p1", JS.invoke(mhchemParser, "go", m, "o"));
+}, "comma", (JsValue buffer, JsValue m) => {
+  string comma = JS.string(JS.invoke(m, "replace", JS.construct(RegExp, "\\s*$", ""), ""));
+  bool withSpace = !JS.strictEqual(comma, m);
+  if (withSpace && JS.strictEqual(buffer["parenthesisLevel"], 0)) {
+    return JS.object("type_", "comma enumeration L", "p1", comma);
+  } else {
+    return JS.object("type_", "comma enumeration M", "p1", comma);
+  }
+}, "output", (JsValue buffer, JsValue m, JsValue entityFollows) => {
+  JsValue ret = JS.undefined();
+  JsValue rd = JS.undefined();
+  JsValue rq = JS.undefined();
+  if (!(buffer["r"].truthy())) {
+    ret = JS.array();
+    if (((((((!(buffer["a"].truthy()) && !(buffer["b"].truthy())) && !(buffer["p"].truthy())) && !(buffer["o"].truthy())) && !(buffer["q"].truthy())) && !(buffer["d"].truthy())) && !(entityFollows.truthy()))) {
+
+    } else {
+      if (buffer["sb"].truthy()) {
+        JS.invoke(ret, "push", JS.object("type_", "entitySkip"));
+      }
+      if ((((((!(buffer["o"].truthy()) && !(buffer["q"].truthy())) && !(buffer["d"].truthy())) && !(buffer["b"].truthy())) && !(buffer["p"].truthy())) && JS.strictNotEqual(entityFollows, 2))) {
+        buffer["o"] = buffer["a"];
+        buffer["a"] = JS.undefined();
+      } else if ((((!(buffer["o"].truthy()) && !(buffer["q"].truthy())) && !(buffer["d"].truthy())) && (buffer["b"].truthy() || buffer["p"].truthy()))) {
+        buffer["o"] = buffer["a"];
+        buffer["d"] = buffer["b"];
+        buffer["q"] = buffer["p"];
+        buffer["a"] = buffer["b"] = buffer["p"] = JS.undefined();
+      } else {
+        if (((buffer["o"].truthy() && JS.strictEqual(buffer["dType"], "kv")) && JS.invoke(mhchemParser["patterns"], "match_", "d-oxidation$", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["d"])).truthy())) {
+          buffer["dType"] = "oxidation";
+        } else if (((buffer["o"].truthy() && JS.strictEqual(buffer["dType"], "kv")) && !(buffer["q"].truthy()))) {
+          buffer["dType"] = JS.undefined();
+        }
+      }
+      JS.invoke(ret, "push", JS.object("type_", "chemfive", "a", JS.invoke(mhchemParser, "go", buffer["a"], "a"), "b", JS.invoke(mhchemParser, "go", buffer["b"], "bd"), "p", JS.invoke(mhchemParser, "go", buffer["p"], "pq"), "o", JS.invoke(mhchemParser, "go", buffer["o"], "o"), "q", JS.invoke(mhchemParser, "go", buffer["q"], "pq"), "d", JS.invoke(mhchemParser, "go", buffer["d"], JS.call((JsValue ignored) => { if (JS.strictEqual(buffer["dType"], "oxidation")) return "oxidation"; return "bd"; }, JS.undefined(), 0)), "dType", buffer["dType"]));
+    }
+  } else {
+    if (JS.strictEqual(buffer["rdt"], "M")) {
+      rd = JS.invoke(mhchemParser, "go", buffer["rd"], "tex-math");
+    } else if (JS.strictEqual(buffer["rdt"], "T")) {
+      rd = JS.array(JS.object("type_", "text", "p1", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["rd"])));
+    } else {
+      rd = JS.invoke(mhchemParser, "go", buffer["rd"]);
+    }
+    if (JS.strictEqual(buffer["rqt"], "M")) {
+      rq = JS.invoke(mhchemParser, "go", buffer["rq"], "tex-math");
+    } else if (JS.strictEqual(buffer["rqt"], "T")) {
+      rq = JS.array(JS.object("type_", "text", "p1", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["rq"])));
+    } else {
+      rq = JS.invoke(mhchemParser, "go", buffer["rq"]);
+    }
+    ret = JS.object("type_", "arrow", "r", buffer["r"], "rd", rd, "rq", rq);
+  }
+  {
+    JsValue keys5 = JS.invoke(Object, "keys", buffer);
+    int keyIndex5 = 0;
+    while (keyIndex5 < JS.number(keys5["length"]).toInt()) {
+      string property = JS.string(keys5[keyIndex5]);
+      if (property != "parenthesisLevel" && property != "beginsWithBond") {
+        JS.delete(buffer, property);
+      }
+      keyIndex5 += 1;
+    }
+  }
+  return ret;
+}, "oxidation-output", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  ret = JS.array("{");
+  JS.invoke(mhchemParser, "concatArray", ret, JS.invoke(mhchemParser, "go", m, "oxidation"));
+  JS.invoke(ret, "push", "}");
+  return ret;
+}, "frac-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "frac-ce", "p1", JS.invoke(mhchemParser, "go", m[0]), "p2", JS.invoke(mhchemParser, "go", m[1]));
+}, "overset-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "overset", "p1", JS.invoke(mhchemParser, "go", m[0]), "p2", JS.invoke(mhchemParser, "go", m[1]));
+}, "underset-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "underset", "p1", JS.invoke(mhchemParser, "go", m[0]), "p2", JS.invoke(mhchemParser, "go", m[1]));
+}, "underbrace-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "underbrace", "p1", JS.invoke(mhchemParser, "go", m[0]), "p2", JS.invoke(mhchemParser, "go", m[1]));
+}, "color-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "color", "color1", m[0], "color2", JS.invoke(mhchemParser, "go", m[1]));
+}, "r=", (JsValue buffer, JsValue m) => {
+  buffer["r"] = m;
+}, "rdt=", (JsValue buffer, JsValue m) => {
+  buffer["rdt"] = m;
+}, "rd=", (JsValue buffer, JsValue m) => {
+  buffer["rd"] = m;
+}, "rqt=", (JsValue buffer, JsValue m) => {
+  buffer["rqt"] = m;
+}, "rq=", (JsValue buffer, JsValue m) => {
+  buffer["rq"] = m;
+}, "operator", (JsValue buffer, JsValue m, JsValue p1) => {
+  return JS.object("type_", "operator", "kind_", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return m; }, JS.undefined(), p1));
+})), "a", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object()), "1/2$", JS.object("0", JS.object("action_", "1/2")), "else", JS.object("0", JS.object("nextState", "1", "revisit", true)), "$(...)$", JS.object("*", JS.object("action_", "tex-math tight", "nextState", "1")), ",", JS.object("*", JS.object("action_", JS.object("type_", "insert", "option", "commaDecimal"))), "else2", JS.object("*", JS.object("action_", "copy")))), "actions", JS.object()), "o", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object()), "1/2$", JS.object("0", JS.object("action_", "1/2")), "else", JS.object("0", JS.object("nextState", "1", "revisit", true)), "letters", JS.object("*", JS.object("action_", "rm")), "\\ca", JS.object("*", JS.object("action_", JS.object("type_", "insert", "option", "circa"))), "\\x{}{}|\\x{}|\\x", JS.object("*", JS.object("action_", "copy")), "${(...)}$|$(...)$", JS.object("*", JS.object("action_", "tex-math")), "{(...)}", JS.object("*", JS.object("action_", "{text}")), "else2", JS.object("*", JS.object("action_", "copy")))), "actions", JS.object()), "text", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object("action_", "output")), "{...}", JS.object("*", JS.object("action_", "text=")), "${(...)}$|$(...)$", JS.object("*", JS.object("action_", "tex-math")), "\\greek", JS.object("*", JS.object("action_", JS.array("output", "rm"))), "\\,|\\x{}{}|\\x{}|\\x", JS.object("*", JS.object("action_", JS.array("output", "copy"))), "else", JS.object("*", JS.object("action_", "text=")))), "actions", JS.object("output", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  if (buffer["text_"].truthy()) {
+    ret = JS.object("type_", "text", "p1", buffer["text_"]);
+    {
+      JsValue keys6 = JS.invoke(Object, "keys", buffer);
+      int keyIndex6 = 0;
+      while (keyIndex6 < JS.number(keys6["length"]).toInt()) {
+        string property = JS.string(keys6[keyIndex6]);
+        JS.delete(buffer, property);
+        keyIndex6 += 1;
+      }
+    }
+    return ret;
+  }
+})), "pq", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object()), "state of aggregation $", JS.object("*", JS.object("action_", "state of aggregation")), "i$", JS.object("0", JS.object("nextState", "!f", "revisit", true)), "(KV letters),", JS.object("0", JS.object("action_", "rm", "nextState", "0")), "formula$", JS.object("0", JS.object("nextState", "f", "revisit", true)), "1/2$", JS.object("0", JS.object("action_", "1/2")), "else", JS.object("0", JS.object("nextState", "!f", "revisit", true)), "${(...)}$|$(...)$", JS.object("*", JS.object("action_", "tex-math")), "{(...)}", JS.object("*", JS.object("action_", "text")), "a-z", JS.object("f", JS.object("action_", "tex-math")), "letters", JS.object("*", JS.object("action_", "rm")), "-9.,9", JS.object("*", JS.object("action_", "9,9")), ",", JS.object("*", JS.object("action_", JS.object("type_", "insert+p1", "option", "comma enumeration S"))), "\\color{(...)}{(...)}1|\\color(...){(...)}2", JS.object("*", JS.object("action_", "color-output")), "\\color{(...)}0", JS.object("*", JS.object("action_", "color0-output")), "\\ce{(...)}", JS.object("*", JS.object("action_", "ce")), "\\,|\\x{}{}|\\x{}|\\x", JS.object("*", JS.object("action_", "copy")), "else2", JS.object("*", JS.object("action_", "copy")))), "actions", JS.object("state of aggregation", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "state of aggregation subscript", "p1", JS.invoke(mhchemParser, "go", m, "o"));
+}, "color-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "color", "color1", m[0], "color2", JS.invoke(mhchemParser, "go", m[1], "pq"));
+})), "bd", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object()), "x$", JS.object("0", JS.object("nextState", "!f", "revisit", true)), "formula$", JS.object("0", JS.object("nextState", "f", "revisit", true)), "else", JS.object("0", JS.object("nextState", "!f", "revisit", true)), "-9.,9 no missing 0", JS.object("*", JS.object("action_", "9,9")), ".", JS.object("*", JS.object("action_", JS.object("type_", "insert", "option", "electron dot"))), "a-z", JS.object("f", JS.object("action_", "tex-math")), "x", JS.object("*", JS.object("action_", JS.object("type_", "insert", "option", "KV x"))), "letters", JS.object("*", JS.object("action_", "rm")), "'", JS.object("*", JS.object("action_", JS.object("type_", "insert", "option", "prime"))), "${(...)}$|$(...)$", JS.object("*", JS.object("action_", "tex-math")), "{(...)}", JS.object("*", JS.object("action_", "text")), "\\color{(...)}{(...)}1|\\color(...){(...)}2", JS.object("*", JS.object("action_", "color-output")), "\\color{(...)}0", JS.object("*", JS.object("action_", "color0-output")), "\\ce{(...)}", JS.object("*", JS.object("action_", "ce")), "\\,|\\x{}{}|\\x{}|\\x", JS.object("*", JS.object("action_", "copy")), "else2", JS.object("*", JS.object("action_", "copy")))), "actions", JS.object("color-output", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "color", "color1", m[0], "color2", JS.invoke(mhchemParser, "go", m[1], "bd"));
+})), "oxidation", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object()), "roman numeral", JS.object("*", JS.object("action_", "roman-numeral")), "${(...)}$|$(...)$", JS.object("*", JS.object("action_", "tex-math")), "else", JS.object("*", JS.object("action_", "copy")))), "actions", JS.object("roman-numeral", (JsValue buffer, JsValue m) => {
+  return JS.object("type_", "roman numeral", "p1", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), m));
+})), "tex-math", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object("action_", "output")), "\\ce{(...)}", JS.object("*", JS.object("action_", JS.array("output", "ce"))), "{...}|\\,|\\x{}{}|\\x{}|\\x", JS.object("*", JS.object("action_", "o=")), "else", JS.object("*", JS.object("action_", "o=")))), "actions", JS.object("output", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  if (buffer["o"].truthy()) {
+    ret = JS.object("type_", "tex-math", "p1", buffer["o"]);
+    {
+      JsValue keys7 = JS.invoke(Object, "keys", buffer);
+      int keyIndex7 = 0;
+      while (keyIndex7 < JS.number(keys7["length"]).toInt()) {
+        string property = JS.string(keys7[keyIndex7]);
+        JS.delete(buffer, property);
+        keyIndex7 += 1;
+      }
+    }
+    return ret;
+  }
+})), "tex-math tight", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object("action_", "output")), "\\ce{(...)}", JS.object("*", JS.object("action_", JS.array("output", "ce"))), "{...}|\\,|\\x{}{}|\\x{}|\\x", JS.object("*", JS.object("action_", "o=")), "-|+", JS.object("*", JS.object("action_", "tight operator")), "else", JS.object("*", JS.object("action_", "o=")))), "actions", JS.object("tight operator", (JsValue buffer, JsValue m) => {
+  buffer["o"] = JS.add(JS.add(JS.add(JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["o"]), "{"), m), "}");
+}, "output", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  if (buffer["o"].truthy()) {
+    ret = JS.object("type_", "tex-math", "p1", buffer["o"]);
+    {
+      JsValue keys8 = JS.invoke(Object, "keys", buffer);
+      int keyIndex8 = 0;
+      while (keyIndex8 < JS.number(keys8["length"]).toInt()) {
+        string property = JS.string(keys8[keyIndex8]);
+        JS.delete(buffer, property);
+        keyIndex8 += 1;
+      }
+    }
+    return ret;
+  }
+})), "9,9", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object()), ",", JS.object("*", JS.object("action_", "comma")), "else", JS.object("*", JS.object("action_", "copy")))), "actions", JS.object("comma", () => {
+  return JS.object("type_", "commaDecimal");
+})), "pu", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object("action_", "output")), "space$", JS.object("*", JS.object("action_", JS.array("output", "space"))), "{[(|)]}", JS.object("0|a", JS.object("action_", "copy")), "(-)(9)^(-9)", JS.object("0", JS.object("action_", "number^", "nextState", "a")), "(-)(9.,9)(e)(99)", JS.object("0", JS.object("action_", "enumber", "nextState", "a")), "space", JS.object("0|a", JS.object()), "pm-operator", JS.object("0|a", JS.object("action_", JS.object("type_", "operator", "option", "\\pm"), "nextState", "0")), "operator", JS.object("0|a", JS.object("action_", "copy", "nextState", "0")), "//", JS.object("d", JS.object("action_", "o=", "nextState", "/")), "/", JS.object("d", JS.object("action_", "o=", "nextState", "/")), "{...}|else", JS.object("0|d", JS.object("action_", "d=", "nextState", "d"), "a", JS.object("action_", JS.array("space", "d="), "nextState", "d"), "/|q", JS.object("action_", "q=", "nextState", "q")))), "actions", JS.object("enumber", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  ret = JS.array();
+  if ((JS.strictEqual(m[0], "+-") || JS.strictEqual(m[0], "+/-"))) {
+    JS.invoke(ret, "push", "\\pm ");
+  } else if (m[0].truthy()) {
+    JS.invoke(ret, "push", m[0]);
+  }
+  if (m[1].truthy()) {
+    JS.invoke(mhchemParser, "concatArray", ret, JS.invoke(mhchemParser, "go", m[1], "pu-9,9"));
+    if (m[2].truthy()) {
+      if (JS.invoke(m[2], "match", JS.construct(RegExp, "[,.]", "")).truthy()) {
+        JS.invoke(mhchemParser, "concatArray", ret, JS.invoke(mhchemParser, "go", m[2], "pu-9,9"));
+      } else {
+        JS.invoke(ret, "push", m[2]);
+      }
+    }
+    m[3] = JS.call((JsValue logical) => { if (logical.truthy()) return logical; return m[3]; }, JS.undefined(), m[4]);
+    if (m[3].truthy()) {
+      m[3] = JS.invoke(m[3], "trim");
+      if ((JS.strictEqual(m[3], "e") || JS.strictEqual(JS.invoke(m[3], "substr", 0, 1), "*"))) {
+        JS.invoke(ret, "push", JS.object("type_", "cdot"));
+      } else {
+        JS.invoke(ret, "push", JS.object("type_", "times"));
+      }
+    }
+  }
+  if (m[3].truthy()) {
+    JS.invoke(ret, "push", JS.add(JS.add("10^{", m[5]), "}"));
+  }
+  return ret;
+}, "number^", (JsValue buffer, JsValue m) => {
+  JsValue ret = JS.undefined();
+  ret = JS.array();
+  if ((JS.strictEqual(m[0], "+-") || JS.strictEqual(m[0], "+/-"))) {
+    JS.invoke(ret, "push", "\\pm ");
+  } else if (m[0].truthy()) {
+    JS.invoke(ret, "push", m[0]);
+  }
+  JS.invoke(mhchemParser, "concatArray", ret, JS.invoke(mhchemParser, "go", m[1], "pu-9,9"));
+  JS.invoke(ret, "push", JS.add(JS.add("^{", m[2]), "}"));
+  return ret;
+}, "operator", (JsValue buffer, JsValue m, JsValue p1) => {
+  return JS.object("type_", "operator", "kind_", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return m; }, JS.undefined(), p1));
+}, "space", () => {
+  return JS.object("type_", "pu-space-1");
+}, "output", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  JsValue md = JS.undefined();
+  JsValue mq = JS.undefined();
+  UnitParts parts = UnitParts{JS.undefined(), JS.undefined()};
+  md = JS.invoke(mhchemParser["patterns"], "match_", "{(...)}", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["d"]));
+  if ((md.truthy() && JS.strictEqual(md["remainder"], ""))) {
+    buffer["d"] = md["match_"];
+  }
+  mq = JS.invoke(mhchemParser["patterns"], "match_", "{(...)}", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["q"]));
+  if ((mq.truthy() && JS.strictEqual(mq["remainder"], ""))) {
+    buffer["q"] = mq["match_"];
+  }
+  if (buffer["d"].truthy()) {
+    buffer["d"] = JS.invoke(buffer["d"], "replace", JS.construct(RegExp, "\\u00B0C|\\^oC|\\^{o}C", "g"), "{}^{\\circ}C");
+    buffer["d"] = JS.invoke(buffer["d"], "replace", JS.construct(RegExp, "\\u00B0F|\\^oF|\\^{o}F", "g"), "{}^{\\circ}F");
+  }
+  if (buffer["q"].truthy()) {
+    buffer["q"] = JS.invoke(buffer["q"], "replace", JS.construct(RegExp, "\\u00B0C|\\^oC|\\^{o}C", "g"), "{}^{\\circ}C");
+    buffer["q"] = JS.invoke(buffer["q"], "replace", JS.construct(RegExp, "\\u00B0F|\\^oF|\\^{o}F", "g"), "{}^{\\circ}F");
+    parts = UnitParts{JS.invoke(mhchemParser, "go", buffer["d"], "pu"), JS.invoke(mhchemParser, "go", buffer["q"], "pu")};
+    if (JS.strictEqual(buffer["o"], "//")) {
+      ret = JS.object("type_", "pu-frac", "p1", parts.numerator, "p2", parts.denominator);
+    } else {
+      ret = parts.numerator;
+      if (JS.lessThan(1, parts.numerator["length"]) || JS.lessThan(1, parts.denominator["length"])) {
+        JS.invoke(ret, "push", JS.object("type_", " / "));
+      } else {
+        JS.invoke(ret, "push", JS.object("type_", "/"));
+      }
+      JS.invoke(mhchemParser, "concatArray", ret, parts.denominator);
+    }
+  } else {
+    ret = JS.invoke(mhchemParser, "go", buffer["d"], "pu-2");
+  }
+  {
+    JsValue keys9 = JS.invoke(Object, "keys", buffer);
+    int keyIndex9 = 0;
+    while (keyIndex9 < JS.number(keys9["length"]).toInt()) {
+      string property = JS.string(keys9[keyIndex9]);
+      JS.delete(buffer, property);
+      keyIndex9 += 1;
+    }
+  }
+  return ret;
+})), "pu-2", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("*", JS.object("action_", "output")), "*", JS.object("*", JS.object("action_", JS.array("output", "cdot"), "nextState", "0")), "\\x", JS.object("*", JS.object("action_", "rm=")), "space", JS.object("*", JS.object("action_", JS.array("output", "space"), "nextState", "0")), "^{(...)}|^(-1)", JS.object("1", JS.object("action_", "^(-1)")), "-9.,9", JS.object("0", JS.object("action_", "rm=", "nextState", "0"), "1", JS.object("action_", "^(-1)", "nextState", "0")), "{...}|else", JS.object("*", JS.object("action_", "rm=", "nextState", "1")))), "actions", JS.object("cdot", () => {
+  return JS.object("type_", "tight cdot");
+}, "^(-1)", (JsValue buffer, JsValue m) => {
+  buffer["rm"] = JS.add(buffer["rm"], JS.add(JS.add("^{", m), "}"));
+}, "space", () => {
+  return JS.object("type_", "pu-space-2");
+}, "output", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  JsValue mrm = JS.undefined();
+  ret = JS.array();
+  if (buffer["rm"].truthy()) {
+    mrm = JS.invoke(mhchemParser["patterns"], "match_", "{(...)}", JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["rm"]));
+    if ((mrm.truthy() && JS.strictEqual(mrm["remainder"], ""))) {
+      ret = JS.invoke(mhchemParser, "go", mrm["match_"], "pu");
+    } else {
+      ret = JS.object("type_", "rm", "p1", buffer["rm"]);
+    }
+  }
+  {
+    JsValue keys10 = JS.invoke(Object, "keys", buffer);
+    int keyIndex10 = 0;
+    while (keyIndex10 < JS.number(keys10["length"]).toInt()) {
+      string property = JS.string(keys10[keyIndex10]);
+      JS.delete(buffer, property);
+      keyIndex10 += 1;
+    }
+  }
+  return ret;
+})), "pu-9,9", JS.object("transitions", JS.invoke(mhchemParser, "createTransitions", JS.object("empty", JS.object("0", JS.object("action_", "output-0"), "o", JS.object("action_", "output-o")), ",", JS.object("0", JS.object("action_", JS.array("output-0", "comma"), "nextState", "o")), ".", JS.object("0", JS.object("action_", JS.array("output-0", "copy"), "nextState", "o")), "else", JS.object("*", JS.object("action_", "text=")))), "actions", JS.object("comma", () => {
+  return JS.object("type_", "commaDecimal");
+}, "output-0", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  ret = JS.array();
+  buffer["text_"] = JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["text_"]);
+  if (JS.lessThan(4, buffer["text_"]["length"])) {
+    int leading = JS.number(buffer["text_"]["length"]).toInt() % 3;
+    if (leading == 0) {
+      leading = 3;
+    }
+    {
+      int i = JS.number(buffer["text_"]["length"]).toInt() - 3;
+      while (i > 0) {
+        JS.invoke(ret, "push", JS.invoke(buffer["text_"], "substr", i, 3));
+        JS.invoke(ret, "push", JS.object("type_", "1000 separator"));
+        i -= 3;
+      }
+    }
+    JS.invoke(ret, "push", JS.invoke(buffer["text_"], "substr", 0, leading));
+    JS.invoke(ret, "reverse");
+  } else {
+    JS.invoke(ret, "push", buffer["text_"]);
+  }
+  {
+    JsValue keys11 = JS.invoke(Object, "keys", buffer);
+    int keyIndex11 = 0;
+    while (keyIndex11 < JS.number(keys11["length"]).toInt()) {
+      string property = JS.string(keys11[keyIndex11]);
+      JS.delete(buffer, property);
+      keyIndex11 += 1;
+    }
+  }
+  return ret;
+}, "output-o", (JsValue buffer) => {
+  JsValue ret = JS.undefined();
+  ret = JS.array();
+  buffer["text_"] = JS.call((JsValue logical) => { if (logical.truthy()) return logical; return ""; }, JS.undefined(), buffer["text_"]);
+  if (JS.lessThan(4, buffer["text_"]["length"])) {
+    int end = JS.number(buffer["text_"]["length"]).toInt() - 3;
+    {
+      int i = 0;
+      while (i < end) {
+        JS.invoke(ret, "push", JS.invoke(buffer["text_"], "substr", i, 3));
+        JS.invoke(ret, "push", JS.object("type_", "1000 separator"));
+        i += 3;
+      }
+      JS.invoke(ret, "push", JS.invoke(buffer["text_"], "substr", i));
+    }
+  } else {
+    JS.invoke(ret, "push", buffer["text_"]);
+  }
+  {
+    JsValue keys12 = JS.invoke(Object, "keys", buffer);
+    int keyIndex12 = 0;
+    while (keyIndex12 < JS.number(keys12["length"]).toInt()) {
+      string property = JS.string(keys12[keyIndex12]);
+      JS.delete(buffer, property);
+      keyIndex12 += 1;
+    }
+  }
+  return ret;
+})));
+struct ChemParts {
+  string amount;
+  string leftSuperscript;
+  string leftSubscript;
+  string element;
+  string rightSubscript;
+  string rightSuperscript;
+}
+
+struct ArrowParts {
+  string above;
+  string below;
+}
+
+string innerText(JsValue value) {
+  if (!value.truthy()) {
+    return "";
+  }
+  return JS.string(JS.invoke(texify, "go", value, true));
+}
+
+texify = JS.object("go", (JsValue input, JsValue isInner) => {
+  if (!(input.truthy())) {
+    return "";
+  }
+  string result = "";
+  bool firstLevelEscape = false;
+  {
+    int i = 0;
+    while (i < JS.number(input["length"]).toInt()) {
+      JsValue item = input[i];
+      if (JS.strictEqual(JS.typeOf(item), "string")) {
+        result = result + JS.string(item);
+      } else {
+        result = result + JS.string(JS.invoke(texify, "_go2", item));
+        if (JS.strictEqual(item["type_"], "1st-level escape")) {
+          firstLevelEscape = true;
+        }
+      }
+      i += 1;
+    }
+  }
+  if (!isInner.truthy() && !firstLevelEscape && result.length > 0) {
+    result = "{" + result + "}";
+  }
+  return result;
+}, "_goInner", (JsValue input) => {
+  if (!(input.truthy())) {
+    return input;
+  }
+  return JS.invoke(texify, "go", input, true);
+}, "_go2", (JsValue buf) => {
+  ChemParts parts = ChemParts{"", "", "", "", "", ""};
+  string result = "";
+  if (JS.strictEqual(buf["type_"], "chemfive")) {
+    parts = ChemParts{innerText(buf["a"]), innerText(buf["b"]), innerText(buf["p"]), innerText(buf["o"]), innerText(buf["q"]), innerText(buf["d"])};
+    if (parts.amount.length > 0) {
+      if (JS.invoke(parts.amount, "match", JS.construct(RegExp, "^[+\\-]", "")).truthy()) {
+        parts.amount = "{" + parts.amount + "}";
+      }
+      result = result + parts.amount + "\\,";
+    }
+    if (parts.leftSuperscript.length > 0 || parts.leftSubscript.length > 0) {
+      result = result + "{\\vphantom{X}}";
+      result = result + "^{\\hphantom{" + parts.leftSuperscript + "}}_{\\hphantom{" + parts.leftSubscript + "}}";
+      result = result + "{\\vphantom{X}}";
+      result = result + "^{\\smash[t]{\\vphantom{2}}\\mathllap{" + parts.leftSuperscript + "}}";
+      result = result + "_{\\vphantom{2}\\mathllap{\\smash[t]{" + parts.leftSubscript + "}}}";
+    }
+    if (parts.element.length > 0) {
+      if (JS.invoke(parts.element, "match", JS.construct(RegExp, "^[+\\-]", "")).truthy()) {
+        parts.element = "{" + parts.element + "}";
+      }
+      result = result + parts.element;
+    }
+    if (JS.strictEqual(buf["dType"], "kv")) {
+      if (parts.rightSuperscript.length > 0 || parts.rightSubscript.length > 0) {
+        result = result + "{\\vphantom{X}}";
+      }
+      if (parts.rightSuperscript.length > 0) {
+        result = result + "^{" + parts.rightSuperscript + "}";
+      }
+      if (parts.rightSubscript.length > 0) {
+        result = result + "_{\\smash[t]{" + parts.rightSubscript + "}}";
+      }
+    } else if (JS.strictEqual(buf["dType"], "oxidation")) {
+      if (parts.rightSuperscript.length > 0) {
+        result = result + "{\\vphantom{X}}";
+        result = result + "^{" + parts.rightSuperscript + "}";
+      }
+      if (parts.rightSubscript.length > 0) {
+        result = result + "{\\vphantom{X}}";
+        result = result + "_{\\smash[t]{" + parts.rightSubscript + "}}";
+      }
+    } else {
+      if (parts.rightSubscript.length > 0) {
+        result = result + "{\\vphantom{X}}";
+        result = result + "_{\\smash[t]{" + parts.rightSubscript + "}}";
+      }
+      if (parts.rightSuperscript.length > 0) {
+        result = result + "{\\vphantom{X}}";
+        result = result + "^{" + parts.rightSuperscript + "}";
+      }
+    }
+  } else if (JS.strictEqual(buf["type_"], "rm")) {
+    result = "\\mathrm{" + JS.string(buf["p1"]) + "}";
+  } else if (JS.strictEqual(buf["type_"], "text")) {
+    if (JS.invoke(buf["p1"], "match", JS.construct(RegExp, "[\\^_]", "")).truthy()) {
+      buf["p1"] = JS.invoke(JS.invoke(buf["p1"], "replace", " ", "~"), "replace", "-", "\\text{-}");
+      result = "\\mathrm{" + JS.string(buf["p1"]) + "}";
+    } else {
+      result = "\\text{" + JS.string(buf["p1"]) + "}";
+    }
+  } else if (JS.strictEqual(buf["type_"], "roman numeral")) {
+    result = "\\mathrm{" + JS.string(buf["p1"]) + "}";
+  } else if (JS.strictEqual(buf["type_"], "state of aggregation")) {
+    result = "\\mskip2mu " + JS.string(JS.invoke(texify, "_goInner", buf["p1"]));
+  } else if (JS.strictEqual(buf["type_"], "state of aggregation subscript")) {
+    result = "\\mskip1mu " + JS.string(JS.invoke(texify, "_goInner", buf["p1"]));
+  } else if (JS.strictEqual(buf["type_"], "bond")) {
+    result = JS.string(JS.invoke(texify, "_getBond", buf["kind_"]));
+    if (result.length == 0) {
+      throw JS.array("MhchemErrorBond", JS.add(JS.add("mhchem Error. Unknown bond type (", buf["kind_"]), ")"));
+    }
+  } else if (JS.strictEqual(buf["type_"], "frac")) {
+    string fraction = "\\frac{" + JS.string(buf["p1"]) + "}{" + JS.string(buf["p2"]) + "}";
+    result = "\\mathchoice{\\textstyle" + fraction + "}{" + fraction + "}{" + fraction + "}{" + fraction + "}";
+  } else if (JS.strictEqual(buf["type_"], "pu-frac")) {
+    string fraction = "\\frac{" + JS.string(JS.invoke(texify, "_goInner", buf["p1"])) + "}{" + JS.string(JS.invoke(texify, "_goInner", buf["p2"])) + "}";
+    result = "\\mathchoice{\\textstyle" + fraction + "}{" + fraction + "}{" + fraction + "}{" + fraction + "}";
+  } else if (JS.strictEqual(buf["type_"], "tex-math")) {
+    result = JS.string(buf["p1"]) + " ";
+  } else if (JS.strictEqual(buf["type_"], "frac-ce")) {
+    result = "\\frac{" + JS.string(JS.invoke(texify, "_goInner", buf["p1"])) + "}{" + JS.string(JS.invoke(texify, "_goInner", buf["p2"])) + "}";
+  } else if (JS.strictEqual(buf["type_"], "overset")) {
+    result = "\\overset{" + JS.string(JS.invoke(texify, "_goInner", buf["p1"])) + "}{" + JS.string(JS.invoke(texify, "_goInner", buf["p2"])) + "}";
+  } else if (JS.strictEqual(buf["type_"], "underset")) {
+    result = "\\underset{" + JS.string(JS.invoke(texify, "_goInner", buf["p1"])) + "}{" + JS.string(JS.invoke(texify, "_goInner", buf["p2"])) + "}";
+  } else if (JS.strictEqual(buf["type_"], "underbrace")) {
+    result = "\\underbrace{" + JS.string(JS.invoke(texify, "_goInner", buf["p1"])) + "}_{" + JS.string(JS.invoke(texify, "_goInner", buf["p2"])) + "}";
+  } else if (JS.strictEqual(buf["type_"], "color")) {
+    result = "{\\color{" + JS.string(buf["color1"]) + "}{" + JS.string(JS.invoke(texify, "_goInner", buf["color2"])) + "}}";
+  } else if (JS.strictEqual(buf["type_"], "color0")) {
+    result = "\\color{" + JS.string(buf["color"]) + "}";
+  } else if (JS.strictEqual(buf["type_"], "arrow")) {
+    ArrowParts arrowParts = ArrowParts{innerText(buf["rd"]), innerText(buf["rq"])};
+    string arrow = "\\x" + JS.string(JS.invoke(texify, "_getArrow", buf["r"]));
+    if (arrowParts.below.length > 0) {
+      arrow = arrow + "[{" + arrowParts.below + "}]";
+    }
+    if (arrowParts.above.length > 0) {
+      arrow = arrow + "{" + arrowParts.above + "}";
+    } else {
+      arrow = arrow + "{}";
+    }
+    result = arrow;
+  } else if (JS.strictEqual(buf["type_"], "operator")) {
+    result = JS.string(JS.invoke(texify, "_getOperator", buf["kind_"]));
+  } else if (JS.strictEqual(buf["type_"], "1st-level escape")) {
+    result = JS.string(buf["p1"]) + " ";
+  } else if (JS.strictEqual(buf["type_"], "space")) {
+    result = " ";
+  } else if (JS.strictEqual(buf["type_"], "entitySkip")) {
+    result = "~";
+  } else if (JS.strictEqual(buf["type_"], "pu-space-1")) {
+    result = "~";
+  } else if (JS.strictEqual(buf["type_"], "pu-space-2")) {
+    result = "\\mkern3mu ";
+  } else if (JS.strictEqual(buf["type_"], "1000 separator")) {
+    result = "\\mkern2mu ";
+  } else if (JS.strictEqual(buf["type_"], "commaDecimal")) {
+    result = "{,}";
+  } else if (JS.strictEqual(buf["type_"], "comma enumeration L")) {
+    result = "{" + JS.string(buf["p1"]) + "}\\mkern6mu ";
+  } else if (JS.strictEqual(buf["type_"], "comma enumeration M")) {
+    result = "{" + JS.string(buf["p1"]) + "}\\mkern3mu ";
+  } else if (JS.strictEqual(buf["type_"], "comma enumeration S")) {
+    result = "{" + JS.string(buf["p1"]) + "}\\mkern1mu ";
+  } else if (JS.strictEqual(buf["type_"], "hyphen")) {
+    result = "\\text{-}";
+  } else if (JS.strictEqual(buf["type_"], "addition compound")) {
+    result = "\\,{\\cdot}\\,";
+  } else if (JS.strictEqual(buf["type_"], "electron dot")) {
+    result = "\\mkern1mu \\bullet\\mkern1mu ";
+  } else if (JS.strictEqual(buf["type_"], "KV x")) {
+    result = "{\\times}";
+  } else if (JS.strictEqual(buf["type_"], "prime")) {
+    result = "\\prime ";
+  } else if (JS.strictEqual(buf["type_"], "cdot")) {
+    result = "\\cdot ";
+  } else if (JS.strictEqual(buf["type_"], "tight cdot")) {
+    result = "\\mkern1mu{\\cdot}\\mkern1mu ";
+  } else if (JS.strictEqual(buf["type_"], "times")) {
+    result = "\\times ";
+  } else if (JS.strictEqual(buf["type_"], "circa")) {
+    result = "{\\sim}";
+  } else if (JS.strictEqual(buf["type_"], "^")) {
+    result = "uparrow";
+  } else if (JS.strictEqual(buf["type_"], "v")) {
+    result = "downarrow";
+  } else if (JS.strictEqual(buf["type_"], "ellipsis")) {
+    result = "\\ldots ";
+  } else if (JS.strictEqual(buf["type_"], "/")) {
+    result = "/";
+  } else if (JS.strictEqual(buf["type_"], " / ")) {
+    result = "\\,/\\,";
+  } else {
+    JS.call(assertNever, JS.undefined(), buf);
+    throw JS.array("MhchemBugT", "mhchem bug T. Please report.");
+  }
+  JS.call(assertString, JS.undefined(), result);
+  return result;
+}, "_getArrow", (JsValue a) => {
+  if (JS.strictEqual(a, "->")) {
+    return "rightarrow";
+  } else if (JS.strictEqual(a, "→")) {
+    return "rightarrow";
+  } else if (JS.strictEqual(a, "⟶")) {
+    return "rightarrow";
+  } else if (JS.strictEqual(a, "<-")) {
+    return "leftarrow";
+  } else if (JS.strictEqual(a, "<->")) {
+    return "leftrightarrow";
+  } else if (JS.strictEqual(a, "<-->")) {
+    return "rightleftarrows";
+  } else if (JS.strictEqual(a, "<=>")) {
+    return "rightleftharpoons";
+  } else if (JS.strictEqual(a, "⇌")) {
+    return "rightleftharpoons";
+  } else if (JS.strictEqual(a, "<=>>")) {
+    return "rightequilibrium";
+  } else if (JS.strictEqual(a, "<<=>")) {
+    return "leftequilibrium";
+  } else {
+    JS.call(assertNever, JS.undefined(), a);
+    throw JS.array("MhchemBugT", "mhchem bug T. Please report.");
+  }
+}, "_getBond", (JsValue a) => {
+  if (JS.strictEqual(a, "-")) {
+    return "{-}";
+  } else if (JS.strictEqual(a, "1")) {
+    return "{-}";
+  } else if (JS.strictEqual(a, "=")) {
+    return "{=}";
+  } else if (JS.strictEqual(a, "2")) {
+    return "{=}";
+  } else if (JS.strictEqual(a, "#")) {
+    return "{\\equiv}";
+  } else if (JS.strictEqual(a, "3")) {
+    return "{\\equiv}";
+  } else if (JS.strictEqual(a, "~")) {
+    return "{\\tripledash}";
+  } else if (JS.strictEqual(a, "~-")) {
+    return "{\\mathrlap{\\raisebox{-.1em}{$-$}}\\raisebox{.1em}{$\\tripledash$}}";
+  } else if (JS.strictEqual(a, "~=")) {
+    return "{\\mathrlap{\\raisebox{-.2em}{$-$}}\\mathrlap{\\raisebox{.2em}{$\\tripledash$}}-}";
+  } else if (JS.strictEqual(a, "~--")) {
+    return "{\\mathrlap{\\raisebox{-.2em}{$-$}}\\mathrlap{\\raisebox{.2em}{$\\tripledash$}}-}";
+  } else if (JS.strictEqual(a, "-~-")) {
+    return "{\\mathrlap{\\raisebox{-.2em}{$-$}}\\mathrlap{\\raisebox{.2em}{$-$}}\\tripledash}";
+  } else if (JS.strictEqual(a, "...")) {
+    return "{{\\cdot}{\\cdot}{\\cdot}}";
+  } else if (JS.strictEqual(a, "....")) {
+    return "{{\\cdot}{\\cdot}{\\cdot}{\\cdot}}";
+  } else if (JS.strictEqual(a, "->")) {
+    return "{\\rightarrow}";
+  } else if (JS.strictEqual(a, "<-")) {
+    return "{\\leftarrow}";
+  } else if (JS.strictEqual(a, "<")) {
+    return "{<}";
+  } else if (JS.strictEqual(a, ">")) {
+    return "{>}";
+  } else {
+    JS.call(assertNever, JS.undefined(), a);
+    throw JS.array("MhchemBugT", "mhchem bug T. Please report.");
+  }
+}, "_getOperator", (JsValue a) => {
+  if (JS.strictEqual(a, "+")) {
+    return " {}+{} ";
+  } else if (JS.strictEqual(a, "-")) {
+    return " {}-{} ";
+  } else if (JS.strictEqual(a, "=")) {
+    return " {}={} ";
+  } else if (JS.strictEqual(a, "<")) {
+    return " {}<{} ";
+  } else if (JS.strictEqual(a, ">")) {
+    return " {}>{} ";
+  } else if (JS.strictEqual(a, "<<")) {
+    return " {}\\ll{} ";
+  } else if (JS.strictEqual(a, ">>")) {
+    return " {}\\gg{} ";
+  } else if (JS.strictEqual(a, "\\pm")) {
+    return " {}\\pm{} ";
+  } else if (JS.strictEqual(a, "\\approx")) {
+    return " {}\\approx{} ";
+  } else if (JS.strictEqual(a, "$\\approx$")) {
+    return " {}\\approx{} ";
+  } else if (JS.strictEqual(a, "v")) {
+    return " \\downarrow{} ";
+  } else if (JS.strictEqual(a, "(v)")) {
+    return " \\downarrow{} ";
+  } else if (JS.strictEqual(a, "^")) {
+    return " \\uparrow{} ";
+  } else if (JS.strictEqual(a, "(^)")) {
+    return " \\uparrow{} ";
+  } else {
+    JS.call(assertNever, JS.undefined(), a);
+    throw JS.array("MhchemBugT", "mhchem bug T. Please report.");
+  }
+});
+void assertNever(JsValue a) {}
+void assertString(JsValue a) {}
+
+JS.invoke(katex, "__defineMacro", "\\ce", (JsValue context) => {
+  return parseChemTokens(JS.invoke(context, "consumeArgs", 1)[0], "ce");
+});
+JS.invoke(katex, "__defineMacro", "\\pu", (JsValue context) => {
+  return parseChemTokens(JS.invoke(context, "consumeArgs", 1)[0], "pu");
+});
+JS.invoke(katex, "__defineMacro", "\\tripledash", "{\\vphantom{-}\\raisebox{2.56mu}{$\\mkern2mu\\tiny\\text{-}\\mkern1mu\\text{-}\\mkern1mu\\text{-}\\mkern2mu$}}");

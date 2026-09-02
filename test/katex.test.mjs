@@ -53,15 +53,29 @@ describe("@itslil/katex", () => {
     assert.match(html, />b</)
   })
 
-  it("exposes default object methods and internals", async () => {
+  it("matches the upstream root exports", async () => {
     const mod = await import("../dist/katex.esm.js")
+    assert.deepEqual(Object.keys(mod).sort(), [
+      "ParseError",
+      "SETTINGS_SCHEMA",
+      "__defineFunction",
+      "__defineMacro",
+      "__defineSymbol",
+      "__domTree",
+      "__parse",
+      "__renderToDomTree",
+      "__renderToHTMLTree",
+      "__setFontMetrics",
+      "default",
+      "render",
+      "renderToString",
+      "version",
+    ])
     assert.equal(typeof mod.renderToString, "function")
     assert.equal(typeof mod.render, "function")
     assert.equal(typeof mod.default.renderToString, "function")
     assert.equal(mod.default.renderToString, mod.renderToString)
     assert.equal(typeof mod.ParseError, "function")
-    assert.equal(typeof mod.parseTree, "function")
-    assert.equal(typeof mod.Settings, "function")
     assert.equal(mod.version, "0.16.22")
   })
 
@@ -91,6 +105,8 @@ describe("@itslil/katex", () => {
     }
     render("x^2", el)
     assert.equal(children.length, 1)
+    render("\\text{hello world}", el)
+    assert.equal(children.length, 2)
     const sample = [
       "\\sqrt{\\alpha}+\\sum\\prod\\int",
       "\\sin\\cos\\tan\\log\\ln",

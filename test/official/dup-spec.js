@@ -1,5 +1,5 @@
-import { symbols } from "../../dist/katex.esm.js";
-import { macros } from "../../dist/katex.esm.js";
+import { symbols } from "../../dist/katex.test.js";
+import { macros } from "../../dist/katex.test.js";
 
 describe("Symbols and macros", () => {
     for (const macro in macros) {

@@ -1,6 +1,8 @@
-import extern { getFontMetricsData, getUnicodeSymbols } from "./data-host.js";
-extern JsValue getFontMetricsData();
-extern JsValue getUnicodeSymbols();
+import extern { default as generatedFontMetricsData } from "./fontMetricsData.js";
+import extern { default as generatedUnicodeSymbols } from "./unicodeSymbols.js";
 
-export JsValue fontMetricsData = getFontMetricsData();
-export JsValue unicodeSymbols = getUnicodeSymbols();
+extern JsValue generatedFontMetricsData;
+extern JsValue generatedUnicodeSymbols;
+
+export JsValue fontMetricsData = generatedFontMetricsData;
+export JsValue unicodeSymbols = generatedUnicodeSymbols;

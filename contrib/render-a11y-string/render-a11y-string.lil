@@ -1,0 +1,437 @@
+import extern { default as katex } from "../../dist/katex.mjs";
+
+extern JsValue katex;
+extern JsValue Error;
+
+pure bool isDigits(string value) {
+  if (value.length == 0) return false;
+  int i = 0;
+  while (i < value.length) {
+    string character = value.charAt(i);
+    if (character < "0" || character > "9") return false;
+    i += 1;
+  }
+  return true;
+}
+
+pure string normalString(string value) {
+  if (value == "(") return "left parenthesis";
+  if (value == ")") return "right parenthesis";
+  if (value == "[") return "open bracket";
+  if (value == "]") return "close bracket";
+  if (value == "\\{") return "left brace";
+  if (value == "\\}") return "right brace";
+  if (value == "\\lvert") return "open vertical bar";
+  if (value == "\\rvert") return "close vertical bar";
+  if (value == "|") return "vertical bar";
+  if (value == "\\uparrow" || value == "\\Uparrow") return "up arrow";
+  if (value == "\\downarrow" || value == "\\Downarrow") return "down arrow";
+  if (value == "\\updownarrow") return "up down arrow";
+  if (value == "\\leftarrow" || value == "\\Leftarrow") return "left arrow";
+  if (value == "\\rightarrow" || value == "\\Rightarrow") return "right arrow";
+  if (value == "\\langle") return "open angle";
+  if (value == "\\rangle") return "close angle";
+  if (value == "\\lfloor") return "open floor";
+  if (value == "\\rfloor") return "close floor";
+  if (value == "\\int" || value == "\\intop") return "integral";
+  if (value == "\\lim") return "limit";
+  if (value == "\\ln") return "natural log";
+  if (value == "\\log") return "log";
+  if (value == "\\sin") return "sine";
+  if (value == "\\cos") return "cosine";
+  if (value == "\\tan") return "tangent";
+  if (value == "\\cot") return "cotangent";
+  if (value == "\\sum") return "sum";
+  if (value == "/") return "slash";
+  if (value == ",") return "comma";
+  if (value == ".") return "point";
+  if (value == "-") return "negative";
+  if (value == "+") return "plus";
+  if (value == "~") return "tilde";
+  if (value == ":") return "colon";
+  if (value == "?") return "question mark";
+  if (value == "'") return "apostrophe";
+  if (value == "\\%") return "percent";
+  if (value == " " || value == "\\ ") return "space";
+  if (value == "\\$") return "dollar sign";
+  if (value == "\\angle") return "angle";
+  if (value == "\\degree") return "degree";
+  if (value == "\\circ") return "circle";
+  if (value == "\\vec") return "vector";
+  if (value == "\\triangle") return "triangle";
+  if (value == "\\pi") return "pi";
+  if (value == "\\prime") return "prime";
+  if (value == "\\infty") return "infinity";
+  if (value == "\\alpha") return "alpha";
+  if (value == "\\beta") return "beta";
+  if (value == "\\gamma") return "gamma";
+  if (value == "\\omega") return "omega";
+  if (value == "\\theta") return "theta";
+  if (value == "\\sigma") return "sigma";
+  if (value == "\\lambda") return "lambda";
+  if (value == "\\tau") return "tau";
+  if (value == "\\Delta" || value == "\\delta") return "delta";
+  if (value == "\\mu") return "mu";
+  if (value == "\\rho") return "rho";
+  if (value == "\\nabla") return "del";
+  if (value == "\\ell") return "ell";
+  if (value == "\\ldots") return "dots";
+  if (value == "\\hat") return "hat";
+  if (value == "\\acute") return "acute";
+  return value;
+}
+
+pure string binaryString(string value) {
+  if (value == "+") return "plus";
+  if (value == "-") return "minus";
+  if (value == "\\pm") return "plus minus";
+  if (value == "\\cdot") return "dot";
+  if (value == "*" || value == "\\times") return "times";
+  if (value == "/" || value == "\\div") return "divided by";
+  if (value == "\\circ") return "circle";
+  if (value == "\\bullet") return "bullet";
+  return value;
+}
+
+pure string relationString(string value) {
+  if (value == "=") return "equals";
+  if (value == "\\approx") return "approximately equals";
+  if (value == "≠") return "does not equal";
+  if (value == "\\geq" || value == "\\ge") return "is greater than or equal to";
+  if (value == "\\leq" || value == "\\le") return "is less than or equal to";
+  if (value == ">") return "is greater than";
+  if (value == "<") return "is less than";
+  if (value == "\\leftarrow" || value == "\\Leftarrow") return "left arrow";
+  if (value == "\\rightarrow" || value == "\\Rightarrow") return "right arrow";
+  if (value == ":") return "colon";
+  return value;
+}
+
+pure string accentUnderString(string value) {
+  if (value == "\\underleftarrow") return "left arrow";
+  if (value == "\\underrightarrow") return "right arrow";
+  if (value == "\\underleftrightarrow") return "left-right arrow";
+  if (value == "\\undergroup") return "group";
+  if (value == "\\underlinesegment") return "line segment";
+  if (value == "\\utilde") return "tilde";
+  return "";
+}
+
+pure string powerString(string value) {
+  if (value == "prime") return "prime";
+  if (value == "degree" || value == "circle") return "degrees";
+  if (value == "2") return "squared";
+  if (value == "3") return "cubed";
+  return "";
+}
+
+void buildString(JsValue value, string type, JsValue strings) {
+  if (!value.truthy()) return;
+  string text = JS.string(value);
+  string result = text;
+  if (type == "open") {
+    if (text == "|") result = "open vertical bar";
+    else if (text == ".") result = "";
+    else result = normalString(text);
+  } else if (type == "close") {
+    if (text == "|") result = "close vertical bar";
+    else if (text == ".") result = "";
+    else result = normalString(text);
+  } else if (type == "bin") {
+    result = binaryString(text);
+  } else if (type == "rel") {
+    result = relationString(text);
+  } else {
+    result = normalString(text);
+  }
+  int length = JS.number(strings["length"]).toInt();
+  if (isDigits(result) && length > 0 && isDigits(JS.string(strings[length - 1]))) {
+    strings[length - 1] = JS.add(strings[length - 1], result);
+  } else if (result != "") {
+    JS.push(strings, result);
+  }
+}
+
+void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
+  if (JS.isArray(tree)) {
+    int i = 0;
+    int length = JS.number(tree["length"]).toInt();
+    while (i < length) {
+      buildA11yStrings(tree[i], strings, atomType);
+      i += 1;
+    }
+    return;
+  }
+
+  string type = JS.string(tree["type"]);
+  if (type == "accent") {
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    buildA11yStrings(tree["base"], region, atomType);
+    JS.push(region, "with");
+    buildString(tree["label"], "normal", region);
+    JS.push(region, "on top");
+    return;
+  }
+  if (type == "accentUnder") {
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    buildA11yStrings(tree["base"], region, atomType);
+    JS.push(region, "with");
+    buildString(accentUnderString(JS.string(tree["label"])), "normal", region);
+    JS.push(region, "underneath");
+    return;
+  }
+  if (type == "accent-token" || type == "color-token" || type == "leftright-right" || type == "size" || type == "infix" || type == "internal") return;
+  if (type == "atom") {
+    string family = JS.string(tree["family"]);
+    if (family == "bin" || family == "close" || family == "inner" || family == "open" || family == "punct" || family == "rel") {
+      buildString(tree["text"], family, strings);
+      return;
+    }
+    throw JS.construct(Error, "\"" + family + "\" is not a valid atom type");
+  }
+  if (type == "color") {
+    string color = JS.string(JS.invoke(tree["color"], "replace", "katex-", ""));
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    JS.push(region, "start color " + color);
+    buildA11yStrings(tree["body"], region, atomType);
+    JS.push(region, "end color " + color);
+    return;
+  }
+  if (type == "delimsizing") {
+    if (tree["delim"].truthy() && !JS.strictEqual(tree["delim"], ".")) buildString(tree["delim"], "normal", strings);
+    return;
+  }
+  if (type == "genfrac") {
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    if (tree["hasBarLine"].truthy()) {
+      JS.push(region, "start fraction");
+      if (tree["leftDelim"].truthy()) buildString(tree["leftDelim"], "open", region);
+      buildA11yStrings(tree["numer"], region, atomType);
+      JS.push(region, "divided by");
+      buildA11yStrings(tree["denom"], region, atomType);
+      if (tree["rightDelim"].truthy()) buildString(tree["rightDelim"], "close", region);
+      JS.push(region, "end fraction");
+    } else {
+      JS.push(region, "start binomial");
+      if (tree["leftDelim"].truthy()) buildString(tree["leftDelim"], "open", region);
+      buildA11yStrings(tree["numer"], region, atomType);
+      JS.push(region, "over");
+      buildA11yStrings(tree["denom"], region, atomType);
+      if (tree["rightDelim"].truthy()) buildString(tree["rightDelim"], "close", region);
+      JS.push(region, "end binomial");
+    }
+    return;
+  }
+  if (type == "hbox" || type == "lap" || type == "raisebox" || type == "sizing" || type == "styling" || type == "smash" || type == "vcenter" || type == "operatorname" || type == "font" || type == "html") {
+    buildA11yStrings(tree["body"], strings, atomType);
+    return;
+  }
+  if (type == "kern") return;
+  if (type == "leftright") {
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    buildString(tree["left"], "open", region);
+    buildA11yStrings(tree["body"], region, atomType);
+    buildString(tree["right"], "close", region);
+    return;
+  }
+  if (type == "mathord") {
+    buildString(tree["text"], "normal", strings);
+    return;
+  }
+  if (type == "op") {
+    if (tree["body"].truthy()) buildA11yStrings(tree["body"], strings, atomType);
+    else if (tree["name"].truthy()) buildString(tree["name"], "normal", strings);
+    return;
+  }
+  if (type == "op-token") {
+    buildString(tree["text"], atomType, strings);
+    return;
+  }
+  if (type == "ordgroup") {
+    buildA11yStrings(tree["body"], strings, atomType);
+    return;
+  }
+  if (type == "overline" || type == "underline") {
+    string name = type;
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    JS.push(region, "start " + name);
+    buildA11yStrings(tree["body"], region, atomType);
+    JS.push(region, "end " + name);
+    return;
+  }
+  if (type == "pmb") {
+    JS.push(strings, "bold");
+    return;
+  }
+  if (type == "phantom") {
+    JS.push(strings, "empty space");
+    return;
+  }
+  if (type == "rule") {
+    JS.push(strings, "rectangle");
+    return;
+  }
+  if (type == "spacing") {
+    JS.push(strings, "space");
+    return;
+  }
+  if (type == "sqrt") {
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    if (tree["index"].truthy()) {
+      JsValue indexStrings = JS.array();
+      buildA11yStrings(tree["index"], indexStrings, atomType);
+      string indexString = JS.string(JS.invoke(flatten(indexStrings), "join", ","));
+      if (indexString == "3") {
+        JS.push(region, "cube root of");
+        buildA11yStrings(tree["body"], region, atomType);
+        JS.push(region, "end cube root");
+        return;
+      }
+      JS.push(region, "root");
+      JS.push(region, "start index");
+      buildA11yStrings(tree["index"], region, atomType);
+      JS.push(region, "end index");
+      return;
+    }
+    JS.push(region, "square root of");
+    buildA11yStrings(tree["body"], region, atomType);
+    JS.push(region, "end square root");
+    return;
+  }
+  if (type == "supsub") {
+    bool isLog = false;
+    if (tree["base"].truthy()) {
+      buildA11yStrings(tree["base"], strings, atomType);
+      isLog = JS.strictEqual(tree["base"]["type"], "op") && JS.strictEqual(tree["base"]["name"], "\\log");
+    }
+    if (tree["sub"].truthy()) {
+      string regionName = "subscript";
+      if (isLog) regionName = "base";
+      JsValue region = JS.array();
+      JS.push(strings, region);
+      JS.push(region, "start " + regionName);
+      buildA11yStrings(tree["sub"], region, atomType);
+      JS.push(region, "end " + regionName);
+    }
+    if (tree["sup"].truthy()) {
+      JsValue region = JS.array();
+      JS.push(strings, region);
+      JsValue supStrings = JS.array();
+      buildA11yStrings(tree["sup"], supStrings, atomType);
+      string spokenPower = powerString(JS.string(JS.invoke(flatten(supStrings), "join", ",")));
+      if (spokenPower != "") {
+        JS.push(region, spokenPower);
+        return;
+      }
+      JS.push(region, "start superscript");
+      buildA11yStrings(tree["sup"], region, atomType);
+      JS.push(region, "end superscript");
+    }
+    return;
+  }
+  if (type == "text") {
+    JsValue region = JS.array();
+    JS.push(strings, region);
+    if (JS.strictEqual(tree["font"], "\\textbf")) {
+      JS.push(region, "start bold text");
+      buildA11yStrings(tree["body"], region, atomType);
+      JS.push(region, "end bold text");
+    } else {
+      JS.push(region, "start text");
+      buildA11yStrings(tree["body"], region, atomType);
+      JS.push(region, "end text");
+    }
+    return;
+  }
+  if (type == "textord") {
+    buildString(tree["text"], atomType, strings);
+    return;
+  }
+  if (type == "enclose") {
+    string label = JS.string(tree["label"]);
+    string regionName = "";
+    if (label.indexOf("cancel") != -1) regionName = "cancel";
+    else if (label.indexOf("box") != -1) regionName = "box";
+    else if (label.indexOf("sout") != -1) regionName = "strikeout";
+    else if (label.indexOf("phase") != -1) regionName = "phase angle";
+    if (regionName != "") {
+      JsValue region = JS.array();
+      JS.push(strings, region);
+      JS.push(region, "start " + regionName);
+      buildA11yStrings(tree["body"], region, atomType);
+      JS.push(region, "end " + regionName);
+      return;
+    }
+    throw JS.construct(Error, "KaTeX-a11y: enclose node with " + label + " not supported yet");
+  }
+  if (type == "vphantom" || type == "hphantom" || type == "array" || type == "raw" || type == "url" || type == "tag" || type == "environment" || type == "includegraphics" || type == "href" || type == "cr" || type == "xArrow" || type == "cdlabel" || type == "cdlabelparent") {
+    throw JS.construct(Error, "KaTeX-a11y: " + type + " not implemented yet");
+  }
+  if (type == "verb") {
+    buildString("start verbatim", "normal", strings);
+    buildString(tree["body"], "normal", strings);
+    buildString("end verbatim", "normal", strings);
+    return;
+  }
+  if (type == "horizBrace") {
+    string label = JS.string(tree["label"]).slice(1);
+    buildString("start " + label, "normal", strings);
+    buildA11yStrings(tree["base"], strings, atomType);
+    buildString("end " + label, "normal", strings);
+    return;
+  }
+  if (type == "mclass") {
+    buildA11yStrings(tree["body"], strings, JS.string(tree["mclass"]).slice(1));
+    return;
+  }
+  if (type == "mathchoice") {
+    buildA11yStrings(tree["text"], strings, atomType);
+    return;
+  }
+  if (type == "htmlmathml") {
+    buildA11yStrings(tree["mathml"], strings, atomType);
+    return;
+  }
+  if (type == "middle") {
+    buildString(tree["delim"], atomType, strings);
+    return;
+  }
+  throw JS.construct(Error, "KaTeX a11y un-recognized type: " + type);
+}
+
+JsValue flatten(JsValue array) {
+  JsValue result = JS.array();
+  int i = 0;
+  int length = JS.number(array["length"]).toInt();
+  while (i < length) {
+    JsValue item = array[i];
+    if (JS.isArray(item)) {
+      JsValue nested = flatten(item);
+      int j = 0;
+      int nestedLength = JS.number(nested["length"]).toInt();
+      while (j < nestedLength) {
+        JS.push(result, nested[j]);
+        j += 1;
+      }
+    } else {
+      JS.push(result, item);
+    }
+    i += 1;
+  }
+  return result;
+}
+
+string renderA11yString(string text, JsValue? settings = null) {
+  JsValue strings = JS.array();
+  buildA11yStrings(JS.invoke(katex, "__parse", text, settings), strings, "normal");
+  return JS.string(JS.invoke(flatten(strings), "join", ", "));
+}
+
+export { renderA11yString as default };

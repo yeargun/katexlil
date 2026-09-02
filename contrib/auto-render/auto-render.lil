@@ -1,0 +1,122 @@
+import extern { default as katex } from "../../dist/katex.mjs";
+import { splitAtDelimiters } from "./splitAtDelimiters.lil";
+
+extern JsValue katex;
+extern JsValue globalThis;
+extern JsValue Object;
+extern JsValue Error;
+
+int length(JsValue value) {
+  return JS.number(value["length"]).toInt();
+}
+
+JsValue renderMathInText(string text, JsValue optionsCopy) {
+  JsValue data = splitAtDelimiters(text, optionsCopy["delimiters"]);
+  if (length(data) == 1 && JS.strictEqual(data[0]["type"], "text")) return null;
+  JsValue document = globalThis["document"];
+  JsValue fragment = JS.invoke(document, "createDocumentFragment");
+  int i = 0;
+  while (i < length(data)) {
+    JsValue part = data[i];
+    if (JS.strictEqual(part["type"], "text")) {
+      JS.invoke(fragment, "appendChild", JS.invoke(document, "createTextNode", part["data"]));
+    } else {
+      JsValue span = JS.invoke(document, "createElement", "span");
+      JsValue math = part["data"];
+      bool appendSpan = true;
+      optionsCopy["displayMode"] = part["display"];
+      try {
+        if (optionsCopy["preProcess"].truthy()) {
+          math = JS.call(optionsCopy["preProcess"], JS.undefined(), math);
+        }
+        JS.invoke(katex, "render", math, span, optionsCopy);
+      } catch (JsValue error) {
+        JsValue parseError = katex["ParseError"];
+        bool isParseError = JS.call(parseError["prototype"]["isPrototypeOf"], parseError["prototype"], error).truthy();
+        if (!isParseError) throw error;
+        JS.invoke(optionsCopy, "errorCallback", "KaTeX auto-render: Failed to parse `" + JS.string(part["data"]) + "` with ", error);
+        JS.invoke(fragment, "appendChild", JS.invoke(document, "createTextNode", part["rawData"]));
+        appendSpan = false;
+      }
+      if (appendSpan) JS.invoke(fragment, "appendChild", span);
+    }
+    i += 1;
+  }
+  return fragment;
+}
+
+void renderElem(JsValue element, JsValue optionsCopy) {
+  int i = 0;
+  while (i < length(element["childNodes"])) {
+    JsValue childNode = element["childNodes"][i];
+    if (JS.strictEqual(childNode["nodeType"], 3)) {
+      string text = JS.string(childNode["textContent"]);
+      JsValue sibling = childNode["nextSibling"];
+      int siblingCount = 0;
+      while (!JS.isNullish(sibling) && JS.strictEqual(sibling["nodeType"], 3)) {
+        text += JS.string(sibling["textContent"]);
+        sibling = sibling["nextSibling"];
+        siblingCount += 1;
+      }
+      JsValue fragment = renderMathInText(text, optionsCopy);
+      if (!JS.isNullish(fragment)) {
+        int j = 0;
+        while (j < siblingCount) {
+          JS.invoke(childNode["nextSibling"], "remove");
+          j += 1;
+        }
+        i += length(fragment["childNodes"]) - 1;
+        JS.invoke(element, "replaceChild", fragment, childNode);
+      } else {
+        i += siblingCount;
+      }
+    } else if (JS.strictEqual(childNode["nodeType"], 1)) {
+      string className = " " + JS.string(childNode["className"]) + " ";
+      string nodeName = JS.string(childNode["nodeName"]).toLowerCase();
+      bool shouldRender = JS.number(JS.invoke(optionsCopy["ignoredTags"], "indexOf", nodeName)).toInt() == -1;
+      int classIndex = 0;
+      while (shouldRender && classIndex < length(optionsCopy["ignoredClasses"])) {
+        string ignored = " " + JS.string(optionsCopy["ignoredClasses"][classIndex]) + " ";
+        if (className.indexOf(ignored) != -1) shouldRender = false;
+        classIndex += 1;
+      }
+      if (shouldRender) renderElem(childNode, optionsCopy);
+    }
+    i += 1;
+  }
+}
+
+void renderMathInElement(JsValue element, JsValue options = null) {
+  if (JS.isNullish(element)) throw JS.construct(Error, "No element provided to render");
+  JsValue optionsCopy = JS.object();
+  if (!JS.isNullish(options)) {
+    JsValue keys = JS.invoke(Object, "keys", options);
+    int i = 0;
+    while (i < length(keys)) {
+      string key = JS.string(keys[i]);
+      optionsCopy[key] = options[key];
+      i += 1;
+    }
+  }
+  if (!optionsCopy["delimiters"].truthy()) {
+    optionsCopy["delimiters"] = JS.array(
+      JS.object("left", "$$", "right", "$$", "display", true),
+      JS.object("left", "\\(", "right", "\\)", "display", false),
+      JS.object("left", "\\begin{equation}", "right", "\\end{equation}", "display", true),
+      JS.object("left", "\\begin{align}", "right", "\\end{align}", "display", true),
+      JS.object("left", "\\begin{alignat}", "right", "\\end{alignat}", "display", true),
+      JS.object("left", "\\begin{gather}", "right", "\\end{gather}", "display", true),
+      JS.object("left", "\\begin{CD}", "right", "\\end{CD}", "display", true),
+      JS.object("left", "\\[", "right", "\\]", "display", true)
+    );
+  }
+  if (!optionsCopy["ignoredTags"].truthy()) {
+    optionsCopy["ignoredTags"] = JS.array("script", "noscript", "style", "textarea", "pre", "code", "option");
+  }
+  if (!optionsCopy["ignoredClasses"].truthy()) optionsCopy["ignoredClasses"] = JS.array();
+  if (!optionsCopy["errorCallback"].truthy()) optionsCopy["errorCallback"] = globalThis["console"]["error"];
+  if (!optionsCopy["macros"].truthy()) optionsCopy["macros"] = JS.object();
+  renderElem(element, optionsCopy);
+}
+
+export { renderMathInElement as default };

@@ -1,6 +1,6 @@
 /* eslint max-len:0 */
-import { Settings } from "../../dist/katex.esm.js";
-import {scriptFromCodepoint, supportedCodepoint} from "../../dist/katex.esm.js";
+import { Settings } from "../../dist/katex.test.js";
+import {scriptFromCodepoint, supportedCodepoint} from "../../dist/katex.test.js";
 import {strictSettings, nonstrictSettings} from "./helpers";
 
 describe("unicode", function() {

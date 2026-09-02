@@ -1,0 +1,20 @@
+# The fixed mhchem transition graph overwhelms level-13 candidate search when
+# compiled as one independently reusable contrib module. Keep the Lil source
+# normative and use bounded optimization for a deterministic build artifact.
+[javascript]
+priority = "size-first"
+optimization_level = 3
+cost_model = "brotli"
+assume_pristine_builtins = true
+strip_console = true
+local_name_reserve = 48
+candidate_search = "production"
+function_spelling = "arrow"
+public_aggregate_abi = "named"
+
+[mangle]
+identifiers = true
+properties = true
+exports = false
+extern_fields = true
+pool_strings = false

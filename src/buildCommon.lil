@@ -123,7 +123,7 @@ makeOrd = (JsValue group, JsValue options, JsValue type) => {
   JsValue wideFontName = "";
   JsValue wideFontClass = "";
   if (JS.strictEqual(JS.invoke(text, "charCodeAt", 0), 55349)) {
-    JsValue widePair = JS.call(wideCharacterFont, undef(), text, mode);
+    string[] widePair = wideCharacterFont(toStr(text), toStr(mode));
     wideFontName = widePair[0];
     wideFontClass = widePair[1];
   }

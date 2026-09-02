@@ -1,0 +1,3 @@
+// Upstream src/types.js contains Flow aliases and no runtime code. LilScript
+// has no alias declaration; these closed unions are written directly at their
+// use sites, so this matching module intentionally emits nothing.

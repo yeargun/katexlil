@@ -1,4 +1,4 @@
-import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, objectKeys, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
+import { undef, isUndef, isNullish, isFn, isStr, isNum, isArr, toStr, toNum, toInt, len, hasOwn, inOp, deleteKey, instanceOf, push, newArray, emptyObject, warn, getDocument, getConsole, globalDefined, globalGet, mathMin, mathMax, constructN, apply, objectAssign, makeError, makeTypeError, throwErr, hostParseInt, hostParseFloat, fromCharCode, Error, TypeError, Object, Array, Function, String, Number, Math, RegExp, JSON, Infinity, NaN } from "./host.lil";
 
 import { utils } from "./utils.lil";
 import { DocumentFragment } from "./tree.lil";
@@ -45,70 +45,55 @@ MathNode["prototype"]["getAttribute"] = JS.method1((JsValue self, JsValue name) 
 });
 MathNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
   JsValue node = JS.invoke(getDocument(), "createElementNS", "http://www.w3.org/1998/Math/MathML", self["type"]);
-  JsValue obj6 = self["attributes"];
-  JsValue keys7 = objectKeys(obj6);
-  int ki8 = 0;
-  int kn9 = len(keys7);
-  while (ki8 < kn9) {
-    JsValue attr = keys7[ki8];
+  for (string attr in self["attributes"]) {
     if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
       JS.invoke(node, "setAttribute", attr, self["attributes"][attr]);
     }
-    ki8 = ki8 + 1;
   }
   if (JS.greaterThan(self["classes"]["length"], 0)) {
     node["className"] = JS.call(createClass, undef(), self["classes"]);
   }
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
-      if ((instanceOf(self["children"][i], TextNode)) && (instanceOf(self["children"][JS.add(i, 1)], TextNode))) {
-        i = JS.add(i, 1);
-        JsValue text = JS.add(JS.invoke(self["children"][i], "toText"), JS.invoke(self["children"][i], "toText"));
-        while (instanceOf(self["children"][JS.add(i, 1)], TextNode)) {
-          i = JS.add(i, 1);
-          i = JS.add(i, 1);
-          text = JS.add(text, JS.invoke(self["children"][i], "toText"));
+    int i = 0;
+    while (i < len(self["children"])) {
+      if (instanceOf(self["children"][i], TextNode) && instanceOf(self["children"][i + 1], TextNode)) {
+        string text = toStr(JS.invoke(self["children"][i], "toText")) + toStr(JS.invoke(self["children"][i + 1], "toText"));
+        i = i + 1;
+        while (instanceOf(self["children"][i + 1], TextNode)) {
+          i = i + 1;
+          text = text + toStr(JS.invoke(self["children"][i], "toText"));
         }
         JS.invoke(node, "appendChild", JS.invoke(JS.construct(TextNode, text), "toNode"));
       } else {
         JS.invoke(node, "appendChild", JS.invoke(self["children"][i], "toNode"));
       }
-      JsValue u13 = i;
-      i = JS.add(i, 1);
+      i = i + 1;
     }
   }
   return node;
   return undef();
-});
+  });
 MathNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
-  JsValue markup = JS.add("<", self["type"]);
-  JsValue obj14 = self["attributes"];
-  JsValue keys15 = objectKeys(obj14);
-  int ki16 = 0;
-  int kn17 = len(keys15);
-  while (ki16 < kn17) {
-    JsValue attr = keys15[ki16];
+  string markup = "<" + toStr(self["type"]);
+  for (string attr in self["attributes"]) {
     if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
-      markup = JS.add(markup, JS.add(JS.add(" ", attr), "=\""));
-      markup = JS.add(markup, JS.invoke(utils, "escape", self["attributes"][attr]));
-      markup = JS.add(markup, "\"");
+      markup = markup + " " + attr + "=\"";
+      markup = markup + toStr(JS.invoke(utils, "escape", self["attributes"][attr]));
+      markup = markup + "\"";
     }
-    ki16 = ki16 + 1;
   }
   if (JS.greaterThan(self["classes"]["length"], 0)) {
-    markup = JS.add(markup, " class =\"" + toStr(JS.invoke(utils, "escape", JS.call(createClass, undef(), self["classes"]))) + "\"");
+    markup = markup + " class =\"" + toStr(JS.invoke(utils, "escape", JS.call(createClass, undef(), self["classes"]))) + "\"";
   }
-  markup = JS.add(markup, ">");
+  markup = markup + ">";
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
-      markup = JS.add(markup, JS.invoke(self["children"][i], "toMarkup"));
-      JsValue u18 = i;
-      i = JS.add(i, 1);
+    int i = 0;
+    while (i < len(self["children"])) {
+      markup = markup + toStr(JS.invoke(self["children"][i], "toMarkup"));
+      i = i + 1;
     }
   }
-  markup = JS.add(markup, JS.add(JS.add("</", self["type"]), ">"));
+  markup = markup + "</" + toStr(self["type"]) + ">";
   return markup;
   return undef();
 });

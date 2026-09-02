@@ -1,0 +1,31 @@
+import extern { default as katex } from "../../dist/katex.mjs";
+
+extern JsValue katex;
+extern JsValue globalThis;
+extern JsValue Array;
+
+JsValue document = globalThis["document"];
+JsValue scripts = JS.invoke(document["body"], "getElementsByTagName", "script");
+scripts = JS.call(Array["prototype"]["slice"], scripts);
+int i = 0;
+while (i < JS.number(scripts["length"]).toInt()) {
+  JsValue script = scripts[i];
+  if (script["type"].truthy() && JS.invoke(script["type"], "match", JS.construct(globalThis["RegExp"], "math/tex", "i")).truthy()) {
+    bool display = !JS.isNullish(JS.invoke(script["type"], "match", JS.construct(globalThis["RegExp"], "mode\\s*=\\s*display(;|\\s|\\n|$)", "")));
+    string tagName = "span";
+    string className = "inline-equation";
+    if (display) {
+      tagName = "div";
+      className = "equation";
+    }
+    JsValue katexElement = JS.invoke(document, "createElement", tagName);
+    JS.invoke(katexElement, "setAttribute", "class", className);
+    try {
+      JS.invoke(katex, "render", script["text"], katexElement, JS.object("displayMode", display));
+    } catch (JsValue error) {
+      katexElement["textContent"] = script["text"];
+    }
+    JS.invoke(script["parentNode"], "replaceChild", katexElement, script);
+  }
+  i += 1;
+}

@@ -1,8 +1,8 @@
-import { buildMathML } from "../../dist/katex.esm.js";
-import { parseTree } from "../../dist/katex.esm.js";
-import { Options } from "../../dist/katex.esm.js";
-import { Settings } from "../../dist/katex.esm.js";
-import { Style } from "../../dist/katex.esm.js";
+import { buildMathML } from "../../dist/katex.test.js";
+import { parseTree } from "../../dist/katex.test.js";
+import { Options } from "../../dist/katex.test.js";
+import { Settings } from "../../dist/katex.test.js";
+import { Style } from "../../dist/katex.test.js";
 
 const getMathML = function(expr, settings = new Settings()) {
     let startStyle = Style.TEXT;

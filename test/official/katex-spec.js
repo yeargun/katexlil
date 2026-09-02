@@ -1,13 +1,13 @@
 /* eslint max-len:0 */
 
-import { buildMathML } from "../../dist/katex.esm.js";
-import { buildTree } from "../../dist/katex.esm.js";
-import katex from "../../dist/katex.esm.js";
-import { parseTree } from "../../dist/katex.esm.js";
-import { Options } from "../../dist/katex.esm.js";
-import { ParseError } from "../../dist/katex.esm.js";
-import { Settings } from "../../dist/katex.esm.js";
-import { Style } from "../../dist/katex.esm.js";
+import { buildMathML } from "../../dist/katex.test.js";
+import { buildTree } from "../../dist/katex.test.js";
+import katex from "../../dist/katex.test.js";
+import { parseTree } from "../../dist/katex.test.js";
+import { Options } from "../../dist/katex.test.js";
+import { ParseError } from "../../dist/katex.test.js";
+import { Settings } from "../../dist/katex.test.js";
+import { Style } from "../../dist/katex.test.js";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
