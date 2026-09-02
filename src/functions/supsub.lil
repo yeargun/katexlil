@@ -90,150 +90,76 @@ o9["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   if (builderDelegate.truthy()) {
     return JS.call(builderDelegate, undef(), group, options);
   }
-  JsValue op10 = group;
-  JsValue valueBase = op10["base"];
-  JsValue valueSup = op10["sup"];
-  JsValue valueSub = op10["sub"];
+  JsValue valueBase = group["base"];
+  JsValue valueSup = group["sup"];
+  JsValue valueSub = group["sub"];
   JsValue base = JS.invoke(html, "buildGroup", valueBase, options);
   JsValue supm = undef();
   JsValue subm = undef();
   JsValue metrics = JS.invoke(options, "fontMetrics");
-  JsValue supShift = 0;
-  JsValue subShift = 0;
-  JsValue and11 = valueBase;
-  if (and11.truthy()) {
-    and11 = JS.invoke(utils, "isCharacterBox", valueBase);
-  }
-  JsValue isCharacterBox = and11;
+  number supShift = 0;
+  number subShift = 0;
+  bool isCharacterBox = valueBase.truthy() && JS.invoke(utils, "isCharacterBox", valueBase).truthy();
   if (valueSup.truthy()) {
     JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "sup"));
     supm = JS.invoke(html, "buildGroup", valueSup, newOptions, options);
-    if (!(isCharacterBox.truthy())) {
-      supShift = (toNum(base["height"]) - toNum((toNum((toNum(JS.invoke(newOptions, "fontMetrics")["supDrop"]) * toNum(newOptions["sizeMultiplier"]))) / toNum(options["sizeMultiplier"]))));
+    if (!isCharacterBox) {
+      supShift = toNum(base["height"]) - toNum(JS.invoke(newOptions, "fontMetrics")["supDrop"]) * toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]);
     }
   }
   if (valueSub.truthy()) {
     JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "sub"));
     subm = JS.invoke(html, "buildGroup", valueSub, newOptions, options);
-    if (!(isCharacterBox.truthy())) {
-      subShift = JS.add(base["depth"], (toNum((toNum(JS.invoke(newOptions, "fontMetrics")["subDrop"]) * toNum(newOptions["sizeMultiplier"]))) / toNum(options["sizeMultiplier"])));
+    if (!isCharacterBox) {
+      subShift = toNum(base["depth"]) + toNum(JS.invoke(newOptions, "fontMetrics")["subDrop"]) * toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]);
     }
   }
-  JsValue minSupShift = undef();
+  number minSupShift = 0;
   if (JS.strictEqual(options["style"], Style["DISPLAY"])) {
-    minSupShift = metrics["sup1"];
+    minSupShift = toNum(metrics["sup1"]);
+  } else if (options["style"]["cramped"].truthy()) {
+    minSupShift = toNum(metrics["sup3"]);
   } else {
-    if (options["style"]["cramped"].truthy()) {
-      minSupShift = metrics["sup3"];
-    } else {
-      minSupShift = metrics["sup2"];
-    }
+    minSupShift = toNum(metrics["sup2"]);
   }
-  JsValue multiplier = options["sizeMultiplier"];
-  JsValue marginRight = JS.call(makeEm, undef(), (toNum((toNum(0.5) / toNum(metrics["ptPerEm"]))) / toNum(multiplier)));
+  number multiplier = toNum(options["sizeMultiplier"]);
+  JsValue marginRight = JS.call(makeEm, undef(), 0.5 / toNum(metrics["ptPerEm"]) / multiplier);
   JsValue marginLeft = null;
   if (subm.truthy()) {
-    JsValue and12 = group["base"];
-    if (and12.truthy()) {
-      and12 = JS.strictEqual(group["base"]["type"], "op");
-    }
-    JsValue and13 = and12;
-    if (and13.truthy()) {
-      and13 = group["base"]["name"];
-    }
-    JsValue and14 = and13;
-    if (and14.truthy()) {
-      JsValue or15 = JS.strictEqual(group["base"]["name"], "\\oiint");
-      if (!(or15.truthy())) {
-        or15 = JS.strictEqual(group["base"]["name"], "\\oiiint");
-      }
-      and14 = or15;
-    }
-    JsValue isOiint = and14;
-    if ((instanceOf(base, SymbolNode)) || (isOiint.truthy())) {
-      marginLeft = JS.call(makeEm, undef(), JS.number(0) - toNum(base["italic"]));
+    bool isOiint = group["base"].truthy() && JS.strictEqual(group["base"]["type"], "op") && group["base"]["name"].truthy() && (JS.strictEqual(group["base"]["name"], "\\oiint") || JS.strictEqual(group["base"]["name"], "\\oiiint"));
+    if ((instanceOf(base, SymbolNode)) || isOiint) {
+      marginLeft = JS.call(makeEm, undef(), 0 - toNum(base["italic"]));
     }
   }
   JsValue supsub = undef();
   if ((supm.truthy()) && (subm.truthy())) {
-    supShift = JS.invoke(Math, "max", supShift, minSupShift, JS.add(supm["depth"], (toNum(0.25) * toNum(metrics["xHeight"]))));
-    subShift = JS.invoke(Math, "max", subShift, metrics["sub2"]);
-    JsValue ruleWidth = metrics["defaultRuleThickness"];
-    JsValue maxWidth = (toNum(4) * toNum(ruleWidth));
-    if (JS.lessThan((toNum((toNum(supShift) - toNum(supm["depth"]))) - toNum((toNum(subm["height"]) - toNum(subShift)))), maxWidth)) {
-      subShift = JS.add((toNum(maxWidth) - toNum((toNum(supShift) - toNum(supm["depth"])))), subm["height"]);
-      JsValue psi = (toNum((toNum(0.8) * toNum(metrics["xHeight"]))) - toNum((toNum(supShift) - toNum(supm["depth"]))));
-      if (JS.greaterThan(psi, 0)) {
-        supShift = JS.add(supShift, psi);
-        subShift = (toNum(subShift) - toNum(psi));
+    supShift = toNum(JS.invoke(Math, "max", supShift, minSupShift, toNum(supm["depth"]) + 0.25 * toNum(metrics["xHeight"])));
+    subShift = toNum(JS.invoke(Math, "max", subShift, metrics["sub2"]));
+    number ruleWidth = toNum(metrics["defaultRuleThickness"]);
+    number maxWidth = 4 * ruleWidth;
+    if ((supShift - toNum(supm["depth"])) - (toNum(subm["height"]) - subShift) < maxWidth) {
+      subShift = maxWidth - (supShift - toNum(supm["depth"])) + toNum(subm["height"]);
+      number psi = 0.8 * toNum(metrics["xHeight"]) - (supShift - toNum(supm["depth"]));
+      if (psi > 0) {
+        supShift = supShift + psi;
+        subShift = subShift - psi;
       }
     }
-    JsValue a16 = newArray();
-    JsValue o17 = emptyObject();
-    o17["type"] = "elem";
-    o17["elem"] = subm;
-    o17["shift"] = subShift;
-    o17["marginRight"] = marginRight;
-    o17["marginLeft"] = marginLeft;
-    JS.push(a16, o17);
-    JsValue o18 = emptyObject();
-    o18["type"] = "elem";
-    o18["elem"] = supm;
-    o18["shift"] = JS.number(0) - toNum(supShift);
-    o18["marginRight"] = marginRight;
-    JS.push(a16, o18);
-    JsValue vlistElem = a16;
-    JsValue o19 = emptyObject();
-    o19["positionType"] = "individualShift";
-    o19["children"] = vlistElem;
-    supsub = JS.invoke(buildCommon, "makeVList", o19, options);
+    supsub = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", subm, "shift", subShift, "marginRight", marginRight, "marginLeft", marginLeft), JS.object("type", "elem", "elem", supm, "shift", 0 - supShift, "marginRight", marginRight))), options);
+  } else if (subm.truthy()) {
+    subShift = toNum(JS.invoke(Math, "max", subShift, metrics["sub1"], toNum(subm["height"]) - 0.8 * toNum(metrics["xHeight"])));
+    supsub = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "shift", "positionData", subShift, "children", JS.array(JS.object("type", "elem", "elem", subm, "marginLeft", marginLeft, "marginRight", marginRight))), options);
+  } else if (supm.truthy()) {
+    supShift = toNum(JS.invoke(Math, "max", supShift, minSupShift, toNum(supm["depth"]) + 0.25 * toNum(metrics["xHeight"])));
+    supsub = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "shift", "positionData", 0 - supShift, "children", JS.array(JS.object("type", "elem", "elem", supm, "marginRight", marginRight))), options);
   } else {
-    if (subm.truthy()) {
-      subShift = JS.invoke(Math, "max", subShift, metrics["sub1"], (toNum(subm["height"]) - toNum((toNum(0.8) * toNum(metrics["xHeight"])))));
-      JsValue a20 = newArray();
-      JsValue o21 = emptyObject();
-      o21["type"] = "elem";
-      o21["elem"] = subm;
-      o21["marginLeft"] = marginLeft;
-      o21["marginRight"] = marginRight;
-      JS.push(a20, o21);
-      JsValue vlistElem = a20;
-      JsValue o22 = emptyObject();
-      o22["positionType"] = "shift";
-      o22["positionData"] = subShift;
-      o22["children"] = vlistElem;
-      supsub = JS.invoke(buildCommon, "makeVList", o22, options);
-    } else {
-      if (supm.truthy()) {
-        supShift = JS.invoke(Math, "max", supShift, minSupShift, JS.add(supm["depth"], (toNum(0.25) * toNum(metrics["xHeight"]))));
-        JsValue o23 = emptyObject();
-        o23["positionType"] = "shift";
-        o23["positionData"] = JS.number(0) - toNum(supShift);
-        JsValue a24 = newArray();
-        JsValue o25 = emptyObject();
-        o25["type"] = "elem";
-        o25["elem"] = supm;
-        o25["marginRight"] = marginRight;
-        JS.push(a24, o25);
-        o23["children"] = a24;
-        supsub = JS.invoke(buildCommon, "makeVList", o23, options);
-      } else {
-        throw makeError(toStr("supsub must have either sup or sub."));
-      }
-    }
+    throw makeError(toStr("supsub must have either sup or sub."));
   }
-  JsValue or26 = JS.invoke(html, "getTypeOfDomTree", base, "right");
-  if (!(or26.truthy())) {
-    or26 = "mord";
+  JsValue mclass = JS.invoke(html, "getTypeOfDomTree", base, "right");
+  if (!(mclass.truthy())) {
+    mclass = "mord";
   }
-  JsValue mclass = or26;
-  JsValue a27 = JS.array(mclass);
-  JsValue a28 = JS.array(base);
-  JsValue a29 = JS.array("msupsub");
-  JsValue a30 = JS.array(supsub);
-  JS.push(a28, JS.invoke(buildCommon, "makeSpan", a29, a30));
-  return JS.invoke(buildCommon, "makeSpan", a27, a28, options);
-  return undef();
+  return JS.invoke(buildCommon, "makeSpan", JS.array(mclass), JS.array(base, JS.invoke(buildCommon, "makeSpan", JS.array("msupsub"), JS.array(supsub))), options);
 });
 o9["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
   JsValue isBrace = false;

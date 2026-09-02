@@ -57,7 +57,7 @@ JsValue renderError(JsValue error, JsValue expression, JsValue options) {
 
 export void render(JsValue expression, JsValue baseNode, JsValue? options = null) {
   JsValue doc = getDocument();
-  if (!isUndef(doc) && !isNullish(doc)) {
+  if (!isNullish(doc)) {
     if (JS.strictNotEqual(doc["compatMode"], "CSS1Compat")) {
       throw JS.construct(ParseError, "KaTeX doesn't work in quirks mode.");
     }

@@ -277,7 +277,7 @@ export JsValue getConsole() {
 
 export JsValue warn(JsValue message) {
   JsValue cons = getConsole();
-  if (!isUndef(cons) && !isNullish(cons)) {
+  if (!isNullish(cons)) {
     JS.invoke(cons, "warn", message);
   }
   return message;
@@ -285,7 +285,7 @@ export JsValue warn(JsValue message) {
 
 export JsValue consoleLog(JsValue message) {
   JsValue cons = getConsole();
-  if (!isUndef(cons) && !isNullish(cons)) {
+  if (!isNullish(cons)) {
     JS.invoke(cons, "log", message);
   }
   return message;
@@ -293,7 +293,7 @@ export JsValue consoleLog(JsValue message) {
 
 export JsValue consoleError(JsValue message) {
   JsValue cons = getConsole();
-  if (!isUndef(cons) && !isNullish(cons)) {
+  if (!isNullish(cons)) {
     JS.invoke(cons, "error", message);
   }
   return message;

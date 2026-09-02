@@ -47,95 +47,78 @@ htmlBuilder = (JsValue group, JsValue options) => {
   JsValue style = JS.call(adjustStyle, undef(), group["size"], options["style"]);
   JsValue nstyle = JS.invoke(style, "fracNum");
   JsValue dstyle = JS.invoke(style, "fracDen");
-  JsValue newOptions = undef();
-  newOptions = JS.invoke(options, "havingStyle", nstyle);
+  JsValue newOptions = JS.invoke(options, "havingStyle", nstyle);
   JsValue numerm = JS.invoke(html, "buildGroup", group["numer"], newOptions, options);
   if (group["continued"].truthy()) {
-    JsValue hStrut = (toNum(8.5) / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]));
-    JsValue dStrut = (toNum(3.5) / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]));
-    JsValue c2 = undef();
-    if (JS.lessThan(numerm["height"], hStrut)) {
-      c2 = hStrut;
-    } else {
-      c2 = numerm["height"];
+    number hStrut = 8.5 / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]);
+    number dStrut = 3.5 / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]);
+    if (toNum(numerm["height"]) < hStrut) {
+      numerm["height"] = hStrut;
     }
-    numerm["height"] = c2;
-    JsValue c3 = undef();
-    if (JS.lessThan(numerm["depth"], dStrut)) {
-      c3 = dStrut;
-    } else {
-      c3 = numerm["depth"];
+    if (toNum(numerm["depth"]) < dStrut) {
+      numerm["depth"] = dStrut;
     }
-    numerm["depth"] = c3;
   }
   newOptions = JS.invoke(options, "havingStyle", dstyle);
   JsValue denomm = JS.invoke(html, "buildGroup", group["denom"], newOptions, options);
-  JsValue rule = undef();
-  JsValue ruleWidth = undef();
-  JsValue ruleSpacing = undef();
+  JsValue rule = null;
+  number ruleWidth = 0;
+  number ruleSpacing = 0;
   if (group["hasBarLine"].truthy()) {
     if (group["barSize"].truthy()) {
-      ruleWidth = JS.call(calculateSize, undef(), group["barSize"], options);
-      rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options, ruleWidth);
+      rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options, JS.call(calculateSize, undef(), group["barSize"], options));
     } else {
       rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options);
     }
-    ruleWidth = rule["height"];
-    ruleSpacing = rule["height"];
+    ruleWidth = toNum(rule["height"]);
+    ruleSpacing = ruleWidth;
   } else {
-    rule = null;
-    ruleWidth = 0;
-    ruleSpacing = JS.invoke(options, "fontMetrics")["defaultRuleThickness"];
+    ruleSpacing = toNum(JS.invoke(options, "fontMetrics")["defaultRuleThickness"]);
   }
-  JsValue numShift = undef();
-  JsValue clearance = undef();
-  JsValue denomShift = undef();
+  number numShift = 0;
+  number clearance = 0;
+  number denomShift = 0;
   if ((JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) || (JS.strictEqual(group["size"], "display"))) {
-    numShift = JS.invoke(options, "fontMetrics")["num1"];
-    if (JS.greaterThan(ruleWidth, 0)) {
-      clearance = (toNum(3) * toNum(ruleSpacing));
+    numShift = toNum(JS.invoke(options, "fontMetrics")["num1"]);
+    if (ruleWidth > 0) {
+      clearance = 3 * ruleSpacing;
     } else {
-      clearance = (toNum(7) * toNum(ruleSpacing));
+      clearance = 7 * ruleSpacing;
     }
-    denomShift = JS.invoke(options, "fontMetrics")["denom1"];
+    denomShift = toNum(JS.invoke(options, "fontMetrics")["denom1"]);
   } else {
-    if (JS.greaterThan(ruleWidth, 0)) {
-      numShift = JS.invoke(options, "fontMetrics")["num2"];
+    if (ruleWidth > 0) {
+      numShift = toNum(JS.invoke(options, "fontMetrics")["num2"]);
       clearance = ruleSpacing;
     } else {
-      numShift = JS.invoke(options, "fontMetrics")["num3"];
-      clearance = (toNum(3) * toNum(ruleSpacing));
+      numShift = toNum(JS.invoke(options, "fontMetrics")["num3"]);
+      clearance = 3 * ruleSpacing;
     }
-    denomShift = JS.invoke(options, "fontMetrics")["denom2"];
+    denomShift = toNum(JS.invoke(options, "fontMetrics")["denom2"]);
   }
   JsValue frac = undef();
   if (!(rule.truthy())) {
-    JsValue candidateClearance = (toNum((toNum(numShift) - toNum(numerm["depth"]))) - toNum((toNum(denomm["height"]) - toNum(denomShift))));
-    if (JS.lessThan(candidateClearance, clearance)) {
-      numShift = JS.add(numShift, (toNum(0.5) * toNum((toNum(clearance) - toNum(candidateClearance)))));
-      denomShift = JS.add(denomShift, (toNum(0.5) * toNum((toNum(clearance) - toNum(candidateClearance)))));
+    number candidateClearance = (numShift - toNum(numerm["depth"])) - (toNum(denomm["height"]) - denomShift);
+    if (candidateClearance < clearance) {
+      numShift = numShift + 0.5 * (clearance - candidateClearance);
+      denomShift = denomShift + 0.5 * (clearance - candidateClearance);
     }
-    JsValue o4 = JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", numerm, "shift", JS.number(0) - toNum(numShift))));
-    frac = JS.invoke(buildCommon, "makeVList", o4, options);
+    frac = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", numerm, "shift", 0 - numShift))), options);
   } else {
-    JsValue axisHeight = JS.invoke(options, "fontMetrics")["axisHeight"];
-    if (JS.lessThan((toNum((toNum(numShift) - toNum(numerm["depth"]))) - toNum(JS.add(axisHeight, (toNum(0.5) * toNum(ruleWidth))))), clearance)) {
-      numShift = JS.add(numShift, (toNum(clearance) - toNum((toNum((toNum(numShift) - toNum(numerm["depth"]))) - toNum(JS.add(axisHeight, (toNum(0.5) * toNum(ruleWidth))))))));
+    number axisHeight = toNum(JS.invoke(options, "fontMetrics")["axisHeight"]);
+    if ((numShift - toNum(numerm["depth"])) - (axisHeight + 0.5 * ruleWidth) < clearance) {
+      numShift = numShift + (clearance - ((numShift - toNum(numerm["depth"])) - (axisHeight + 0.5 * ruleWidth)));
     }
-    if (JS.lessThan((toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth))))) - toNum((toNum(denomm["height"]) - toNum(denomShift)))), clearance)) {
-      denomShift = JS.add(denomShift, (toNum(clearance) - toNum((toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth))))) - toNum((toNum(denomm["height"]) - toNum(denomShift)))))));
+    if ((axisHeight - 0.5 * ruleWidth) - (toNum(denomm["height"]) - denomShift) < clearance) {
+      denomShift = denomShift + (clearance - ((axisHeight - 0.5 * ruleWidth) - (toNum(denomm["height"]) - denomShift)));
     }
-    JsValue midShift = JS.number(0) - toNum((toNum(axisHeight) - toNum((toNum(0.5) * toNum(ruleWidth)))));
-    JsValue o8 = JS.object("positionType", "individualShift");
-    JsValue a9 = JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", rule, "shift", midShift), JS.object("type", "elem", "elem", numerm, "shift", JS.number(0) - toNum(numShift)));
-    o8["children"] = a9;
-    frac = JS.invoke(buildCommon, "makeVList", o8, options);
+    number midShift = 0 - (axisHeight - 0.5 * ruleWidth);
+    frac = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", rule, "shift", midShift), JS.object("type", "elem", "elem", numerm, "shift", 0 - numShift))), options);
   }
   newOptions = JS.invoke(options, "havingStyle", style);
-  JsValue as13 = frac["height"];
-  frac["height"] = (toNum(as13) * toNum((toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]))));
-  JsValue as14 = frac["depth"];
-  frac["depth"] = (toNum(as14) * toNum((toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]))));
+  number sizeRatio = toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]);
+  frac["height"] = toNum(frac["height"]) * sizeRatio;
+  frac["depth"] = toNum(frac["depth"]) * sizeRatio;
   JsValue delimSize = undef();
   if (JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) {
     delimSize = JS.invoke(options, "fontMetrics")["delim1"];
@@ -149,34 +132,20 @@ htmlBuilder = (JsValue group, JsValue options) => {
   JsValue leftDelim = undef();
   JsValue rightDelim = undef();
   if (isNullish(group["leftDelim"])) {
-    JsValue a15 = JS.array("mopen");
-    leftDelim = JS.invoke(html, "makeNullDelimiter", options, a15);
+    leftDelim = JS.invoke(html, "makeNullDelimiter", options, JS.array("mopen"));
   } else {
-    JsValue a16 = JS.array("mopen");
-    JsValue ia17 = JS.array(group["leftDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], a16);
-    leftDelim = apply(delimiter["customSizedDelim"], delimiter, ia17);
+    leftDelim = apply(delimiter["customSizedDelim"], delimiter, JS.array(group["leftDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], JS.array("mopen")));
   }
   if (group["continued"].truthy()) {
-    JsValue a18 = JS.array();
-    rightDelim = JS.invoke(buildCommon, "makeSpan", a18);
+    rightDelim = JS.invoke(buildCommon, "makeSpan", JS.array());
   } else {
     if (isNullish(group["rightDelim"])) {
-      JsValue a19 = JS.array("mclose");
-      rightDelim = JS.invoke(html, "makeNullDelimiter", options, a19);
+      rightDelim = JS.invoke(html, "makeNullDelimiter", options, JS.array("mclose"));
     } else {
-      JsValue a20 = JS.array("mclose");
-      JsValue ia21 = JS.array(group["rightDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], a20);
-      rightDelim = apply(delimiter["customSizedDelim"], delimiter, ia21);
+      rightDelim = apply(delimiter["customSizedDelim"], delimiter, JS.array(group["rightDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], JS.array("mclose")));
     }
   }
-  JsValue a22 = JS.array("mord");
-  JsValue a23 = JS.array(leftDelim);
-  JsValue a24 = JS.array("mfrac");
-  JsValue a25 = JS.array(frac);
-  JS.push(a23, JS.invoke(buildCommon, "makeSpan", a24, a25));
-  JS.push(a23, rightDelim);
-  return JS.invoke(buildCommon, "makeSpan", JS.invoke(a22, "concat", JS.invoke(newOptions, "sizingClasses", options)), a23, options);
-  return undef();
+  return JS.invoke(buildCommon, "makeSpan", JS.invoke(JS.array("mord"), "concat", JS.invoke(newOptions, "sizingClasses", options)), JS.array(leftDelim, JS.invoke(buildCommon, "makeSpan", JS.array("mfrac"), JS.array(frac)), rightDelim), options);
 };
 mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", group["numer"], options), JS.invoke(mml, "buildGroup", group["denom"], options));

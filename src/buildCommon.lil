@@ -453,13 +453,11 @@ makeVList = (JsValue params, JsValue options) => {
     JsValue a62 = JS.array("vlist-s");
     JsValue a63 = JS.array(JS.construct(SymbolNode, "​"));
     JsValue topStrut = JS.call(makeSpan, undef(), a62, a63);
-    JsValue a64 = newArray();
     JsValue a65 = JS.array("vlist-r");
     JsValue a66 = JS.array(vlist, topStrut);
-    JS.push(a64, JS.call(makeSpan, undef(), a65, a66));
     JsValue a67 = JS.array("vlist-r");
     JsValue a68 = JS.array(depthStrut);
-    JS.push(a64, JS.call(makeSpan, undef(), a67, a68));
+    JsValue a64 = JS.array(JS.call(makeSpan, undef(), a65, a66), JS.call(makeSpan, undef(), a67, a68));
     rows = a64;
   } else {
     JsValue a69 = newArray();

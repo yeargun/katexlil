@@ -324,54 +324,48 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     }
   }
   JsValue topMetrics = JS.call(getMetrics, undef(), top, font, mode);
-  JsValue topHeightTotal = JS.add(topMetrics["height"], topMetrics["depth"]);
+  number topHeightTotal = toNum(topMetrics["height"]) + toNum(topMetrics["depth"]);
   JsValue repeatMetrics = JS.call(getMetrics, undef(), repeat, font, mode);
-  JsValue repeatHeightTotal = JS.add(repeatMetrics["height"], repeatMetrics["depth"]);
+  number repeatHeightTotal = toNum(repeatMetrics["height"]) + toNum(repeatMetrics["depth"]);
   JsValue bottomMetrics = JS.call(getMetrics, undef(), bottom, font, mode);
-  JsValue bottomHeightTotal = JS.add(bottomMetrics["height"], bottomMetrics["depth"]);
-  JsValue middleHeightTotal = 0;
-  JsValue middleFactor = 1;
+  number bottomHeightTotal = toNum(bottomMetrics["height"]) + toNum(bottomMetrics["depth"]);
+  number middleHeightTotal = 0;
+  number middleFactor = 1;
   if (JS.strictNotEqual(middle, null)) {
     JsValue middleMetrics = JS.call(getMetrics, undef(), middle, font, mode);
-    middleHeightTotal = JS.add(middleMetrics["height"], middleMetrics["depth"]);
+    middleHeightTotal = toNum(middleMetrics["height"]) + toNum(middleMetrics["depth"]);
     middleFactor = 2;
   }
-  JsValue minHeight = JS.add(JS.add(topHeightTotal, bottomHeightTotal), middleHeightTotal);
-  JsValue repeatCount = JS.invoke(Math, "max", 0, JS.invoke(Math, "ceil", (toNum((toNum(heightTotal) - toNum(minHeight))) / toNum((toNum(middleFactor) * toNum(repeatHeightTotal))))));
-  JsValue realHeightTotal = JS.add(minHeight, (toNum((toNum(repeatCount) * toNum(middleFactor))) * toNum(repeatHeightTotal)));
-  JsValue axisHeight = JS.invoke(options, "fontMetrics")["axisHeight"];
+  number minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
+  number repeatCount = toNum(JS.invoke(Math, "max", 0, JS.invoke(Math, "ceil", (toNum(heightTotal) - minHeight) / (middleFactor * repeatHeightTotal))));
+  number realHeightTotal = minHeight + repeatCount * middleFactor * repeatHeightTotal;
+  number axisHeight = toNum(JS.invoke(options, "fontMetrics")["axisHeight"]);
   if (center.truthy()) {
-    axisHeight = (toNum(axisHeight) * toNum(options["sizeMultiplier"]));
+    axisHeight = axisHeight * toNum(options["sizeMultiplier"]);
   }
-  JsValue depth = (toNum((toNum(realHeightTotal) / toNum(2))) - toNum(axisHeight));
-  JsValue a24 = JS.array();
-  JsValue stack = a24;
+  number depth = realHeightTotal / 2 - axisHeight;
+  JsValue stack = JS.array();
   if (JS.greaterThan(svgLabel["length"], 0)) {
-    JsValue midHeight = (toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal));
-    JsValue viewBoxHeight = JS.invoke(Math, "round", (toNum(realHeightTotal) * toNum(1000)));
-    JsValue pathStr = JS.call(tallDelim, undef(), svgLabel, JS.invoke(Math, "round", (toNum(midHeight) * toNum(1000))));
+    number midHeight = realHeightTotal - topHeightTotal - bottomHeightTotal;
+    number viewBoxHeight = toNum(JS.invoke(Math, "round", realHeightTotal * 1000));
+    JsValue pathStr = JS.call(tallDelim, undef(), svgLabel, JS.invoke(Math, "round", midHeight * 1000));
     JsValue path = JS.construct(PathNode, svgLabel, pathStr);
-    JsValue width = JS.add(JS.invoke((toNum(viewBoxWidth) / toNum(1000)), "toFixed", 3), "em");
-    JsValue height = JS.add(JS.invoke((toNum(viewBoxHeight) / toNum(1000)), "toFixed", 3), "em");
-    JsValue a25 = JS.array(path);
-    JsValue o26 = JS.object("width", width, "height", height, "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight));
-    JsValue svg = JS.construct(SvgNode, a25, o26);
-    JsValue a27 = JS.array();
-    JsValue a28 = JS.array(svg);
-    JsValue wrapper = JS.invoke(buildCommon, "makeSvgSpan", a27, a28, options);
-    wrapper["height"] = (toNum(viewBoxHeight) / toNum(1000));
+    JsValue width = JS.add(JS.invoke(toNum(viewBoxWidth) / 1000, "toFixed", 3), "em");
+    JsValue height = JS.add(JS.invoke(viewBoxHeight / 1000, "toFixed", 3), "em");
+    JsValue svg = JS.construct(SvgNode, JS.array(path), JS.object("width", width, "height", height, "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight)));
+    JsValue wrapper = JS.invoke(buildCommon, "makeSvgSpan", JS.array(), JS.array(svg), options);
+    wrapper["height"] = viewBoxHeight / 1000;
     wrapper["style"]["width"] = width;
     wrapper["style"]["height"] = height;
-    JsValue o29 = JS.object("type", "elem", "elem", wrapper);
-    JS.invoke(stack, "push", o29);
+    JS.invoke(stack, "push", JS.object("type", "elem", "elem", wrapper));
   } else {
     JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), bottom, font, mode));
     JS.invoke(stack, "push", lap);
     if (JS.strictEqual(middle, null)) {
-      JsValue innerHeight = JS.add((toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal)), (toNum(2) * toNum(lapInEms)));
+      number innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal + 2 * toNum(lapInEms);
       JS.invoke(stack, "push", JS.call(makeInner, undef(), repeat, innerHeight, options));
     } else {
-      JsValue innerHeight = JS.add((toNum((toNum((toNum((toNum(realHeightTotal) - toNum(topHeightTotal))) - toNum(bottomHeightTotal))) - toNum(middleHeightTotal))) / toNum(2)), (toNum(2) * toNum(lapInEms)));
+      number innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal - middleHeightTotal) / 2 + 2 * toNum(lapInEms);
       JS.invoke(stack, "push", JS.call(makeInner, undef(), repeat, innerHeight, options));
       JS.invoke(stack, "push", lap);
       JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), middle, font, mode));
@@ -382,11 +376,8 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), top, font, mode));
   }
   JsValue newOptions = JS.invoke(options, "havingBaseStyle", Style["TEXT"]);
-  JsValue o30 = JS.object("positionType", "bottom", "positionData", depth, "children", stack);
-  JsValue inner = JS.invoke(buildCommon, "makeVList", o30, newOptions);
-  JsValue a31 = JS.array("delimsizing", "mult");
-  JsValue a32 = JS.array(inner);
-  return JS.call(styleWrap, undef(), JS.invoke(buildCommon, "makeSpan", a31, a32, newOptions), Style["TEXT"], options, classes);
+  JsValue inner = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "bottom", "positionData", depth, "children", stack), newOptions);
+  return JS.call(styleWrap, undef(), JS.invoke(buildCommon, "makeSpan", JS.array("delimsizing", "mult"), JS.array(inner), newOptions), Style["TEXT"], options, classes);
   return undef();
 };
 vbPad = 80;
@@ -404,50 +395,48 @@ sqrtSvg = (JsValue sqrtName, JsValue height, JsValue viewBoxHeight, JsValue extr
 };
 makeSqrtImage = (JsValue height, JsValue options) => {
   JsValue newOptions = JS.invoke(options, "havingBaseSizing");
-  JsValue delim = JS.call(traverseSequence, undef(), "\\surd", (toNum(height) * toNum(newOptions["sizeMultiplier"])), stackLargeDelimiterSequence, newOptions);
-  JsValue sizeMultiplier = newOptions["sizeMultiplier"];
-  JsValue extraVinculum = JS.invoke(Math, "max", 0, (toNum(options["minRuleThickness"]) - toNum(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"])));
+  number h = toNum(height);
+  JsValue delim = JS.call(traverseSequence, undef(), "\\surd", h * toNum(newOptions["sizeMultiplier"]), stackLargeDelimiterSequence, newOptions);
+  number sizeMultiplier = toNum(newOptions["sizeMultiplier"]);
+  number extraVinculum = toNum(JS.invoke(Math, "max", 0, toNum(options["minRuleThickness"]) - toNum(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"])));
+  number pad = toNum(vbPad);
+  number emPadding = toNum(emPad);
   JsValue span = undef();
-  JsValue spanHeight = 0;
-  JsValue texHeight = 0;
-  JsValue viewBoxHeight = 0;
-  JsValue advanceWidth = undef();
+  number spanHeight = 0;
+  number texHeight = 0;
+  number viewBoxHeight = 0;
+  number advanceWidth = 0;
   if (JS.strictEqual(delim["type"], "small")) {
-    viewBoxHeight = JS.add(JS.add(1000, (toNum(1000) * toNum(extraVinculum))), vbPad);
-    if (JS.lessThan(height, 1)) {
+    viewBoxHeight = 1000 + 1000 * extraVinculum + pad;
+    if (h < 1) {
       sizeMultiplier = 1;
-    } else {
-      if (JS.lessThan(height, 1.4)) {
-        sizeMultiplier = 0.7;
-      }
+    } else if (h < 1.4) {
+      sizeMultiplier = 0.7;
     }
-    spanHeight = (toNum(JS.add(JS.add(1, extraVinculum), emPad)) / toNum(sizeMultiplier));
-    texHeight = (toNum(JS.add(1, extraVinculum)) / toNum(sizeMultiplier));
+    spanHeight = (1 + extraVinculum + emPadding) / sizeMultiplier;
+    texHeight = (1 + extraVinculum) / sizeMultiplier;
     span = JS.call(sqrtSvg, undef(), "sqrtMain", spanHeight, viewBoxHeight, extraVinculum, options);
     span["style"]["minWidth"] = "0.853em";
-    advanceWidth = (toNum(0.833) / toNum(sizeMultiplier));
+    advanceWidth = 0.833 / sizeMultiplier;
+  } else if (JS.strictEqual(delim["type"], "large")) {
+    number maxHeight = toNum(sizeToMaxHeight[delim["size"]]);
+    viewBoxHeight = (1000 + pad) * maxHeight;
+    texHeight = (maxHeight + extraVinculum) / sizeMultiplier;
+    spanHeight = (maxHeight + extraVinculum + emPadding) / sizeMultiplier;
+    span = JS.call(sqrtSvg, undef(), "sqrtSize" + toStr(delim["size"]), spanHeight, viewBoxHeight, extraVinculum, options);
+    span["style"]["minWidth"] = "1.02em";
+    advanceWidth = 1 / sizeMultiplier;
   } else {
-    if (JS.strictEqual(delim["type"], "large")) {
-      viewBoxHeight = (toNum(JS.add(1000, vbPad)) * toNum(sizeToMaxHeight[delim["size"]]));
-      texHeight = (toNum(JS.add(sizeToMaxHeight[delim["size"]], extraVinculum)) / toNum(sizeMultiplier));
-      spanHeight = (toNum(JS.add(JS.add(sizeToMaxHeight[delim["size"]], extraVinculum), emPad)) / toNum(sizeMultiplier));
-      span = JS.call(sqrtSvg, undef(), JS.add("sqrtSize", delim["size"]), spanHeight, viewBoxHeight, extraVinculum, options);
-      span["style"]["minWidth"] = "1.02em";
-      advanceWidth = (toNum(1) / toNum(sizeMultiplier));
-    } else {
-      spanHeight = JS.add(JS.add(height, extraVinculum), emPad);
-      texHeight = JS.add(height, extraVinculum);
-      viewBoxHeight = JS.add(JS.invoke(Math, "floor", JS.add((toNum(1000) * toNum(height)), extraVinculum)), vbPad);
-      span = JS.call(sqrtSvg, undef(), "sqrtTall", spanHeight, viewBoxHeight, extraVinculum, options);
-      span["style"]["minWidth"] = "0.742em";
-      advanceWidth = 1.056;
-    }
+    spanHeight = h + extraVinculum + emPadding;
+    texHeight = h + extraVinculum;
+    viewBoxHeight = toNum(JS.invoke(Math, "floor", 1000 * h + extraVinculum)) + pad;
+    span = JS.call(sqrtSvg, undef(), "sqrtTall", spanHeight, viewBoxHeight, extraVinculum, options);
+    span["style"]["minWidth"] = "0.742em";
+    advanceWidth = 1.056;
   }
   span["height"] = texHeight;
   span["style"]["height"] = JS.call(makeEm, undef(), spanHeight);
-  JsValue o37 = JS.object("span", span, "advanceWidth", advanceWidth, "ruleWidth", (toNum(JS.add(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"], extraVinculum)) * toNum(sizeMultiplier)));
-  return o37;
-  return undef();
+  return JS.object("span", span, "advanceWidth", advanceWidth, "ruleWidth", (toNum(JS.invoke(options, "fontMetrics")["sqrtRuleThickness"]) + extraVinculum) * sizeMultiplier);
 };
 JsValue a38 = JS.array("(", "\\lparen", ")", "\\rparen", "[", "\\lbrack", "]", "\\rbrack", "\\{", "\\lbrace", "\\}", "\\rbrace", "\\lfloor", "\\rfloor", "⌊", "⌋", "\\lceil", "\\rceil", "⌈", "⌉", "\\surd");
 stackLargeDelimiters = a38;

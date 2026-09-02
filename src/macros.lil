@@ -198,7 +198,7 @@ JS.call(defineMacro, undef(), "\\show", (JsValue context) => {
   JsValue tok = JS.invoke(context, "popToken");
   JsValue name = tok["text"];
   JsValue cons = getConsole();
-  if (!isUndef(cons) && !isNullish(cons)) {
+  if (!isNullish(cons)) {
     JS.invoke(cons, "log", tok, JS.invoke(context["macros"], "get", name), functions[name], symbols["math"][name], symbols["text"][name]);
   }
   return "";

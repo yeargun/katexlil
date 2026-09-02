@@ -36,15 +36,15 @@ Lexer = JS.methodRest((JsValue self, JsValue argv) => {
 });
 JsValue lexTextFromMatch(JsValue matched) {
   JsValue group6 = matched[6];
-  if (!isUndef(group6) && !isNullish(group6) && JS.strictNotEqual(group6, "")) {
+  if (group6.truthy()) {
     return group6;
   }
   JsValue group3 = matched[3];
-  if (!isUndef(group3) && !isNullish(group3) && JS.strictNotEqual(group3, "")) {
+  if (group3.truthy()) {
     return group3;
   }
   JsValue group2 = matched[2];
-  if (!isUndef(group2) && !isNullish(group2) && JS.strictNotEqual(group2, "")) {
+  if (group2.truthy()) {
     return "\\ ";
   }
   return " ";
