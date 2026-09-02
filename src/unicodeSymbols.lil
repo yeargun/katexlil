@@ -1,0 +1,43 @@
+// Built at load, the way katex ships it (upstream src/unicodeSymbols.js is bundled as this
+// loop and run once): every letter plus one or two combining accents whose NFC form is a
+// single code point. The pre-expanded table this replaces was 4179 bytes of shipped JS.
+import { unicodeAccents } from "./unicodeAccents.lil";
+import { emptyObject, objectKeys, invoke1, toStr, len } from "./host.lil";
+
+JsValue buildUnicodeSymbols() {
+  JsValue result = emptyObject();
+  string letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    + "αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψωΓΔΘΛΞΠΣΥΦΨΩ";
+  JsValue accents = objectKeys(unicodeAccents);
+  int letterCount = letters.length;
+  int accentCount = len(accents);
+  int i = 0;
+  while (i < letterCount) {
+    string letter = letters.charAt(i);
+    int j = 0;
+    while (j < accentCount) {
+      string accent = toStr(accents[j]);
+      string combined = letter + accent;
+      string normalized = toStr(invoke1(combined, "normalize", "NFC"));
+      if (normalized.length == 1) {
+        result[normalized] = combined;
+      }
+      int k = 0;
+      while (k < accentCount) {
+        if (k != j) {
+          string combined2 = combined + toStr(accents[k]);
+          string normalized2 = toStr(invoke1(combined2, "normalize", "NFC"));
+          if (normalized2.length == 1) {
+            result[normalized2] = combined2;
+          }
+        }
+        k = k + 1;
+      }
+      j = j + 1;
+    }
+    i = i + 1;
+  }
+  return result;
+}
+
+export JsValue unicodeSymbols = buildUnicodeSymbols();

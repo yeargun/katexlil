@@ -12,7 +12,7 @@ import { SourceLocation } from "./SourceLocation.lil";
 import { uSubsAndSups, unicodeSubRegEx } from "./unicodeSupOrSub.lil";
 import { Token } from "./Token.lil";
 import { unicodeAccents } from "./unicodeAccents.lil";
-import { unicodeSymbols } from "./data.lil";
+import { unicodeSymbols } from "./unicodeSymbols.lil";
 
 JsValue Parser = undef();
 

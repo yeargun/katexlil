@@ -102,7 +102,10 @@
     "check:pack": "node scripts/check-pack.mjs",
     "audit": "node scripts/audit-parity.mjs",
     "check": "npm run build && npm run check:type && npm test && npm run check:pack && npm run check:site && npm run audit",
-    "prepublishOnly": "npm run check:type && npm test && npm run check:pack && npm run check:site && npm run audit"
+    "prepublishOnly": "npm run check:type && npm test && npm run check:pack && npm run check:site && npm run audit",
+    "test:browser": "node --test test/browser-perf.test.mjs",
+    "measure": "node scripts/measure-site.mjs",
+    "attribute": "node scripts/attribute-map.mjs"
   },
   "devDependencies": {
     "@babel/parser": "^7.26.10",
@@ -118,6 +121,7 @@
     "js-yaml": "^4.3.2",
     "json-stable-stringify": "^1.1.1",
     "katex": "0.16.22",
+    "playwright": "^1.62.1",
     "terser": "5.44.0",
     "typescript": "^5.9.2"
   },

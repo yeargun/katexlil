@@ -80,14 +80,22 @@ function renderHero() {
   if (!baseline || !itslil) return
   const smaller = smallerThan(itslil.brotli11, baseline.brotli11)
   document.querySelector("#hero-ratio").innerHTML = `${smaller.amount}<span>${smaller.word}</span>`
+  document.querySelector("#hero-ratio").classList.toggle("loss", smaller.state === "loss")
   document.querySelector("#hero-bytes").textContent =
     `${formatter.format(baseline.brotli11)} B → ${formatter.format(itslil.brotli11)} B Brotli-11`
   document.querySelector("#hero-shipped").textContent = smaller.text
   document.querySelector("#hero-gzip").textContent = smallerThan(itslil.gzip9, baseline.gzip9).text
   document.querySelector("#hero-raw").textContent = smallerThan(itslil.raw, baseline.raw).text
-  document.querySelector("#hero-spec").textContent = data.spec
-    ? `${data.spec.pass}/${data.spec.total}`
-    : "—"
+  const spec = data.spec ? `${data.spec.pass}/${data.spec.total}` : "—"
+  document.querySelector("#hero-spec").textContent = spec
+  document.querySelector("#lede-spec").textContent = spec
+  const strongest = data.size.find((lane) => lane.strongest)
+  if (strongest) {
+    const vsStrongest = smallerThan(itslil.brotli11, strongest.brotli11)
+    document.querySelector("#score-note").insertAdjacentHTML("beforeend", ` Against the strongest lane, the upstream sources through esbuild and Terser (${formatter.format(strongest.brotli11)} B), the open-world file is ${vsStrongest.text}.`)
+  }
+  if (data.codec) document.querySelector("#codec-label").textContent = data.codec
+  if (data.measuredAt) document.querySelector("#footer-note").textContent += ` — measured ${data.measuredAt.slice(0, 10)}`
 }
 
 function renderSize() {
@@ -105,45 +113,83 @@ function renderSize() {
     .join("")
 }
 
-function renderPerf() {
-  const suites = data.throughput ?? []
-  const lil = suites.find((row) => row.id === "itslil")
-  const official = suites.find((row) => row.id === "official")
-  const speed = lil && official ? fasterThan(lil.documentMs, official.documentMs) : null
-  const cards = [
-    {
-      label: data.perfLead ?? "same work, against the official runtime graph",
-      value: speed ? speed.text : "—",
-      win: speed?.state === "win",
-    },
-    {
-      label: "LilScript median",
-      value: lil ? ms(lil.documentMs) : "—",
-    },
-    {
-      label: "official median",
-      value: official ? ms(official.documentMs) : "—",
-    },
-    {
-      label: data.spec?.label ?? "tests passing",
-      value: data.spec ? `${data.spec.pass}/${data.spec.total}` : "—",
-      geo: true,
-    },
+function renderWorlds() {
+  const baseline = data.size.find((lane) => lane.baseline)
+  const open = laneById("itslil")
+  const closed = laneById("itslil-closed")
+  if (!baseline || !open || !closed) return
+  const rows = [
+    { lane: open, world: "Open", held: "public ESM names, option keys, every JavaScript-visible field; extern_fields = true" },
+    { lane: closed, world: "Closed", held: "behavior only; extern_fields = false, compiler-owned fields may rename" },
   ]
-  document.querySelector("#perf-cards").innerHTML = cards
-    .map(
-      (card) =>
-        `<article class="perf-card${card.win ? " win" : ""}${card.geo ? " geo" : ""}"><strong>${card.value}</strong><span>${card.label}</span></article>`,
-    )
-    .join("")
-  document.querySelector("#perf-body").innerHTML = suites
-    .map((row) => {
-      const verdict = official ? fasterThan(row.documentMs, official.documentMs) : null
-      return `<tr><th scope="row">${row.name}</th><td>${ms(row.documentMs)}</td><td class="verdict ${verdict ? verdict.state : ""}"><strong>${verdict ? verdict.text : "—"}</strong></td></tr>`
+  document.querySelector("#worlds-body").innerHTML = rows
+    .map(({ lane, world, held }) => {
+      const verdict = smallerThan(lane.brotli11, baseline.brotli11)
+      return `<tr><th scope="row">${world}</th><td>${held}</td><td>${formatter.format(lane.raw)}</td><td>${formatter.format(lane.gzip9)}</td><td>${formatter.format(lane.brotli11)}</td><td class="verdict ${verdict.state}"><strong>${verdict.text}</strong></td></tr>`
     })
     .join("")
-  document.querySelector("#perf-note").textContent =
-    `${data.runtime ?? "Node"}. ${data.codec}. Quiet median after discarding the first ${data.warmupDiscard ?? 3} samples.`
+  const note = document.querySelector("#worlds-note")
+  if (open.brotli11 === closed.brotli11 && open.raw === closed.raw) {
+    note.textContent = "Today the two artifacts are byte-identical: this port declares no fields the compiler owns (its objects are untyped JsValue bags carried over from the JavaScript), so the closed contract has nothing to rename. That is the port's defect, and the reason it loses in both worlds; the fix is typing the port, not the compiler."
+  } else {
+    const closedGain = smallerThan(closed.brotli11, open.brotli11)
+    note.textContent = `Closed world is ${closedGain.text} than open world under Brotli-11: what typed, compiler-owned fields buy once the public surface is not held fixed.`
+  }
+}
+
+function renderPerf() {
+  const rows = []
+  const browser = data.browser
+  if (browser?.lanes) {
+    const official = browser.lanes.official
+    for (const [id, lane] of Object.entries(browser.lanes)) {
+      rows.push({ runtime: browser.browser, name: lane.name, median: lane.median, p10: lane.p10, p90: lane.p90, verdict: fasterThan(lane.median, official.median), id })
+    }
+  }
+  const nodeOfficial = (data.throughput ?? []).find((row) => row.id === "official")
+  for (const row of data.throughput ?? []) {
+    rows.push({ runtime: data.runtime ?? "Node", name: row.name, median: row.documentMs, p10: row.p10, p90: row.p90, verdict: nodeOfficial ? fasterThan(row.documentMs, nodeOfficial.documentMs) : null, id: row.id })
+  }
+  const browserLil = browser?.lanes?.itslil
+  const browserOfficial = browser?.lanes?.official
+  const speed = browserLil && browserOfficial ? fasterThan(browserLil.median, browserOfficial.median) : null
+  const parityOk = browser?.parity ? browser.parity.compared - browser.parity.mismatches.length : null
+  const cards = [
+    { label: `corpus render, ${browser?.browser ?? "Chromium"}, vs official`, value: speed ? speed.text : "—", win: speed?.state === "win", loss: speed?.state === "loss" },
+    { label: "LilScript median (browser)", value: browserLil ? ms(browserLil.median) : "—" },
+    { label: "official median (browser)", value: browserOfficial ? ms(browserOfficial.median) : "—" },
+    { label: browser?.parity ? `identical HTML, ${browser.parity.compared} expressions` : data.spec?.label ?? "tests passing", value: parityOk != null ? `${parityOk}/${browser.parity.compared}` : data.spec ? `${data.spec.pass}/${data.spec.total}` : "—", geo: true },
+  ]
+  document.querySelector("#perf-cards").innerHTML = cards
+    .map((card) => `<article class="perf-card${card.win ? " win" : ""}${card.loss ? " loss" : ""}${card.geo ? " geo" : ""}"><strong>${card.value}</strong><span>${card.label}</span></article>`)
+    .join("")
+  document.querySelector("#perf-body").innerHTML = rows
+    .map((row) => `<tr><td>${row.runtime}</td><th scope="row">${row.name}</th><td>${ms(row.median)}</td><td>${row.p10 != null ? ms(row.p10) : "—"}</td><td>${row.p90 != null ? ms(row.p90) : "—"}</td><td class="verdict ${row.verdict ? row.verdict.state : ""}"><strong>${row.verdict ? row.verdict.text : "—"}</strong></td></tr>`)
+    .join("")
+  const parts = []
+  if (browser) parts.push(`${browser.browser} via Playwright ${browser.playwright ?? ""}: ${browser.corpus} expressions × ${browser.rounds} rounds per lane, interleaved, after ${browser.warmup} warmup rounds.`)
+  parts.push(`${data.runtime ?? "Node"}: ${data.corpus ?? "the same"} expressions × ${data.rounds ?? "?"} rounds, same method${data.nodeParity ? `, ${data.nodeParity.compared - data.nodeParity.mismatches}/${data.nodeParity.compared} identical` : ""}.`)
+  if (data.spec) parts.push(`${data.spec.label}: ${data.spec.pass}/${data.spec.total}.`)
+  parts.push("Runtime performance is a guard rail here, not the objective; the objective is Brotli bytes.")
+  document.querySelector("#perf-note").textContent = parts.join(" ")
+}
+
+function renderAttribution() {
+  const attribution = data.attribution
+  if (!attribution?.rows) {
+    document.querySelector("#bytes").hidden = true
+    return
+  }
+  const rows = [...attribution.rows].sort((a, b) => b.deltaBrotli - a.deltaBrotli)
+  const shown = rows.slice(0, 14)
+  const signed = (n) => (n > 0 ? `+${formatter.format(n)}` : formatter.format(n))
+  document.querySelector("#bytes-body").innerHTML = shown
+    .map((row) => `<tr><th scope="row">${row.module}</th><td>${formatter.format(row.lilRaw)}</td><td>${formatter.format(row.officialRaw)}</td><td class="verdict ${row.deltaRaw > 0 ? "loss" : "win"}">${signed(row.deltaRaw)}</td><td>${formatter.format(row.lilBrotli)}</td><td>${formatter.format(row.officialBrotli)}</td><td class="verdict ${row.deltaBrotli > 0 ? "loss" : "win"}"><strong>${signed(row.deltaBrotli)}</strong></td></tr>`)
+    .join("")
+  const losing = rows.filter((row) => row.deltaBrotli > 0)
+  const winning = rows.filter((row) => row.deltaBrotli < 0)
+  document.querySelector("#bytes-note").textContent =
+    `${attribution.lil.path ?? "the compiler's artifact"} ${formatter.format(attribution.lil.raw)} B raw / ${formatter.format(attribution.lil.brotli11)} B Brotli against the source lane ${formatter.format(attribution.official.raw)} / ${formatter.format(attribution.official.brotli11)} (before the shared font-metrics table is stitched in). ${losing.length} modules are bigger here, ${winning.length} are smaller; the top ${shown.length} by Brotli delta are shown. Marginal costs are not additive: Brotli shares matches across modules.`
 }
 
 function bindCopy() {
@@ -392,7 +438,9 @@ function bindPlayground() {
 
 renderHero()
 renderPerf()
+renderWorlds()
 renderSize()
+renderAttribution()
 bindCopy()
 bindProgress()
 bindPlayground()

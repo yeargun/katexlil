@@ -198,3 +198,16 @@ footer.shell { display: flex; justify-content: space-between; gap: 20px; padding
   html { scroll-behavior: auto; }
   .ticker div { animation: none; }
 }
+
+/* worlds, bytes, bench */
+.worlds { padding-block: 88px; }
+.worlds td, .bytes td { white-space: nowrap; }
+.worlds td:nth-child(2) { white-space: normal; max-width: 420px; color: var(--muted); font-size: 13px; }
+.bytes { padding-block: 88px; }
+.bytes td:nth-child(n+2) { font-variant-numeric: tabular-nums; text-align: right; }
+.hero .scoreboard strong.loss { color: #8a1c1c; }
+.perf-card.loss strong { color: #8a1c1c; }
+.bench { padding-block: 72px; }
+.bench h1 { font-size: clamp(38px, 6vw, 64px); margin: 0 0 18px; }
+.bench .lede a, .performance p a, .worlds p a, .bytes p a, .hero .lede a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.bench button { min-height: 40px; padding: 0 18px; border: 2px solid var(--ink); background: var(--acid); border-radius: 999px; font-weight: 800; cursor: pointer; }

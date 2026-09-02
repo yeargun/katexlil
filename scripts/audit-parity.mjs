@@ -48,7 +48,9 @@ const upstreamModules = walk(resolve(upstream, "src"))
   .filter((path) => path.endsWith(".js"))
   .map((path) => relative(resolve(upstream, "src"), path))
   .sort()
-const hostData = new Set(["fontMetricsData.js", "unicodeSymbols.js"])
+// unicodeSymbols is a LilScript module now (src/unicodeSymbols.lil builds the table at load,
+// as upstream does); only the font metrics table stays host JavaScript.
+const hostData = new Set(["fontMetricsData.js"])
 const expectedModules = upstreamModules.map((path) => {
   if (hostData.has(path)) return path
   return path.replace(/\.js$/, ".lil")
@@ -69,7 +71,6 @@ const runtimeHostSource = walk(resolve(root, "src"))
 
 const localData = {
   "fontMetricsData.js": (await import(resolve(root, "src/fontMetricsData.js"))).default,
-  "unicodeSymbols.js": (await import(resolve(root, "src/unicodeSymbols.js"))).default,
 }
 const fontSandbox = {}
 runInNewContext(
@@ -77,10 +78,8 @@ runInNewContext(
     .replace("export default", "globalThis.value ="),
   fontSandbox,
 )
-const requireUnicode = createRequire(resolve(published, "src/unicodeSymbols.js"))
 const officialData = {
   "fontMetricsData.js": fontSandbox.value,
-  "unicodeSymbols.js": requireUnicode(resolve(published, "src/unicodeSymbols.js")),
 }
 const dataChecks = [...hostData].map((name) => {
   const local = resolve(root, "src", name)

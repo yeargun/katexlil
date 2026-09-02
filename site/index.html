@@ -21,7 +21,9 @@
         
         <a href="#performance">performance</a>
         <a href="#lab">playground</a>
+        <a href="#worlds">open / closed</a>
         <a href="#evidence">size</a>
+        <a href="#bytes">where the bytes go</a>
         <a href="https://github.com/yeargun/katexlil">GitHub ↗</a>
       </nav>
     </header>
@@ -30,7 +32,7 @@
         <div class="hero-copy">
           <p class="eyebrow"><span class="live-dot"></span> katex@0.16.22 · LilScript port · @itslil/katex</p>
           <h1>TeX,<br /><em>to HTML</em></h1>
-          <p class="lede">Official <code>katex@0.16.22</code> algorithms rewritten in LilScript. Official Jest suite 1013/1013. Not affiliated with upstream. Official rows are published <code>katex@0.16.22</code>, then Terser and esbuild.</p>
+          <p class="lede">Official <code>katex@0.16.22</code> algorithms rewritten in LilScript. Official Jest suites <span id="lede-spec">—</span>. Not affiliated with upstream. Every number on this page is written by <a href="https://github.com/yeargun/katexlil/blob/main/scripts/measure-site.mjs">one script</a> you can run; the performance rows come from a <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">Playwright test</a> and the <a href="./bench.html">benchmark page</a> it drives.</p>
           <div class="install-row">
             <code>npm install @itslil/katex</code>
             <button class="copy" data-copy="npm install @itslil/katex" type="button">copy</button>
@@ -42,7 +44,7 @@
         </div>
         <div class="scoreboard" aria-label="Compression and performance results">
           <div class="score-main">
-            <span class="score-label">Bytes over the wire, Brotli-11, against Terser of the official runtime graph</span>
+            <span class="score-label">Bytes over the wire, Brotli-11, open world, against Terser of the official runtime graph</span>
             <strong id="hero-ratio">—<span>smaller</span></strong>
             <p id="hero-bytes"></p>
           </div>
@@ -52,9 +54,9 @@
             <div><strong id="hero-raw">—</strong><span>raw vs Terser</span></div>
             <div><strong id="hero-spec">—</strong><span>official jest suite</span></div>
           </div>
-          <p class="score-note">
+          <p class="score-note" id="score-note">
             Official rows are one esbuild bundle of <code>katex@0.16.22</code> plus the packages it needs at runtime, then Terser or esbuild.
-            LilScript is not post-minified. The npm file is the Brotli-scored compile. Closed LilScript is the same source with <code>extern_fields = false</code>.
+            LilScript is not post-minified. The npm file is the Brotli-scored compile. A loss is printed as a loss.
           </p>
         </div>
       </section>
@@ -64,12 +66,14 @@
       <section class="performance shell" id="performance">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Measured in Node</p>
+            <p class="eyebrow">Measured in Chromium, by Playwright</p>
             <h2>Same work,<br />two runtimes.</h2>
           </div>
-          <p>
-            Not Playwright — Node v22.21.1 on this machine, quiet median after warmup.
-            Race 10× in the playground for a browser number. The official test suite (1013/1013) is green before any size row is a claim.
+          <p id="perf-intro">
+            Headless Chromium renders a fixed corpus with <code>renderToString</code> in both lanes, rounds interleaved, after warmup.
+            Both lanes must produce identical HTML for every expression before a time is a claim. The same page runs in your browser:
+            <a href="./bench.html">bench.html</a>. Source: <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">test/browser-perf.test.mjs</a>,
+            <a href="https://github.com/yeargun/katexlil/blob/main/site/corpus.js">site/corpus.js</a>.
           </p>
         </div>
         <div class="perf-cards" id="perf-cards"></div>
@@ -77,8 +81,11 @@
           <table>
             <thead>
               <tr>
+                <th>Runtime</th>
                 <th>Lane</th>
                 <th>median</th>
+                <th>p10</th>
+                <th>p90</th>
                 <th>vs official</th>
               </tr>
             </thead>
@@ -120,6 +127,30 @@
           </div>
         </div>
       </section>
+      <section class="worlds shell" id="worlds">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Two contracts</p>
+            <h2>Open world,<br />closed world.</h2>
+          </div>
+          <p>
+            <strong>Open world</strong> is the reusable library: the public ESM names, the option-object keys and every
+            JavaScript-visible field stay as written, so <code>renderToString(tex, {displayMode: true})</code> works
+            unchanged. Its fair opponent is Terser, Oxc or esbuild with identifier mangling on and property mangling off.
+            <strong>Closed world</strong> is the same source under <code>extern_fields = false</code>: fields the compiler
+            owns may be renamed, the way Closure ADVANCED renames an app. Configs:
+            <a href="https://github.com/yeargun/katexlil/blob/main/lilscript.toml">lilscript.toml</a>,
+            <a href="https://github.com/yeargun/katexlil/blob/main/lilscript.closed.toml">lilscript.closed.toml</a>.
+          </p>
+        </div>
+        <div class="table-wrap light">
+          <table>
+            <thead><tr><th>World</th><th>Held fixed</th><th>Raw</th><th>gzip-9</th><th>Brotli-11</th><th>vs Terser</th></tr></thead>
+            <tbody id="worlds-body"></tbody>
+          </table>
+        </div>
+        <p class="perf-note" id="worlds-note"></p>
+      </section>
       <section class="evidence" id="evidence">
         <div class="shell">
           <div class="section-heading inverse">
@@ -128,8 +159,9 @@
               <h2>Raw, gzip,<br />and Brotli.</h2>
             </div>
             <p>
-              Official katex@0.16.22 bundled with its runtime graph, then Terser (mangle on/off) and esbuild minify.
-              LilScript is not post-minified. Closed LilScript is Brotli with <code>extern_fields = false</code>.
+              Official katex@0.16.22 bundled with its runtime graph, then Terser (mangle on/off) and esbuild minify; plus the
+              strongest JavaScript lane, the Flow sources themselves through esbuild and Terser. LilScript is not post-minified.
+              Encoders: <span id="codec-label"></span>.
             </p>
           </div>
           <div class="codec-block">
@@ -178,12 +210,34 @@
           <div class="method-note">
             <p>
               <strong>Why this surface.</strong> Comparing against a single published file would hide official dependencies.
-              The fair fight is the runtime graph you actually import, then the same minifiers the JS ecosystem ships.
-              Closed LilScript is the other honest comparison: no JavaScript options object, so those property names mangle.
+              The fair fight is the runtime graph you actually import, then the same minifiers the JS ecosystem ships, and the
+              upstream sources through the best of them. Sizes come from <code>lilscript-codec</code>, the pinned encoders, via
+              <a href="https://github.com/yeargun/katexlil/blob/main/scripts/measure-site.mjs">scripts/measure-site.mjs</a>.
             </p>
             <a href="https://github.com/yeargun/katexlil">README ↗</a>
           </div>
         </div>
+      </section>
+      <section class="bytes shell" id="bytes">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Source maps, both lanes</p>
+            <h2>Where the<br />bytes go.</h2>
+          </div>
+          <p id="bytes-intro">
+            The compiler emits a Source Map v3 for its artifact, and the official lane is rebuilt from the Flow sources with
+            esbuild and Terser maps composed, so every token on both sides names its module. Per module: the raw bytes it owns,
+            and its marginal Brotli-11 cost (the artifact minus that module's tokens). Positive is where this port is bigger.
+            Tool: <a href="https://github.com/yeargun/katexlil/blob/main/scripts/attribute-map.mjs">scripts/attribute-map.mjs</a>.
+          </p>
+        </div>
+        <div class="table-wrap light">
+          <table>
+            <thead><tr><th>Module</th><th>LilScript raw</th><th>Terser raw</th><th>Δ raw</th><th>LilScript Brotli</th><th>Terser Brotli</th><th>Δ Brotli</th></tr></thead>
+            <tbody id="bytes-body"></tbody>
+          </table>
+        </div>
+        <p class="perf-note" id="bytes-note"></p>
       </section>
       <section class="closing shell">
         <p class="eyebrow">Zero runtime dependencies</p>
@@ -196,7 +250,7 @@
     </main>
     <footer class="shell">
       <span>@itslil/katex · MIT</span>
-      <span>official katex@0.16.22 algorithms rewritten in LilScript — official test suite 1013/1013 — not affiliated with upstream</span>
+      <span id="footer-note">official katex@0.16.22 algorithms rewritten in LilScript — not affiliated with upstream</span>
       <a href="https://github.com/yeargun/katexlil">source ↗</a>
     </footer>
   </body>

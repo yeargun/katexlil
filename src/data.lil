@@ -1,8 +1,5 @@
 import extern { default as generatedFontMetricsData } from "./fontMetricsData.js";
-import extern { default as generatedUnicodeSymbols } from "./unicodeSymbols.js";
 
 extern JsValue generatedFontMetricsData;
-extern JsValue generatedUnicodeSymbols;
 
 export JsValue fontMetricsData = generatedFontMetricsData;
-export JsValue unicodeSymbols = generatedUnicodeSymbols;

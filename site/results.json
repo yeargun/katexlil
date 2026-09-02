@@ -4,15 +4,18 @@
   "file": "katex",
   "lilExport": "renderToString",
   "officialExport": "default",
-  "node": "v22.21.1",
-  "codec": "lilscript-codec gzip-9 / brotli-11",
-  "runtime": "Node v22.21.1",
-  "warmupDiscard": 3,
-  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild. LilScript is the compiled npm file. Closed is extern_fields=false.",
+  "measuredAt": "2026-09-02T16:22:40.316Z",
+  "node": "v20.19.0",
+  "codec": "lilscript-codec: zlib 1.3.1 gzip-9 / Google Brotli 1.1.0 q11 w22",
+  "runtime": "Node v20.19.0",
+  "warmupDiscard": 5,
+  "corpus": 30,
+  "rounds": 30,
+  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's output, never post-minified. Open world keeps the public API and option names; closed world sets extern_fields = false.",
   "spec": {
     "total": 1230,
     "pass": 1230,
-    "label": "official core + screenshot-data + contrib Jest suites"
+    "label": "official Jest suites (core, screenshotter data, contrib)"
   },
   "play": {
     "kind": "tex-html",
@@ -32,65 +35,976 @@
     {
       "id": "official",
       "name": "Official katex@0.16.22 graph",
+      "note": "esbuild bundle of the published package plus runtime deps, unminified",
       "raw": 495869,
       "gzip9": 103308,
-      "brotli11": 83118,
-      "note": "esbuild bundle of the published package plus runtime deps",
-      "diagnostic": false
+      "brotli11": 83118
     },
     {
       "id": "official-terser-mangle",
       "name": "Official · Terser mangle on",
+      "note": "Terser compress (3 passes) of that graph, mangle: true",
+      "baseline": true,
       "raw": 267050,
       "gzip9": 76480,
-      "brotli11": 63044,
-      "note": "Terser compress of that graph, mangle: true",
-      "baseline": true
+      "brotli11": 63044
     },
     {
       "id": "official-terser-nomangle",
       "name": "Official · Terser mangle off",
+      "note": "Terser compress of that graph, mangle: false",
       "raw": 342634,
       "gzip9": 84775,
-      "brotli11": 69566,
-      "note": "Terser compress of that graph, mangle: false"
+      "brotli11": 69566
     },
     {
       "id": "official-esbuild",
       "name": "Official · esbuild minify",
-      "raw": 271781,
-      "gzip9": 76693,
-      "brotli11": 63767,
-      "note": "esbuild minify of that graph"
+      "note": "esbuild minify of that graph",
+      "raw": 271766,
+      "gzip9": 76669,
+      "brotli11": 63757
+    },
+    {
+      "id": "official-source-terser",
+      "name": "Official source · esbuild + Terser",
+      "note": "katex@0.16.22 Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary",
+      "strongest": true,
+      "raw": 263654,
+      "gzip9": 74592,
+      "brotli11": 61758
     },
     {
       "id": "itslil",
-      "name": "@itslil/katex · library",
-      "raw": 293173,
-      "gzip9": 84126,
-      "brotli11": 68937,
-      "note": "Direct LilScript js-module output, extern_fields true. The npm ESM.",
-      "primary": true
+      "name": "@itslil/katex · open world",
+      "note": "The npm ESM: direct LilScript js-module output, extern_fields = true, public API and option names kept",
+      "primary": true,
+      "world": "open",
+      "raw": 289019,
+      "gzip9": 80966,
+      "brotli11": 66819
     },
     {
       "id": "itslil-closed",
-      "name": "@itslil/katex · closed",
-      "raw": 305460,
-      "gzip9": 90101,
-      "brotli11": 73230,
-      "note": "Direct LilScript js-module output, extern_fields false; diagnostic only"
+      "name": "@itslil/katex · closed world",
+      "note": "Same source, extern_fields = false: JavaScript-facing option and node fields may mangle",
+      "world": "closed",
+      "raw": 289019,
+      "gzip9": 80966,
+      "brotli11": 66819
     }
   ],
   "throughput": [
     {
-      "id": "official",
-      "name": "katex@0.16.22",
-      "documentMs": 3.971540999998979
-    },
-    {
       "id": "itslil",
       "name": "@itslil/katex",
-      "documentMs": 0.315416000001278
+      "documentMs": 7.35792599999877,
+      "p10": 6.014838999999483,
+      "p90": 9.818199000001187,
+      "rounds": 30
+    },
+    {
+      "id": "official",
+      "name": "katex@0.16.22",
+      "documentMs": 5.80214100000012,
+      "p10": 5.425719000000754,
+      "p90": 7.3384900000000926,
+      "rounds": 30
     }
-  ]
+  ],
+  "nodeParity": {
+    "compared": 30,
+    "mismatches": 0
+  },
+  "browser": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "corpus": 30,
+    "rounds": 30,
+    "warmup": 5,
+    "parity": {
+      "compared": 30,
+      "mismatches": []
+    },
+    "lanes": {
+      "itslil": {
+        "name": "@itslil/katex",
+        "median": 4.9000000059604645,
+        "p10": 4.199999988079071,
+        "p90": 6.5999999940395355,
+        "min": 4.0999999940395355,
+        "rounds": 30
+      },
+      "official": {
+        "name": "katex@0.16.22",
+        "median": 4.4000000059604645,
+        "p10": 3.699999988079071,
+        "p90": 5.300000011920929,
+        "min": 3.5999999940395355,
+        "rounds": 30
+      }
+    },
+    "ratio": 1.113636363482426,
+    "browser": "Chromium 151.0.7922.34",
+    "playwright": "1.62.1"
+  },
+  "attribution": {
+    "lil": {
+      "path": "dist/katex.raw.js",
+      "raw": 231459,
+      "gzip9": 68935,
+      "brotli11": 57314
+    },
+    "official": {
+      "pin": "0.16.22",
+      "terser": {
+        "module": true,
+        "compress": {
+          "passes": 3,
+          "module": true
+        },
+        "mangle": true
+      },
+      "raw": 263662,
+      "gzip9": 74597,
+      "brotli11": 61725
+    },
+    "rows": [
+      {
+        "module": "src/entry",
+        "lilRaw": 1448,
+        "officialRaw": 0,
+        "lilBrotli": 375,
+        "officialBrotli": 0,
+        "deltaRaw": 1448,
+        "deltaBrotli": 375
+      },
+      {
+        "module": "src/symbols",
+        "lilRaw": 30460,
+        "officialRaw": 21490,
+        "lilBrotli": 4381,
+        "officialBrotli": 4032,
+        "deltaRaw": 8970,
+        "deltaBrotli": 349
+      },
+      {
+        "module": "src/Settings",
+        "lilRaw": 6677,
+        "officialRaw": 4178,
+        "lilBrotli": 1612,
+        "officialBrotli": 1358,
+        "deltaRaw": 2499,
+        "deltaBrotli": 254
+      },
+      {
+        "module": "src/svgGeometry",
+        "lilRaw": 22599,
+        "officialRaw": 22170,
+        "lilBrotli": 7612,
+        "officialBrotli": 7460,
+        "deltaRaw": 429,
+        "deltaBrotli": 152
+      },
+      {
+        "module": "src/buildCommon",
+        "lilRaw": 7154,
+        "officialRaw": 6568,
+        "lilBrotli": 1957,
+        "officialBrotli": 1809,
+        "deltaRaw": 586,
+        "deltaBrotli": 148
+      },
+      {
+        "module": "src/functions/supsub",
+        "lilRaw": 3374,
+        "officialRaw": 2760,
+        "lilBrotli": 747,
+        "officialBrotli": 623,
+        "deltaRaw": 614,
+        "deltaBrotli": 124
+      },
+      {
+        "module": "src/domTree",
+        "lilRaw": 6465,
+        "officialRaw": 4940,
+        "lilBrotli": 1091,
+        "officialBrotli": 973,
+        "deltaRaw": 1525,
+        "deltaBrotli": 118
+      },
+      {
+        "module": "src/buildHTML",
+        "lilRaw": 3677,
+        "officialRaw": 3008,
+        "lilBrotli": 911,
+        "officialBrotli": 816,
+        "deltaRaw": 669,
+        "deltaBrotli": 95
+      },
+      {
+        "module": "src/environments/array",
+        "lilRaw": 11900,
+        "officialRaw": 11378,
+        "lilBrotli": 3105,
+        "officialBrotli": 3020,
+        "deltaRaw": 522,
+        "deltaBrotli": 85
+      },
+      {
+        "module": "src/buildMathML",
+        "lilRaw": 3791,
+        "officialRaw": 3365,
+        "lilBrotli": 818,
+        "officialBrotli": 750,
+        "deltaRaw": 426,
+        "deltaBrotli": 68
+      },
+      {
+        "module": "src/delimiter",
+        "lilRaw": 7906,
+        "officialRaw": 7153,
+        "lilBrotli": 1909,
+        "officialBrotli": 1844,
+        "deltaRaw": 753,
+        "deltaBrotli": 65
+      },
+      {
+        "module": "src/Parser",
+        "lilRaw": 11078,
+        "officialRaw": 10067,
+        "lilBrotli": 2604,
+        "officialBrotli": 2548,
+        "deltaRaw": 1011,
+        "deltaBrotli": 56
+      },
+      {
+        "module": "src/functions/font",
+        "lilRaw": 1058,
+        "officialRaw": 1177,
+        "lilBrotli": 179,
+        "officialBrotli": 147,
+        "deltaRaw": -119,
+        "deltaBrotli": 32
+      },
+      {
+        "module": "src/host",
+        "lilRaw": 437,
+        "officialRaw": 0,
+        "lilBrotli": 11,
+        "officialBrotli": 0,
+        "deltaRaw": 437,
+        "deltaBrotli": 11
+      },
+      {
+        "module": "src/functions/utils/assembleSupSub",
+        "lilRaw": 1529,
+        "officialRaw": 1398,
+        "lilBrotli": 230,
+        "officialBrotli": 227,
+        "deltaRaw": 131,
+        "deltaBrotli": 3
+      },
+      {
+        "module": "src/MacroExpander",
+        "lilRaw": 4770,
+        "officialRaw": 3927,
+        "lilBrotli": 1080,
+        "officialBrotli": 1088,
+        "deltaRaw": 843,
+        "deltaBrotli": -8
+      },
+      {
+        "module": "src/functions/arrow",
+        "lilRaw": 2374,
+        "officialRaw": 2039,
+        "lilBrotli": 416,
+        "officialBrotli": 430,
+        "deltaRaw": 335,
+        "deltaBrotli": -14
+      },
+      {
+        "module": "src/environments",
+        "lilRaw": 16,
+        "officialRaw": 9,
+        "lilBrotli": -107,
+        "officialBrotli": -82,
+        "deltaRaw": 7,
+        "deltaBrotli": -25
+      },
+      {
+        "module": "src/utils",
+        "lilRaw": 1192,
+        "officialRaw": 815,
+        "lilBrotli": 264,
+        "officialBrotli": 294,
+        "deltaRaw": 377,
+        "deltaBrotli": -30
+      },
+      {
+        "module": "src/functions/sqrt",
+        "lilRaw": 1489,
+        "officialRaw": 1213,
+        "lilBrotli": 268,
+        "officialBrotli": 311,
+        "deltaRaw": 276,
+        "deltaBrotli": -43
+      },
+      {
+        "module": "src/functions/relax",
+        "lilRaw": 118,
+        "officialRaw": 150,
+        "lilBrotli": 10,
+        "officialBrotli": 55,
+        "deltaRaw": -32,
+        "deltaBrotli": -45
+      },
+      {
+        "module": "src/Style",
+        "lilRaw": 835,
+        "officialRaw": 547,
+        "lilBrotli": 150,
+        "officialBrotli": 196,
+        "deltaRaw": 288,
+        "deltaBrotli": -46
+      },
+      {
+        "module": "src/parseTree",
+        "lilRaw": 519,
+        "officialRaw": 476,
+        "lilBrotli": 31,
+        "officialBrotli": 78,
+        "deltaRaw": 43,
+        "deltaBrotli": -47
+      },
+      {
+        "module": "src/functions/environment",
+        "lilRaw": 683,
+        "officialRaw": 697,
+        "lilBrotli": 167,
+        "officialBrotli": 215,
+        "deltaRaw": -14,
+        "deltaBrotli": -48
+      },
+      {
+        "module": "src/functions/href",
+        "lilRaw": 852,
+        "officialRaw": 937,
+        "lilBrotli": 73,
+        "officialBrotli": 124,
+        "deltaRaw": -85,
+        "deltaBrotli": -51
+      },
+      {
+        "module": "src/unicodeSupOrSub",
+        "lilRaw": 1198,
+        "officialRaw": 1160,
+        "lilBrotli": 328,
+        "officialBrotli": 384,
+        "deltaRaw": 38,
+        "deltaBrotli": -56
+      },
+      {
+        "module": "src/defineFunction",
+        "lilRaw": 4587,
+        "officialRaw": 733,
+        "lilBrotli": 128,
+        "officialBrotli": 188,
+        "deltaRaw": 3854,
+        "deltaBrotli": -60
+      },
+      {
+        "module": "src/functions/includegraphics",
+        "lilRaw": 1794,
+        "officialRaw": 1792,
+        "lilBrotli": 389,
+        "officialBrotli": 449,
+        "deltaRaw": 2,
+        "deltaBrotli": -60
+      },
+      {
+        "module": "src/functions/raisebox",
+        "lilRaw": 506,
+        "officialRaw": 481,
+        "lilBrotli": 28,
+        "officialBrotli": 88,
+        "deltaRaw": 25,
+        "deltaBrotli": -60
+      },
+      {
+        "module": "src/functions/color",
+        "lilRaw": 666,
+        "officialRaw": 783,
+        "lilBrotli": 6,
+        "officialBrotli": 69,
+        "deltaRaw": -117,
+        "deltaBrotli": -63
+      },
+      {
+        "module": "src/units",
+        "lilRaw": 794,
+        "officialRaw": 677,
+        "lilBrotli": 146,
+        "officialBrotli": 211,
+        "deltaRaw": 117,
+        "deltaBrotli": -65
+      },
+      {
+        "module": "src/defineMacro",
+        "lilRaw": 38,
+        "officialRaw": 33,
+        "lilBrotli": -37,
+        "officialBrotli": 28,
+        "deltaRaw": 5,
+        "deltaBrotli": -65
+      },
+      {
+        "module": "src/mathMLTree",
+        "lilRaw": 2703,
+        "officialRaw": 2045,
+        "lilBrotli": 402,
+        "officialBrotli": 469,
+        "deltaRaw": 658,
+        "deltaBrotli": -67
+      },
+      {
+        "module": "src/tree",
+        "lilRaw": 552,
+        "officialRaw": 452,
+        "lilBrotli": 12,
+        "officialBrotli": 79,
+        "deltaRaw": 100,
+        "deltaBrotli": -67
+      },
+      {
+        "module": "src/functions/op",
+        "lilRaw": 3571,
+        "officialRaw": 3442,
+        "lilBrotli": 745,
+        "officialBrotli": 814,
+        "deltaRaw": 129,
+        "deltaBrotli": -69
+      },
+      {
+        "module": "src/functions/operatorname",
+        "lilRaw": 1480,
+        "officialRaw": 1510,
+        "lilBrotli": 221,
+        "officialBrotli": 291,
+        "deltaRaw": -30,
+        "deltaBrotli": -70
+      },
+      {
+        "module": "src/functions/vcenter",
+        "lilRaw": 484,
+        "officialRaw": 426,
+        "lilBrotli": 8,
+        "officialBrotli": 78,
+        "deltaRaw": 58,
+        "deltaBrotli": -70
+      },
+      {
+        "module": "src/functions/char",
+        "lilRaw": 503,
+        "officialRaw": 480,
+        "lilBrotli": 30,
+        "officialBrotli": 102,
+        "deltaRaw": 23,
+        "deltaBrotli": -72
+      },
+      {
+        "module": "src/unicodeSymbols",
+        "lilRaw": 428,
+        "officialRaw": 477,
+        "lilBrotli": 71,
+        "officialBrotli": 149,
+        "deltaRaw": -49,
+        "deltaBrotli": -78
+      },
+      {
+        "module": "src/functions/accent",
+        "lilRaw": 3078,
+        "officialRaw": 2639,
+        "lilBrotli": 522,
+        "officialBrotli": 601,
+        "deltaRaw": 439,
+        "deltaBrotli": -79
+      },
+      {
+        "module": "src/Namespace",
+        "lilRaw": 1190,
+        "officialRaw": 917,
+        "lilBrotli": 148,
+        "officialBrotli": 228,
+        "deltaRaw": 273,
+        "deltaBrotli": -80
+      },
+      {
+        "module": "src/functions",
+        "lilRaw": 16,
+        "officialRaw": 6,
+        "lilBrotli": -98,
+        "officialBrotli": -18,
+        "deltaRaw": 10,
+        "deltaBrotli": -80
+      },
+      {
+        "module": "src/functions/underline",
+        "lilRaw": 798,
+        "officialRaw": 666,
+        "lilBrotli": -8,
+        "officialBrotli": 74,
+        "deltaRaw": 132,
+        "deltaBrotli": -82
+      },
+      {
+        "module": "src/environments/cd",
+        "lilRaw": 3487,
+        "officialRaw": 3298,
+        "lilBrotli": 696,
+        "officialBrotli": 784,
+        "deltaRaw": 189,
+        "deltaBrotli": -88
+      },
+      {
+        "module": "src/functions/ordgroup",
+        "lilRaw": 217,
+        "officialRaw": 164,
+        "lilBrotli": 4,
+        "officialBrotli": 98,
+        "deltaRaw": 53,
+        "deltaBrotli": -94
+      },
+      {
+        "module": "src/functions/math",
+        "lilRaw": 365,
+        "officialRaw": 438,
+        "lilBrotli": -12,
+        "officialBrotli": 94,
+        "deltaRaw": -73,
+        "deltaBrotli": -106
+      },
+      {
+        "module": "src/functions/lap",
+        "lilRaw": 798,
+        "officialRaw": 846,
+        "lilBrotli": 52,
+        "officialBrotli": 164,
+        "deltaRaw": -48,
+        "deltaBrotli": -112
+      },
+      {
+        "module": "src/functions/horizBrace",
+        "lilRaw": 1568,
+        "officialRaw": 1388,
+        "lilBrotli": 177,
+        "officialBrotli": 289,
+        "deltaRaw": 180,
+        "deltaBrotli": -112
+      },
+      {
+        "module": "src/functions/accentunder",
+        "lilRaw": 665,
+        "officialRaw": 687,
+        "lilBrotli": -46,
+        "officialBrotli": 67,
+        "deltaRaw": -22,
+        "deltaBrotli": -113
+      },
+      {
+        "module": "src/functions/genfrac",
+        "lilRaw": 5780,
+        "officialRaw": 5612,
+        "lilBrotli": 1201,
+        "officialBrotli": 1318,
+        "deltaRaw": 168,
+        "deltaBrotli": -117
+      },
+      {
+        "module": "src/SourceLocation",
+        "lilRaw": 240,
+        "officialRaw": 189,
+        "lilBrotli": -70,
+        "officialBrotli": 48,
+        "deltaRaw": 51,
+        "deltaBrotli": -118
+      },
+      {
+        "module": "src/functions/symbolsSpacing",
+        "lilRaw": 643,
+        "officialRaw": 743,
+        "lilBrotli": 26,
+        "officialBrotli": 145,
+        "deltaRaw": -100,
+        "deltaBrotli": -119
+      },
+      {
+        "module": "src/functions/symbolsOp",
+        "lilRaw": 381,
+        "officialRaw": 375,
+        "lilBrotli": -4,
+        "officialBrotli": 116,
+        "deltaRaw": 6,
+        "deltaBrotli": -120
+      },
+      {
+        "module": "src/Token",
+        "lilRaw": 158,
+        "officialRaw": 92,
+        "lilBrotli": -92,
+        "officialBrotli": 30,
+        "deltaRaw": 66,
+        "deltaBrotli": -122
+      },
+      {
+        "module": "src/functions/smash",
+        "lilRaw": 909,
+        "officialRaw": 960,
+        "lilBrotli": 28,
+        "officialBrotli": 151,
+        "deltaRaw": -51,
+        "deltaBrotli": -123
+      },
+      {
+        "module": "src/functions/sizing",
+        "lilRaw": 951,
+        "officialRaw": 905,
+        "lilBrotli": 114,
+        "officialBrotli": 238,
+        "deltaRaw": 46,
+        "deltaBrotli": -124
+      },
+      {
+        "module": "src/fontMetrics",
+        "lilRaw": 1894,
+        "officialRaw": 1876,
+        "lilBrotli": 520,
+        "officialBrotli": 646,
+        "deltaRaw": 18,
+        "deltaBrotli": -126
+      },
+      {
+        "module": "src/functions/phantom",
+        "lilRaw": 1212,
+        "officialRaw": 1416,
+        "lilBrotli": 26,
+        "officialBrotli": 160,
+        "deltaRaw": -204,
+        "deltaBrotli": -134
+      },
+      {
+        "module": "src/buildTree",
+        "lilRaw": 629,
+        "officialRaw": 592,
+        "lilBrotli": 78,
+        "officialBrotli": 216,
+        "deltaRaw": 37,
+        "deltaBrotli": -138
+      },
+      {
+        "module": "src/unicodeScripts",
+        "lilRaw": 631,
+        "officialRaw": 588,
+        "lilBrotli": 139,
+        "officialBrotli": 279,
+        "deltaRaw": 43,
+        "deltaBrotli": -140
+      },
+      {
+        "module": "src/functions/mathchoice",
+        "lilRaw": 469,
+        "officialRaw": 531,
+        "lilBrotli": 7,
+        "officialBrotli": 147,
+        "deltaRaw": -62,
+        "deltaBrotli": -140
+      },
+      {
+        "module": "src/Options",
+        "lilRaw": 2900,
+        "officialRaw": 2199,
+        "lilBrotli": 496,
+        "officialBrotli": 638,
+        "deltaRaw": 701,
+        "deltaBrotli": -142
+      },
+      {
+        "module": "src/data",
+        "lilRaw": 35,
+        "officialRaw": 0,
+        "lilBrotli": -143,
+        "officialBrotli": 0,
+        "deltaRaw": 35,
+        "deltaBrotli": -143
+      },
+      {
+        "module": "src/functions/overline",
+        "lilRaw": 795,
+        "officialRaw": 659,
+        "lilBrotli": -75,
+        "officialBrotli": 70,
+        "deltaRaw": 136,
+        "deltaBrotli": -145
+      },
+      {
+        "module": "src/Lexer",
+        "lilRaw": 1376,
+        "officialRaw": 1070,
+        "lilBrotli": 330,
+        "officialBrotli": 478,
+        "deltaRaw": 306,
+        "deltaBrotli": -148
+      },
+      {
+        "module": "src/functions/enclose",
+        "lilRaw": 4179,
+        "officialRaw": 4142,
+        "lilBrotli": 697,
+        "officialBrotli": 847,
+        "deltaRaw": 37,
+        "deltaBrotli": -150
+      },
+      {
+        "module": "src/functions/mclass",
+        "lilRaw": 1803,
+        "officialRaw": 1837,
+        "lilBrotli": 211,
+        "officialBrotli": 367,
+        "deltaRaw": -34,
+        "deltaBrotli": -156
+      },
+      {
+        "module": "src/functions/verb",
+        "lilRaw": 637,
+        "officialRaw": 630,
+        "lilBrotli": 18,
+        "officialBrotli": 174,
+        "deltaRaw": 7,
+        "deltaBrotli": -156
+      },
+      {
+        "module": "src/functions/cr",
+        "lilRaw": 661,
+        "officialRaw": 681,
+        "lilBrotli": 37,
+        "officialBrotli": 194,
+        "deltaRaw": -20,
+        "deltaBrotli": -157
+      },
+      {
+        "module": "src/unicodeAccents",
+        "lilRaw": 761,
+        "officialRaw": 461,
+        "lilBrotli": 15,
+        "officialBrotli": 172,
+        "deltaRaw": 300,
+        "deltaBrotli": -157
+      },
+      {
+        "module": "src/spacingData",
+        "lilRaw": 394,
+        "officialRaw": 536,
+        "lilBrotli": -20,
+        "officialBrotli": 141,
+        "deltaRaw": -142,
+        "deltaBrotli": -161
+      },
+      {
+        "module": "src/functions/text",
+        "lilRaw": 938,
+        "officialRaw": 874,
+        "lilBrotli": 40,
+        "officialBrotli": 202,
+        "deltaRaw": 64,
+        "deltaBrotli": -162
+      },
+      {
+        "module": "src/functions/kern",
+        "lilRaw": 698,
+        "officialRaw": 724,
+        "lilBrotli": 47,
+        "officialBrotli": 210,
+        "deltaRaw": -26,
+        "deltaBrotli": -163
+      },
+      {
+        "module": "src/defineEnvironment",
+        "lilRaw": 22,
+        "officialRaw": 231,
+        "lilBrotli": -77,
+        "officialBrotli": 88,
+        "deltaRaw": -209,
+        "deltaBrotli": -165
+      },
+      {
+        "module": "src/wide-character",
+        "lilRaw": 1488,
+        "officialRaw": 1489,
+        "lilBrotli": 189,
+        "officialBrotli": 355,
+        "deltaRaw": -1,
+        "deltaBrotli": -166
+      },
+      {
+        "module": "src/functions/def",
+        "lilRaw": 2411,
+        "officialRaw": 2467,
+        "lilBrotli": 376,
+        "officialBrotli": 555,
+        "deltaRaw": -56,
+        "deltaBrotli": -179
+      },
+      {
+        "module": "src/ParseError",
+        "lilRaw": 687,
+        "officialRaw": 532,
+        "lilBrotli": 94,
+        "officialBrotli": 277,
+        "deltaRaw": 155,
+        "deltaBrotli": -183
+      },
+      {
+        "module": "src/stretchy",
+        "lilRaw": 4798,
+        "officialRaw": 5301,
+        "lilBrotli": 1168,
+        "officialBrotli": 1354,
+        "deltaRaw": -503,
+        "deltaBrotli": -186
+      },
+      {
+        "module": "src/functions/tag",
+        "lilRaw": 458,
+        "officialRaw": 299,
+        "lilBrotli": -105,
+        "officialBrotli": 83,
+        "deltaRaw": 159,
+        "deltaBrotli": -188
+      },
+      {
+        "module": "src/functions/htmlmathml",
+        "lilRaw": 250,
+        "officialRaw": 276,
+        "lilBrotli": -96,
+        "officialBrotli": 95,
+        "deltaRaw": -26,
+        "deltaBrotli": -191
+      },
+      {
+        "module": "src/parseNode",
+        "lilRaw": 348,
+        "officialRaw": 352,
+        "lilBrotli": -52,
+        "officialBrotli": 141,
+        "deltaRaw": -4,
+        "deltaBrotli": -193
+      },
+      {
+        "module": "src/functions/rule",
+        "lilRaw": 1001,
+        "officialRaw": 981,
+        "lilBrotli": 22,
+        "officialBrotli": 221,
+        "deltaRaw": 20,
+        "deltaBrotli": -199
+      },
+      {
+        "module": "src/functions/symbolsOrd",
+        "lilRaw": 661,
+        "officialRaw": 614,
+        "lilBrotli": -45,
+        "officialBrotli": 163,
+        "deltaRaw": 47,
+        "deltaBrotli": -208
+      },
+      {
+        "module": "src/functions/pmb",
+        "lilRaw": 406,
+        "officialRaw": 407,
+        "lilBrotli": -98,
+        "officialBrotli": 115,
+        "deltaRaw": -1,
+        "deltaBrotli": -213
+      },
+      {
+        "module": "src/functions/styling",
+        "lilRaw": 664,
+        "officialRaw": 758,
+        "lilBrotli": -36,
+        "officialBrotli": 193,
+        "deltaRaw": -94,
+        "deltaBrotli": -229
+      },
+      {
+        "module": "src/functions/hbox",
+        "lilRaw": 272,
+        "officialRaw": 290,
+        "lilBrotli": -143,
+        "officialBrotli": 97,
+        "deltaRaw": -18,
+        "deltaBrotli": -240
+      },
+      {
+        "module": "src/functions/delimsizing",
+        "lilRaw": 4033,
+        "officialRaw": 4309,
+        "lilBrotli": 682,
+        "officialBrotli": 924,
+        "deltaRaw": -276,
+        "deltaBrotli": -242
+      },
+      {
+        "module": "src/functions/html",
+        "lilRaw": 1235,
+        "officialRaw": 1240,
+        "lilBrotli": 96,
+        "officialBrotli": 356,
+        "deltaRaw": -5,
+        "deltaBrotli": -260
+      },
+      {
+        "module": "(unmapped)",
+        "lilRaw": 0,
+        "officialRaw": 536,
+        "lilBrotli": 0,
+        "officialBrotli": 265,
+        "deltaRaw": -536,
+        "deltaBrotli": -265
+      },
+      {
+        "module": "src/macros",
+        "lilRaw": 17243,
+        "officialRaw": 19024,
+        "lilBrotli": 3725,
+        "officialBrotli": 4080,
+        "deltaRaw": -1781,
+        "deltaBrotli": -355
+      },
+      {
+        "module": "katex",
+        "lilRaw": 0,
+        "officialRaw": 1351,
+        "lilBrotli": 0,
+        "officialBrotli": 456,
+        "deltaRaw": -1351,
+        "deltaBrotli": -456
+      },
+      {
+        "module": "src/fontMetricsData",
+        "lilRaw": 0,
+        "officialRaw": 57630,
+        "lilBrotli": 0,
+        "officialBrotli": 9462,
+        "deltaRaw": -57630,
+        "deltaBrotli": -9462
+      }
+    ]
+  },
+  "sources": {
+    "measure": "scripts/measure-site.mjs",
+    "corpus": "site/corpus.js",
+    "benchPage": "bench.html",
+    "browserTest": "test/browser-perf.test.mjs",
+    "attribution": "scripts/attribute-map.mjs",
+    "official": "scripts/lib/official.mjs"
+  }
 }

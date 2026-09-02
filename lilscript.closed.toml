@@ -1,12 +1,18 @@
-# closed LilScript world — extern class keys may mangle
+# closed LilScript world — the open config with one change: extern class keys may mangle.
+# Everything else (level 13, `always`, the probe limit, pure reads) is identical, so the two
+# artifacts differ only by what the closed contract allows. Today they are byte-identical:
+# the port declares no fields the compiler owns (every object is a JsValue bag), so the
+# closed contract has nothing to mangle. That is the port's defect, not the compiler's.
 [javascript]
+assume_pure_property_reads = true
 priority = "size-first"
-optimization_level = 8
+optimization_level = 13
+terminal_codec_probe_limit = 256
 cost_model = "brotli"
 assume_pristine_builtins = true
 strip_console = true
 local_name_reserve = 48
-candidate_search = "production"
+candidate_search = "always"
 function_spelling = "arrow"
 public_aggregate_abi = "named"
 
@@ -15,4 +21,4 @@ identifiers = true
 properties = true
 exports = false
 extern_fields = false
-pool_strings = true
+pool_strings = false

@@ -5,3 +5,5 @@ _site/
 *.tgz
 .tmp/
 dist/*.raw.js
+dist/*.map
+dist/.*.map.toml

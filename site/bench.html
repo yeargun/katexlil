@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>itslil/katex — browser benchmark</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./bench.js"></script>
+  </head>
+  <body>
+    <header class="nav shell">
+      <a class="wordmark" href="./"><span class="mark">kx</span><span>itslil/katex</span></a>
+      <nav aria-label="Main navigation">
+        <a href="./#performance">back</a>
+        <a href="https://github.com/yeargun/katexlil/blob/main/site/bench.js">bench.js ↗</a>
+        <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">Playwright test ↗</a>
+      </nav>
+    </header>
+    <main class="shell bench" id="top">
+      <p class="eyebrow">Browser benchmark · runs in your tab</p>
+      <h1>Same corpus, <em>two runtimes.</em></h1>
+      <p class="lede">
+        Renders the <a href="https://github.com/yeargun/katexlil/blob/main/site/corpus.js">shared corpus</a> with
+        <code>renderToString</code> in both lanes, interleaved round by round, after warmup. The official lane is
+        <code>katex@0.16.22</code>, bundled with its runtime graph and minified by Terser. Parity checks that every
+        expression renders identical HTML in both lanes first. Query <code>?rounds=N&amp;warmup=M</code> to change the shape.
+      </p>
+      <p id="status" class="perf-note">starting…</p>
+      <div class="table-wrap light">
+        <table>
+          <thead><tr><th>Lane</th><th>median</th><th>p10</th><th>p90</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p><button type="button" id="again">run again</button></p>
+    </main>
+  </body>
+</html>
