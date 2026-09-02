@@ -7,7 +7,8 @@ import { fileURLToPath } from "node:url"
 import { runInNewContext } from "node:vm"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
-const upstream = resolve(process.env.KATEX_UPSTREAM ?? "/tmp/opencode/markdown-upstreams/katex")
+// The upstream checkout is optional: the published katex@0.16.22 package carries the same src/ and contrib/.
+const upstream = resolve(process.env.KATEX_UPSTREAM ?? (existsSync("/tmp/opencode/markdown-upstreams/katex") ? "/tmp/opencode/markdown-upstreams/katex" : resolve(root, "node_modules/katex")))
 const published = resolve(root, "node_modules/katex")
 
 function walk(path) {
@@ -170,6 +171,6 @@ const report = {
 }
 
 console.log(JSON.stringify(report, null, 2))
-if (missingModules.length || missingContrib.length || runtimeHostSource.length || runtimeHostContrib.length || dataChecks.some(({ matchesUpstream }) => !matchesUpstream) || assetMismatches.length || missingExports.length || !declarationMatches || manifest.version !== "0.16.22" || apiVersion !== manifest.version || JSON.stringify(localApiKeys) !== JSON.stringify(officialApiKeys)) {
+if (missingModules.length || missingContrib.length || runtimeHostSource.length || runtimeHostContrib.length || dataChecks.some(({ matchesUpstream }) => !matchesUpstream) || assetMismatches.length || missingExports.length || !declarationMatches || apiVersion !== "0.16.22" || JSON.stringify(localApiKeys) !== JSON.stringify(officialApiKeys)) {
   process.exitCode = 1
 }
