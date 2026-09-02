@@ -23,8 +23,7 @@ o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
   if (tbArg.truthy()) {
     JsValue letter = "";
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, tbArg["body"]["length"])) {
+      for (int i = 0; i < len(tbArg["body"]); i++) {
         JsValue node = tbArg["body"][i];
         letter = node["text"];
         if (JS.strictEqual(letter, "t")) {
@@ -38,7 +37,6 @@ o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
             break;
           }
         }
-        i = JS.add(i, 1);
       }
     }
   } else {
@@ -61,11 +59,9 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
     node["height"] = 0;
     if (node["children"].truthy()) {
       {
-        JsValue i = 0;
-        while (JS.lessThan(i, node["children"]["length"])) {
+        for (int i = 0; i < len(node["children"]); i++) {
           node["children"][i]["height"] = 0;
           JsValue u11 = i;
-          i = JS.add(i, 1);
         }
       }
     }
@@ -74,11 +70,9 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
     node["depth"] = 0;
     if (node["children"].truthy()) {
       {
-        JsValue i = 0;
-        while (JS.lessThan(i, node["children"]["length"])) {
+        for (int i = 0; i < len(node["children"]); i++) {
           node["children"][i]["depth"] = 0;
           JsValue u12 = i;
-          i = JS.add(i, 1);
         }
       }
     }

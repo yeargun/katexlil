@@ -43,14 +43,12 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     });
     JsValue expression = JS.invoke(html, "buildExpression", body, JS.invoke(options, "withFont", "mathrm"), true);
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, expression["length"])) {
+      for (int i = 0; i < len(expression); i++) {
         JsValue child = expression[i];
         if (instanceOf(child, SymbolNode)) {
           child["text"] = JS.invoke(JS.invoke(child["text"], "replace", JS.construct(RegExp, "\\u2212", ""), "-"), "replace", JS.construct(RegExp, "\\u2217", ""), "*");
         }
         JsValue u2 = i;
-        i = JS.add(i, 1);
       }
     }
     JsValue a3 = JS.array("mop");
@@ -71,8 +69,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue expression = JS.invoke(mml, "buildExpression", group["body"], JS.invoke(options, "withFont", "mathrm"));
   JsValue isAllString = true;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, expression["length"])) {
+    for (int i = 0; i < len(expression); i++) {
       JsValue node = expression[i];
       if (instanceOf(node, mathMLTree["SpaceNode"])) {
       } else {
@@ -96,7 +93,6 @@ mathmlBuilder = (JsValue group, JsValue options) => {
         }
       }
       JsValue u8 = i;
-      i = JS.add(i, 1);
     }
   }
   if (isAllString.truthy()) {

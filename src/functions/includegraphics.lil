@@ -44,8 +44,7 @@ o3["handler"] = (JsValue p7, JsValue args, JsValue optArgs) => {
     JsValue attributeStr = JS.call(assertNodeType, undef(), optArgs[0], "raw")["string"];
     JsValue attributes = JS.invoke(attributeStr, "split", ",");
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, attributes["length"])) {
+      for (int i = 0; i < len(attributes); i++) {
         JsValue keyVal = JS.invoke(attributes[i], "split", "=");
         if (JS.strictEqual(keyVal["length"], 2)) {
           JsValue str = JS.invoke(keyVal[1], "trim");
@@ -67,7 +66,6 @@ o3["handler"] = (JsValue p7, JsValue args, JsValue optArgs) => {
           }
         }
         JsValue u13 = i;
-        i = JS.add(i, 1);
       }
     }
   }

@@ -42,8 +42,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
   JsValue a6 = JS.array();
   JsValue groups = a6;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, expression["length"])) {
+    for (int i = 0; i < len(expression); i++) {
       JsValue output = JS.call(buildGroup, undef(), expression[i], options);
       if (instanceOf(output, DocumentFragment)) {
         JsValue children = output["children"];
@@ -52,7 +51,6 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
         JS.invoke(groups, "push", output);
       }
       JsValue u7 = i;
-      i = JS.add(i, 1);
     }
   }
   JS.invoke(buildCommon, "tryCombineChars", groups);

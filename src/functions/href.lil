@@ -54,8 +54,7 @@ o11["handler"] = (JsValue p15, JsValue args) => {
   JsValue a18 = JS.array();
   JsValue chars = a18;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, href["length"])) {
+    for (int i = 0; i < len(href); i++) {
       JsValue c = href[i];
       if (JS.strictEqual(c, "~")) {
         c = "\\textasciitilde";
@@ -63,7 +62,6 @@ o11["handler"] = (JsValue p15, JsValue args) => {
       JsValue o19 = JS.object("type", "textord", "mode", "text", "text", c);
       JS.invoke(chars, "push", o19);
       JsValue u20 = i;
-      i = JS.add(i, 1);
     }
   }
   JsValue o21 = JS.object("type", "text", "mode", parser["mode"], "font", "\\texttt", "body", chars);

@@ -655,33 +655,27 @@ JS.call(defineSymbol, undef(), math, ams, textord, "✠", "\\maltese");
 JS.call(defineSymbol, undef(), text, ams, textord, "✠", "\\maltese");
 mathTextSymbols = "0123456789/@.\"";
 {
-  JsValue i = 0;
-  while (JS.lessThan(i, mathTextSymbols["length"])) {
+  for (int i = 0; i < len(mathTextSymbols); i++) {
     JsValue ch = JS.invoke(mathTextSymbols, "charAt", i);
     JS.call(defineSymbol, undef(), math, main, textord, ch, ch);
     JsValue u365 = i;
-    i = JS.add(i, 1);
   }
 }
 textSymbols = "0123456789!@*()-=+\";:?/.,";
 {
-  JsValue i = 0;
-  while (JS.lessThan(i, textSymbols["length"])) {
+  for (int i = 0; i < len(textSymbols); i++) {
     JsValue ch = JS.invoke(textSymbols, "charAt", i);
     JS.call(defineSymbol, undef(), text, main, textord, ch, ch);
     JsValue u366 = i;
-    i = JS.add(i, 1);
   }
 }
 letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 {
-  JsValue i = 0;
-  while (JS.lessThan(i, letters["length"])) {
+  for (int i = 0; i < len(letters); i++) {
     JsValue ch = JS.invoke(letters, "charAt", i);
     JS.call(defineSymbol, undef(), math, main, mathord, ch, ch);
     JS.call(defineSymbol, undef(), text, main, textord, ch, ch);
     JsValue u367 = i;
-    i = JS.add(i, 1);
   }
 }
 JS.call(defineSymbol, undef(), math, ams, textord, "C", "ℂ");
@@ -702,8 +696,7 @@ JS.call(defineSymbol, undef(), math, main, mathord, "h", "ℎ");
 JS.call(defineSymbol, undef(), text, main, mathord, "h", "ℎ");
 wideChar = "";
 {
-  JsValue i = 0;
-  while (JS.lessThan(i, letters["length"])) {
+  for (int i = 0; i < len(letters); i++) {
     JsValue ch = JS.invoke(letters, "charAt", i);
     wideChar = JS.invoke(String, "fromCharCode", 55349, JS.add(56320, i));
     JS.call(defineSymbol, undef(), math, main, mathord, ch, wideChar);
@@ -741,15 +734,13 @@ wideChar = "";
       JS.call(defineSymbol, undef(), text, main, textord, ch, wideChar);
     }
     JsValue u368 = i;
-    i = JS.add(i, 1);
   }
 }
 wideChar = JS.invoke(String, "fromCharCode", 55349, 56668);
 JS.call(defineSymbol, undef(), math, main, mathord, "k", wideChar);
 JS.call(defineSymbol, undef(), text, main, textord, "k", wideChar);
 {
-  JsValue i = 0;
-  while (JS.lessThan(i, 10)) {
+  for (int i = 0; i < 10; i++) {
     JsValue ch = JS.invoke(i, "toString");
     wideChar = JS.invoke(String, "fromCharCode", 55349, JS.add(57294, i));
     JS.call(defineSymbol, undef(), math, main, mathord, ch, wideChar);
@@ -764,18 +755,15 @@ JS.call(defineSymbol, undef(), text, main, textord, "k", wideChar);
     JS.call(defineSymbol, undef(), math, main, mathord, ch, wideChar);
     JS.call(defineSymbol, undef(), text, main, textord, ch, wideChar);
     JsValue u369 = i;
-    i = JS.add(i, 1);
   }
 }
 extraLatin = "ÐÞþ";
 {
-  JsValue i = 0;
-  while (JS.lessThan(i, extraLatin["length"])) {
+  for (int i = 0; i < len(extraLatin); i++) {
     JsValue ch = JS.invoke(extraLatin, "charAt", i);
     JS.call(defineSymbol, undef(), math, main, mathord, ch, ch);
     JS.call(defineSymbol, undef(), text, main, textord, ch, ch);
     JsValue u370 = i;
-    i = JS.add(i, 1);
   }
 }
 JsValue __star = JS.object("ATOMS", ATOMS, "NON_ATOMS", NON_ATOMS, "defineSymbol", defineSymbol, "ligatures", ligatures, "extraLatin", extraLatin, "default", symbols, "symbols", symbols);

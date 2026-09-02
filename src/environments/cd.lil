@@ -120,8 +120,7 @@ parseCD = (JsValue parser) => {
   JsValue a29 = JS.array(row);
   JsValue body = a29;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, parsedRows["length"])) {
+    for (int i = 0; i < len(parsedRows); i++) {
       JsValue rowNodes = parsedRows[i];
       JsValue cell = JS.call(newCell, undef());
       {
@@ -195,7 +194,6 @@ parseCD = (JsValue parser) => {
       row = a39;
       JS.invoke(body, "push", row);
       JsValue u40 = i;
-      i = JS.add(i, 1);
     }
   }
   JS.invoke(parser["gullet"], "endGroup");

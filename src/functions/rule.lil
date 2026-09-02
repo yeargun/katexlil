@@ -52,39 +52,32 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   return undef();
 });
 o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue width = JS.call(calculateSize, undef(), group["width"], options);
-  JsValue height = JS.call(calculateSize, undef(), group["height"], options);
-  JsValue c12 = undef();
+  number width = toNum(JS.call(calculateSize, undef(), group["width"], options));
+  number height = toNum(JS.call(calculateSize, undef(), group["height"], options));
+  number shift = 0;
   if (group["shift"].truthy()) {
-    c12 = JS.call(calculateSize, undef(), group["shift"], options);
-  } else {
-    c12 = 0;
+    shift = toNum(JS.call(calculateSize, undef(), group["shift"], options));
   }
-  JsValue shift = c12;
-  JsValue and13 = options["color"];
-  if (and13.truthy()) {
-    and13 = JS.invoke(options, "getColor");
+  JsValue color = options["color"];
+  if (color.truthy()) {
+    color = JS.invoke(options, "getColor");
   }
-  JsValue or14 = and13;
-  if (!(or14.truthy())) {
-    or14 = "black";
+  if (!(color.truthy())) {
+    color = "black";
   }
-  JsValue color = or14;
   JsValue rule = JS.construct(mathMLTree["MathNode"], "mspace");
   JS.invoke(rule, "setAttribute", "mathbackground", color);
   JS.invoke(rule, "setAttribute", "width", JS.call(makeEm, undef(), width));
   JS.invoke(rule, "setAttribute", "height", JS.call(makeEm, undef(), height));
-  JsValue a15 = JS.array(rule);
-  JsValue wrapper = JS.construct(mathMLTree["MathNode"], "mpadded", a15);
-  if (JS.greaterThanOrEqual(shift, 0)) {
+  JsValue wrapper = JS.construct(mathMLTree["MathNode"], "mpadded", JS.array(rule));
+  if (shift >= 0) {
     JS.invoke(wrapper, "setAttribute", "height", JS.call(makeEm, undef(), shift));
   } else {
     JS.invoke(wrapper, "setAttribute", "height", JS.call(makeEm, undef(), shift));
-    JS.invoke(wrapper, "setAttribute", "depth", JS.call(makeEm, undef(), JS.number(0) - toNum(shift)));
+    JS.invoke(wrapper, "setAttribute", "depth", JS.call(makeEm, undef(), 0 - shift));
   }
   JS.invoke(wrapper, "setAttribute", "voffset", JS.call(makeEm, undef(), shift));
   return wrapper;
-  return undef();
 });
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();

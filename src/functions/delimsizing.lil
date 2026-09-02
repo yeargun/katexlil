@@ -145,8 +145,7 @@ o31["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue innerDepth = 0;
   JsValue hadMiddle = false;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, inner["length"])) {
+    for (int i = 0; i < len(inner); i++) {
       if (inner[i]["isMiddle"].truthy()) {
         hadMiddle = true;
       } else {
@@ -154,7 +153,6 @@ o31["htmlBuilder"] = (JsValue group, JsValue options) => {
         innerDepth = JS.invoke(Math, "max", inner[i]["depth"], innerDepth);
       }
       JsValue u38 = i;
-      i = JS.add(i, 1);
     }
   }
   innerHeight = (toNum(innerHeight) * toNum(options["sizeMultiplier"]));

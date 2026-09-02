@@ -124,8 +124,7 @@ svgSpan = (JsValue group, JsValue options) => {
       }
     }
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, numSvgChildren)) {
+      for (int i = 0; i < toInt(numSvgChildren); i++) {
         JsValue path = JS.construct(PathNode, paths[i]);
         JsValue a105 = JS.array(path);
         JsValue o106 = JS.object("width", "400em", "height", JS.call(makeEm, undef(), height), "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight), "preserveAspectRatio", JS.add(aligns[i], " slice"));
@@ -141,7 +140,6 @@ svgSpan = (JsValue group, JsValue options) => {
           JS.invoke(spans, "push", span);
         }
         JsValue u110 = i;
-        i = JS.add(i, 1);
       }
     }
     JsValue o111 = emptyObject();

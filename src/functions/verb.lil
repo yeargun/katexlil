@@ -20,8 +20,7 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   JsValue body = a4;
   JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "text"));
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, text["length"])) {
+    for (int i = 0; i < len(text); i++) {
       JsValue c = text[i];
       if (JS.strictEqual(c, "~")) {
         c = "\\textasciitilde";
@@ -29,7 +28,6 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
       JsValue a5 = JS.array("mord", "texttt");
       JS.invoke(body, "push", JS.invoke(buildCommon, "makeSymbol", c, "Typewriter-Regular", group["mode"], newOptions, a5));
       JsValue u6 = i;
-      i = JS.add(i, 1);
     }
   }
   JsValue a7 = JS.array("mord", "text");

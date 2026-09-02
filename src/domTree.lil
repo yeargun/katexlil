@@ -72,11 +72,9 @@ toNode = JS.method1((JsValue self, JsValue tagName) => {
     }
   }
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       JS.invoke(node, "appendChild", JS.invoke(self["children"][i], "toNode"));
       JsValue u14 = i;
-      i = JS.add(i, 1);
     }
   }
   return node;
@@ -107,11 +105,9 @@ toMarkup = JS.method1((JsValue self, JsValue tagName) => {
   }
   markup = JS.add(markup, ">");
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       markup = JS.add(markup, JS.invoke(self["children"][i], "toMarkup"));
       JsValue u23 = i;
-      i = JS.add(i, 1);
     }
   }
   markup = JS.add(markup, "</" + toStr(tagName) + ">");
@@ -377,11 +373,9 @@ SvgNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
     }
   }
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       JS.invoke(node, "appendChild", JS.invoke(self["children"][i], "toNode"));
       JsValue u65 = i;
-      i = JS.add(i, 1);
     }
   }
   return node;
@@ -396,11 +390,9 @@ SvgNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   }
   markup = JS.add(markup, ">");
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       markup = JS.add(markup, JS.invoke(self["children"][i], "toMarkup"));
       JsValue u70 = i;
-      i = JS.add(i, 1);
     }
   }
   markup = JS.add(markup, "</svg>");

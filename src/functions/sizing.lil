@@ -13,28 +13,19 @@ JsValue htmlBuilder = undef();
 
 sizingGroup = (JsValue value, JsValue options, JsValue baseOptions) => {
   JsValue inner = JS.invoke(html, "buildExpression", value, options, false);
-  JsValue multiplier = (toNum(options["sizeMultiplier"]) / toNum(baseOptions["sizeMultiplier"]));
-  {
-    JsValue i = 0;
-    while (JS.lessThan(i, inner["length"])) {
-      JsValue pos = JS.invoke(inner[i]["classes"], "indexOf", "sizing");
-      if (JS.lessThan(pos, 0)) {
-        apply(Array["prototype"]["push"], inner[i]["classes"], JS.invoke(options, "sizingClasses", baseOptions));
-      } else {
-        if (JS.strictEqual(inner[i]["classes"][JS.add(pos, 1)], JS.add("reset-size", options["size"]))) {
-          inner[i]["classes"][JS.add(pos, 1)] = JS.add("reset-size", baseOptions["size"]);
-        }
-      }
-      JsValue as1 = inner[i]["height"];
-      inner[i]["height"] = (toNum(as1) * toNum(multiplier));
-      JsValue as2 = inner[i]["depth"];
-      inner[i]["depth"] = (toNum(as2) * toNum(multiplier));
-      JsValue u3 = i;
-      i = JS.add(i, 1);
+  number multiplier = toNum(options["sizeMultiplier"]) / toNum(baseOptions["sizeMultiplier"]);
+  for (int i = 0; i < len(inner); i++) {
+    JsValue classes = inner[i]["classes"];
+    int pos = toInt(JS.invoke(classes, "indexOf", "sizing"));
+    if (pos < 0) {
+      apply(Array["prototype"]["push"], classes, JS.invoke(options, "sizingClasses", baseOptions));
+    } else if (JS.strictEqual(classes[pos + 1], "reset-size" + toStr(options["size"]))) {
+      classes[pos + 1] = "reset-size" + toStr(baseOptions["size"]);
     }
+    inner[i]["height"] = toNum(inner[i]["height"]) * multiplier;
+    inner[i]["depth"] = toNum(inner[i]["depth"]) * multiplier;
   }
   return JS.invoke(buildCommon, "makeFragment", inner);
-  return undef();
 };
 JsValue a4 = JS.array("\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge");
 sizeFuncs = a4;

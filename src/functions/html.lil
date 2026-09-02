@@ -42,15 +42,13 @@ o1["handler"] = (JsValue p5, JsValue args) => {
   else if (JS.strictEqual(sw8, "\\htmlData")) {
     JsValue data = JS.invoke(value, "split", ",");
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, data["length"])) {
+      for (int i = 0; i < len(data); i++) {
         JsValue keyVal = JS.invoke(data[i], "split", "=");
         if (JS.strictNotEqual(keyVal["length"], 2)) {
           throw JS.construct(ParseError, "Error parsing key-value for \\htmlData");
         }
         attributes[JS.add("data-", JS.invoke(keyVal[0], "trim"))] = JS.invoke(keyVal[1], "trim");
         JsValue u12 = i;
-        i = JS.add(i, 1);
       }
     }
     JsValue o13 = JS.object("command", "\\htmlData", "attributes", attributes);

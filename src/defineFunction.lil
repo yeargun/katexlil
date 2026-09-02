@@ -40,10 +40,8 @@ defineFunction = (JsValue p5) => {
   o7["handler"] = handler;
   JsValue data = o7;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, names["length"])) {
+    for (int i = 0; i < len(names); i++) {
       _functions[names[i]] = data;
-      i = JS.add(i, 1);
     }
   }
   if (type.truthy()) {

@@ -18,10 +18,8 @@ o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   }
   JsValue envName = "";
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, nameGroup["body"]["length"])) {
+    for (int i = 0; i < len(nameGroup["body"]); i++) {
       envName = JS.add(envName, JS.call(assertNodeType, undef(), nameGroup["body"][i], "textord")["text"]);
-      i = JS.add(i, 1);
     }
   }
   if (JS.strictEqual(funcName, "\\begin")) {

@@ -14,12 +14,10 @@ o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
   JsValue group = arg["body"];
   JsValue numberVal = "";
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, group["length"])) {
+    for (int i = 0; i < len(group); i++) {
       JsValue node = JS.call(assertNodeType, undef(), group[i], "textord");
       numberVal = JS.add(numberVal, node["text"]);
       JsValue u6 = i;
-      i = JS.add(i, 1);
     }
   }
   JsValue code = hostParseInt(numberVal);

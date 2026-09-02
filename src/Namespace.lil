@@ -71,12 +71,10 @@ Namespace["prototype"]["set"] = JS.method3((JsValue self, JsValue name, JsValue 
   }
   if (global.truthy()) {
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, self["undefStack"]["length"])) {
+      for (int i = 0; i < len(self["undefStack"]); i++) {
         deleteKey(self["undefStack"][i], name);
         true;
         JsValue u10 = i;
-        i = JS.add(i, 1);
       }
     }
     if (JS.greaterThan(self["undefStack"]["length"], 0)) {

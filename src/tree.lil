@@ -23,11 +23,9 @@ DocumentFragment["prototype"]["hasClass"] = JS.method1((JsValue self, JsValue cl
 DocumentFragment["prototype"]["toNode"] = JS.method0((JsValue self) => {
   JsValue frag = JS.invoke(getDocument(), "createDocumentFragment");
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       JS.invoke(frag, "appendChild", JS.invoke(self["children"][i], "toNode"));
       JsValue u3 = i;
-      i = JS.add(i, 1);
     }
   }
   return frag;
@@ -36,11 +34,9 @@ DocumentFragment["prototype"]["toNode"] = JS.method0((JsValue self) => {
 DocumentFragment["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   JsValue markup = "";
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, self["children"]["length"])) {
+    for (int i = 0; i < len(self["children"]); i++) {
       markup = JS.add(markup, JS.invoke(self["children"][i], "toMarkup"));
       JsValue u4 = i;
-      i = JS.add(i, 1);
     }
   }
   return markup;

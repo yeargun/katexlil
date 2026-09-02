@@ -156,11 +156,9 @@ makeOrd = (JsValue group, JsValue options, JsValue type) => {
           JsValue a17 = JS.array();
           JsValue parts = a17;
           {
-            JsValue i = 0;
-            while (JS.lessThan(i, text["length"])) {
+            for (int i = 0; i < len(text); i++) {
               JS.invoke(parts, "push", JS.call(makeSymbol, undef(), text[i], fontName, mode, options, JS.invoke(classes, "concat", fontClasses)));
               JsValue u18 = i;
-              i = JS.add(i, 1);
             }
           }
           return JS.call(makeFragment, undef(), parts);
@@ -247,8 +245,7 @@ sizeElementFromChildren = (JsValue elem) => {
   JsValue depth = 0;
   JsValue maxFontSize = 0;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, elem["children"]["length"])) {
+    for (int i = 0; i < len(elem["children"]); i++) {
       JsValue child = elem["children"][i];
       if (JS.greaterThan(child["height"], height)) {
         height = child["height"];
@@ -260,7 +257,6 @@ sizeElementFromChildren = (JsValue elem) => {
         maxFontSize = child["maxFontSize"];
       }
       JsValue u32 = i;
-      i = JS.add(i, 1);
     }
   }
   elem["height"] = height;
@@ -339,8 +335,7 @@ getVListChildrenAndDepth = (JsValue params) => {
   if (JS.strictEqual(params["positionType"], "top")) {
     JsValue bottom = params["positionData"];
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, params["children"]["length"])) {
+      for (int i = 0; i < len(params["children"]); i++) {
         JsValue child = params["children"][i];
         JsValue c42 = undef();
         if (JS.strictEqual(child["type"], "kern")) {
@@ -356,7 +351,6 @@ getVListChildrenAndDepth = (JsValue params) => {
         }
         bottom = (toNum(bottom) - toNum(c43));
         JsValue u44 = i;
-        i = JS.add(i, 1);
       }
     }
     depth = bottom;
@@ -389,15 +383,13 @@ makeVList = (JsValue params, JsValue options) => {
   JsValue depth = op46["depth"];
   JsValue pstrutSize = 0;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, children["length"])) {
+    for (int i = 0; i < len(children); i++) {
       JsValue child = children[i];
       if (JS.strictEqual(child["type"], "elem")) {
         JsValue elem = child["elem"];
         pstrutSize = JS.invoke(Math, "max", pstrutSize, elem["maxFontSize"], elem["height"]);
       }
       JsValue u47 = i;
-      i = JS.add(i, 1);
     }
   }
   pstrutSize = JS.add(pstrutSize, 2);
@@ -411,8 +403,7 @@ makeVList = (JsValue params, JsValue options) => {
   JsValue maxPos = depth;
   JsValue currPos = depth;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, children["length"])) {
+    for (int i = 0; i < len(children); i++) {
       JsValue child = children[i];
       if (JS.strictEqual(child["type"], "kern")) {
         currPos = JS.add(currPos, child["size"]);
@@ -445,7 +436,6 @@ makeVList = (JsValue params, JsValue options) => {
       minPos = JS.invoke(Math, "min", minPos, currPos);
       maxPos = JS.invoke(Math, "max", maxPos, currPos);
       JsValue u56 = i;
-      i = JS.add(i, 1);
     }
   }
   JsValue a57 = JS.array("vlist");

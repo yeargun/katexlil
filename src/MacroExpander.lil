@@ -175,29 +175,25 @@ MacroExpander["prototype"]["consumeArgs"] = JS.method2((JsValue self, JsValue nu
     }
     JsValue delims = delimiters[0];
     {
-      JsValue i = 0;
-      while (JS.lessThan(i, delims["length"])) {
+      for (int i = 0; i < len(delims); i++) {
         JsValue tok = JS.invoke(self, "popToken");
         if (JS.strictNotEqual(delims[i], tok["text"])) {
           throw JS.construct(ParseError, "Use of the macro doesn't match its definition", tok);
         }
         JsValue u11 = i;
-        i = JS.add(i, 1);
       }
     }
   }
   JsValue a12 = JS.array();
   JsValue args = a12;
   {
-    JsValue i = 0;
-    while (JS.lessThan(i, numArgs)) {
+    for (int i = 0; i < toInt(numArgs); i++) {
       JsValue and13 = delimiters;
       if (and13.truthy()) {
         and13 = delimiters[JS.add(i, 1)];
       }
       JS.invoke(args, "push", JS.invoke(self, "consumeArg", and13)["tokens"]);
       JsValue u14 = i;
-      i = JS.add(i, 1);
     }
   }
   return args;
