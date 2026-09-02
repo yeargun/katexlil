@@ -56,16 +56,10 @@ getGlobalMetrics = (JsValue size) => {
     JsValue o39 = JS.object("cssEmPerMu", (toNum(sigmasAndXis["quad"][sizeIndex]) / toNum(18)));
     fontMetricsBySizeIndex[sizeIndex] = o39;
     JsValue metrics = o39;
-    JsValue obj40 = sigmasAndXis;
-    JsValue keys41 = objectKeys(obj40);
-    int ki42 = 0;
-    int kn43 = len(keys41);
-    while (ki42 < kn43) {
-      JsValue key = keys41[ki42];
+    for (string key in sigmasAndXis) {
       if (hasOwn(sigmasAndXis, key)) {
         metrics[key] = sigmasAndXis[key][sizeIndex];
       }
-      ki42 = ki42 + 1;
     }
   }
   return fontMetricsBySizeIndex[sizeIndex];

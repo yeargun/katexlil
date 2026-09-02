@@ -206,27 +206,15 @@ canCombine = (JsValue prev, JsValue next) => {
       return false;
     }
   }
-  JsValue obj21 = prev["style"];
-  JsValue keys22 = objectKeys(obj21);
-  int ki23 = 0;
-  int kn24 = len(keys22);
-  while (ki23 < kn24) {
-    JsValue style = keys22[ki23];
+  for (string style in prev["style"]) {
     if ((hasOwn(prev["style"], style)) && (JS.strictNotEqual(prev["style"][style], next["style"][style]))) {
       return false;
     }
-    ki23 = ki23 + 1;
   }
-  JsValue obj25 = next["style"];
-  JsValue keys26 = objectKeys(obj25);
-  int ki27 = 0;
-  int kn28 = len(keys26);
-  while (ki27 < kn28) {
-    JsValue style = keys26[ki27];
+  for (string style in next["style"]) {
     if ((hasOwn(next["style"], style)) && (JS.strictNotEqual(prev["style"][style], next["style"][style]))) {
       return false;
     }
-    ki27 = ki27 + 1;
   }
   return true;
   return undef();

@@ -76,16 +76,10 @@ Options["prototype"]["extend"] = JS.method1((JsValue self, JsValue extension) =>
   o21["maxSize"] = self["maxSize"];
   o21["minRuleThickness"] = self["minRuleThickness"];
   JsValue data = o21;
-  JsValue obj22 = extension;
-  JsValue keys23 = objectKeys(obj22);
-  int ki24 = 0;
-  int kn25 = len(keys23);
-  while (ki24 < kn25) {
-    JsValue key = keys23[ki24];
+  for (string key in extension) {
     if (hasOwn(extension, key)) {
       data[key] = extension[key];
     }
-    ki24 = ki24 + 1;
   }
   return JS.construct(Options, data);
   return undef();

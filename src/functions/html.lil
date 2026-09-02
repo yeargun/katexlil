@@ -74,16 +74,10 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
     pushAll(classes, JS.invoke(JS.invoke(group["attributes"]["class"], "trim"), "split", JS.construct(RegExp, "\\s+", "")));
   }
   JsValue span = JS.invoke(buildCommon, "makeSpan", classes, elements, options);
-  JsValue obj16 = group["attributes"];
-  JsValue keys17 = objectKeys(obj16);
-  int ki18 = 0;
-  int kn19 = len(keys17);
-  while (ki18 < kn19) {
-    JsValue attr = keys17[ki18];
+  for (string attr in group["attributes"]) {
     if ((JS.strictNotEqual(attr, "class")) && (hasOwn(group["attributes"], attr))) {
       JS.invoke(span, "setAttribute", attr, group["attributes"][attr]);
     }
-    ki18 = ki18 + 1;
   }
   return span;
   return undef();

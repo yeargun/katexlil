@@ -31,12 +31,7 @@ Namespace["prototype"]["endGroup"] = JS.method0((JsValue self) => {
     throw JS.construct(ParseError, JS.add("Unbalanced namespace destruction: attempt ", "to pop global namespace; please report this as a bug"));
   }
   JsValue undefs = JS.invoke(self["undefStack"], "pop");
-  JsValue obj5 = undefs;
-  JsValue keys6 = objectKeys(obj5);
-  int ki7 = 0;
-  int kn8 = len(keys6);
-  while (ki7 < kn8) {
-    JsValue undef = keys6[ki7];
+  for (string undef in undefs) {
     if (hasOwn(undefs, undef)) {
       if (isNullish(undefs[undef])) {
         deleteKey(self["current"], undef);
@@ -45,7 +40,6 @@ Namespace["prototype"]["endGroup"] = JS.method0((JsValue self) => {
         self["current"][undef] = undefs[undef];
       }
     }
-    ki7 = ki7 + 1;
   }
   return undef();
 });

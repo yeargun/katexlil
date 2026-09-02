@@ -108,12 +108,7 @@ Settings = JS.methodRest((JsValue self, JsValue argv) => {
     or27 = o28;
   }
   options = or27;
-  JsValue obj29 = SETTINGS_SCHEMA;
-  JsValue keys30 = objectKeys(obj29);
-  int ki31 = 0;
-  int kn32 = len(keys30);
-  while (ki31 < kn32) {
-    JsValue prop = keys30[ki31];
+  for (string prop in SETTINGS_SCHEMA) {
     if (hasOwn(SETTINGS_SCHEMA, prop)) {
       JsValue schema = SETTINGS_SCHEMA[prop];
       JsValue c33 = undef();
@@ -130,7 +125,6 @@ Settings = JS.methodRest((JsValue self, JsValue argv) => {
       }
       self[prop] = c33;
     }
-    ki31 = ki31 + 1;
   }
   return self;
 });

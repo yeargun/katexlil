@@ -61,27 +61,15 @@ initNode = JS.method3((JsValue self, JsValue classes, JsValue options, JsValue s
 toNode = JS.method1((JsValue self, JsValue tagName) => {
   JsValue node = JS.invoke(getDocument(), "createElement", tagName);
   node["className"] = JS.call(createClass, undef(), self["classes"]);
-  JsValue obj6 = self["style"];
-  JsValue keys7 = objectKeys(obj6);
-  int ki8 = 0;
-  int kn9 = len(keys7);
-  while (ki8 < kn9) {
-    JsValue style = keys7[ki8];
+  for (string style in self["style"]) {
     if (hasOwn(self["style"], style)) {
       node["style"][style] = self["style"][style];
     }
-    ki8 = ki8 + 1;
   }
-  JsValue obj10 = self["attributes"];
-  JsValue keys11 = objectKeys(obj10);
-  int ki12 = 0;
-  int kn13 = len(keys11);
-  while (ki12 < kn13) {
-    JsValue attr = keys11[ki12];
+  for (string attr in self["attributes"]) {
     if (hasOwn(self["attributes"], attr)) {
       JS.invoke(node, "setAttribute", attr, self["attributes"][attr]);
     }
-    ki12 = ki12 + 1;
   }
   {
     JsValue i = 0;
@@ -101,33 +89,21 @@ toMarkup = JS.method1((JsValue self, JsValue tagName) => {
     markup = JS.add(markup, " class=\"" + toStr(JS.invoke(utils, "escape", JS.call(createClass, undef(), self["classes"]))) + "\"");
   }
   JsValue styles = "";
-  JsValue obj15 = self["style"];
-  JsValue keys16 = objectKeys(obj15);
-  int ki17 = 0;
-  int kn18 = len(keys16);
-  while (ki17 < kn18) {
-    JsValue style = keys16[ki17];
+  for (string style in self["style"]) {
     if (hasOwn(self["style"], style)) {
       styles = JS.add(styles, toStr(JS.invoke(utils, "hyphenate", style)) + ":" + toStr(self["style"][style]) + ";");
     }
-    ki17 = ki17 + 1;
   }
   if (styles.truthy()) {
     markup = JS.add(markup, " style=\"" + toStr(JS.invoke(utils, "escape", styles)) + "\"");
   }
-  JsValue obj19 = self["attributes"];
-  JsValue keys20 = objectKeys(obj19);
-  int ki21 = 0;
-  int kn22 = len(keys20);
-  while (ki21 < kn22) {
-    JsValue attr = keys20[ki21];
+  for (string attr in self["attributes"]) {
     if (hasOwn(self["attributes"], attr)) {
       if (JS.invoke(invalidAttributeNameRegex, "test", attr).truthy()) {
         throw JS.construct(ParseError, "Invalid attribute name '" + toStr(attr) + "'");
       }
       markup = JS.add(markup, " " + toStr(attr) + "=\"" + toStr(JS.invoke(utils, "escape", self["attributes"][attr])) + "\"");
     }
-    ki21 = ki21 + 1;
   }
   markup = JS.add(markup, ">");
   {
@@ -223,16 +199,10 @@ Img["prototype"]["toNode"] = JS.method0((JsValue self) => {
   node["src"] = self["src"];
   node["alt"] = self["alt"];
   node["className"] = "mord";
-  JsValue obj29 = self["style"];
-  JsValue keys30 = objectKeys(obj29);
-  int ki31 = 0;
-  int kn32 = len(keys30);
-  while (ki31 < kn32) {
-    JsValue style = keys30[ki31];
+  for (string style in self["style"]) {
     if (hasOwn(self["style"], style)) {
       node["style"][style] = self["style"][style];
     }
-    ki31 = ki31 + 1;
   }
   return node;
   return undef();
@@ -240,16 +210,10 @@ Img["prototype"]["toNode"] = JS.method0((JsValue self) => {
 Img["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   JsValue markup = JS.add("<img src=\"" + toStr(JS.invoke(utils, "escape", self["src"])) + "\"", " alt=\"" + toStr(JS.invoke(utils, "escape", self["alt"])) + "\"");
   JsValue styles = "";
-  JsValue obj33 = self["style"];
-  JsValue keys34 = objectKeys(obj33);
-  int ki35 = 0;
-  int kn36 = len(keys34);
-  while (ki35 < kn36) {
-    JsValue style = keys34[ki35];
+  for (string style in self["style"]) {
     if (hasOwn(self["style"], style)) {
       styles = JS.add(styles, toStr(JS.invoke(utils, "hyphenate", style)) + ":" + toStr(self["style"][style]) + ";");
     }
-    ki35 = ki35 + 1;
   }
   if (styles.truthy()) {
     markup = JS.add(markup, " style=\"" + toStr(JS.invoke(utils, "escape", styles)) + "\"");
@@ -336,12 +300,7 @@ SymbolNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
     span = or47;
     span["className"] = JS.call(createClass, undef(), self["classes"]);
   }
-  JsValue obj48 = self["style"];
-  JsValue keys49 = objectKeys(obj48);
-  int ki50 = 0;
-  int kn51 = len(keys49);
-  while (ki50 < kn51) {
-    JsValue style = keys49[ki50];
+  for (string style in self["style"]) {
     if (hasOwn(self["style"], style)) {
       JsValue or52 = span;
       if (!(or52.truthy())) {
@@ -350,7 +309,6 @@ SymbolNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
       span = or52;
       span["style"][style] = self["style"][style];
     }
-    ki50 = ki50 + 1;
   }
   if (span.truthy()) {
     JS.invoke(span, "appendChild", node);
@@ -373,16 +331,10 @@ SymbolNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   if (JS.greaterThan(self["italic"], 0)) {
     styles = JS.add(styles, JS.add(JS.add("margin-right:", self["italic"]), "em;"));
   }
-  JsValue obj53 = self["style"];
-  JsValue keys54 = objectKeys(obj53);
-  int ki55 = 0;
-  int kn56 = len(keys54);
-  while (ki55 < kn56) {
-    JsValue style = keys54[ki55];
+  for (string style in self["style"]) {
     if (hasOwn(self["style"], style)) {
       styles = JS.add(styles, JS.add(JS.add(JS.add(JS.invoke(utils, "hyphenate", style), ":"), self["style"][style]), ";"));
     }
-    ki55 = ki55 + 1;
   }
   if (styles.truthy()) {
     needsSpan = true;
@@ -419,16 +371,10 @@ SvgNode = JS.methodRest((JsValue self, JsValue argv) => {
 SvgNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
   JsValue svgNS = "http://www.w3.org/2000/svg";
   JsValue node = JS.invoke(getDocument(), "createElementNS", svgNS, "svg");
-  JsValue obj61 = self["attributes"];
-  JsValue keys62 = objectKeys(obj61);
-  int ki63 = 0;
-  int kn64 = len(keys62);
-  while (ki63 < kn64) {
-    JsValue attr = keys62[ki63];
+  for (string attr in self["attributes"]) {
     if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
       JS.invoke(node, "setAttribute", attr, self["attributes"][attr]);
     }
-    ki63 = ki63 + 1;
   }
   {
     JsValue i = 0;
@@ -443,16 +389,10 @@ SvgNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
 });
 SvgNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   JsValue markup = "<svg xmlns=\"http://www.w3.org/2000/svg\"";
-  JsValue obj66 = self["attributes"];
-  JsValue keys67 = objectKeys(obj66);
-  int ki68 = 0;
-  int kn69 = len(keys67);
-  while (ki68 < kn69) {
-    JsValue attr = keys67[ki68];
+  for (string attr in self["attributes"]) {
     if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
       markup = JS.add(markup, " " + toStr(attr) + "=\"" + toStr(JS.invoke(utils, "escape", self["attributes"][attr])) + "\"");
     }
-    ki68 = ki68 + 1;
   }
   markup = JS.add(markup, ">");
   {
@@ -506,32 +446,20 @@ LineNode = JS.methodRest((JsValue self, JsValue argv) => {
 LineNode["prototype"]["toNode"] = JS.method0((JsValue self) => {
   JsValue svgNS = "http://www.w3.org/2000/svg";
   JsValue node = JS.invoke(getDocument(), "createElementNS", svgNS, "line");
-  JsValue obj73 = self["attributes"];
-  JsValue keys74 = objectKeys(obj73);
-  int ki75 = 0;
-  int kn76 = len(keys74);
-  while (ki75 < kn76) {
-    JsValue attr = keys74[ki75];
+  for (string attr in self["attributes"]) {
     if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
       JS.invoke(node, "setAttribute", attr, self["attributes"][attr]);
     }
-    ki75 = ki75 + 1;
   }
   return node;
   return undef();
 });
 LineNode["prototype"]["toMarkup"] = JS.method0((JsValue self) => {
   JsValue markup = "<line";
-  JsValue obj77 = self["attributes"];
-  JsValue keys78 = objectKeys(obj77);
-  int ki79 = 0;
-  int kn80 = len(keys78);
-  while (ki79 < kn80) {
-    JsValue attr = keys78[ki79];
+  for (string attr in self["attributes"]) {
     if (JS.call(Object["prototype"]["hasOwnProperty"], self["attributes"], attr).truthy()) {
       markup = JS.add(markup, " " + toStr(attr) + "=\"" + toStr(JS.invoke(utils, "escape", self["attributes"][attr])) + "\"");
     }
-    ki79 = ki79 + 1;
   }
   markup = JS.add(markup, "/>");
   return markup;
