@@ -135,6 +135,29 @@ const lilMap = JSON.parse(readFileSync(mapPath, "utf8"))
 const lil = attribute(lilCode, lilMap)
 const lilB = marginalBrotli("lil", lilCode, lil)
 
+// `--dump-dir <dir>`: write each module's tokens (in artifact order, with the original
+// text between adjacent owned tokens) to <dir>/{lil,official}/<module>.js, so the two
+// lanes' spellings of one module can be read side by side and compressed alone.
+const dumpDir = flag("dump-dir", null)
+if (dumpDir) {
+  for (const [lane, code, owned] of [["lil", lilCode, lil], ["official", terser.code, official]]) {
+    const dir = resolve(root, dumpDir, lane)
+    mkdirSync(dir, { recursive: true })
+    const parts = new Map()
+    const last = new Map()
+    owned.ast.tokens.forEach((t, i) => {
+      const m = owned.owners[i]
+      let s = parts.get(m) ?? ""
+      const prev = last.get(m)
+      if (prev !== undefined) s += prev === i - 1 ? code.slice(owned.ast.tokens[prev].end, t.start) : "\n"
+      s += code.slice(t.start, t.end)
+      parts.set(m, s)
+      last.set(m, i)
+    })
+    for (const [m, s] of parts) writeFileSync(resolve(dir, `${m.replace(/\//g, "__")}.js`), s)
+  }
+}
+
 const modules = new Set([...lil.raw.keys(), ...official.raw.keys()])
 const rows = [...modules].map((module) => ({
   module,
