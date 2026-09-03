@@ -4,7 +4,7 @@
   "file": "katex",
   "lilExport": "renderToString",
   "officialExport": "default",
-  "measuredAt": "2026-09-02T20:54:46.045Z",
+  "measuredAt": "2026-09-03T01:32:27.563Z",
   "node": "v20.19.0",
   "codec": "lilscript-codec: zlib 1.3.1 gzip-9 / Google Brotli 1.1.0 q11 w22",
   "runtime": "Node v20.19.0",
@@ -80,35 +80,35 @@
       "note": "The npm ESM: direct LilScript js-module output, extern_fields = true, public API and option names kept",
       "primary": true,
       "world": "open",
-      "raw": 278358,
-      "gzip9": 79171,
-      "brotli11": 65337
+      "raw": 276309,
+      "gzip9": 78854,
+      "brotli11": 64958
     },
     {
       "id": "itslil-closed",
       "name": "@itslil/katex · closed world",
       "note": "Same source, extern_fields = false: JavaScript-facing option and node fields may mangle",
       "world": "closed",
-      "raw": 278358,
-      "gzip9": 79171,
-      "brotli11": 65337
+      "raw": 276309,
+      "gzip9": 78854,
+      "brotli11": 64958
     }
   ],
   "throughput": [
     {
       "id": "itslil",
       "name": "@itslil/katex",
-      "documentMs": 6.339362999999139,
-      "p10": 5.536743999999089,
-      "p90": 9.164616000000024,
+      "documentMs": 6.785388999998759,
+      "p10": 5.9944329999998445,
+      "p90": 8.110974999999598,
       "rounds": 30
     },
     {
       "id": "official",
       "name": "katex@0.16.22",
-      "documentMs": 7.305796999999075,
-      "p10": 5.515955999999278,
-      "p90": 8.793965000000753,
+      "documentMs": 7.215151999998852,
+      "p10": 5.662473000000318,
+      "p90": 8.519398000000365,
       "rounds": 30
     }
   ],
@@ -128,31 +128,31 @@
     "lanes": {
       "itslil": {
         "name": "@itslil/katex",
-        "median": 4.200000017881393,
-        "p10": 3.699999988079071,
-        "p90": 6.0999999940395355,
+        "median": 4.699999988079071,
+        "p10": 3.800000011920929,
+        "p90": 6.600000023841858,
         "min": 3.5999999940395355,
         "rounds": 30
       },
       "official": {
         "name": "katex@0.16.22",
-        "median": 4,
-        "p10": 3.5,
-        "p90": 5.899999976158142,
-        "min": 3.2999999821186066,
+        "median": 4.0999999940395355,
+        "p10": 3.699999988079071,
+        "p90": 5.699999988079071,
+        "min": 3.300000011920929,
         "rounds": 30
       }
     },
-    "ratio": 1.0500000044703484,
+    "ratio": 1.1463414621736094,
     "browser": "Chromium 151.0.7922.34",
     "playwright": "1.62.1"
   },
   "attribution": {
     "lil": {
       "path": "dist/katex.raw.js",
-      "raw": 220798,
-      "gzip9": 67303,
-      "brotli11": 55966
+      "raw": 218749,
+      "gzip9": 66989,
+      "brotli11": 55575
     },
     "official": {
       "pin": "0.16.22",
@@ -170,733 +170,733 @@
     },
     "rows": [
       {
-        "module": "src/symbols",
-        "lilRaw": 34374,
-        "officialRaw": 21490,
-        "lilBrotli": 5532,
-        "officialBrotli": 4032,
-        "deltaRaw": 12884,
-        "deltaBrotli": 1500
-      },
-      {
-        "module": "src/delimiter",
-        "lilRaw": 11429,
-        "officialRaw": 7153,
-        "lilBrotli": 3072,
-        "officialBrotli": 1844,
-        "deltaRaw": 4276,
-        "deltaBrotli": 1228
-      },
-      {
         "module": "src/defineFunction",
-        "lilRaw": 7172,
+        "lilRaw": 9575,
         "officialRaw": 733,
-        "lilBrotli": 807,
+        "lilBrotli": 1226,
         "officialBrotli": 188,
-        "deltaRaw": 6439,
-        "deltaBrotli": 619
-      },
-      {
-        "module": "src/functions/delimsizing",
-        "lilRaw": 6287,
-        "officialRaw": 4309,
-        "lilBrotli": 1426,
-        "officialBrotli": 924,
-        "deltaRaw": 1978,
-        "deltaBrotli": 502
-      },
-      {
-        "module": "src/functions/accent",
-        "lilRaw": 4887,
-        "officialRaw": 2639,
-        "lilBrotli": 1042,
-        "officialBrotli": 601,
-        "deltaRaw": 2248,
-        "deltaBrotli": 441
-      },
-      {
-        "module": "src/buildMathML",
-        "lilRaw": 4295,
-        "officialRaw": 3365,
-        "lilBrotli": 1187,
-        "officialBrotli": 750,
-        "deltaRaw": 930,
-        "deltaBrotli": 437
-      },
-      {
-        "module": "src/Settings",
-        "lilRaw": 6380,
-        "officialRaw": 4178,
-        "lilBrotli": 1603,
-        "officialBrotli": 1358,
-        "deltaRaw": 2202,
-        "deltaBrotli": 245
-      },
-      {
-        "module": "src/entry",
-        "lilRaw": 679,
-        "officialRaw": 0,
-        "lilBrotli": 193,
-        "officialBrotli": 0,
-        "deltaRaw": 679,
-        "deltaBrotli": 193
-      },
-      {
-        "module": "src/functions/char",
-        "lilRaw": 486,
-        "officialRaw": 480,
-        "lilBrotli": 232,
-        "officialBrotli": 102,
-        "deltaRaw": 6,
-        "deltaBrotli": 130
-      },
-      {
-        "module": "src/MacroExpander",
-        "lilRaw": 4163,
-        "officialRaw": 3927,
-        "lilBrotli": 1214,
-        "officialBrotli": 1088,
-        "deltaRaw": 236,
-        "deltaBrotli": 126
-      },
-      {
-        "module": "src/functions/genfrac",
-        "lilRaw": 5799,
-        "officialRaw": 5612,
-        "lilBrotli": 1437,
-        "officialBrotli": 1318,
-        "deltaRaw": 187,
-        "deltaBrotli": 119
-      },
-      {
-        "module": "src/functions/font",
-        "lilRaw": 1377,
-        "officialRaw": 1177,
-        "lilBrotli": 249,
-        "officialBrotli": 147,
-        "deltaRaw": 200,
-        "deltaBrotli": 102
+        "deltaRaw": 8842,
+        "deltaBrotli": 1038
       },
       {
         "module": "src/host",
-        "lilRaw": 517,
+        "lilRaw": 3286,
         "officialRaw": 0,
-        "lilBrotli": 100,
+        "lilBrotli": 969,
         "officialBrotli": 0,
-        "deltaRaw": 517,
-        "deltaBrotli": 100
+        "deltaRaw": 3286,
+        "deltaBrotli": 969
       },
       {
-        "module": "src/unicodeSymbols",
-        "lilRaw": 582,
-        "officialRaw": 477,
-        "lilBrotli": 247,
-        "officialBrotli": 149,
-        "deltaRaw": 105,
-        "deltaBrotli": 98
+        "module": "src/entry",
+        "lilRaw": 2273,
+        "officialRaw": 0,
+        "lilBrotli": 779,
+        "officialBrotli": 0,
+        "deltaRaw": 2273,
+        "deltaBrotli": 779
       },
       {
-        "module": "src/functions/tag",
-        "lilRaw": 449,
-        "officialRaw": 299,
-        "lilBrotli": 163,
-        "officialBrotli": 83,
-        "deltaRaw": 150,
-        "deltaBrotli": 80
+        "module": "src/Settings",
+        "lilRaw": 7888,
+        "officialRaw": 4178,
+        "lilBrotli": 1841,
+        "officialBrotli": 1358,
+        "deltaRaw": 3710,
+        "deltaBrotli": 483
       },
       {
-        "module": "src/Parser",
-        "lilRaw": 10175,
-        "officialRaw": 10067,
-        "lilBrotli": 2624,
-        "officialBrotli": 2548,
-        "deltaRaw": 108,
-        "deltaBrotli": 76
+        "module": "src/ParseError",
+        "lilRaw": 2083,
+        "officialRaw": 532,
+        "lilBrotli": 613,
+        "officialBrotli": 277,
+        "deltaRaw": 1551,
+        "deltaBrotli": 336
       },
       {
-        "module": "src/functions/pmb",
-        "lilRaw": 750,
-        "officialRaw": 407,
-        "lilBrotli": 184,
-        "officialBrotli": 115,
-        "deltaRaw": 343,
-        "deltaBrotli": 69
+        "module": "src/functions/def",
+        "lilRaw": 3748,
+        "officialRaw": 2467,
+        "lilBrotli": 856,
+        "officialBrotli": 555,
+        "deltaRaw": 1281,
+        "deltaBrotli": 301
       },
       {
-        "module": "src/functions/environment",
-        "lilRaw": 673,
-        "officialRaw": 697,
-        "lilBrotli": 282,
-        "officialBrotli": 215,
-        "deltaRaw": -24,
-        "deltaBrotli": 67
-      },
-      {
-        "module": "src/functions/utils/assembleSupSub",
-        "lilRaw": 1503,
-        "officialRaw": 1398,
-        "lilBrotli": 292,
-        "officialBrotli": 227,
-        "deltaRaw": 105,
-        "deltaBrotli": 65
-      },
-      {
-        "module": "src/functions/color",
-        "lilRaw": 658,
-        "officialRaw": 783,
-        "lilBrotli": 128,
-        "officialBrotli": 69,
-        "deltaRaw": -125,
-        "deltaBrotli": 59
-      },
-      {
-        "module": "src/units",
-        "lilRaw": 857,
-        "officialRaw": 677,
-        "lilBrotli": 268,
-        "officialBrotli": 211,
-        "deltaRaw": 180,
-        "deltaBrotli": 57
+        "module": "src/delimiter",
+        "lilRaw": 7732,
+        "officialRaw": 7153,
+        "lilBrotli": 2014,
+        "officialBrotli": 1844,
+        "deltaRaw": 579,
+        "deltaBrotli": 170
       },
       {
         "module": "src/utils",
-        "lilRaw": 677,
+        "lilRaw": 1520,
         "officialRaw": 815,
-        "lilBrotli": 342,
+        "lilBrotli": 463,
         "officialBrotli": 294,
-        "deltaRaw": -138,
-        "deltaBrotli": 48
+        "deltaRaw": 705,
+        "deltaBrotli": 169
       },
       {
-        "module": "src/functions/arrow",
-        "lilRaw": 2706,
-        "officialRaw": 2039,
-        "lilBrotli": 477,
-        "officialBrotli": 430,
-        "deltaRaw": 667,
-        "deltaBrotli": 47
+        "module": "src/buildMathML",
+        "lilRaw": 3667,
+        "officialRaw": 3365,
+        "lilBrotli": 912,
+        "officialBrotli": 750,
+        "deltaRaw": 302,
+        "deltaBrotli": 162
       },
       {
-        "module": "src/functions/href",
-        "lilRaw": 838,
-        "officialRaw": 937,
-        "lilBrotli": 163,
-        "officialBrotli": 124,
-        "deltaRaw": -99,
-        "deltaBrotli": 39
-      },
-      {
-        "module": "src/functions",
-        "lilRaw": 6,
-        "officialRaw": 6,
-        "lilBrotli": 18,
-        "officialBrotli": -18,
-        "deltaRaw": 0,
-        "deltaBrotli": 36
-      },
-      {
-        "module": "src/unicodeScripts",
-        "lilRaw": 577,
-        "officialRaw": 588,
-        "lilBrotli": 314,
-        "officialBrotli": 279,
-        "deltaRaw": -11,
-        "deltaBrotli": 35
+        "module": "src/functions/accent",
+        "lilRaw": 3858,
+        "officialRaw": 2639,
+        "lilBrotli": 756,
+        "officialBrotli": 601,
+        "deltaRaw": 1219,
+        "deltaBrotli": 155
       },
       {
         "module": "src/environments",
         "lilRaw": 7,
         "officialRaw": 9,
-        "lilBrotli": -50,
+        "lilBrotli": 32,
         "officialBrotli": -82,
         "deltaRaw": -2,
-        "deltaBrotli": 32
+        "deltaBrotli": 114
+      },
+      {
+        "module": "src/unicodeSymbols",
+        "lilRaw": 587,
+        "officialRaw": 477,
+        "lilBrotli": 248,
+        "officialBrotli": 149,
+        "deltaRaw": 110,
+        "deltaBrotli": 99
+      },
+      {
+        "module": "src/buildHTML",
+        "lilRaw": 3311,
+        "officialRaw": 3008,
+        "lilBrotli": 888,
+        "officialBrotli": 816,
+        "deltaRaw": 303,
+        "deltaBrotli": 72
+      },
+      {
+        "module": "src/functions/font",
+        "lilRaw": 1047,
+        "officialRaw": 1177,
+        "lilBrotli": 216,
+        "officialBrotli": 147,
+        "deltaRaw": -130,
+        "deltaBrotli": 69
+      },
+      {
+        "module": "src/functions/accentunder",
+        "lilRaw": 746,
+        "officialRaw": 687,
+        "lilBrotli": 132,
+        "officialBrotli": 67,
+        "deltaRaw": 59,
+        "deltaBrotli": 65
+      },
+      {
+        "module": "src/MacroExpander",
+        "lilRaw": 4168,
+        "officialRaw": 3927,
+        "lilBrotli": 1152,
+        "officialBrotli": 1088,
+        "deltaRaw": 241,
+        "deltaBrotli": 64
+      },
+      {
+        "module": "src/functions/utils/assembleSupSub",
+        "lilRaw": 1411,
+        "officialRaw": 1398,
+        "lilBrotli": 291,
+        "officialBrotli": 227,
+        "deltaRaw": 13,
+        "deltaBrotli": 64
+      },
+      {
+        "module": "src/functions/delimsizing",
+        "lilRaw": 4345,
+        "officialRaw": 4309,
+        "lilBrotli": 984,
+        "officialBrotli": 924,
+        "deltaRaw": 36,
+        "deltaBrotli": 60
       },
       {
         "module": "src/functions/sizing",
-        "lilRaw": 926,
+        "lilRaw": 972,
         "officialRaw": 905,
-        "lilBrotli": 266,
+        "lilBrotli": 262,
         "officialBrotli": 238,
-        "deltaRaw": 21,
-        "deltaBrotli": 28
-      },
-      {
-        "module": "src/functions/rule",
-        "lilRaw": 967,
-        "officialRaw": 981,
-        "lilBrotli": 247,
-        "officialBrotli": 221,
-        "deltaRaw": -14,
-        "deltaBrotli": 26
-      },
-      {
-        "module": "src/functions/operatorname",
-        "lilRaw": 1402,
-        "officialRaw": 1510,
-        "lilBrotli": 315,
-        "officialBrotli": 291,
-        "deltaRaw": -108,
+        "deltaRaw": 67,
         "deltaBrotli": 24
       },
       {
-        "module": "src/domTree",
-        "lilRaw": 4985,
-        "officialRaw": 4940,
-        "lilBrotli": 996,
-        "officialBrotli": 973,
-        "deltaRaw": 45,
-        "deltaBrotli": 23
+        "module": "src/functions/cr",
+        "lilRaw": 1232,
+        "officialRaw": 681,
+        "lilBrotli": 218,
+        "officialBrotli": 194,
+        "deltaRaw": 551,
+        "deltaBrotli": 24
       },
       {
-        "module": "src/functions/math",
-        "lilRaw": 362,
-        "officialRaw": 438,
-        "lilBrotli": 111,
-        "officialBrotli": 94,
-        "deltaRaw": -76,
-        "deltaBrotli": 17
-      },
-      {
-        "module": "src/Namespace",
-        "lilRaw": 929,
-        "officialRaw": 917,
-        "lilBrotli": 242,
-        "officialBrotli": 228,
-        "deltaRaw": 12,
+        "module": "src/data",
+        "lilRaw": 27,
+        "officialRaw": 0,
+        "lilBrotli": 14,
+        "officialBrotli": 0,
+        "deltaRaw": 27,
         "deltaBrotli": 14
       },
       {
-        "module": "src/parseTree",
-        "lilRaw": 510,
-        "officialRaw": 476,
-        "lilBrotli": 91,
-        "officialBrotli": 78,
-        "deltaRaw": 34,
-        "deltaBrotli": 13
-      },
-      {
-        "module": "src/Lexer",
-        "lilRaw": 1553,
-        "officialRaw": 1070,
-        "lilBrotli": 490,
-        "officialBrotli": 478,
-        "deltaRaw": 483,
-        "deltaBrotli": 12
-      },
-      {
-        "module": "src/functions/op",
-        "lilRaw": 3476,
-        "officialRaw": 3442,
-        "lilBrotli": 821,
-        "officialBrotli": 814,
-        "deltaRaw": 34,
-        "deltaBrotli": 7
+        "module": "src/functions",
+        "lilRaw": 102,
+        "officialRaw": 6,
+        "lilBrotli": -7,
+        "officialBrotli": -18,
+        "deltaRaw": 96,
+        "deltaBrotli": 11
       },
       {
         "module": "src/functions/symbolsSpacing",
         "lilRaw": 613,
         "officialRaw": 743,
-        "lilBrotli": 151,
+        "lilBrotli": 155,
         "officialBrotli": 145,
         "deltaRaw": -130,
-        "deltaBrotli": 6
+        "deltaBrotli": 10
       },
       {
-        "module": "src/functions/includegraphics",
-        "lilRaw": 1698,
-        "officialRaw": 1792,
-        "lilBrotli": 450,
-        "officialBrotli": 449,
-        "deltaRaw": -94,
-        "deltaBrotli": 1
+        "module": "src/functions/rule",
+        "lilRaw": 965,
+        "officialRaw": 981,
+        "lilBrotli": 219,
+        "officialBrotli": 221,
+        "deltaRaw": -16,
+        "deltaBrotli": -2
       },
       {
-        "module": "src/functions/smash",
-        "lilRaw": 881,
-        "officialRaw": 960,
-        "lilBrotli": 150,
-        "officialBrotli": 151,
-        "deltaRaw": -79,
-        "deltaBrotli": -1
-      },
-      {
-        "module": "src/defineMacro",
-        "lilRaw": 4,
-        "officialRaw": 33,
-        "lilBrotli": 23,
-        "officialBrotli": 28,
-        "deltaRaw": -29,
-        "deltaBrotli": -5
-      },
-      {
-        "module": "src/fontMetrics",
-        "lilRaw": 1710,
-        "officialRaw": 1876,
-        "lilBrotli": 640,
-        "officialBrotli": 646,
-        "deltaRaw": -166,
+        "module": "src/functions/char",
+        "lilRaw": 749,
+        "officialRaw": 480,
+        "lilBrotli": 96,
+        "officialBrotli": 102,
+        "deltaRaw": 269,
         "deltaBrotli": -6
       },
       {
-        "module": "src/functions/symbolsOp",
-        "lilRaw": 381,
-        "officialRaw": 375,
-        "lilBrotli": 107,
-        "officialBrotli": 116,
-        "deltaRaw": 6,
-        "deltaBrotli": -9
+        "module": "src/mathMLTree",
+        "lilRaw": 2495,
+        "officialRaw": 2045,
+        "lilBrotli": 458,
+        "officialBrotli": 469,
+        "deltaRaw": 450,
+        "deltaBrotli": -11
       },
       {
-        "module": "src/data",
-        "lilRaw": 28,
-        "officialRaw": 0,
-        "lilBrotli": -10,
-        "officialBrotli": 0,
-        "deltaRaw": 28,
-        "deltaBrotli": -10
+        "module": "src/functions/href",
+        "lilRaw": 838,
+        "officialRaw": 937,
+        "lilBrotli": 113,
+        "officialBrotli": 124,
+        "deltaRaw": -99,
+        "deltaBrotli": -11
       },
       {
-        "module": "src/SourceLocation",
-        "lilRaw": 193,
-        "officialRaw": 189,
-        "lilBrotli": 34,
-        "officialBrotli": 48,
-        "deltaRaw": 4,
-        "deltaBrotli": -14
+        "module": "src/Parser",
+        "lilRaw": 10167,
+        "officialRaw": 10067,
+        "lilBrotli": 2530,
+        "officialBrotli": 2548,
+        "deltaRaw": 100,
+        "deltaBrotli": -18
       },
       {
-        "module": "src/parseNode",
-        "lilRaw": 537,
-        "officialRaw": 352,
-        "lilBrotli": 122,
-        "officialBrotli": 141,
-        "deltaRaw": 185,
-        "deltaBrotli": -19
+        "module": "src/fontMetrics",
+        "lilRaw": 1793,
+        "officialRaw": 1876,
+        "lilBrotli": 626,
+        "officialBrotli": 646,
+        "deltaRaw": -83,
+        "deltaBrotli": -20
       },
       {
-        "module": "src/functions/cr",
-        "lilRaw": 759,
-        "officialRaw": 681,
-        "lilBrotli": 171,
-        "officialBrotli": 194,
-        "deltaRaw": 78,
-        "deltaBrotli": -23
-      },
-      {
-        "module": "src/functions/htmlmathml",
-        "lilRaw": 250,
-        "officialRaw": 276,
-        "lilBrotli": 67,
-        "officialBrotli": 95,
-        "deltaRaw": -26,
-        "deltaBrotli": -28
-      },
-      {
-        "module": "src/unicodeSupOrSub",
-        "lilRaw": 1160,
-        "officialRaw": 1160,
-        "lilBrotli": 356,
-        "officialBrotli": 384,
-        "deltaRaw": 0,
-        "deltaBrotli": -28
-      },
-      {
-        "module": "src/functions/vcenter",
-        "lilRaw": 472,
-        "officialRaw": 426,
-        "lilBrotli": 47,
-        "officialBrotli": 78,
-        "deltaRaw": 46,
-        "deltaBrotli": -31
-      },
-      {
-        "module": "src/functions/sqrt",
-        "lilRaw": 1460,
-        "officialRaw": 1213,
-        "lilBrotli": 275,
-        "officialBrotli": 311,
-        "deltaRaw": 247,
-        "deltaBrotli": -36
-      },
-      {
-        "module": "src/functions/lap",
-        "lilRaw": 777,
-        "officialRaw": 846,
-        "lilBrotli": 120,
-        "officialBrotli": 164,
-        "deltaRaw": -69,
-        "deltaBrotli": -44
-      },
-      {
-        "module": "src/functions/accentunder",
-        "lilRaw": 139,
-        "officialRaw": 687,
-        "lilBrotli": 22,
-        "officialBrotli": 67,
-        "deltaRaw": -548,
-        "deltaBrotli": -45
-      },
-      {
-        "module": "src/tree",
-        "lilRaw": 502,
-        "officialRaw": 452,
-        "lilBrotli": 32,
-        "officialBrotli": 79,
-        "deltaRaw": 50,
-        "deltaBrotli": -47
-      },
-      {
-        "module": "src/functions/verb",
-        "lilRaw": 599,
-        "officialRaw": 630,
-        "lilBrotli": 126,
-        "officialBrotli": 174,
-        "deltaRaw": -31,
-        "deltaBrotli": -48
-      },
-      {
-        "module": "src/functions/underline",
-        "lilRaw": 786,
-        "officialRaw": 666,
-        "lilBrotli": 25,
-        "officialBrotli": 74,
-        "deltaRaw": 120,
-        "deltaBrotli": -49
-      },
-      {
-        "module": "src/spacingData",
-        "lilRaw": 337,
-        "officialRaw": 536,
-        "lilBrotli": 87,
-        "officialBrotli": 141,
-        "deltaRaw": -199,
-        "deltaBrotli": -54
-      },
-      {
-        "module": "src/functions/html",
-        "lilRaw": 1161,
-        "officialRaw": 1240,
-        "lilBrotli": 302,
-        "officialBrotli": 356,
-        "deltaRaw": -79,
-        "deltaBrotli": -54
-      },
-      {
-        "module": "src/functions/relax",
-        "lilRaw": 107,
-        "officialRaw": 150,
-        "lilBrotli": 1,
-        "officialBrotli": 55,
-        "deltaRaw": -43,
-        "deltaBrotli": -54
-      },
-      {
-        "module": "src/functions/symbolsOrd",
-        "lilRaw": 627,
-        "officialRaw": 614,
-        "lilBrotli": 108,
-        "officialBrotli": 163,
-        "deltaRaw": 13,
-        "deltaBrotli": -55
-      },
-      {
-        "module": "src/Token",
-        "lilRaw": 129,
-        "officialRaw": 92,
-        "lilBrotli": -27,
-        "officialBrotli": 30,
-        "deltaRaw": 37,
-        "deltaBrotli": -57
-      },
-      {
-        "module": "src/functions/overline",
-        "lilRaw": 790,
-        "officialRaw": 659,
-        "lilBrotli": 11,
-        "officialBrotli": 70,
-        "deltaRaw": 131,
-        "deltaBrotli": -59
-      },
-      {
-        "module": "src/functions/raisebox",
-        "lilRaw": 501,
-        "officialRaw": 481,
-        "lilBrotli": 28,
-        "officialBrotli": 88,
-        "deltaRaw": 20,
-        "deltaBrotli": -60
+        "module": "src/functions/pmb",
+        "lilRaw": 606,
+        "officialRaw": 407,
+        "lilBrotli": 86,
+        "officialBrotli": 115,
+        "deltaRaw": 199,
+        "deltaBrotli": -29
       },
       {
         "module": "src/Style",
-        "lilRaw": 593,
+        "lilRaw": 609,
         "officialRaw": 547,
-        "lilBrotli": 127,
+        "lilBrotli": 163,
         "officialBrotli": 196,
-        "deltaRaw": 46,
-        "deltaBrotli": -69
+        "deltaRaw": 62,
+        "deltaBrotli": -33
       },
       {
-        "module": "src/defineEnvironment",
-        "lilRaw": 123,
-        "officialRaw": 231,
-        "lilBrotli": 14,
-        "officialBrotli": 88,
-        "deltaRaw": -108,
-        "deltaBrotli": -74
+        "module": "src/parseTree",
+        "lilRaw": 489,
+        "officialRaw": 476,
+        "lilBrotli": 44,
+        "officialBrotli": 78,
+        "deltaRaw": 13,
+        "deltaBrotli": -34
       },
       {
-        "module": "src/functions/mathchoice",
-        "lilRaw": 460,
-        "officialRaw": 531,
-        "lilBrotli": 71,
-        "officialBrotli": 147,
-        "deltaRaw": -71,
-        "deltaBrotli": -76
+        "module": "src/functions/vcenter",
+        "lilRaw": 451,
+        "officialRaw": 426,
+        "lilBrotli": 43,
+        "officialBrotli": 78,
+        "deltaRaw": 25,
+        "deltaBrotli": -35
+      },
+      {
+        "module": "src/functions/operatorname",
+        "lilRaw": 1537,
+        "officialRaw": 1510,
+        "lilBrotli": 255,
+        "officialBrotli": 291,
+        "deltaRaw": 27,
+        "deltaBrotli": -36
+      },
+      {
+        "module": "src/functions/op",
+        "lilRaw": 3404,
+        "officialRaw": 3442,
+        "lilBrotli": 778,
+        "officialBrotli": 814,
+        "deltaRaw": -38,
+        "deltaBrotli": -36
+      },
+      {
+        "module": "src/Token",
+        "lilRaw": 119,
+        "officialRaw": 92,
+        "lilBrotli": -7,
+        "officialBrotli": 30,
+        "deltaRaw": 27,
+        "deltaBrotli": -37
       },
       {
         "module": "src/unicodeAccents",
         "lilRaw": 757,
         "officialRaw": 461,
-        "lilBrotli": 96,
+        "lilBrotli": 135,
         "officialBrotli": 172,
         "deltaRaw": 296,
-        "deltaBrotli": -76
+        "deltaBrotli": -37
       },
       {
-        "module": "src/ParseError",
-        "lilRaw": 612,
-        "officialRaw": 532,
-        "lilBrotli": 200,
-        "officialBrotli": 277,
-        "deltaRaw": 80,
-        "deltaBrotli": -77
+        "module": "src/functions/genfrac",
+        "lilRaw": 5318,
+        "officialRaw": 5612,
+        "lilBrotli": 1276,
+        "officialBrotli": 1318,
+        "deltaRaw": -294,
+        "deltaBrotli": -42
+      },
+      {
+        "module": "src/Namespace",
+        "lilRaw": 926,
+        "officialRaw": 917,
+        "lilBrotli": 184,
+        "officialBrotli": 228,
+        "deltaRaw": 9,
+        "deltaBrotli": -44
+      },
+      {
+        "module": "src/units",
+        "lilRaw": 926,
+        "officialRaw": 677,
+        "lilBrotli": 166,
+        "officialBrotli": 211,
+        "deltaRaw": 249,
+        "deltaBrotli": -45
+      },
+      {
+        "module": "src/functions/smash",
+        "lilRaw": 878,
+        "officialRaw": 960,
+        "lilBrotli": 103,
+        "officialBrotli": 151,
+        "deltaRaw": -82,
+        "deltaBrotli": -48
       },
       {
         "module": "src/Options",
-        "lilRaw": 2379,
+        "lilRaw": 2553,
         "officialRaw": 2199,
-        "lilBrotli": 559,
+        "lilBrotli": 586,
         "officialBrotli": 638,
-        "deltaRaw": 180,
-        "deltaBrotli": -79
-      },
-      {
-        "module": "src/mathMLTree",
-        "lilRaw": 2407,
-        "officialRaw": 2045,
-        "lilBrotli": 384,
-        "officialBrotli": 469,
-        "deltaRaw": 362,
-        "deltaBrotli": -85
-      },
-      {
-        "module": "src/functions/horizBrace",
-        "lilRaw": 1535,
-        "officialRaw": 1388,
-        "lilBrotli": 204,
-        "officialBrotli": 289,
-        "deltaRaw": 147,
-        "deltaBrotli": -85
-      },
-      {
-        "module": "src/functions/def",
-        "lilRaw": 2203,
-        "officialRaw": 2467,
-        "lilBrotli": 467,
-        "officialBrotli": 555,
-        "deltaRaw": -264,
-        "deltaBrotli": -88
-      },
-      {
-        "module": "src/buildTree",
-        "lilRaw": 302,
-        "officialRaw": 592,
-        "lilBrotli": 125,
-        "officialBrotli": 216,
-        "deltaRaw": -290,
-        "deltaBrotli": -91
-      },
-      {
-        "module": "src/functions/text",
-        "lilRaw": 889,
-        "officialRaw": 874,
-        "lilBrotli": 103,
-        "officialBrotli": 202,
-        "deltaRaw": 15,
-        "deltaBrotli": -99
+        "deltaRaw": 354,
+        "deltaBrotli": -52
       },
       {
         "module": "src/functions/phantom",
         "lilRaw": 1192,
         "officialRaw": 1416,
-        "lilBrotli": 58,
+        "lilBrotli": 107,
         "officialBrotli": 160,
         "deltaRaw": -224,
-        "deltaBrotli": -102
+        "deltaBrotli": -53
       },
       {
-        "module": "src/functions/hbox",
-        "lilRaw": 261,
-        "officialRaw": 290,
-        "lilBrotli": -7,
-        "officialBrotli": 97,
-        "deltaRaw": -29,
-        "deltaBrotli": -104
+        "module": "src/functions/environment",
+        "lilRaw": 673,
+        "officialRaw": 697,
+        "lilBrotli": 158,
+        "officialBrotli": 215,
+        "deltaRaw": -24,
+        "deltaBrotli": -57
       },
       {
-        "module": "src/functions/kern",
-        "lilRaw": 687,
-        "officialRaw": 724,
-        "lilBrotli": 91,
-        "officialBrotli": 210,
-        "deltaRaw": -37,
-        "deltaBrotli": -119
+        "module": "src/functions/text",
+        "lilRaw": 889,
+        "officialRaw": 874,
+        "lilBrotli": 145,
+        "officialBrotli": 202,
+        "deltaRaw": 15,
+        "deltaBrotli": -57
       },
       {
-        "module": "src/functions/ordgroup",
-        "lilRaw": 217,
-        "officialRaw": 164,
-        "lilBrotli": -21,
-        "officialBrotli": 98,
-        "deltaRaw": 53,
-        "deltaBrotli": -119
+        "module": "src/functions/color",
+        "lilRaw": 600,
+        "officialRaw": 783,
+        "lilBrotli": 10,
+        "officialBrotli": 69,
+        "deltaRaw": -183,
+        "deltaBrotli": -59
       },
       {
-        "module": "src/buildHTML",
-        "lilRaw": 2135,
-        "officialRaw": 3008,
-        "lilBrotli": 680,
-        "officialBrotli": 816,
-        "deltaRaw": -873,
-        "deltaBrotli": -136
+        "module": "src/unicodeSupOrSub",
+        "lilRaw": 1174,
+        "officialRaw": 1160,
+        "lilBrotli": 324,
+        "officialBrotli": 384,
+        "deltaRaw": 14,
+        "deltaBrotli": -60
+      },
+      {
+        "module": "src/functions/tag",
+        "lilRaw": 365,
+        "officialRaw": 299,
+        "lilBrotli": 22,
+        "officialBrotli": 83,
+        "deltaRaw": 66,
+        "deltaBrotli": -61
+      },
+      {
+        "module": "src/functions/htmlmathml",
+        "lilRaw": 250,
+        "officialRaw": 276,
+        "lilBrotli": 26,
+        "officialBrotli": 95,
+        "deltaRaw": -26,
+        "deltaBrotli": -69
       },
       {
         "module": "src/functions/styling",
         "lilRaw": 650,
         "officialRaw": 758,
-        "lilBrotli": 36,
+        "lilBrotli": 123,
         "officialBrotli": 193,
         "deltaRaw": -108,
-        "deltaBrotli": -157
+        "deltaBrotli": -70
+      },
+      {
+        "module": "src/functions/underline",
+        "lilRaw": 665,
+        "officialRaw": 666,
+        "lilBrotli": 1,
+        "officialBrotli": 74,
+        "deltaRaw": -1,
+        "deltaBrotli": -73
+      },
+      {
+        "module": "src/functions/mathchoice",
+        "lilRaw": 460,
+        "officialRaw": 531,
+        "lilBrotli": 74,
+        "officialBrotli": 147,
+        "deltaRaw": -71,
+        "deltaBrotli": -73
+      },
+      {
+        "module": "src/functions/lap",
+        "lilRaw": 777,
+        "officialRaw": 846,
+        "lilBrotli": 90,
+        "officialBrotli": 164,
+        "deltaRaw": -69,
+        "deltaBrotli": -74
+      },
+      {
+        "module": "src/functions/raisebox",
+        "lilRaw": 480,
+        "officialRaw": 481,
+        "lilBrotli": 13,
+        "officialBrotli": 88,
+        "deltaRaw": -1,
+        "deltaBrotli": -75
+      },
+      {
+        "module": "src/domTree",
+        "lilRaw": 4932,
+        "officialRaw": 4940,
+        "lilBrotli": 897,
+        "officialBrotli": 973,
+        "deltaRaw": -8,
+        "deltaBrotli": -76
+      },
+      {
+        "module": "src/functions/math",
+        "lilRaw": 362,
+        "officialRaw": 438,
+        "lilBrotli": 15,
+        "officialBrotli": 94,
+        "deltaRaw": -76,
+        "deltaBrotli": -79
+      },
+      {
+        "module": "src/unicodeScripts",
+        "lilRaw": 581,
+        "officialRaw": 588,
+        "lilBrotli": 198,
+        "officialBrotli": 279,
+        "deltaRaw": -7,
+        "deltaBrotli": -81
+      },
+      {
+        "module": "src/functions/verb",
+        "lilRaw": 613,
+        "officialRaw": 630,
+        "lilBrotli": 89,
+        "officialBrotli": 174,
+        "deltaRaw": -17,
+        "deltaBrotli": -85
+      },
+      {
+        "module": "src/functions/html",
+        "lilRaw": 1176,
+        "officialRaw": 1240,
+        "lilBrotli": 270,
+        "officialBrotli": 356,
+        "deltaRaw": -64,
+        "deltaBrotli": -86
+      },
+      {
+        "module": "src/functions/overline",
+        "lilRaw": 672,
+        "officialRaw": 659,
+        "lilBrotli": -19,
+        "officialBrotli": 70,
+        "deltaRaw": 13,
+        "deltaBrotli": -89
+      },
+      {
+        "module": "src/functions/sqrt",
+        "lilRaw": 1203,
+        "officialRaw": 1213,
+        "lilBrotli": 222,
+        "officialBrotli": 311,
+        "deltaRaw": -10,
+        "deltaBrotli": -89
+      },
+      {
+        "module": "src/functions/includegraphics",
+        "lilRaw": 1747,
+        "officialRaw": 1792,
+        "lilBrotli": 357,
+        "officialBrotli": 449,
+        "deltaRaw": -45,
+        "deltaBrotli": -92
+      },
+      {
+        "module": "src/parseNode",
+        "lilRaw": 233,
+        "officialRaw": 352,
+        "lilBrotli": 44,
+        "officialBrotli": 141,
+        "deltaRaw": -119,
+        "deltaBrotli": -97
       },
       {
         "module": "src/buildCommon",
-        "lilRaw": 6586,
+        "lilRaw": 7049,
         "officialRaw": 6568,
-        "lilBrotli": 1643,
+        "lilBrotli": 1708,
         "officialBrotli": 1809,
-        "deltaRaw": 18,
-        "deltaBrotli": -166
+        "deltaRaw": 481,
+        "deltaBrotli": -101
+      },
+      {
+        "module": "src/functions/kern",
+        "lilRaw": 693,
+        "officialRaw": 724,
+        "lilBrotli": 106,
+        "officialBrotli": 210,
+        "deltaRaw": -31,
+        "deltaBrotli": -104
+      },
+      {
+        "module": "src/Lexer",
+        "lilRaw": 1192,
+        "officialRaw": 1070,
+        "lilBrotli": 373,
+        "officialBrotli": 478,
+        "deltaRaw": 122,
+        "deltaBrotli": -105
       },
       {
         "module": "src/functions/mclass",
-        "lilRaw": 1135,
+        "lilRaw": 1222,
         "officialRaw": 1837,
-        "lilBrotli": 143,
+        "lilBrotli": 247,
         "officialBrotli": 367,
-        "deltaRaw": -702,
-        "deltaBrotli": -224
+        "deltaRaw": -615,
+        "deltaBrotli": -120
+      },
+      {
+        "module": "src/SourceLocation",
+        "lilRaw": 196,
+        "officialRaw": 189,
+        "lilBrotli": -77,
+        "officialBrotli": 48,
+        "deltaRaw": 7,
+        "deltaBrotli": -125
+      },
+      {
+        "module": "src/functions/relax",
+        "lilRaw": 107,
+        "officialRaw": 150,
+        "lilBrotli": -74,
+        "officialBrotli": 55,
+        "deltaRaw": -43,
+        "deltaBrotli": -129
+      },
+      {
+        "module": "src/functions/symbolsOrd",
+        "lilRaw": 641,
+        "officialRaw": 614,
+        "lilBrotli": 34,
+        "officialBrotli": 163,
+        "deltaRaw": 27,
+        "deltaBrotli": -129
+      },
+      {
+        "module": "src/functions/ordgroup",
+        "lilRaw": 217,
+        "officialRaw": 164,
+        "lilBrotli": -37,
+        "officialBrotli": 98,
+        "deltaRaw": 53,
+        "deltaBrotli": -135
+      },
+      {
+        "module": "src/tree",
+        "lilRaw": 321,
+        "officialRaw": 452,
+        "lilBrotli": -62,
+        "officialBrotli": 79,
+        "deltaRaw": -131,
+        "deltaBrotli": -141
+      },
+      {
+        "module": "src/functions/horizBrace",
+        "lilRaw": 1513,
+        "officialRaw": 1388,
+        "lilBrotli": 147,
+        "officialBrotli": 289,
+        "deltaRaw": 125,
+        "deltaBrotli": -142
+      },
+      {
+        "module": "src/buildTree",
+        "lilRaw": 521,
+        "officialRaw": 592,
+        "lilBrotli": 61,
+        "officialBrotli": 216,
+        "deltaRaw": -71,
+        "deltaBrotli": -155
+      },
+      {
+        "module": "src/functions/symbolsOp",
+        "lilRaw": 381,
+        "officialRaw": 375,
+        "lilBrotli": -41,
+        "officialBrotli": 116,
+        "deltaRaw": 6,
+        "deltaBrotli": -157
+      },
+      {
+        "module": "src/defineMacro",
+        "lilRaw": 15,
+        "officialRaw": 33,
+        "lilBrotli": -146,
+        "officialBrotli": 28,
+        "deltaRaw": -18,
+        "deltaBrotli": -174
+      },
+      {
+        "module": "src/defineEnvironment",
+        "lilRaw": 33,
+        "officialRaw": 231,
+        "lilBrotli": -89,
+        "officialBrotli": 88,
+        "deltaRaw": -198,
+        "deltaBrotli": -177
+      },
+      {
+        "module": "src/spacingData",
+        "lilRaw": 376,
+        "officialRaw": 536,
+        "lilBrotli": -57,
+        "officialBrotli": 141,
+        "deltaRaw": -160,
+        "deltaBrotli": -198
+      },
+      {
+        "module": "src/wide-character",
+        "lilRaw": 1331,
+        "officialRaw": 1489,
+        "lilBrotli": 154,
+        "officialBrotli": 355,
+        "deltaRaw": -158,
+        "deltaBrotli": -201
+      },
+      {
+        "module": "src/functions/hbox",
+        "lilRaw": 267,
+        "officialRaw": 290,
+        "lilBrotli": -123,
+        "officialBrotli": 97,
+        "deltaRaw": -23,
+        "deltaBrotli": -220
+      },
+      {
+        "module": "src/symbols",
+        "lilRaw": 27871,
+        "officialRaw": 21490,
+        "lilBrotli": 3790,
+        "officialBrotli": 4032,
+        "deltaRaw": 6381,
+        "deltaBrotli": -242
       },
       {
         "module": "(unmapped)",
@@ -908,58 +908,40 @@
         "deltaBrotli": -265
       },
       {
-        "module": "src/wide-character",
-        "lilRaw": 1024,
-        "officialRaw": 1489,
-        "lilBrotli": 72,
-        "officialBrotli": 355,
-        "deltaRaw": -465,
-        "deltaBrotli": -283
+        "module": "src/functions/supsub",
+        "lilRaw": 1368,
+        "officialRaw": 2760,
+        "lilBrotli": 336,
+        "officialBrotli": 623,
+        "deltaRaw": -1392,
+        "deltaBrotli": -287
+      },
+      {
+        "module": "src/functions/enclose",
+        "lilRaw": 2828,
+        "officialRaw": 4142,
+        "lilBrotli": 530,
+        "officialBrotli": 847,
+        "deltaRaw": -1314,
+        "deltaBrotli": -317
+      },
+      {
+        "module": "src/functions/arrow",
+        "lilRaw": 694,
+        "officialRaw": 2039,
+        "lilBrotli": 65,
+        "officialBrotli": 430,
+        "deltaRaw": -1345,
+        "deltaBrotli": -365
       },
       {
         "module": "src/svgGeometry",
-        "lilRaw": 21181,
+        "lilRaw": 20888,
         "officialRaw": 22170,
-        "lilBrotli": 7127,
+        "lilBrotli": 7011,
         "officialBrotli": 7460,
-        "deltaRaw": -989,
-        "deltaBrotli": -333
-      },
-      {
-        "module": "src/stretchy",
-        "lilRaw": 4546,
-        "officialRaw": 5301,
-        "lilBrotli": 993,
-        "officialBrotli": 1354,
-        "deltaRaw": -755,
-        "deltaBrotli": -361
-      },
-      {
-        "module": "src/functions/supsub",
-        "lilRaw": 1375,
-        "officialRaw": 2760,
-        "lilBrotli": 249,
-        "officialBrotli": 623,
-        "deltaRaw": -1385,
-        "deltaBrotli": -374
-      },
-      {
-        "module": "src/macros",
-        "lilRaw": 17179,
-        "officialRaw": 19024,
-        "lilBrotli": 3691,
-        "officialBrotli": 4080,
-        "deltaRaw": -1845,
-        "deltaBrotli": -389
-      },
-      {
-        "module": "src/environments/cd",
-        "lilRaw": 1892,
-        "officialRaw": 3298,
-        "lilBrotli": 333,
-        "officialBrotli": 784,
-        "deltaRaw": -1406,
-        "deltaBrotli": -451
+        "deltaRaw": -1282,
+        "deltaBrotli": -449
       },
       {
         "module": "katex",
@@ -971,22 +953,40 @@
         "deltaBrotli": -456
       },
       {
-        "module": "src/functions/enclose",
-        "lilRaw": 2334,
-        "officialRaw": 4142,
-        "lilBrotli": 387,
-        "officialBrotli": 847,
-        "deltaRaw": -1808,
-        "deltaBrotli": -460
+        "module": "src/macros",
+        "lilRaw": 17039,
+        "officialRaw": 19024,
+        "lilBrotli": 3598,
+        "officialBrotli": 4080,
+        "deltaRaw": -1985,
+        "deltaBrotli": -482
+      },
+      {
+        "module": "src/stretchy",
+        "lilRaw": 3785,
+        "officialRaw": 5301,
+        "lilBrotli": 786,
+        "officialBrotli": 1354,
+        "deltaRaw": -1516,
+        "deltaBrotli": -568
+      },
+      {
+        "module": "src/environments/cd",
+        "lilRaw": 1496,
+        "officialRaw": 3298,
+        "lilBrotli": 92,
+        "officialBrotli": 784,
+        "deltaRaw": -1802,
+        "deltaBrotli": -692
       },
       {
         "module": "src/environments/array",
-        "lilRaw": 4548,
+        "lilRaw": 5607,
         "officialRaw": 11378,
-        "lilBrotli": 1261,
+        "lilBrotli": 1307,
         "officialBrotli": 3020,
-        "deltaRaw": -6830,
-        "deltaBrotli": -1759
+        "deltaRaw": -5771,
+        "deltaBrotli": -1713
       },
       {
         "module": "src/fontMetricsData",
