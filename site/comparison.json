@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-09-10T13:47:03Z",
+  "name": "katexlil",
+  "compiler": {
+    "commit": "63c2896a71e60cbcca7870fe979f9d6ecaff3452",
+    "sha256": "2319462ef7d858c8e2a5a767260aa4f80d325e0045afa0cc86cc122d1299b059",
+    "profile": "release",
+    "dirty": false
+  },
+  "upstream": {
+    "package": "katex",
+    "version": "0.16.22"
+  },
+  "scope": "Pinned KaTeX Flow source tree: Babel type stripping, esbuild bundling and Terser passes=3; three sequential samples, dependencies already installed.",
+  "compatibility": "Repository checks pass.",
+  "tests": {
+    "pass": 21,
+    "total": 21
+  },
+  "buildComplete": true,
+  "machine": {
+    "cpu": "AMD EPYC 9V45 96-Core Processor",
+    "logicalCpus": 16,
+    "memoryBytes": 33648431104,
+    "os": "Ubuntu 24.04.4 LTS",
+    "node": "v22.23.2",
+    "rayonThreads": 16,
+    "provider": "Azure",
+    "instanceClass": "Standard_D16als_v7"
+  },
+  "build": {
+    "compilerSeconds": 73.33447742462158,
+    "packageSeconds": 161.06350158800012,
+    "originalSeconds": 0.6903867519999999,
+    "packageScope": "node scripts/build.mjs --compile --force; 8 successful compiler invocations plus package generation.",
+    "originalScope": "katex@0.16.22 public ESM runtime graph; dependency installation excluded; this is a comparison bundle build, not the upstream vendor release pipeline",
+    "protocol": "Same shared worker for both lanes; one fresh LilScript package build; median of three sequential upstream ESM builds (PlayCanvas records one native reference build). Outside compiler jobs were observed in the pool, so contention is not excluded. Dependencies, tests and compression measurement are outside these build times."
+  },
+  "esm": {
+    "lilscript": {
+      "raw": 274892,
+      "gzip9": 78490,
+      "brotli11": 64620,
+      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd",
+      "file": "./esm-comparison/lilscript.js"
+    },
+    "original": {
+      "raw": 267051,
+      "gzip9": 76483,
+      "brotli11": 63066,
+      "sha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009",
+      "file": "./esm-comparison/original.js"
+    }
+  }
+}

@@ -56,14 +56,13 @@
           </div>
           <p class="score-note" id="score-note">
             Official rows are one esbuild bundle of <code>katex@0.16.22</code> plus the packages it needs at runtime, then Terser or esbuild.
-            LilScript is not post-minified. The npm file is the Brotli-scored compile. A loss is printed as a loss.
+            LilScript is not post-minified. The measured ESM is the Brotli-scored compile. A loss is printed as a loss.
           </p>
         </div>
       </section>
       <section class="ticker" aria-label="Supported features">
         <div>renderToString <span>✦</span> render <span>✦</span> frac <span>✦</span> sqrt <span>✦</span> scripts <span>✦</span> greek <span>✦</span> matrix</div>
       </section>
-      <p data-audit-history="2026-09-10" style="max-width:1160px;margin:18px auto;padding:12px 20px;font:14px/1.6 system-ui;color:#344b54;background:#edf3f4">The build audit above records the current compiler check. Runtime throughput and application benchmarks below retain their earlier measurement dates.</p>
 <section class="performance shell" id="performance">
         <div class="section-heading">
           <div>
@@ -167,7 +166,7 @@
           </div>
           <div class="codec-block">
             <h3>Brotli-11</h3>
-            <p class="codec-lead">The wire number. LilScript row is the npm file.</p>
+            <p class="codec-lead">The wire number. LilScript row is the measured ESM.</p>
             <div class="total-bar" id="bar-brotli"></div>
             <div class="table-wrap">
               <table>

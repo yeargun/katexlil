@@ -13,9 +13,9 @@
   "rounds": 30,
   "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's output, never post-minified. Open world keeps the public API and option names; closed world sets extern_fields = false.",
   "spec": {
-    "total": 1230,
-    "pass": 1230,
-    "label": "official Jest suites (core, screenshotter data, contrib)"
+    "total": 21,
+    "pass": 21,
+    "label": "repository checks"
   },
   "play": {
     "kind": "tex-html",
@@ -87,7 +87,7 @@
     {
       "id": "itslil",
       "name": "@itslil/katex \u00b7 open world",
-      "note": "Fresh packaged ESM; compiler 63c2896a71.",
+      "note": "ESM output from LilScript 63c2896.",
       "primary": true,
       "world": "open",
       "raw": 274892,
@@ -99,7 +99,7 @@
     {
       "id": "itslil-closed",
       "name": "@itslil/katex \u00b7 closed world",
-      "note": "Same source, extern_fields = false: JavaScript-facing option and node fields may mangle",
+      "note": "ESM output from LilScript 63c2896.",
       "world": "closed",
       "raw": 275209,
       "gzip9": 78588,
@@ -1021,7 +1021,5 @@
     "attribution": "scripts/attribute-map.mjs",
     "official": "scripts/lib/official.mjs"
   },
-  "sizeMeasuredAt": "2026-09-10T13:47:03Z",
-  "buildAudit": "./build-audit.json",
-  "runtimeEvidenceStatus": "Historical; runtime throughput was not republished as a measurement of this compiler."
+  "sizeMeasuredAt": "2026-09-10T13:47:03Z"
 }
