@@ -1,0 +1,65 @@
+{
+  "source": {
+    "repository": "https://github.com/KaTeX/KaTeX.git",
+    "commit": "613c3da85b083f602c0d5265da0f735ddb728dbb",
+    "package": "katex",
+    "version": "0.16.22",
+    "directory": "."
+  },
+  "entry": "dist/katex.mjs",
+  "scope": "katex@0.16.22 public ESM runtime graph; dependency installation excluded; this is a comparison bundle build, not the upstream vendor release pipeline",
+  "external": [],
+  "samples": [
+    {
+      "bundleSeconds": 0.050116952000000006,
+      "wallSeconds": 0.8268669710000001
+    },
+    {
+      "bundleSeconds": 0.04622563700000001,
+      "wallSeconds": 0.7138328669999999
+    },
+    {
+      "bundleSeconds": 0.04844926999999984,
+      "wallSeconds": 0.6505370209999999
+    }
+  ],
+  "medianSeconds": 0.7138328669999999,
+  "toolchain": {
+    "esbuild": "0.28.1",
+    "terser": "5.51.2"
+  },
+  "artifacts": [
+    {
+      "path": "original.esm.js",
+      "raw": 267051,
+      "gzip9": 76483,
+      "brotli11": 63066,
+      "sha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009"
+    },
+    {
+      "path": "original.unminified.js",
+      "raw": 495850,
+      "gzip9": 103293,
+      "brotli11": 83022,
+      "sha256": "8ebb2ee59bb4f7a29762c829cf10e5288b5268a8adfb552a9eb81c3efefe26b0"
+    },
+    {
+      "path": "original.terser-nomangle.js",
+      "raw": 342635,
+      "gzip9": 84778,
+      "brotli11": 69529,
+      "sha256": "c35705016ad6e10ea1b6ad4cb4ef17696c79e7f15cb3be666d5faf703fb5e4ee"
+    },
+    {
+      "path": "original.esbuild.js",
+      "raw": 271781,
+      "gzip9": 76693,
+      "brotli11": 63767,
+      "sha256": "ca7890ced1ad94d863fde8c74129b45d15d623f4733b34831463069a1d2501e0"
+    }
+  ],
+  "inputs": [
+    "dist/katex.mjs",
+    "public-esm-entry.mjs"
+  ]
+}

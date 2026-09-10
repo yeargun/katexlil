@@ -1,0 +1,33 @@
+{
+  "source": {
+    "repository": "https://github.com/KaTeX/KaTeX.git",
+    "commit": "613c3da85b083f602c0d5265da0f735ddb728dbb",
+    "package": "katex",
+    "version": "0.16.22",
+    "directory": "."
+  },
+  "portSource": {
+    "commit": "13cd81b9f47d9038112daf5aefea480e82e15f2b"
+  },
+  "compilerCommit": "4dc4e3337d9ffd758d65e3852682d6e13d9331c1",
+  "install": [
+    "corepack",
+    "yarn",
+    "install",
+    "--immutable",
+    "--mode=skip-build"
+  ],
+  "setup": [],
+  "build": [
+    "corepack",
+    "yarn",
+    "build"
+  ],
+  "clean": [],
+  "entry": "dist/katex.mjs",
+  "defaultExport": true,
+  "external": [],
+  "esmScope": "katex@0.16.22 public ESM runtime graph; dependency installation excluded; this is a comparison bundle build, not the upstream vendor release pipeline",
+  "lilscriptBuild": "node scripts/build.mjs --compile --force",
+  "test": "node --test test/*.test.mjs && node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/official/jest.config.mjs --runInBand"
+}
