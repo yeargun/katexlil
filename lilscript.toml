@@ -1,5 +1,9 @@
 # reusable ESM — host-visible names stay
 [javascript]
+# 8.62: the naming that reuses one spelling for one token shape. A per-port
+# option, not a default: measured across ten ports it is +552 as a default and
+# -341 on the five it wins, which is 8.15's rule for a shape that splits.
+name_ordering = "idiom-converged"
 # Measured on this port: the objects it reads are plain data, so a member
 # read is not a coercion hook and the value can nest into its consumer.
 assume_pure_property_reads = true
