@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 1,
+  "name": "katexlil",
+  "measuredAt": "2026-09-10T13:47:03Z",
+  "status": "verified",
+  "buildPassed": true,
+  "summary": "The fresh artifact was checked against the repository test command.",
+  "sourceCommit": "13cd81b9f47d9038112daf5aefea480e82e15f2b",
+  "previousPublicCommit": "cd76c1cb132c7a40329caac0e20f36dd774d769f",
+  "compiler": {
+    "commit": "63c2896a71e60cbcca7870fe979f9d6ecaff3452",
+    "sha256": "2319462ef7d858c8e2a5a767260aa4f80d325e0045afa0cc86cc122d1299b059",
+    "profile": "release",
+    "dirty": false
+  },
+  "machine": {
+    "cpu": "AMD EPYC 9V45 96-Core Processor",
+    "logicalCpus": 16,
+    "affinityCpus": 16,
+    "memoryBytes": 33648431104,
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "6.17.0-1022-azure",
+    "architecture": "x86_64",
+    "node": "v22.23.2",
+    "rayonThreads": 16,
+    "provider": "Azure",
+    "instanceClass": "Standard_D16als_v7",
+    "parallelPortBuildsOnMachine": 1,
+    "loadAtStart": [
+      0.255859375,
+      0.1181640625,
+      0.0849609375
+    ],
+    "loadAtEnd": [
+      1.51416015625,
+      0.8330078125,
+      0.39013671875
+    ],
+    "concurrencyNote": "The audit scheduled one port per worker, but this is a shared pool. Outside compiler jobs were observed during the run; timings are contextual wall times, not controlled speedup benchmarks."
+  },
+  "upstream": {
+    "name": "katexlil",
+    "package": "katex",
+    "pinned": "0.16.22",
+    "latest": "0.18.7",
+    "source": "https://www.npmjs.com/package/katex"
+  },
+  "comparisonScope": "Pinned KaTeX Flow source tree: Babel type stripping, esbuild bundling and Terser passes=3; three sequential samples, dependencies already installed. Sizes use canonical zlib 1.3.1 gzip-9 and Google Brotli 1.1.0 quality 11.",
+  "sizes": {
+    "previous": {
+      "id": "itslil",
+      "name": "@itslil/katex \u00b7 open world",
+      "note": "The npm ESM: direct LilScript js-module output, extern_fields = true, public API and option names kept",
+      "primary": true,
+      "world": "open",
+      "raw": 275444,
+      "gzip9": 78712,
+      "brotli11": 64907
+    },
+    "current": {
+      "path": "dist/katex.esm.js",
+      "raw": 274892,
+      "gzip9": 78490,
+      "brotli11": 64620,
+      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
+    },
+    "upstream": {
+      "path": ".page-audit/upstream/official.source-terser.js",
+      "raw": 263662,
+      "gzip9": 74599,
+      "brotli11": 61728,
+      "sha256": "28574a0e1fc8f8d846188b2812418a8dce5c5c09e5b2ce2e7474a14a38c120a9"
+    }
+  },
+  "officialArtifacts": [
+    {
+      "path": ".page-audit/upstream/official.terser-nomangle.js",
+      "raw": 342635,
+      "gzip9": 84778,
+      "brotli11": 69529,
+      "sha256": "c35705016ad6e10ea1b6ad4cb4ef17696c79e7f15cb3be666d5faf703fb5e4ee"
+    },
+    {
+      "path": ".page-audit/upstream/official.esm.js",
+      "raw": 267051,
+      "gzip9": 76483,
+      "brotli11": 63066,
+      "sha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009"
+    },
+    {
+      "path": ".page-audit/upstream/official.unminified.js",
+      "raw": 495869,
+      "gzip9": 103308,
+      "brotli11": 83118,
+      "sha256": "5ac9e8b8a501d45ed89f63a94cbe293e4b4c4c82a82d33d6fef29690cae61bee"
+    },
+    {
+      "path": ".page-audit/upstream/official.source-terser.js",
+      "raw": 263662,
+      "gzip9": 74599,
+      "brotli11": 61728,
+      "sha256": "28574a0e1fc8f8d846188b2812418a8dce5c5c09e5b2ce2e7474a14a38c120a9"
+    },
+    {
+      "path": ".page-audit/upstream/official.esbuild.js",
+      "raw": 271781,
+      "gzip9": 76693,
+      "brotli11": 63767,
+      "sha256": "ca7890ced1ad94d863fde8c74129b45d15d623f4733b34831463069a1d2501e0"
+    }
+  ],
+  "candidateArtifacts": [
+    {
+      "path": "dist/katex.mjs",
+      "raw": 274892,
+      "gzip9": 78490,
+      "brotli11": 64620,
+      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
+    },
+    {
+      "path": "dist/katex.raw.js",
+      "raw": 217330,
+      "gzip9": 66622,
+      "brotli11": 55303,
+      "sha256": "d66d571a90e8a2b24253c996f85c3cf5721d5946ecd62c7faf0caa0f030844ea"
+    },
+    {
+      "path": "dist/katex.test.js",
+      "raw": 275070,
+      "gzip9": 78575,
+      "brotli11": 64756,
+      "sha256": "4a85480d6518637b7ba0d3443c903b9cca8bbb698386c7f14bc58d923a1d7480"
+    },
+    {
+      "path": "dist/katex.umd.js",
+      "raw": 276705,
+      "gzip9": 78439,
+      "brotli11": 65087,
+      "sha256": "345c8cd56607b6da45073116c8361ec71914740378222ba8f42eaf89fc630f7b"
+    },
+    {
+      "path": "dist/katex.contrib-test.js",
+      "raw": 762,
+      "gzip9": 421,
+      "brotli11": 366,
+      "sha256": "803c112ca6278aad89763197b48d2cca0d50ef0a0520dab50fb5a84df8a44176"
+    },
+    {
+      "path": "dist/katex.closed.js",
+      "raw": 275209,
+      "gzip9": 78588,
+      "brotli11": 64755,
+      "sha256": "cf0f158f34d0796cba3f171fce1f5a888bdaf7128b0727d05b0f4277065185f6"
+    },
+    {
+      "path": "dist/katex.closed.raw.js",
+      "raw": 217649,
+      "gzip9": 66715,
+      "brotli11": 55359,
+      "sha256": "6af46176801cb2cfb4dab9cfdbc712b7d5963fed0c7c230f06e52090391ddadd"
+    },
+    {
+      "path": "dist/katex.cjs",
+      "raw": 276695,
+      "gzip9": 78438,
+      "brotli11": 65023,
+      "sha256": "bdeafc9329203138d0cad72456f21db9c673efd3155fcf39365bf4119266059b"
+    },
+    {
+      "path": "dist/katex.esm.js",
+      "raw": 274892,
+      "gzip9": 78490,
+      "brotli11": 64620,
+      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
+    },
+    {
+      "path": "dist/katex.min.js",
+      "raw": 276705,
+      "gzip9": 78439,
+      "brotli11": 65087,
+      "sha256": "345c8cd56607b6da45073116c8361ec71914740378222ba8f42eaf89fc630f7b"
+    },
+    {
+      "path": "dist/fontMetricsData.js",
+      "raw": 57656,
+      "gzip9": 11320,
+      "brotli11": 9209,
+      "sha256": "0f095095723f7cdeef08ed3a8a0ee3b28be8a5421a165289c70f516dbbcc84d8"
+    },
+    {
+      "path": "dist/contrib/mhchem.min.js",
+      "raw": 35793,
+      "gzip9": 9507,
+      "brotli11": 8674,
+      "sha256": "d1dd81675dc19e308e83567a21a38281b85fb17e1e400709982aa83e8bbd9a0f"
+    },
+    {
+      "path": "dist/contrib/auto-render.min.js",
+      "raw": 3254,
+      "gzip9": 1521,
+      "brotli11": 1374,
+      "sha256": "c6093c7719b161ce873f8d00c80cc9af798d6008464019feb00620b27758bae7"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.cjs",
+      "raw": 1333,
+      "gzip9": 693,
+      "brotli11": 585,
+      "sha256": "eb52b37058646b6bc4a215782c76a02cf5f7b7b7c01b6b941bd6b69b3eb9b6af"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.mjs",
+      "raw": 6911,
+      "gzip9": 2363,
+      "brotli11": 2150,
+      "sha256": "808a4d2a48e438762bb978a799283948ab7f145700212bd6fb6be1834a195ded"
+    },
+    {
+      "path": "dist/contrib/auto-render.cjs",
+      "raw": 4057,
+      "gzip9": 1744,
+      "brotli11": 1575,
+      "sha256": "2b795d8717ac9041a9c52919176b13c37e91efb9f0c437f028d193f7d74bb812"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.min.js",
+      "raw": 7412,
+      "gzip9": 2593,
+      "brotli11": 2366,
+      "sha256": "ece5d4c99b4feb224df5a4e8831ef8a57da95615756eeb1ac31458e702fc6131"
+    },
+    {
+      "path": "dist/contrib/mhchem.cjs",
+      "raw": 41193,
+      "gzip9": 10348,
+      "brotli11": 9357,
+      "sha256": "9e3f8c64d4c3ed18733bd4915bb38104105289b2ebec35de5f8ed94dc4db8d2a"
+    },
+    {
+      "path": "dist/contrib/mhchem.mjs",
+      "raw": 39864,
+      "gzip9": 10015,
+      "brotli11": 9058,
+      "sha256": "9771dbcd8055da934412671563290a1f988d1771b9c9b6cbfdb03a43f9123af1"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.min.js",
+      "raw": 548,
+      "gzip9": 371,
+      "brotli11": 280,
+      "sha256": "ae6e04ca2abae60144eaa2438fc0c34a5d57fc719555d7a11055e858adabbea1"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.cjs",
+      "raw": 8622,
+      "gzip9": 2850,
+      "brotli11": 2605,
+      "sha256": "1b405c41ebe2147641f07c901965265136afd156c3e2999dff290a8f1ba565e7"
+    },
+    {
+      "path": "dist/contrib/auto-render.mjs",
+      "raw": 2739,
+      "gzip9": 1242,
+      "brotli11": 1098,
+      "sha256": "01330af0bccf50a445d6ba95cea68c0e580d4f89395a06b9929652c99660c045"
+    },
+    {
+      "path": "dist/contrib/copy-tex.mjs",
+      "raw": 1312,
+      "gzip9": 655,
+      "brotli11": 537,
+      "sha256": "bf0983e6edbe3743ea1b8b96b34da9ff6a28a06bb398a32d2dd32249f03a577e"
+    },
+    {
+      "path": "dist/contrib/copy-tex.min.js",
+      "raw": 1322,
+      "gzip9": 671,
+      "brotli11": 568,
+      "sha256": "8e62ef1f5eccf22e8d98a173f84fbd588cf37e859ac32a6f8718c51f532f854c"
+    },
+    {
+      "path": "dist/contrib/copy-tex.cjs",
+      "raw": 1381,
+      "gzip9": 685,
+      "brotli11": 575,
+      "sha256": "ca8b619a5c0cd36c07f136456c28a64b35df6a89cfa8c32b44c42a772fac616e"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.mjs",
+      "raw": 530,
+      "gzip9": 366,
+      "brotli11": 269,
+      "sha256": "7e256d4569d673e7bacd38ca15df15e283b33c30b25889c7d0ec74b21c32f796"
+    },
+    {
+      "path": ".page-audit/upstream/official.esm.js",
+      "raw": 267051,
+      "gzip9": 76483,
+      "brotli11": 63066,
+      "sha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009"
+    }
+  ],
+  "timing": {
+    "primaryCompilerSeconds": 73.33447742462158,
+    "primaryScope": "One real compiler process, including code generation and codec-guided search; excludes subsequent package wrapping.",
+    "packageSeconds": 161.06350158800012,
+    "packageScope": "node scripts/build.mjs --compile --force; 8 successful compiler invocations plus package generation.",
+    "upstreamSeconds": 1.021837798,
+    "upstreamScope": "Pinned KaTeX Flow source tree: Babel type stripping, esbuild bundling and Terser passes=3; three sequential samples, dependencies already installed.",
+    "protocol": "Same shared worker for both lanes; one fresh LilScript package build; median of three sequential upstream ESM builds (PlayCanvas records one native reference build). Outside compiler jobs were observed in the pool, so contention is not excluded. Dependencies, tests and compression measurement are outside these build times.",
+    "upstreamSamples": [
+      1.2916854089999998,
+      1.021837798,
+      0.9450816730000001
+    ]
+  },
+  "behavior": {
+    "command": "node --test test/*.test.mjs && node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/official/jest.config.mjs --runInBand",
+    "summary": "Repository test command passed (exit 0). # tests 21 \u00b7 # pass 21 \u00b7 # fail 0 \u00b7 Test Suites: 8 passed, 8 total \u00b7 Tests:       1230 passed, 1230 total",
+    "before": {
+      "exitCode": -15,
+      "failures": [
+        "browser performance (Playwright, Chromium)",
+        "renders the corpus identically and within the regression guard rail"
+      ],
+      "logSha256": "170ad263b455b7b076ed547cfe9abbc86d1f01beed4180d406b15863f336f676"
+    },
+    "after": {
+      "exitCode": 0,
+      "tail": "   ---\n      duration_ms: 435.253939\n      type: 'test'\n      ...\n    1..1\nok 1 - browser performance (Playwright, Chromium)\n  ---\n  duration_ms: 435.92371\n  type: 'suite'\n  ...\n# Subtest: contrib LilScript parity\n    # Subtest: contains no runtime JavaScript host modules\n    ok 1 - contains no runtime JavaScript host modules\n      ---\n      duration_ms: 0.438796\n      type: 'test'\n      ...\n    # Subtest: matches official render-a11y-string outputs and errors\n    ok 2 - matches official render-a11y-string outputs and errors\n      ---\n      duration_ms: 35.796108\n      type: 'test'\n      ...\n    # Subtest: matches official mhchem rendering across parser state machines\n    ok 3 - matches official mhchem rendering across parser state machines\n      ---\n      duration_ms: 37.126767\n      type: 'test'\n      ...\n    1..3\nok 2 - contrib LilScript parity\n  ---\n  duration_ms: 74.033926\n  type: 'suite'\n  ...\n# Subtest: @itslil/katex\n    # Subtest: renders x^2 with MathML and HTML\n    ok 1 - renders x^2 with MathML and HTML\n      ---\n      duration_ms: 17.064478\n      type: 'test'\n      ...\n    # Subtest: renders frac\n    ok 2 - renders frac\n      ---\n      duration_ms: 1.060415\n      type: 'test'\n      ...\n    # Subtest: matches the upstream root exports\n    ok 3 - matches the upstream root exports\n      ---\n      duration_ms: 0.621208\n      type: 'test'\n      ...\n    # Subtest: honors throwOnError and errorColor\n    ok 4 - honors throwOnError and errorColor\n      ---\n      duration_ms: 1.061266\n      type: 'test'\n      ...\n    # Subtest: pins option keys on the library artifact\n    ok 5 - pins option keys on the library artifact\n      ---\n      duration_ms: 0.719235\n      type: 'test'\n      ...\n    # Subtest: render appends a DOM tree and covers the TeX surface\n    ok 6 - render appends a DOM tree and covers the TeX surface\n      ---\n      duration_ms: 5.532089\n      type: 'test'\n      ...\n    # Subtest: closed artifact performs the core call\n    ok 7 - closed artifact performs the core call\n      ---\n      duration_ms: 13.953368\n      type: 'test'\n      ...\n    1..7\nok 3 - @itslil/katex\n  ---\n  duration_ms: 40.842732\n  type: 'suite'\n  ...\n# Subtest: published surface\n    # Subtest: reports the pinned upstream version in ESM, CJS, and the CLI\n    ok 1 - reports the pinned upstream version in ESM, CJS, and the CLI\n      ---\n      duration_ms: 82.618358\n      type: 'test'\n      ...\n    # Subtest: matches pinned upstream root and contrib export keys\n    ok 2 - matches pinned upstream root and contrib export keys\n      ---\n      duration_ms: 26.401074\n      type: 'test'\n      ...\n    # Subtest: renders stdin through the CLI\n    ok 3 - renders stdin through the CLI\n      ---\n      duration_ms: 45.227557\n      type: 'test'\n      ...\n    # Subtest: loads ESM and CommonJS contrib entry points\n    ok 4 - loads ESM and CommonJS contrib entry points\n      ---\n      duration_ms: 1.382477\n      type: 'test'\n      ...\n    # Subtest: loads browser builds as classic scripts\n    ok 5 - loads browser builds as classic scripts\n      ---\n      duration_ms: 24.119625\n      type: 'test'\n      ...\n    # Subtest: matches official mhchem output\n    ok 6 - matches official mhchem output\n      ---\n      duration_ms: 21.503724\n      type: 'test'\n      ...\n    # Subtest: matches official output across the screenshot corpus\n    ok 7 - matches official output across the screenshot corpus\n      ---\n      duration_ms: 160.975046\n      type: 'test'\n      ...\n    1..7\nok 4 - published surface\n  ---\n  duration_ms: 363.11041\n  type: 'suite'\n  ...\n# Subtest: site\n    # Subtest: has a markedlil-style lab with receipts\n    ok 1 - has a markedlil-style lab with receipts\n      ---\n      duration_ms: 0.581549\n      type: 'test'\n      ...\n    # Subtest: ships the benchmark page and the corpus it shares with Node\n    ok 2 - ships the benchmark page and the corpus it shares with Node\n      ---\n      duration_ms: 0.160149\n      type: 'test'\n      ...\n    # Subtest: publishes results that name their sources and both worlds\n    ok 3 - publishes results that name their sources and both worlds\n      ---\n      duration_ms: 0.36788\n      type: 'test'\n      ...\n    1..3\nok 5 - site\n  ---\n  duration_ms: 2.391795\n  type: 'suite'\n  ...\n1..5\n# tests 21\n# suites 5\n# pass 21\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 699.295153\n(node:12843) ExperimentalWarning: VM Modules is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS test/official/unicode-spec.js\nPASS test/official/katex-spec.js\nPASS test/official/screenshotter-spec.js\nPASS test/official/contrib/auto-render-spec.js\nPASS test/official/contrib/render-a11y-string-spec.js\nPASS test/official/dup-spec.js\nPASS test/official/errors-spec.js\nPASS test/official/mathml-spec.js\n\nTest Suites: 8 passed, 8 total\nTests:       1230 passed, 1230 total\nSnapshots:   123 passed, 123 total\nTime:        3.889 s, estimated 4 s\nRan all test suites.\n",
+      "failures": [],
+      "logSha256": "fee33bc38372e75028575028cafd7b4d78ba404b0dbeaa437617394e78ae35b5"
+    }
+  },
+  "findings": [
+    "2 committed port changes were absent from GitHub at the start of the audit.",
+    "Published-to-fresh Brotli drift: -287 bytes (-0.44%). This includes port source/config changes and compiler changes.",
+    "The root checkout compiler (54e1948) rejects config field name_ordering; today's migration/target-tree compiler is required.",
+    "The build was forced; the prior mtime shortcut cannot count as compilation. Browser tests must rebuild their served files after dist changes.",
+    "Upstream version gap: pinned 0.16.22; npm latest was 0.18.7 at the audit. No compatibility upgrade is implied.",
+    "Original build time uses a fresh build of the pinned KaTeX Flow sources; the ordinary npm-graph lane is also retained in the receipt."
+  ],
+  "primaryArtifact": "dist/katex.esm.js",
+  "beforePage": {
+    "url": "https://yeargun.github.io/katexlil/",
+    "status": 200,
+    "sha256": "74e70135657f37a1be0f6f734b7424b1ed1eb81bd7ac66dd814918ff7ea7bed7",
+    "lastModified": "Thu, 03 Sep 2026 18:15:24 GMT"
+  },
+  "codecSha256": "9257fd055728895c11b9c4b0d882895d7d11bb3dd3495f560123879ca2bc3cd6",
+  "publicationArtifacts": [
+    {
+      "path": "dist/katex.mjs",
+      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
+    },
+    {
+      "path": "dist/katex.test.js",
+      "sha256": "4a85480d6518637b7ba0d3443c903b9cca8bbb698386c7f14bc58d923a1d7480"
+    },
+    {
+      "path": "dist/katex.umd.js",
+      "sha256": "345c8cd56607b6da45073116c8361ec71914740378222ba8f42eaf89fc630f7b"
+    },
+    {
+      "path": "dist/katex.contrib-test.js",
+      "sha256": "803c112ca6278aad89763197b48d2cca0d50ef0a0520dab50fb5a84df8a44176"
+    },
+    {
+      "path": "dist/katex.closed.js",
+      "sha256": "cf0f158f34d0796cba3f171fce1f5a888bdaf7128b0727d05b0f4277065185f6"
+    },
+    {
+      "path": "dist/katex.cjs",
+      "sha256": "bdeafc9329203138d0cad72456f21db9c673efd3155fcf39365bf4119266059b"
+    },
+    {
+      "path": "dist/katex.esm.js",
+      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
+    },
+    {
+      "path": "dist/katex.min.js",
+      "sha256": "345c8cd56607b6da45073116c8361ec71914740378222ba8f42eaf89fc630f7b"
+    },
+    {
+      "path": "dist/fontMetricsData.js",
+      "sha256": "0f095095723f7cdeef08ed3a8a0ee3b28be8a5421a165289c70f516dbbcc84d8"
+    },
+    {
+      "path": "dist/contrib/mhchem.min.js",
+      "sha256": "d1dd81675dc19e308e83567a21a38281b85fb17e1e400709982aa83e8bbd9a0f"
+    },
+    {
+      "path": "dist/contrib/auto-render.min.js",
+      "sha256": "c6093c7719b161ce873f8d00c80cc9af798d6008464019feb00620b27758bae7"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.cjs",
+      "sha256": "eb52b37058646b6bc4a215782c76a02cf5f7b7b7c01b6b941bd6b69b3eb9b6af"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.mjs",
+      "sha256": "808a4d2a48e438762bb978a799283948ab7f145700212bd6fb6be1834a195ded"
+    },
+    {
+      "path": "dist/contrib/auto-render.cjs",
+      "sha256": "2b795d8717ac9041a9c52919176b13c37e91efb9f0c437f028d193f7d74bb812"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.min.js",
+      "sha256": "ece5d4c99b4feb224df5a4e8831ef8a57da95615756eeb1ac31458e702fc6131"
+    },
+    {
+      "path": "dist/contrib/mhchem.cjs",
+      "sha256": "9e3f8c64d4c3ed18733bd4915bb38104105289b2ebec35de5f8ed94dc4db8d2a"
+    },
+    {
+      "path": "dist/contrib/mhchem.mjs",
+      "sha256": "9771dbcd8055da934412671563290a1f988d1771b9c9b6cbfdb03a43f9123af1"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.min.js",
+      "sha256": "ae6e04ca2abae60144eaa2438fc0c34a5d57fc719555d7a11055e858adabbea1"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.cjs",
+      "sha256": "1b405c41ebe2147641f07c901965265136afd156c3e2999dff290a8f1ba565e7"
+    },
+    {
+      "path": "dist/contrib/auto-render.mjs",
+      "sha256": "01330af0bccf50a445d6ba95cea68c0e580d4f89395a06b9929652c99660c045"
+    },
+    {
+      "path": "dist/contrib/copy-tex.mjs",
+      "sha256": "bf0983e6edbe3743ea1b8b96b34da9ff6a28a06bb398a32d2dd32249f03a577e"
+    },
+    {
+      "path": "dist/contrib/copy-tex.min.js",
+      "sha256": "8e62ef1f5eccf22e8d98a173f84fbd588cf37e859ac32a6f8718c51f532f854c"
+    },
+    {
+      "path": "dist/contrib/copy-tex.cjs",
+      "sha256": "ca8b619a5c0cd36c07f136456c28a64b35df6a89cfa8c32b44c42a772fac616e"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.mjs",
+      "sha256": "7e256d4569d673e7bacd38ca15df15e283b33c30b25889c7d0ec74b21c32f796"
+    }
+  ],
+  "publicationPolicy": "Promote freshly tested distribution",
+  "publicationBase": "13cd81b9f47d9038112daf5aefea480e82e15f2b",
+  "publicationSourceFingerprint": "9e0717105b60022936d756944e6c4a31e3baa47a44c540efa583d47ff5c55607"
+}

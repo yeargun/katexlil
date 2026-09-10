@@ -26,8 +26,9 @@ export async function serve(dir) {
 
 export async function runBrowserBench({ siteDir, rounds = 30, warmup = 5, timeoutMs = 180000 } = {}) {
   const { server, url } = await serve(siteDir)
-  const browser = await chromium.launch()
+  let browser
   try {
+    browser = await chromium.launch()
     const page = await browser.newPage()
     const errors = []
     page.on("pageerror", (error) => errors.push(String(error)))
@@ -38,7 +39,7 @@ export async function runBrowserBench({ siteDir, rounds = 30, warmup = 5, timeou
     const result = await page.evaluate(() => window.__benchResult)
     return { ...result, browser: `Chromium ${browser.version()}`, playwright: (await import("playwright/package.json", { with: { type: "json" } })).default.version }
   } finally {
-    await browser.close()
+    await browser?.close()
     server.close()
   }
 }

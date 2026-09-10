@@ -38,60 +38,74 @@
       "note": "esbuild bundle of the published package plus runtime deps, unminified",
       "raw": 495869,
       "gzip9": 103308,
-      "brotli11": 83118
+      "brotli11": 83118,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "5ac9e8b8a501d45ed89f63a94cbe293e4b4c4c82a82d33d6fef29690cae61bee"
     },
     {
       "id": "official-terser-mangle",
-      "name": "Official · Terser mangle on",
+      "name": "Official \u00b7 Terser mangle on",
       "note": "Terser compress (3 passes) of that graph, mangle: true",
       "baseline": true,
-      "raw": 267050,
-      "gzip9": 76480,
-      "brotli11": 63044
+      "raw": 267051,
+      "gzip9": 76483,
+      "brotli11": 63066,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009"
     },
     {
       "id": "official-terser-nomangle",
-      "name": "Official · Terser mangle off",
+      "name": "Official \u00b7 Terser mangle off",
       "note": "Terser compress of that graph, mangle: false",
-      "raw": 342634,
-      "gzip9": 84775,
-      "brotli11": 69566
+      "raw": 342635,
+      "gzip9": 84778,
+      "brotli11": 69529,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "c35705016ad6e10ea1b6ad4cb4ef17696c79e7f15cb3be666d5faf703fb5e4ee"
     },
     {
       "id": "official-esbuild",
-      "name": "Official · esbuild minify",
+      "name": "Official \u00b7 esbuild minify",
       "note": "esbuild minify of that graph",
-      "raw": 271766,
-      "gzip9": 76669,
-      "brotli11": 63757
+      "raw": 271781,
+      "gzip9": 76693,
+      "brotli11": 63767,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "ca7890ced1ad94d863fde8c74129b45d15d623f4733b34831463069a1d2501e0"
     },
     {
       "id": "official-source-terser",
-      "name": "Official source · esbuild + Terser",
+      "name": "Official source \u00b7 esbuild + Terser",
       "note": "katex@0.16.22 Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary",
       "strongest": true,
-      "raw": 263654,
-      "gzip9": 74592,
-      "brotli11": 61758
+      "raw": 263662,
+      "gzip9": 74599,
+      "brotli11": 61728,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "28574a0e1fc8f8d846188b2812418a8dce5c5c09e5b2ce2e7474a14a38c120a9"
     },
     {
       "id": "itslil",
-      "name": "@itslil/katex · open world",
-      "note": "The npm ESM: direct LilScript js-module output, extern_fields = true, public API and option names kept",
+      "name": "@itslil/katex \u00b7 open world",
+      "note": "Fresh packaged ESM; compiler 63c2896a71.",
       "primary": true,
       "world": "open",
-      "raw": 275444,
-      "gzip9": 78712,
-      "brotli11": 64907
+      "raw": 274892,
+      "gzip9": 78490,
+      "brotli11": 64620,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
     },
     {
       "id": "itslil-closed",
-      "name": "@itslil/katex · closed world",
+      "name": "@itslil/katex \u00b7 closed world",
       "note": "Same source, extern_fields = false: JavaScript-facing option and node fields may mangle",
       "world": "closed",
-      "raw": 275444,
-      "gzip9": 78712,
-      "brotli11": 64907
+      "raw": 275209,
+      "gzip9": 78588,
+      "brotli11": 64755,
+      "measuredAt": "2026-09-10T13:47:03Z",
+      "artifactSha256": "cf0f158f34d0796cba3f171fce1f5a888bdaf7128b0727d05b0f4277065185f6"
     }
   ],
   "throughput": [
@@ -1006,5 +1020,8 @@
     "browserTest": "test/browser-perf.test.mjs",
     "attribution": "scripts/attribute-map.mjs",
     "official": "scripts/lib/official.mjs"
-  }
+  },
+  "sizeMeasuredAt": "2026-09-10T13:47:03Z",
+  "buildAudit": "./build-audit.json",
+  "runtimeEvidenceStatus": "Historical; runtime throughput was not republished as a measurement of this compiler."
 }
