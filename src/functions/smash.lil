@@ -6,6 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { assertNodeType } from "../parseNode.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan, makeVList } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "smash", "names", JS.array("\\smash"));
 JsValue o3 = JS.object("numArgs", 1, "numOptionalArgs", 1, "allowedInText", true);
@@ -51,7 +53,7 @@ o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a9 = JS.array();
   JsValue a10 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
-  JsValue node = JS.invoke(buildCommon, "makeSpan", a9, a10);
+  JsValue node = JS.call(makeSpan, undef(), a9, a10);
   if ((!(group["smashHeight"].truthy())) && (!(group["smashDepth"].truthy()))) {
     return node;
   }
@@ -78,15 +80,15 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
     }
   }
   JsValue o13 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", node)));
-  JsValue smashedNode = JS.invoke(buildCommon, "makeVList", o13, options);
+  JsValue smashedNode = JS.call(makeVList, undef(), o13, options);
   JsValue a16 = JS.array("mord");
   JsValue a17 = JS.array(smashedNode);
-  return JS.invoke(buildCommon, "makeSpan", a16, a17, options);
+  return JS.call(makeSpan, undef(), a16, a17, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a18 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a18);
+  JsValue node = JS.construct(MathNode, "mpadded", a18);
   if (group["smashHeight"].truthy()) {
     JS.invoke(node, "setAttribute", "height", "0px");
   }

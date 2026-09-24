@@ -8,11 +8,14 @@ import { Style } from "../Style.lil";
 import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan, makeVList, wrapFragment } from "../buildCommon.lil";
+import { TEXT, SCRIPTSCRIPT } from "../Style.lil";
 
 JsValue o1 = JS.object("type", "sqrt", "names", JS.array("\\sqrt"));
 JsValue o3 = JS.object("numArgs", 1, "numOptionalArgs", 1);
 o1["props"] = o3;
-o1["handler"] = JS.method3((JsValue self, JsValue p4, JsValue args, JsValue optArgs) => {
+o1["handler"] = (JsValue p4, JsValue args, JsValue optArgs) => {
   JsValue op5 = p4;
   JsValue parser = op5["parser"];
   JsValue index = optArgs[0];
@@ -24,16 +27,16 @@ o1["handler"] = JS.method3((JsValue self, JsValue p4, JsValue args, JsValue optA
   o6["index"] = index;
   return o6;
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "havingCrampedStyle"));
   if (JS.strictEqual(inner["height"], 0)) {
     inner["height"] = JS.invoke(options, "fontMetrics")["xHeight"];
   }
-  inner = JS.invoke(buildCommon, "wrapFragment", inner, options);
+  inner = JS.call(wrapFragment, undef(), inner, options);
   number theta = toNum(JS.invoke(options, "fontMetrics")["defaultRuleThickness"]);
   number phi = theta;
-  if (JS.lessThan(options["style"]["id"], Style["TEXT"]["id"])) {
+  if (JS.lessThan(options["style"]["id"], TEXT["id"])) {
     phi = toNum(JS.invoke(options, "fontMetrics")["xHeight"]);
   }
   number lineClearance = theta + phi / 4;
@@ -50,33 +53,33 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   }
   number imgShift = toNum(img["height"]) - innerHeight - lineClearance - ruleWidth;
   inner["style"]["paddingLeft"] = JS.call(makeEm, undef(), advanceWidth);
-  JsValue body = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", inner, "wrapperClasses", JS.array("svg-align")), JS.object("type", "kern", "size", 0 - (innerHeight + imgShift)), JS.object("type", "elem", "elem", img), JS.object("type", "kern", "size", ruleWidth))), options);
+  JsValue body = JS.call(makeVList, undef(), JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", inner, "wrapperClasses", JS.array("svg-align")), JS.object("type", "kern", "size", 0 - (innerHeight + imgShift)), JS.object("type", "elem", "elem", img), JS.object("type", "kern", "size", ruleWidth))), options);
   if (!(group["index"].truthy())) {
-    return JS.invoke(buildCommon, "makeSpan", JS.array("mord", "sqrt"), JS.array(body), options);
+    return JS.call(makeSpan, undef(), JS.array("mord", "sqrt"), JS.array(body), options);
   } else {
-    JsValue newOptions = JS.invoke(options, "havingStyle", Style["SCRIPTSCRIPT"]);
+    JsValue newOptions = JS.invoke(options, "havingStyle", SCRIPTSCRIPT);
     JsValue rootm = JS.invoke(html, "buildGroup", group["index"], newOptions, options);
     number toShift = 0.6 * (toNum(body["height"]) - toNum(body["depth"]));
-    JsValue rootVList = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "shift", "positionData", 0 - toShift, "children", JS.array(JS.object("type", "elem", "elem", rootm))), options);
-    JsValue rootVListWrap = JS.invoke(buildCommon, "makeSpan", JS.array("root"), JS.array(rootVList));
-    return JS.invoke(buildCommon, "makeSpan", JS.array("mord", "sqrt"), JS.array(rootVListWrap, body), options);
+    JsValue rootVList = JS.call(makeVList, undef(), JS.object("positionType", "shift", "positionData", 0 - toShift, "children", JS.array(JS.object("type", "elem", "elem", rootm))), options);
+    JsValue rootVListWrap = JS.call(makeSpan, undef(), JS.array("root"), JS.array(rootVList));
+    return JS.call(makeSpan, undef(), JS.array("mord", "sqrt"), JS.array(rootVListWrap, body), options);
   }
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue op24 = group;
   JsValue body = op24["body"];
   JsValue index = op24["index"];
   JsValue c25 = undef();
   if (index.truthy()) {
     JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", body, options), JS.invoke(mml, "buildGroup", index, options));
-    c25 = JS.construct(mathMLTree["MathNode"], "mroot", a26);
+    c25 = JS.construct(MathNode, "mroot", a26);
   } else {
     JsValue a27 = JS.array(JS.invoke(mml, "buildGroup", body, options));
-    c25 = JS.construct(mathMLTree["MathNode"], "msqrt", a27);
+    c25 = JS.construct(MathNode, "msqrt", a27);
   }
   return c25;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

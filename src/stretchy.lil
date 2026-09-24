@@ -5,6 +5,8 @@ import { buildCommon } from "./buildCommon.lil";
 import { mathMLTree } from "./mathMLTree.lil";
 import { utils } from "./utils.lil";
 import { makeEm } from "./units.lil";
+import { MathNode, TextNode } from "./mathMLTree.lil";
+import { makeSpan, makeSvgSpan } from "./buildCommon.lil";
 
 JsValue stretchyCodePoint = undef();
 JsValue mathMLnode = undef();
@@ -16,8 +18,8 @@ JsValue encloseSpan = undef();
 JsValue o1 = JS.object("widehat", "^", "widecheck", "ˇ", "widetilde", "~", "utilde", "~", "overleftarrow", "←", "underleftarrow", "←", "xleftarrow", "←", "overrightarrow", "→", "underrightarrow", "→", "xrightarrow", "→", "underbrace", "⏟", "overbrace", "⏞", "overgroup", "⏠", "undergroup", "⏡", "overleftrightarrow", "↔", "underleftrightarrow", "↔", "xleftrightarrow", "↔", "Overrightarrow", "⇒", "xRightarrow", "⇒", "overleftharpoon", "↼", "xleftharpoonup", "↼", "overrightharpoon", "⇀", "xrightharpoonup", "⇀", "xLeftarrow", "⇐", "xLeftrightarrow", "⇔", "xhookleftarrow", "↩", "xhookrightarrow", "↪", "xmapsto", "↦", "xrightharpoondown", "⇁", "xleftharpoondown", "↽", "xrightleftharpoons", "⇌", "xleftrightharpoons", "⇋", "xtwoheadleftarrow", "↞", "xtwoheadrightarrow", "↠", "xlongequal", "=", "xtofrom", "⇄", "xrightleftarrows", "⇄", "xrightequilibrium", "⇌", "xleftequilibrium", "⇋", "\\cdrightarrow", "→", "\\cdleftarrow", "←", "\\cdlongequal", "=");
 stretchyCodePoint = o1;
 mathMLnode = (JsValue label) => {
-  JsValue a2 = JS.array(JS.construct(mathMLTree["TextNode"], stretchyCodePoint[JS.invoke(label, "replace", JS.construct(RegExp, "^\\\\", ""), "")]));
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mo", a2);
+  JsValue a2 = JS.array(JS.construct(TextNode, stretchyCodePoint[JS.invoke(label, "replace", JS.construct(RegExp, "^\\\\", ""), "")]));
+  JsValue node = JS.construct(MathNode, "mo", a2);
   JS.invoke(node, "setAttribute", "stretchy", "true");
   return node;
   return undef();
@@ -84,7 +86,7 @@ svgSpan = (JsValue group, JsValue options) => {
     JsValue o94 = emptyObject();
     JsValue a95 = JS.array();
     JsValue a96 = JS.array(svgNode);
-    o94["span"] = JS.invoke(buildCommon, "makeSvgSpan", a95, a96, options);
+    o94["span"] = JS.call(makeSvgSpan, undef(), a95, a96, options);
     o94["minWidth"] = 0;
     o94["height"] = height;
     return o94;
@@ -131,7 +133,7 @@ svgSpan = (JsValue group, JsValue options) => {
         JsValue svgNode = JS.construct(SvgNode, a105, o106);
         JsValue a107 = JS.array(widthClasses[i]);
         JsValue a108 = JS.array(svgNode);
-        JsValue span = JS.invoke(buildCommon, "makeSvgSpan", a107, a108, options);
+        JsValue span = JS.call(makeSvgSpan, undef(), a107, a108, options);
         if (JS.strictEqual(numSvgChildren, 1)) {
           JsValue o109 = JS.object("span", span, "minWidth", minWidth, "height", height);
           return o109;
@@ -144,7 +146,7 @@ svgSpan = (JsValue group, JsValue options) => {
     }
     JsValue o111 = emptyObject();
     JsValue a112 = JS.array("stretchy");
-    o111["span"] = JS.invoke(buildCommon, "makeSpan", a112, spans, options);
+    o111["span"] = JS.call(makeSpan, undef(), a112, spans, options);
     o111["minWidth"] = minWidth;
     o111["height"] = height;
     return o111;
@@ -169,7 +171,7 @@ encloseSpan = (JsValue inner, JsValue label, JsValue topPad, JsValue bottomPad, 
   if (JS.invoke(JS.construct(RegExp, "fbox|color|angl", ""), "test", label).truthy()) {
     JsValue a114 = JS.array("stretchy", label);
     JsValue a115 = JS.array();
-    img = JS.invoke(buildCommon, "makeSpan", a114, a115, options);
+    img = JS.call(makeSpan, undef(), a114, a115, options);
     if (JS.strictEqual(label, "fbox")) {
       JsValue and116 = options["color"];
       if (and116.truthy()) {
@@ -195,7 +197,7 @@ encloseSpan = (JsValue inner, JsValue label, JsValue topPad, JsValue bottomPad, 
     JsValue svgNode = JS.construct(SvgNode, lines, o120);
     JsValue a121 = JS.array();
     JsValue a122 = JS.array(svgNode);
-    img = JS.invoke(buildCommon, "makeSvgSpan", a121, a122, options);
+    img = JS.call(makeSvgSpan, undef(), a121, a122, options);
   }
   img["height"] = totalHeight;
   img["style"]["height"] = JS.call(makeEm, undef(), totalHeight);

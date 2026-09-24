@@ -5,6 +5,8 @@ import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeFragment, makeSpan, makeVList } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "phantom", "names", JS.array("\\phantom"));
 JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
@@ -19,12 +21,12 @@ o1["handler"] = (JsValue p4, JsValue args) => {
 };
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["body"], JS.invoke(options, "withPhantom"), false);
-  return JS.invoke(buildCommon, "makeFragment", elements);
+  return JS.call(makeFragment, undef(), elements);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(mml, "buildExpression", group["body"], options);
-  return JS.construct(mathMLTree["MathNode"], "mphantom", inner);
+  return JS.construct(MathNode, "mphantom", inner);
   return undef();
 };
 JS.call(defineFunction, undef(), o1);
@@ -42,7 +44,7 @@ o7["handler"] = (JsValue p10, JsValue args) => {
 o7["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a13 = JS.array();
   JsValue a14 = JS.array(JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
-  JsValue node = JS.invoke(buildCommon, "makeSpan", a13, a14);
+  JsValue node = JS.call(makeSpan, undef(), a13, a14);
   node["height"] = 0;
   node["depth"] = 0;
   if (node["children"].truthy()) {
@@ -55,17 +57,17 @@ o7["htmlBuilder"] = (JsValue group, JsValue options) => {
     }
   }
   JsValue o16 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", node)));
-  node = JS.invoke(buildCommon, "makeVList", o16, options);
+  node = JS.call(makeVList, undef(), o16, options);
   JsValue a19 = JS.array("mord");
   JsValue a20 = JS.array(node);
-  return JS.invoke(buildCommon, "makeSpan", a19, a20, options);
+  return JS.call(makeSpan, undef(), a19, a20, options);
   return undef();
 };
 o7["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(mml, "buildExpression", JS.call(ordargument, undef(), group["body"]), options);
-  JsValue phantom = JS.construct(mathMLTree["MathNode"], "mphantom", inner);
+  JsValue phantom = JS.construct(MathNode, "mphantom", inner);
   JsValue a21 = JS.array(phantom);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a21);
+  JsValue node = JS.construct(MathNode, "mpadded", a21);
   JS.invoke(node, "setAttribute", "height", "0px");
   JS.invoke(node, "setAttribute", "depth", "0px");
   return node;
@@ -86,20 +88,20 @@ o22["handler"] = (JsValue p25, JsValue args) => {
 o22["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a28 = JS.array("inner");
   JsValue a29 = JS.array(JS.invoke(html, "buildGroup", group["body"], JS.invoke(options, "withPhantom")));
-  JsValue inner = JS.invoke(buildCommon, "makeSpan", a28, a29);
+  JsValue inner = JS.call(makeSpan, undef(), a28, a29);
   JsValue a30 = JS.array("fix");
   JsValue a31 = JS.array();
-  JsValue fix = JS.invoke(buildCommon, "makeSpan", a30, a31);
+  JsValue fix = JS.call(makeSpan, undef(), a30, a31);
   JsValue a32 = JS.array("mord", "rlap");
   JsValue a33 = JS.array(inner, fix);
-  return JS.invoke(buildCommon, "makeSpan", a32, a33, options);
+  return JS.call(makeSpan, undef(), a32, a33, options);
   return undef();
 };
 o22["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(mml, "buildExpression", JS.call(ordargument, undef(), group["body"]), options);
-  JsValue phantom = JS.construct(mathMLTree["MathNode"], "mphantom", inner);
+  JsValue phantom = JS.construct(MathNode, "mphantom", inner);
   JsValue a34 = JS.array(phantom);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a34);
+  JsValue node = JS.construct(MathNode, "mpadded", a34);
   JS.invoke(node, "setAttribute", "width", "0px");
   return node;
   return undef();

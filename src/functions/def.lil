@@ -43,7 +43,7 @@ letCommand = (JsValue parser, JsValue name, JsValue tok, JsValue global) => {
 JsValue o4 = JS.object("type", "internal", "names", JS.array("\\global", "\\long", "\\\\globallong"));
 JsValue o6 = JS.object("numArgs", 0, "allowedInText", true);
 o4["props"] = o6;
-o4["handler"] = JS.method1((JsValue self, JsValue p7) => {
+o4["handler"] = (JsValue p7) => {
   JsValue op8 = p7;
   JsValue parser = op8["parser"];
   JsValue funcName = op8["funcName"];
@@ -57,12 +57,12 @@ o4["handler"] = JS.method1((JsValue self, JsValue p7) => {
   }
   throw JS.construct(ParseError, "Invalid token after macro prefix", token);
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o4);
 JsValue o9 = JS.object("type", "internal", "names", JS.array("\\def", "\\gdef", "\\edef", "\\xdef"));
 JsValue o11 = JS.object("numArgs", 0, "allowedInText", true, "primitive", true);
 o9["props"] = o11;
-o9["handler"] = JS.method1((JsValue self, JsValue p12) => {
+o9["handler"] = (JsValue p12) => {
   JsValue op13 = p12;
   JsValue parser = op13["parser"];
   JsValue funcName = op13["funcName"];
@@ -75,7 +75,7 @@ o9["handler"] = JS.method1((JsValue self, JsValue p12) => {
   JsValue insert = undef();
   JsValue a14 = newArray();
   JsValue a15 = JS.array();
-  JS.push(a14, a15);
+  JS.invoke(a14, "push", a15);
   JsValue delimiters = a14;
   while (JS.strictNotEqual(JS.invoke(parser["gullet"], "future")["text"], "{")) {
     tok = JS.invoke(parser["gullet"], "popToken");
@@ -123,12 +123,12 @@ o9["handler"] = JS.method1((JsValue self, JsValue p12) => {
   o20["mode"] = parser["mode"];
   return o20;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o9);
 JsValue o21 = JS.object("type", "internal", "names", JS.array("\\let", "\\\\globallet"));
 JsValue o23 = JS.object("numArgs", 0, "allowedInText", true, "primitive", true);
 o21["props"] = o23;
-o21["handler"] = JS.method1((JsValue self, JsValue p24) => {
+o21["handler"] = (JsValue p24) => {
   JsValue op25 = p24;
   JsValue parser = op25["parser"];
   JsValue funcName = op25["funcName"];
@@ -141,12 +141,12 @@ o21["handler"] = JS.method1((JsValue self, JsValue p24) => {
   o26["mode"] = parser["mode"];
   return o26;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o21);
 JsValue o27 = JS.object("type", "internal", "names", JS.array("\\futurelet", "\\\\globalfuture"));
 JsValue o29 = JS.object("numArgs", 0, "allowedInText", true, "primitive", true);
 o27["props"] = o29;
-o27["handler"] = JS.method1((JsValue self, JsValue p30) => {
+o27["handler"] = (JsValue p30) => {
   JsValue op31 = p30;
   JsValue parser = op31["parser"];
   JsValue funcName = op31["funcName"];
@@ -161,7 +161,7 @@ o27["handler"] = JS.method1((JsValue self, JsValue p30) => {
   o32["mode"] = parser["mode"];
   return o32;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o27);
 JsValue __star = emptyObject();
 

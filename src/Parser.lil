@@ -105,7 +105,7 @@ Parser["prototype"]["parseExpression"] = JS.method2((JsValue self, JsValue break
     } else if (JS.strictEqual(atom["type"], "internal")) {
       continue;
     }
-    JS.push(body, atom);
+    JS.invoke(body, "push", atom);
   }
   if (JS.strictEqual(self["mode"], "text")) {
     JS.invoke(self, "formLigatures", body);
@@ -176,7 +176,7 @@ Parser["prototype"]["formatUnsupportedCmd"] = JS.method1((JsValue self, JsValue 
   JsValue textordArray = JS.array();
   {
     for (int i = 0; i < len(text); i++) {
-      JS.push(textordArray, JS.object("type", "textord", "mode", "text", "text", text[i]));
+      JS.invoke(textordArray, "push", JS.object("type", "textord", "mode", "text", "text", text[i]));
     }
   }
   JsValue textNode = JS.object("type", "text", "mode", self["mode"], "body", textordArray);
@@ -227,11 +227,11 @@ Parser["prototype"]["parseAtom"] = JS.method1((JsValue self, JsValue breakOnToke
           JsValue primes = JS.array(prime);
           JS.invoke(self, "consume");
           while (JS.strictEqual(JS.invoke(self, "fetch")["text"], "'")) {
-            JS.push(primes, prime);
+            JS.invoke(primes, "push", prime);
             JS.invoke(self, "consume");
           }
           if (JS.strictEqual(JS.invoke(self, "fetch")["text"], "^")) {
-            JS.push(primes, JS.invoke(self, "handleSupSubscript", "superscript"));
+            JS.invoke(primes, "push", JS.invoke(self, "handleSupSubscript", "superscript"));
           }
           superscript = JS.object("type", "ordgroup", "mode", self["mode"], "body", primes);
         } else if (uSubsAndSups[lex["text"]].truthy()) {
@@ -327,10 +327,10 @@ Parser["prototype"]["parseArguments"] = JS.method2((JsValue self, JsValue funcVa
       }
       JsValue arg = JS.invoke(self, "parseGroupOfType", "argument to '" + toStr(funcVal) + "'", argType, isOptional);
       if (isOptional) {
-        JS.push(optArgs, arg);
+        JS.invoke(optArgs, "push", arg);
       } else {
         if (!isNullish(arg)) {
-          JS.push(args, arg);
+          JS.invoke(args, "push", arg);
         } else {
           throw JS.construct(ParseError, "Null argument, please report this as a bug");
         }

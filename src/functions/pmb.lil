@@ -6,11 +6,13 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { binrelClass } from "./mclass.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "pmb", "names", JS.array("\\pmb"));
 JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
 o1["props"] = o3;
-o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
+o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
   JsValue parser = op5["parser"];
   JsValue o6 = emptyObject();
@@ -20,22 +22,22 @@ o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
   o6["body"] = JS.call(ordargument, undef(), args[0]);
   return o6;
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, true);
   JsValue a7 = JS.array(group["mclass"]);
-  JsValue node = JS.invoke(buildCommon, "makeSpan", a7, elements, options);
+  JsValue node = JS.call(makeSpan, undef(), a7, elements, options);
   node["style"]["textShadow"] = "0.02em 0.01em 0.04px";
   return node;
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue style) => {
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue style) => {
   JsValue inner = JS.invoke(mml, "buildExpression", group["body"], style);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JsValue node = JS.construct(MathNode, "mstyle", inner);
   JS.invoke(node, "setAttribute", "style", "text-shadow: 0.02em 0.01em 0.04px");
   return node;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

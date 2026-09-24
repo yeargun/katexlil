@@ -6,6 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeFragment } from "../buildCommon.lil";
 
 JsValue sizingGroup = undef();
 JsValue sizeFuncs = undef();
@@ -25,7 +27,7 @@ sizingGroup = (JsValue value, JsValue options, JsValue baseOptions) => {
     inner[i]["height"] = toNum(inner[i]["height"]) * multiplier;
     inner[i]["depth"] = toNum(inner[i]["depth"]) * multiplier;
   }
-  return JS.invoke(buildCommon, "makeFragment", inner);
+  return JS.call(makeFragment, undef(), inner);
 };
 JsValue a4 = JS.array("\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge");
 sizeFuncs = a4;
@@ -51,7 +53,7 @@ o5["htmlBuilder"] = htmlBuilder;
 o5["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue newOptions = JS.invoke(options, "havingSize", group["size"]);
   JsValue inner = JS.invoke(mml, "buildExpression", group["body"], newOptions);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JsValue node = JS.construct(MathNode, "mstyle", inner);
   JS.invoke(node, "setAttribute", "mathsize", JS.call(makeEm, undef(), newOptions["sizeMultiplier"]));
   return node;
   return undef();

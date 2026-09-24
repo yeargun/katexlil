@@ -11,12 +11,14 @@ import { calculateSize, makeEm } from "../units.lil";
 import { assertNodeType } from "../parseNode.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan, makeSvgSpan, makeVList, wrapFragment } from "../buildCommon.lil";
 
 JsValue htmlBuilder = undef();
 JsValue mathmlBuilder = undef();
 
 htmlBuilder = (JsValue group, JsValue options) => {
-  JsValue inner = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["body"], options), options);
+  JsValue inner = JS.call(wrapFragment, undef(), JS.invoke(html, "buildGroup", group["body"], options), options);
   JsValue label = JS.invoke(group["label"], "slice", 1);
   JsValue scale = options["sizeMultiplier"];
   JsValue img = undef();
@@ -24,7 +26,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
   JsValue isSingleChar = JS.invoke(utils, "isCharacterBox", group["body"]);
   if (JS.strictEqual(label, "sout")) {
     JsValue a1 = JS.array("stretchy", "sout");
-    img = JS.invoke(buildCommon, "makeSpan", a1);
+    img = JS.call(makeSpan, undef(), a1);
     img["height"] = (toNum(JS.invoke(options, "fontMetrics")["defaultRuleThickness"]) / toNum(scale));
     imgShift = (toNum(JS.number(0) - toNum(0.5)) * toNum(JS.invoke(options, "fontMetrics")["xHeight"]));
   } else {
@@ -44,7 +46,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       JsValue svgNode = JS.construct(SvgNode, a4, o5);
       JsValue a6 = JS.array("hide-tail");
       JsValue a7 = JS.array(svgNode);
-      img = JS.invoke(buildCommon, "makeSvgSpan", a6, a7, options);
+      img = JS.call(makeSvgSpan, undef(), a6, a7, options);
       img["style"]["height"] = JS.call(makeEm, undef(), angleHeight);
       imgShift = JS.add(JS.add(inner["depth"], lineWeight), clearance);
     } else {
@@ -110,7 +112,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
   JsValue vlist = undef();
   if (group["backgroundColor"].truthy()) {
     JsValue o10 = JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", img, "shift", imgShift), JS.object("type", "elem", "elem", inner, "shift", 0)));
-    vlist = JS.invoke(buildCommon, "makeVList", o10, options);
+    vlist = JS.call(makeVList, undef(), o10, options);
   } else {
     JsValue c14 = undef();
     if (JS.invoke(JS.construct(RegExp, "cancel|phase", ""), "test", label).truthy()) {
@@ -124,7 +126,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
     JsValue o17 = JS.object("positionType", "individualShift");
     JsValue a18 = JS.array(JS.object("type", "elem", "elem", inner, "shift", 0), JS.object("type", "elem", "elem", img, "shift", imgShift, "wrapperClasses", classes));
     o17["children"] = a18;
-    vlist = JS.invoke(buildCommon, "makeVList", o17, options);
+    vlist = JS.call(makeVList, undef(), o17, options);
   }
   if (JS.invoke(JS.construct(RegExp, "cancel", ""), "test", label).truthy()) {
     vlist["height"] = inner["height"];
@@ -133,11 +135,11 @@ htmlBuilder = (JsValue group, JsValue options) => {
   if ((JS.invoke(JS.construct(RegExp, "cancel", ""), "test", label).truthy()) && (!(isSingleChar.truthy()))) {
     JsValue a21 = JS.array("mord", "cancel-lap");
     JsValue a22 = JS.array(vlist);
-    return JS.invoke(buildCommon, "makeSpan", a21, a22, options);
+    return JS.call(makeSpan, undef(), a21, a22, options);
   } else {
     JsValue a23 = JS.array("mord");
     JsValue a24 = JS.array(vlist);
-    return JS.invoke(buildCommon, "makeSpan", a23, a24, options);
+    return JS.call(makeSpan, undef(), a23, a24, options);
   }
   return undef();
 };
@@ -150,7 +152,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     c25 = "menclose";
   }
   JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
-  JsValue node = JS.construct(mathMLTree["MathNode"], c25, a26);
+  JsValue node = JS.construct(MathNode, c25, a26);
   JsValue sw27 = group["label"];
   if (JS.strictEqual(sw27, "\\cancel")) {
     JS.invoke(node, "setAttribute", "notation", "updiagonalstrike");
@@ -193,7 +195,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
 JsValue o28 = JS.object("type", "enclose", "names", JS.array("\\colorbox"));
 JsValue o30 = JS.object("numArgs", 2, "allowedInText", true, "argTypes", JS.array("color", "text"));
 o28["props"] = o30;
-o28["handler"] = JS.method3((JsValue self, JsValue p32, JsValue args, JsValue optArgs) => {
+o28["handler"] = (JsValue p32, JsValue args, JsValue optArgs) => {
   JsValue op33 = p32;
   JsValue parser = op33["parser"];
   JsValue funcName = op33["funcName"];
@@ -207,14 +209,14 @@ o28["handler"] = JS.method3((JsValue self, JsValue p32, JsValue args, JsValue op
   o34["body"] = body;
   return o34;
   return undef();
-});
+};
 o28["htmlBuilder"] = htmlBuilder;
 o28["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o28);
 JsValue o35 = JS.object("type", "enclose", "names", JS.array("\\fcolorbox"));
 JsValue o37 = JS.object("numArgs", 3, "allowedInText", true, "argTypes", JS.array("color", "color", "text"));
 o35["props"] = o37;
-o35["handler"] = JS.method3((JsValue self, JsValue p39, JsValue args, JsValue optArgs) => {
+o35["handler"] = (JsValue p39, JsValue args, JsValue optArgs) => {
   JsValue op40 = p39;
   JsValue parser = op40["parser"];
   JsValue funcName = op40["funcName"];
@@ -230,14 +232,14 @@ o35["handler"] = JS.method3((JsValue self, JsValue p39, JsValue args, JsValue op
   o41["body"] = body;
   return o41;
   return undef();
-});
+};
 o35["htmlBuilder"] = htmlBuilder;
 o35["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o35);
 JsValue o42 = JS.object("type", "enclose", "names", JS.array("\\fbox"));
 JsValue o44 = JS.object("numArgs", 1, "argTypes", JS.array("hbox"), "allowedInText", true);
 o42["props"] = o44;
-o42["handler"] = JS.method2((JsValue self, JsValue p46, JsValue args) => {
+o42["handler"] = (JsValue p46, JsValue args) => {
   JsValue op47 = p46;
   JsValue parser = op47["parser"];
   JsValue o48 = emptyObject();
@@ -247,12 +249,12 @@ o42["handler"] = JS.method2((JsValue self, JsValue p46, JsValue args) => {
   o48["body"] = args[0];
   return o48;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o42);
 JsValue o49 = JS.object("type", "enclose", "names", JS.array("\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\phase"));
 JsValue o51 = JS.object("numArgs", 1);
 o49["props"] = o51;
-o49["handler"] = JS.method2((JsValue self, JsValue p52, JsValue args) => {
+o49["handler"] = (JsValue p52, JsValue args) => {
   JsValue op53 = p52;
   JsValue parser = op53["parser"];
   JsValue funcName = op53["funcName"];
@@ -264,14 +266,14 @@ o49["handler"] = JS.method2((JsValue self, JsValue p52, JsValue args) => {
   o54["body"] = body;
   return o54;
   return undef();
-});
+};
 o49["htmlBuilder"] = htmlBuilder;
 o49["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o49);
 JsValue o55 = JS.object("type", "enclose", "names", JS.array("\\angl"));
 JsValue o57 = JS.object("numArgs", 1, "argTypes", JS.array("hbox"), "allowedInText", false);
 o55["props"] = o57;
-o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
+o55["handler"] = (JsValue p59, JsValue args) => {
   JsValue op60 = p59;
   JsValue parser = op60["parser"];
   JsValue o61 = emptyObject();
@@ -281,7 +283,7 @@ o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
   o61["body"] = args[0];
   return o61;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o55);
 JsValue __star = emptyObject();
 

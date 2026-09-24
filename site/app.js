@@ -119,8 +119,8 @@ function renderWorlds() {
   const closed = laneById("itslil-closed")
   if (!baseline || !open || !closed) return
   const rows = [
-    { lane: open, world: "Open", held: "public ESM names, option keys, every JavaScript-visible field; extern_fields = true" },
-    { lane: closed, world: "Closed", held: "behavior only; extern_fields = false, compiler-owned fields may rename" },
+    { lane: open, world: "Open", held: "public ESM names, option keys, every JavaScript-visible field" },
+    { lane: closed, world: "Closed", held: "behavior only; compiler-owned fields may rename (the compiler renames none yet)" },
   ]
   document.querySelector("#worlds-body").innerHTML = rows
     .map(({ lane, world, held }) => {
@@ -130,7 +130,7 @@ function renderWorlds() {
     .join("")
   const note = document.querySelector("#worlds-note")
   if (open.brotli11 === closed.brotli11 && open.raw === closed.raw) {
-    note.textContent = "Today the two artifacts are byte-identical: this port declares no fields the compiler owns (its objects are untyped JsValue bags carried over from the JavaScript), so the closed contract has nothing to rename. That is the port's defect, and the reason it loses in both worlds; the fix is typing the port, not the compiler."
+    note.textContent = "The two artifacts are byte-identical. The one LilScript compiler renames no property yet, so extern_fields has no effect and the closed config is the open one. The port would give it little to rename anyway: its objects are mostly untyped JsValue bags carried over from the JavaScript."
   } else {
     const closedGain = smallerThan(closed.brotli11, open.brotli11)
     note.textContent = `Closed world is ${closedGain.text} than open world under Brotli-11: what typed, compiler-owned fields buy once the public surface is not held fixed.`
@@ -188,8 +188,75 @@ function renderAttribution() {
     .join("")
   const losing = rows.filter((row) => row.deltaBrotli > 0)
   const winning = rows.filter((row) => row.deltaBrotli < 0)
+  const stale = attribution.remeasured === false
+    ? `Not remeasured for this release: this table was measured ${String(attribution.measuredAt ?? "").slice(0, 10)} on the previous compiler, which wrote source maps; the current compiler does not emit them yet, so the per-module split is from the previous build. `
+    : ""
   document.querySelector("#bytes-note").textContent =
-    `${attribution.lil.path ?? "the compiler's artifact"} ${formatter.format(attribution.lil.raw)} B raw / ${formatter.format(attribution.lil.brotli11)} B Brotli against the source lane ${formatter.format(attribution.official.raw)} / ${formatter.format(attribution.official.brotli11)} (before the shared font-metrics table is stitched in). ${losing.length} modules are bigger here, ${winning.length} are smaller; the top ${shown.length} by Brotli delta are shown. Marginal costs are not additive: Brotli shares matches across modules.`
+    `${stale}${attribution.lil.path ?? "the compiler's artifact"} ${formatter.format(attribution.lil.raw)} B raw / ${formatter.format(attribution.lil.brotli11)} B Brotli against the source lane ${formatter.format(attribution.official.raw)} / ${formatter.format(attribution.official.brotli11)} (before the shared font-metrics table is stitched in). ${losing.length} modules are bigger here, ${winning.length} are smaller; the top ${shown.length} by Brotli delta are shown. Marginal costs are not additive: Brotli shares matches across modules.`
+}
+
+function median(values) {
+  const sorted = [...values].filter(Number.isFinite).sort((a, b) => a - b)
+  return sorted.length ? sorted[Math.floor(sorted.length / 2)] : null
+}
+
+function seconds(msValue) {
+  return msValue == null ? "—" : `${(msValue / 1000).toFixed(2)} s`
+}
+
+function bytesDelta(value, before) {
+  if (before == null) return { text: "—", state: "" }
+  const delta = value - before
+  if (delta === 0) return { text: "no change", state: "even" }
+  const sign = delta < 0 ? "−" : "+"
+  return { text: `${sign}${formatter.format(Math.abs(delta))} B`, state: delta < 0 ? "win" : "loss" }
+}
+
+function renderRelease() {
+  const section = document.querySelector("#release")
+  const delivered = data.delivered ?? []
+  const compiler = data.compiler
+  if (!delivered.length && !compiler) {
+    section.hidden = true
+    return
+  }
+  const primary = delivered.find((file) => file.path === "dist/katex.esm.js")
+  const coreMedian = compiler ? median(compiler.compileWallMs ?? []) : null
+  const buildMedian = compiler ? median(compiler.buildCompileWallMs ?? []) : null
+  const vsPrevious = primary?.previous ? bytesDelta(primary.brotli11, primary.previous.brotli11) : null
+  const vsBar = primary ? bytesDelta(primary.brotli11, primary.bar.brotli11) : null
+  const cards = [
+    { label: "npm ESM, Brotli-11 vs previous release", value: vsPrevious ? vsPrevious.text : "—", win: vsPrevious?.state === "win", loss: vsPrevious?.state === "loss" },
+    { label: "npm ESM, Brotli-11 vs Terser", value: vsBar ? vsBar.text : "—", win: vsBar?.state === "win", loss: vsBar?.state === "loss" },
+    { label: `compile time, core ESM, median of ${compiler?.compileWallMs?.length ?? 0} builds`, value: seconds(coreMedian) },
+    { label: compiler ? `compiler ${compiler.revision}, every compile of one build` : "compiler", value: seconds(buildMedian), geo: true },
+  ]
+  document.querySelector("#release-cards").innerHTML = cards
+    .map((card) => `<article class="perf-card${card.win ? " win" : ""}${card.loss ? " loss" : ""}${card.geo ? " geo" : ""}"><strong>${card.value}</strong><span>${card.label}</span></article>`)
+    .join("")
+  document.querySelector("#release-body").innerHTML = delivered
+    .map((file) => {
+      const previous = bytesDelta(file.brotli11, file.previous?.brotli11)
+      const bar = smallerThan(file.brotli11, file.bar.brotli11)
+      const post = !file.writtenBy.startsWith("compiler")
+      return `<tr><th scope="row" title="${file.format}">${file.path.replace(/^dist\//, "")}</th><td class="${post ? "post" : ""}">${file.writtenBy}</td><td>${formatter.format(file.raw)}</td><td>${formatter.format(file.gzip9)}</td><td>${formatter.format(file.brotli11)}</td><td>${file.previous ? formatter.format(file.previous.brotli11) : "—"}</td><td class="verdict ${previous.state}"><strong>${previous.text}</strong></td><td title="${file.bar.name}">${formatter.format(file.bar.brotli11)}</td><td class="verdict ${bar.state}"><strong>${bar.text}</strong></td></tr>`
+    })
+    .join("")
+  const release = data.previousRelease
+  const parts = []
+  if (release) parts.push(`Previous release: katexlil ${release.revision} (${String(release.committedAt ?? "").slice(0, 10)}), built by ${release.builtBy}; its committed dist/ measured with the same codec.`)
+  parts.push("Terser bar: the core files against Terser (compress, 3 passes, mangle) of the published katex@0.16.22 graph; contrib files against Terser of upstream's own dist/contrib/<name>.mjs. The core files carry a 76-byte licence banner that the bar lacks.")
+  const servedEsm = (data.upstreamServed ?? []).find((file) => file.path === "dist/katex.mjs")
+  const servedMin = (data.upstreamServed ?? []).find((file) => file.path === "dist/katex.min.js")
+  if (servedEsm && primary) parts.push(`Upstream as served: import "katex" resolves to its unminified dist/katex.mjs, ${formatter.format(servedEsm.raw)} B raw and ${formatter.format(servedEsm.brotli11)} B Brotli-11, so without a re-minifying bundler the npm ESM here is ${smallerThan(primary.brotli11, servedEsm.brotli11).text}.`)
+  if (servedMin) parts.push(`Upstream's CDN-only katex.min.js is ${formatter.format(servedMin.brotli11)} B Brotli-11. The Terser bar is the engineering comparison.`)
+  document.querySelector("#release-note").textContent = parts.join(" ")
+  if (!compiler) return
+  document.querySelector("#compile-body").innerHTML = (compiler.invocations ?? [])
+    .map((call) => `<tr><th scope="row">${call.input}</th><td>${call.config}</td><td>${call.wallMs.map((value) => formatter.format(value)).join(" · ")} ms</td><td>${seconds(median(call.wallMs))}</td></tr>`)
+    .join("")
+  document.querySelector("#compile-note").textContent =
+    `Compiler revision ${compiler.revision}, binary SHA-256 ${compiler.binarySha256}; codec SHA-256 ${compiler.codecSha256 ?? "not recorded"}. Method: ${compiler.method}. Host: ${compiler.host}. Recorded ${compiler.date}.`
 }
 
 function bindCopy() {
@@ -437,6 +504,7 @@ function bindPlayground() {
 }
 
 renderHero()
+renderRelease()
 renderPerf()
 renderWorlds()
 renderSize()

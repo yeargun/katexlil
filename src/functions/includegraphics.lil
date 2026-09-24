@@ -6,6 +6,7 @@ import { ParseError } from "../ParseError.lil";
 import { Img } from "../domTree.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { assertNodeType } from "../parseNode.lil";
+import { MathNode } from "../mathMLTree.lil";
 
 JsValue sizeData = undef();
 
@@ -109,7 +110,7 @@ o3["htmlBuilder"] = (JsValue group, JsValue options) => {
 };
 o3["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a17 = JS.array();
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mglyph", a17);
+  JsValue node = JS.construct(MathNode, "mglyph", a17);
   JS.invoke(node, "setAttribute", "alt", group["alt"]);
   JsValue height = JS.call(calculateSize, undef(), group["height"], options);
   JsValue depth = 0;

@@ -5,21 +5,23 @@ import { buildCommon } from "../buildCommon.lil";
 import { Style } from "../Style.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { makeFragment } from "../buildCommon.lil";
+import { DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT } from "../Style.lil";
 
 JsValue chooseMathStyle = undef();
 
 chooseMathStyle = (JsValue group, JsValue options) => {
   JsValue sw1 = options["style"]["size"];
-  if (JS.strictEqual(sw1, Style["DISPLAY"]["size"])) {
+  if (JS.strictEqual(sw1, DISPLAY["size"])) {
     return group["display"];
   }
-  else if (JS.strictEqual(sw1, Style["TEXT"]["size"])) {
+  else if (JS.strictEqual(sw1, TEXT["size"])) {
     return group["text"];
   }
-  else if (JS.strictEqual(sw1, Style["SCRIPT"]["size"])) {
+  else if (JS.strictEqual(sw1, SCRIPT["size"])) {
     return group["script"];
   }
-  else if (JS.strictEqual(sw1, Style["SCRIPTSCRIPT"]["size"])) {
+  else if (JS.strictEqual(sw1, SCRIPTSCRIPT["size"])) {
     return group["scriptscript"];
   }
   else {
@@ -40,7 +42,7 @@ o2["handler"] = (JsValue p5, JsValue args) => {
 o2["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue body = JS.call(chooseMathStyle, undef(), group, options);
   JsValue elements = JS.invoke(html, "buildExpression", body, options, false);
-  return JS.invoke(buildCommon, "makeFragment", elements);
+  return JS.call(makeFragment, undef(), elements);
   return undef();
 };
 o2["mathmlBuilder"] = (JsValue group, JsValue options) => {

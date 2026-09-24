@@ -564,17 +564,17 @@ braketHelper = (JsValue one) => {
   JsValue ss21 = right;
   int sn20 = len(ss21);
   for (int si19 = 0; si19 < sn20; si19++) {
-    JS.push(a18, ss21[si19]);
+    JS.invoke(a18, "push", ss21[si19]);
   }
   JsValue ss24 = arg;
   int sn23 = len(ss24);
   for (int si22 = 0; si22 < sn23; si22++) {
-    JS.push(a18, ss24[si22]);
+    JS.invoke(a18, "push", ss24[si22]);
   }
   JsValue ss27 = left;
   int sn26 = len(ss27);
   for (int si25 = 0; si25 < sn26; si25++) {
-    JS.push(a18, ss27[si25]);
+    JS.invoke(a18, "push", ss27[si25]);
   }
   JsValue expanded = JS.invoke(context, "expandTokens", a18);
   JS.invoke(context["macros"], "endGroup");

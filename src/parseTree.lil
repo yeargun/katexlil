@@ -29,7 +29,7 @@ parseTree = (JsValue toParse, JsValue settings) => {
     o2["body"] = tree;
     JsValue a3 = JS.array(JS.construct(Token, "\\df@tag"));
     o2["tag"] = JS.invoke(parser, "subparse", a3);
-    JS.push(a1, o2);
+    JS.invoke(a1, "push", o2);
     tree = a1;
   }
   return tree;

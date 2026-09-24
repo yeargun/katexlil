@@ -10,6 +10,8 @@ import { assertSpan, assertSymbolDomNode } from "../domTree.lil";
 import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeOrd, makeSpan, makeVList, staticSvg, svgData } from "../buildCommon.lil";
 
 JsValue htmlBuilder = undef();
 JsValue mathmlBuilder = undef();
@@ -54,11 +56,11 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     JsValue accent = undef();
     JsValue width = undef();
     if (JS.strictEqual(group["label"], "\\vec")) {
-      accent = JS.invoke(buildCommon, "staticSvg", "vec", options);
-      width = buildCommon["svgData"]["vec"][1];
+      accent = JS.call(staticSvg, undef(), "vec", options);
+      width = svgData["vec"][1];
     } else {
       JsValue o3 = JS.object("mode", group["mode"], "text", group["label"]);
-      accent = JS.invoke(buildCommon, "makeOrd", o3, options, "textord");
+      accent = JS.call(makeOrd, undef(), o3, options, "textord");
       accent = JS.call(assertSymbolDomNode, undef(), accent);
       accent["italic"] = 0;
       width = accent["width"];
@@ -68,7 +70,7 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     }
     JsValue a4 = JS.array("accent-body");
     JsValue a5 = JS.array(accent);
-    accentBody = JS.invoke(buildCommon, "makeSpan", a4, a5);
+    accentBody = JS.call(makeSpan, undef(), a4, a5);
     JsValue accentFull = JS.strictEqual(group["label"], "\\textcircled");
     if (accentFull.truthy()) {
       JS.invoke(accentBody["classes"], "push", "accent-full");
@@ -83,13 +85,13 @@ htmlBuilder = (JsValue grp, JsValue options) => {
       accentBody["style"]["top"] = ".2em";
     }
     JsValue o6 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", body), JS.object("type", "kern", "size", JS.number(0) - toNum(clearance)), JS.object("type", "elem", "elem", accentBody)));
-    accentBody = JS.invoke(buildCommon, "makeVList", o6, options);
+    accentBody = JS.call(makeVList, undef(), o6, options);
   } else {
     accentBody = JS.invoke(stretchy, "svgSpan", group, options);
     JsValue o11 = JS.object("positionType", "firstBaseline");
     JsValue a12 = newArray();
     JsValue o13 = JS.object("type", "elem", "elem", body);
-    JS.push(a12, o13);
+    JS.invoke(a12, "push", o13);
     JsValue o14 = JS.object("type", "elem", "elem", accentBody, "wrapperClasses", JS.array("svg-align"));
     JsValue c16 = undef();
     if (JS.greaterThan(skew, 0)) {
@@ -99,13 +101,13 @@ htmlBuilder = (JsValue grp, JsValue options) => {
       c16 = undef();
     }
     o14["wrapperStyle"] = c16;
-    JS.push(a12, o14);
+    JS.invoke(a12, "push", o14);
     o11["children"] = a12;
-    accentBody = JS.invoke(buildCommon, "makeVList", o11, options);
+    accentBody = JS.call(makeVList, undef(), o11, options);
   }
   JsValue a18 = JS.array("mord", "accent");
   JsValue a19 = JS.array(accentBody);
-  JsValue accentWrap = JS.invoke(buildCommon, "makeSpan", a18, a19, options);
+  JsValue accentWrap = JS.call(makeSpan, undef(), a18, a19, options);
   if (supSubGroup.truthy()) {
     supSubGroup["children"][0] = accentWrap;
     supSubGroup["height"] = JS.invoke(Math, "max", accentWrap["height"], supSubGroup["height"]);
@@ -122,11 +124,11 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     c20 = JS.invoke(stretchy, "mathMLnode", group["label"]);
   } else {
     JsValue a21 = JS.array(JS.invoke(mml, "makeText", group["label"], group["mode"]));
-    c20 = JS.construct(mathMLTree["MathNode"], "mo", a21);
+    c20 = JS.construct(MathNode, "mo", a21);
   }
   JsValue accentNode = c20;
   JsValue a22 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options), accentNode);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mover", a22);
+  JsValue node = JS.construct(MathNode, "mover", a22);
   JS.invoke(node, "setAttribute", "accent", "true");
   return node;
   return undef();

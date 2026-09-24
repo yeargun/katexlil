@@ -15,6 +15,9 @@ import { calculateSize, makeEm } from "../units.lil";
 import { utils } from "../utils.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeFragment, makeLineSpan, makeSpan, makeVList } from "../buildCommon.lil";
+import { SCRIPT } from "../Style.lil";
 
 JsValue alignMap = undef();
 
@@ -29,7 +32,7 @@ JsValue getHLines(JsValue parser) {
   }
   while (nxt == "\\hline" || nxt == "\\hdashline") {
     JS.invoke(parser, "consume");
-    JS.push(hlineInfo, nxt == "\\hdashline");
+    JS.invoke(hlineInfo, "push", nxt == "\\hdashline");
     JS.invoke(parser, "consumeSpaces");
     nxt = toStr(JS.invoke(parser, "fetch")["text"]);
   }
@@ -92,20 +95,20 @@ JsValue parseArray(JsValue parser, JsValue p3, JsValue style) {
   JsValue endRow = () => {
   if (tags.truthy()) {
     if (JS.invoke(parser["gullet"]["macros"], "get", "\\df@tag").truthy()) {
-      JS.push(tags, JS.invoke(parser, "subparse", JS.array(JS.construct(Token, "\\df@tag"))));
+      JS.invoke(tags, "push", JS.invoke(parser, "subparse", JS.array(JS.construct(Token, "\\df@tag"))));
       JS.invoke(parser["gullet"]["macros"], "set", "\\df@tag", undef(), true);
     } else {
       bool tag = false;
       if (autoTag.truthy()) {
         tag = JS.strictEqual(JS.invoke(parser["gullet"]["macros"], "get", "\\@eqnsw"), "1");
       }
-      JS.push(tags, tag);
+      JS.invoke(tags, "push", tag);
     }
   }
   return undef();
   };
   JS.call(beginRow, undef());
-  JS.push(hLinesBeforeRow, getHLines(parser));
+  JS.invoke(hLinesBeforeRow, "push", getHLines(parser));
   while (true) {
     string endToken = "\\\\";
     if (singleRow.truthy()) {
@@ -118,7 +121,7 @@ JsValue parseArray(JsValue parser, JsValue p3, JsValue style) {
     if (style.truthy()) {
       cell = JS.object("type", "styling", "mode", parser["mode"], "style", style, "body", JS.array(cell));
     }
-    JS.push(row, cell);
+    JS.invoke(row, "push", cell);
     string next = toStr(JS.invoke(parser, "fetch")["text"]);
     if (next == "&") {
       if (maxNumCols.truthy() && JS.strictEqual(row["length"], maxNumCols)) {
@@ -135,7 +138,7 @@ JsValue parseArray(JsValue parser, JsValue p3, JsValue style) {
         JS.invoke(body, "pop");
       }
       if (len(hLinesBeforeRow) < len(body) + 1) {
-        JS.push(hLinesBeforeRow, JS.array());
+        JS.invoke(hLinesBeforeRow, "push", JS.array());
       }
       break;
     } else if (next == "\\\\") {
@@ -145,14 +148,14 @@ JsValue parseArray(JsValue parser, JsValue p3, JsValue style) {
         size = JS.invoke(parser, "parseSizeGroup", true);
       }
       if (size.truthy()) {
-        JS.push(rowGaps, size["value"]);
+        JS.invoke(rowGaps, "push", size["value"]);
       } else {
-        JS.push(rowGaps, null);
+        JS.invoke(rowGaps, "push", null);
       }
       JS.call(endRow, undef());
-      JS.push(hLinesBeforeRow, getHLines(parser));
+      JS.invoke(hLinesBeforeRow, "push", getHLines(parser));
       row = JS.array();
-      JS.push(body, row);
+      JS.invoke(body, "push", row);
       JS.call(beginRow, undef());
     } else {
       throw JS.construct(ParseError, "Expected & or \\\\ or \\cr or \\end", parser["nextToken"]);
@@ -178,7 +181,7 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
   number pt = 1.0 / toNum(JS.invoke(options, "fontMetrics")["ptPerEm"]);
   number arraycolsep = 5.0 * pt;
   if ((group["colSeparationType"].truthy()) && (JS.strictEqual(group["colSeparationType"], "small"))) {
-    number localMultiplier = toNum(JS.invoke(options, "havingStyle", Style["SCRIPT"])["sizeMultiplier"]);
+    number localMultiplier = toNum(JS.invoke(options, "havingStyle", SCRIPT)["sizeMultiplier"]);
     arraycolsep = 0.2778 * localMultiplier / toNum(options["sizeMultiplier"]);
   }
   number baselineskip = 12.0 * pt;
@@ -196,7 +199,7 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
       if (i > 0) {
         totalHeight = totalHeight + 0.25;
       }
-      JS.push(hlines, JS.object("pos", totalHeight, "isDashed", hlinesInGap[i]));
+      JS.invoke(hlines, "push", JS.object("pos", totalHeight, "isDashed", hlinesInGap[i]));
     }
   }
   return undef();
@@ -267,15 +270,15 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
         JsValue tag = group["tags"][r];
         JsValue tagSpan = undef();
         if (JS.strictEqual(tag, true)) {
-          tagSpan = JS.invoke(buildCommon, "makeSpan", JS.array("eqn-num"), JS.array(), options);
+          tagSpan = JS.call(makeSpan, undef(), JS.array("eqn-num"), JS.array(), options);
         } else if (JS.strictEqual(tag, false)) {
-          tagSpan = JS.invoke(buildCommon, "makeSpan", JS.array(), JS.array(), options);
+          tagSpan = JS.call(makeSpan, undef(), JS.array(), JS.array(), options);
         } else {
-          tagSpan = JS.invoke(buildCommon, "makeSpan", JS.array(), JS.invoke(html, "buildExpression", tag, options, true), options);
+          tagSpan = JS.call(makeSpan, undef(), JS.array(), JS.invoke(html, "buildExpression", tag, options, true), options);
         }
         tagSpan["depth"] = rw["depth"];
         tagSpan["height"] = rw["height"];
-        JS.push(tagSpans, JS.object("type", "elem", "elem", tagSpan, "shift", shift));
+        JS.invoke(tagSpans, "push", JS.object("type", "elem", "elem", tagSpan, "shift", shift));
       }
     }
   }
@@ -290,16 +293,16 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
       bool firstSeparator = true;
       while (JS.strictEqual(colDescr["type"], "separator")) {
         if (!firstSeparator) {
-          colSep = JS.invoke(buildCommon, "makeSpan", JS.array("arraycolsep"), JS.array());
+          colSep = JS.call(makeSpan, undef(), JS.array("arraycolsep"), JS.array());
           colSep["style"]["width"] = JS.call(makeEm, undef(), JS.invoke(options, "fontMetrics")["doubleRuleSep"]);
-          JS.push(cols, colSep);
+          JS.invoke(cols, "push", colSep);
         }
         if ((JS.strictEqual(colDescr["separator"], "|")) || (JS.strictEqual(colDescr["separator"], ":"))) {
           string lineType = "dashed";
           if (JS.strictEqual(colDescr["separator"], "|")) {
             lineType = "solid";
           }
-          JsValue separator = JS.invoke(buildCommon, "makeSpan", JS.array("vertical-separator"), JS.array(), options);
+          JsValue separator = JS.call(makeSpan, undef(), JS.array("vertical-separator"), JS.array(), options);
           separator["style"]["height"] = JS.call(makeEm, undef(), totalHeight);
           separator["style"]["borderRightWidth"] = JS.call(makeEm, undef(), ruleThickness);
           separator["style"]["borderRightStyle"] = lineType;
@@ -308,7 +311,7 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
           if (shift != 0.0) {
             separator["style"]["verticalAlign"] = JS.call(makeEm, undef(), 0.0 - shift);
           }
-          JS.push(cols, separator);
+          JS.invoke(cols, "push", separator);
         } else {
           throw JS.construct(ParseError, "Invalid separator type: " + toStr(colDescr["separator"]));
         }
@@ -328,9 +331,9 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
       if (c > 0 || group["hskipBeforeAndAfter"].truthy()) {
         sepwidth = JS.invoke(utils, "deflt", colDescr["pregap"], arraycolsep);
         if (JS.strictNotEqual(sepwidth, 0)) {
-          colSep = JS.invoke(buildCommon, "makeSpan", JS.array("arraycolsep"), JS.array());
+          colSep = JS.call(makeSpan, undef(), JS.array("arraycolsep"), JS.array());
           colSep["style"]["width"] = JS.call(makeEm, undef(), sepwidth);
-          JS.push(cols, colSep);
+          JS.invoke(cols, "push", colSep);
         }
       }
       JsValue col = JS.array();
@@ -350,54 +353,54 @@ JsValue htmlBuilder(JsValue group, JsValue options) {
           r = r + 1;
         }
       }
-      col = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", col), options);
+      col = JS.call(makeVList, undef(), JS.object("positionType", "individualShift", "children", col), options);
       JsValue colAlign = colDescr["align"];
       if (!(colAlign.truthy())) {
         colAlign = "c";
       }
-      col = JS.invoke(buildCommon, "makeSpan", JS.array("col-align-" + toStr(colAlign)), JS.array(col));
-      JS.push(cols, col);
+      col = JS.call(makeSpan, undef(), JS.array("col-align-" + toStr(colAlign)), JS.array(col));
+      JS.invoke(cols, "push", col);
       if (c < nc - 1 || group["hskipBeforeAndAfter"].truthy()) {
         sepwidth = JS.invoke(utils, "deflt", colDescr["postgap"], arraycolsep);
         if (JS.strictNotEqual(sepwidth, 0)) {
-          colSep = JS.invoke(buildCommon, "makeSpan", JS.array("arraycolsep"), JS.array());
+          colSep = JS.call(makeSpan, undef(), JS.array("arraycolsep"), JS.array());
           colSep["style"]["width"] = JS.call(makeEm, undef(), sepwidth);
-          JS.push(cols, colSep);
+          JS.invoke(cols, "push", colSep);
         }
       }
       c = c + 1;
       colDescrNum = colDescrNum + 1;
     }
   }
-  body = JS.invoke(buildCommon, "makeSpan", JS.array("mtable"), cols);
+  body = JS.call(makeSpan, undef(), JS.array("mtable"), cols);
   if (len(hlines) > 0) {
-    JsValue line = JS.invoke(buildCommon, "makeLineSpan", "hline", options, ruleThickness);
-    JsValue dashes = JS.invoke(buildCommon, "makeLineSpan", "hdashline", options, ruleThickness);
+    JsValue line = JS.call(makeLineSpan, undef(), "hline", options, ruleThickness);
+    JsValue dashes = JS.call(makeLineSpan, undef(), "hdashline", options, ruleThickness);
     JsValue vListElems = JS.array(JS.object("type", "elem", "elem", body, "shift", 0));
     while (len(hlines) > 0) {
       JsValue hline = JS.invoke(hlines, "pop");
       number lineShift = toNum(hline["pos"]) - offset;
       if (hline["isDashed"].truthy()) {
-        JS.push(vListElems, JS.object("type", "elem", "elem", dashes, "shift", lineShift));
+        JS.invoke(vListElems, "push", JS.object("type", "elem", "elem", dashes, "shift", lineShift));
       } else {
-        JS.push(vListElems, JS.object("type", "elem", "elem", line, "shift", lineShift));
+        JS.invoke(vListElems, "push", JS.object("type", "elem", "elem", line, "shift", lineShift));
       }
     }
-    body = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", vListElems), options);
+    body = JS.call(makeVList, undef(), JS.object("positionType", "individualShift", "children", vListElems), options);
   }
   if (len(tagSpans) == 0) {
-    return JS.invoke(buildCommon, "makeSpan", JS.array("mord"), JS.array(body), options);
+    return JS.call(makeSpan, undef(), JS.array("mord"), JS.array(body), options);
   } else {
-    JsValue eqnNumCol = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", tagSpans), options);
-    eqnNumCol = JS.invoke(buildCommon, "makeSpan", JS.array("tag"), JS.array(eqnNumCol));
-    return JS.invoke(buildCommon, "makeFragment", JS.array(body, eqnNumCol));
+    JsValue eqnNumCol = JS.call(makeVList, undef(), JS.object("positionType", "individualShift", "children", tagSpans), options);
+    eqnNumCol = JS.call(makeSpan, undef(), JS.array("tag"), JS.array(eqnNumCol));
+    return JS.call(makeFragment, undef(), JS.array(body, eqnNumCol));
   }
 }
 alignMap = JS.object("c", "center ", "l", "left ", "r", "right ");
 JsValue mathmlBuilder(JsValue group, JsValue options) {
   JsValue tbl = JS.array();
-  JsValue glue = JS.construct(mathMLTree["MathNode"], "mtd", JS.array(), JS.array("mtr-glue"));
-  JsValue tag = JS.construct(mathMLTree["MathNode"], "mtd", JS.array(), JS.array("mml-eqn-num"));
+  JsValue glue = JS.construct(MathNode, "mtd", JS.array(), JS.array("mtr-glue"));
+  JsValue tag = JS.construct(MathNode, "mtd", JS.array(), JS.array("mml-eqn-num"));
   {
     for (int i = 0; i < len(group["body"]); i++) {
       JsValue rw = group["body"][i];
@@ -405,7 +408,7 @@ JsValue mathmlBuilder(JsValue group, JsValue options) {
       {
         int j = 0;
         while (j < len(rw)) {
-          JS.push(row, JS.construct(mathMLTree["MathNode"], "mtd", JS.array(JS.invoke(mml, "buildGroup", rw[j], options))));
+          JS.invoke(row, "push", JS.construct(MathNode, "mtd", JS.array(JS.invoke(mml, "buildGroup", rw[j], options))));
           j = j + 1;
         }
       }
@@ -418,10 +421,10 @@ JsValue mathmlBuilder(JsValue group, JsValue options) {
           JS.invoke(row, "push", tag);
         }
       }
-      JS.push(tbl, JS.construct(mathMLTree["MathNode"], "mtr", row));
+      JS.invoke(tbl, "push", JS.construct(MathNode, "mtr", row));
     }
   }
-  JsValue table = JS.construct(mathMLTree["MathNode"], "mtable", tbl);
+  JsValue table = JS.construct(MathNode, "mtable", tbl);
   number gap = 0.0;
   if (JS.strictEqual(group["arraystretch"], 0.5)) {
     gap = 0.1;
@@ -530,11 +533,11 @@ JsValue mathmlBuilder(JsValue group, JsValue options) {
     JS.invoke(table, "setAttribute", "rowlines", rowLines.trim());
   }
   if (menclose != "") {
-    table = JS.construct(mathMLTree["MathNode"], "menclose", JS.array(table));
+    table = JS.construct(MathNode, "menclose", JS.array(table));
     JS.invoke(table, "setAttribute", "notation", menclose.trim());
   }
   if ((group["arraystretch"].truthy()) && (JS.lessThan(group["arraystretch"], 1))) {
-    table = JS.construct(mathMLTree["MathNode"], "mstyle", JS.array(table));
+    table = JS.construct(MathNode, "mstyle", JS.array(table));
     JS.invoke(table, "setAttribute", "scriptlevel", "1");
   }
   return table;
@@ -617,7 +620,7 @@ JsValue alignedHandler(JsValue context, JsValue args) {
   return res;
 }
 JsValue arrayEnvironment = JS.object("type", "array", "names", JS.array("array", "darray"), "props", JS.object("numArgs", 1));
-arrayEnvironment["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
+arrayEnvironment["handler"] = (JsValue context, JsValue args) => {
   JsValue symNode = JS.call(checkSymbolNodeType, undef(), args[0]);
   JsValue colalign = undef();
   if (symNode.truthy()) {
@@ -639,13 +642,13 @@ arrayEnvironment["handler"] = JS.method2((JsValue self, JsValue context, JsValue
   JsValue payload = JS.object("cols", cols, "hskipBeforeAndAfter", true, "maxNumCols", len(cols));
   return parseArray(context["parser"], payload, dCellStyle(toStr(context["envName"])));
   return undef();
-});
+};
 arrayEnvironment["htmlBuilder"] = htmlBuilder;
 arrayEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), arrayEnvironment);
 
 JsValue matrixEnvironment = JS.object("type", "array", "names", JS.array("matrix", "pmatrix", "bmatrix", "Bmatrix", "vmatrix", "Vmatrix", "matrix*", "pmatrix*", "bmatrix*", "Bmatrix*", "vmatrix*", "Vmatrix*"), "props", JS.object("numArgs", 0));
-matrixEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
+matrixEnvironment["handler"] = (JsValue context) => {
   JsValue delimitersByName = JS.object("matrix", null, "pmatrix", JS.array("(", ")"), "bmatrix", JS.array("[", "]"), "Bmatrix", JS.array("\\{", "\\}"), "vmatrix", JS.array("|", "|"), "Vmatrix", JS.array("\\Vert", "\\Vert"));
   string envName = toStr(context["envName"]);
   JsValue delimiters = delimitersByName[JS.invoke(envName, "replace", "*", "")];
@@ -678,24 +681,24 @@ matrixEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
   }
   return res;
   return undef();
-});
+};
 matrixEnvironment["htmlBuilder"] = htmlBuilder;
 matrixEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), matrixEnvironment);
 
 JsValue smallMatrixEnvironment = JS.object("type", "array", "names", JS.array("smallmatrix"), "props", JS.object("numArgs", 0));
-smallMatrixEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
+smallMatrixEnvironment["handler"] = (JsValue context) => {
   JsValue res = parseArray(context["parser"], JS.object("arraystretch", 0.5), "script");
   res["colSeparationType"] = "small";
   return res;
   return undef();
-});
+};
 smallMatrixEnvironment["htmlBuilder"] = htmlBuilder;
 smallMatrixEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), smallMatrixEnvironment);
 
 JsValue subarrayEnvironment = JS.object("type", "array", "names", JS.array("subarray"), "props", JS.object("numArgs", 1));
-subarrayEnvironment["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
+subarrayEnvironment["handler"] = (JsValue context, JsValue args) => {
   JsValue symNode = JS.call(checkSymbolNodeType, undef(), args[0]);
   JsValue colalign = undef();
   if (symNode.truthy()) {
@@ -722,13 +725,13 @@ subarrayEnvironment["handler"] = JS.method2((JsValue self, JsValue context, JsVa
   }
   return res;
   return undef();
-});
+};
 subarrayEnvironment["htmlBuilder"] = htmlBuilder;
 subarrayEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), subarrayEnvironment);
 
 JsValue casesEnvironment = JS.object("type", "array", "names", JS.array("cases", "dcases", "rcases", "drcases"), "props", JS.object("numArgs", 0));
-casesEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
+casesEnvironment["handler"] = (JsValue context) => {
   JsValue payload = JS.object("arraystretch", 1.2, "cols", JS.array(JS.object("type", "align", "align", "l", "pregap", 0, "postgap", 1), JS.object("type", "align", "align", "l", "pregap", 0, "postgap", 0)));
   JsValue res = parseArray(context["parser"], payload, dCellStyle(toStr(context["envName"])));
   string left = "\\{";
@@ -739,7 +742,7 @@ casesEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
   }
   return JS.object("type", "leftright", "mode", context["mode"], "body", JS.array(res), "left", left, "right", right, "rightColor", undef());
   return undef();
-});
+};
 casesEnvironment["htmlBuilder"] = htmlBuilder;
 casesEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), casesEnvironment);
@@ -748,14 +751,14 @@ JsValue alignEnvironment = JS.object("type", "array", "names", JS.array("align",
 JS.call(defineEnvironment, undef(), alignEnvironment);
 
 JsValue gatherEnvironment = JS.object("type", "array", "names", JS.array("gathered", "gather", "gather*"), "props", JS.object("numArgs", 0));
-gatherEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
+gatherEnvironment["handler"] = (JsValue context) => {
   if (JS.invoke(utils, "contains", JS.array("gather", "gather*"), context["envName"]).truthy()) {
     validateAmsEnvironmentContext(context);
   }
   JsValue payload = JS.object("cols", JS.array(JS.object("type", "align", "align", "c")), "addJot", true, "colSeparationType", "gather", "autoTag", getAutoTag(toStr(context["envName"])), "emptySingleRow", true, "leqno", context["parser"]["settings"]["leqno"]);
   return parseArray(context["parser"], payload, "display");
   return undef();
-});
+};
 gatherEnvironment["htmlBuilder"] = htmlBuilder;
 gatherEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), gatherEnvironment);
@@ -764,22 +767,22 @@ JsValue alignatEnvironment = JS.object("type", "array", "names", JS.array("align
 JS.call(defineEnvironment, undef(), alignatEnvironment);
 
 JsValue equationEnvironment = JS.object("type", "array", "names", JS.array("equation", "equation*"), "props", JS.object("numArgs", 0));
-equationEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
+equationEnvironment["handler"] = (JsValue context) => {
   validateAmsEnvironmentContext(context);
   JsValue payload = JS.object("autoTag", getAutoTag(toStr(context["envName"])), "emptySingleRow", true, "singleRow", true, "maxNumCols", 1, "leqno", context["parser"]["settings"]["leqno"]);
   return parseArray(context["parser"], payload, "display");
   return undef();
-});
+};
 equationEnvironment["htmlBuilder"] = htmlBuilder;
 equationEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), equationEnvironment);
 
 JsValue cdEnvironment = JS.object("type", "array", "names", JS.array("CD"), "props", JS.object("numArgs", 0));
-cdEnvironment["handler"] = JS.method1((JsValue self, JsValue context) => {
+cdEnvironment["handler"] = (JsValue context) => {
   validateAmsEnvironmentContext(context);
   return JS.call(parseCD, undef(), context["parser"]);
   return undef();
-});
+};
 cdEnvironment["htmlBuilder"] = htmlBuilder;
 cdEnvironment["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineEnvironment, undef(), cdEnvironment);
@@ -787,10 +790,10 @@ JS.call(defineEnvironment, undef(), cdEnvironment);
 JS.call(defineMacro, undef(), "\\nonumber", "\\gdef\\@eqnsw{0}");
 JS.call(defineMacro, undef(), "\\notag", "\\nonumber");
 JsValue hlineFunction = JS.object("type", "text", "names", JS.array("\\hline", "\\hdashline"), "props", JS.object("numArgs", 0, "allowedInText", true, "allowedInMath", true));
-hlineFunction["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
+hlineFunction["handler"] = (JsValue context, JsValue args) => {
   throw JS.construct(ParseError, toStr(context["funcName"]) + " valid only within array environment");
   return undef();
-});
+};
 JS.call(defineFunction, undef(), hlineFunction);
 JsValue __star = emptyObject();
 

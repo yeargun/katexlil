@@ -15,14 +15,44 @@ Two compiles ship from the same `.lil` source:
 | Lane | Config | Meaning |
 | --- | --- | --- |
 | **open world** (npm) | `lilscript.toml` · `--target js-module` | reusable ESM. Export names, option keys and `extern class` fields stay as written. |
-| **closed world** | `lilscript.closed.toml` · `--target js-module` | the same config with `extern_fields = false`: fields the compiler owns may rename. ESM export names stay so the lane is testable. |
+| **closed world** | `lilscript.closed.toml` · `--target js-module` | the lane where fields the compiler owns may rename. ESM export names stay so the lane is testable. |
 
-You publish the open-world lane. The closed lane is byte-identical to it today: this port declares
-no fields the compiler owns (its objects are `JsValue` bags carried over from the JavaScript), so the
-closed contract has nothing to rename. That is the port's defect and the reason it loses to Terser
-in both worlds; typing the port is the fix.
+You publish the open-world lane. The closed lane is byte-identical to it: the one LilScript compiler
+renames no property yet, so `extern_fields` has no effect and the closed config is the open one.
+The port would give it little to rename anyway, since its objects are mostly `JsValue` bags carried
+over from the JavaScript.
 
 The LilScript compiler lives next door at `../lilscript`.
+
+## This release
+
+Built by the one LilScript compiler at revision `aa2052f0` (binary SHA-256 `13cb49a9…77cf18f9`).
+Brotli-11 and raw bytes from `lilscript-codec`. The bar is Terser (compress with 3 passes, mangle)
+over the published `katex@0.16.22` graph. The previous release is `13cd81b`, whose dist was built by
+the old compiler route on 2026-09-03.
+
+| File | Written by | Raw | Brotli-11 | Previous release | Terser bar | vs bar |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `dist/katex.esm.js` / `katex.mjs` (npm ESM) | compiler | 274,680 | **62,704** | 64,907 | 63,044 | **−340** |
+| `dist/katex.closed.js` | compiler | 274,680 | 62,704 | 64,907 | 63,044 | −340 |
+| `dist/katex.cjs` | esbuild re-bundle, **not compiler-written** | 272,207 | 63,663 | 65,226 | 63,044 | +619 |
+| `dist/katex.umd.js` / `katex.min.js` | esbuild re-bundle, **not compiler-written** | 272,217 | 63,620 | 65,154 | 63,044 | +576 |
+
+The core ESM also wins gzip-9 (75,914 against 76,480) and loses raw (274,680 against 267,050): its
+cost model is Brotli. Our files carry a 76-byte licence banner the bar lacks. Two other baselines:
+the Flow sources through esbuild and Terser give 61,758 (the stretch bar), and katex's npm package
+itself serves `import "katex"` unminified (610,145 raw / 119,059 Brotli-11; the minified
+`katex.min.js`, 62,686, is CDN-only).
+
+The contrib ESM files are compiler-written and lose to Terser of upstream's `dist/contrib/*.mjs`:
+auto-render 1,134 against 1,048, copy-tex 572 against 531, mathtex-script-type 282 against 232,
+mhchem 8,018 against 7,413, render-a11y-string 2,230 against 2,220. Their `.cjs` and `.min.js`
+builds are esbuild re-bundles. The site lists every file with its label.
+
+Compile time on the build host (8 vCPU burstable Azure VM), wall clock per compiler process over
+three full builds: the core ESM takes about 4.0 s, and all eight compiles of a build about 9.5 s.
+`scripts/build.mjs` times every invocation into `.tmp/compile-times/`, and
+`node scripts/record-compiler.mjs --revision <rev>` writes them to `site/results.json`.
 
 ## The site and its receipts
 
@@ -38,7 +68,9 @@ render the corpus identically and the port may not exceed the regression guard
 rail. `node scripts/build.mjs --compile --map` (a compiler with
 `[javascript.source_map]`) writes `dist/katex.raw.js.map`, and
 `node scripts/attribute-map.mjs --json out.json` charges every byte of both lanes
-to its module, with marginal Brotli per module.
+to its module, with marginal Brotli per module. The current compiler does not emit
+source maps yet, so the site's per-module table is the 2026-09-03 one, marked as not
+remeasured.
 
 The root API, CLI, TypeScript declarations, CSS, 60 font files, and all five
 official contrib subpaths mirror KaTeX 0.16.22. `src/fontMetricsData.js` remains
@@ -56,15 +88,19 @@ Mhchem keeps the official dynamic transition/action layout because keys are
 parser input and action dispatch data, but its loops and values are explicitly
 typed at the LilScript boundary.
 
-Mhchem uses `lilscript.mhchem.toml` with bounded production candidate search.
-Level-13 exhaustive search over its large fixed transition graph does not
-terminate in a practical build window. The behaviorally exact Lil source stays
-normative even if a future compiler or artifact policy changes its compressed
-size; the build never falls back to the upstream JavaScript host.
+Mhchem used to build with its own bounded config, because the old compiler's
+level-13 search over its large fixed transition graph did not finish in a
+practical build window. The one compiler builds it with `lilscript.toml` in about
+1.4 s, 1,435 Brotli-11 bytes smaller than the bounded config gave, so that config
+is gone. The build never falls back to the upstream JavaScript host.
 
 Run `npm run check` for build, TypeScript, official and differential tests,
 package, site, and parity checks. `npm run audit` reports the complete source
 map, generated-data and asset hashes, declaration/export checks, and raw,
 gzip-9, and Brotli-11 sizes for core and contrib artifacts. The library and
-closed artifacts are measured directly from compiler output without a
-post-compilation minifier.
+closed artifacts are the compiler's output with no post-compilation minifier; the
+build only concatenates the upstream font-metrics data module and the `version`
+export onto it. `katex.cjs`, `katex.umd.js`, `katex.min.js` and the contrib `.cjs`
+and `.min.js` files are esbuild re-bundles of the compiler's ESM (the compiler
+writes ES modules and closed scripts, not CommonJS or IIFE bundles), and they are
+labelled as such wherever they are measured.

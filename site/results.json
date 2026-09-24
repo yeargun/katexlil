@@ -4,18 +4,18 @@
   "file": "katex",
   "lilExport": "renderToString",
   "officialExport": "default",
-  "measuredAt": "2026-09-03T18:14:40.253Z",
-  "node": "v20.19.0",
+  "measuredAt": "2026-09-24T04:02:08.293Z",
+  "node": "v24.11.1",
   "codec": "lilscript-codec: zlib 1.3.1 gzip-9 / Google Brotli 1.1.0 q11 w22",
-  "runtime": "Node v20.19.0",
+  "runtime": "Node v24.11.1",
   "warmupDiscard": 5,
   "corpus": 30,
   "rounds": 30,
-  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's output, never post-minified. Open world keeps the public API and option names; closed world sets extern_fields = false.",
+  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.",
   "spec": {
-    "total": 21,
-    "pass": 21,
-    "label": "runtime checks"
+    "total": 1230,
+    "pass": 1230,
+    "label": "official Jest suites (core, screenshotter data, contrib)"
   },
   "play": {
     "kind": "tex-html",
@@ -36,93 +36,715 @@
       "id": "official",
       "name": "Official katex@0.16.22 graph",
       "note": "esbuild bundle of the published package plus runtime deps, unminified",
-      "raw": 495850,
-      "gzip9": 103293,
-      "brotli11": 83022,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "8ebb2ee59bb4f7a29762c829cf10e5288b5268a8adfb552a9eb81c3efefe26b0"
+      "raw": 495869,
+      "gzip9": 103308,
+      "brotli11": 83118
     },
     {
       "id": "official-terser-mangle",
-      "name": "Official \u00b7 Terser mangle on",
+      "name": "Official · Terser mangle on",
       "note": "Terser compress (3 passes) of that graph, mangle: true",
       "baseline": true,
-      "raw": 267051,
-      "gzip9": 76483,
-      "brotli11": 63066,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009"
+      "raw": 267050,
+      "gzip9": 76480,
+      "brotli11": 63044
     },
     {
       "id": "official-terser-nomangle",
-      "name": "Official \u00b7 Terser mangle off",
+      "name": "Official · Terser mangle off",
       "note": "Terser compress of that graph, mangle: false",
-      "raw": 342635,
-      "gzip9": 84778,
-      "brotli11": 69529,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "c35705016ad6e10ea1b6ad4cb4ef17696c79e7f15cb3be666d5faf703fb5e4ee"
+      "raw": 342634,
+      "gzip9": 84775,
+      "brotli11": 69566
     },
     {
       "id": "official-esbuild",
-      "name": "Official \u00b7 esbuild minify",
+      "name": "Official · esbuild minify",
       "note": "esbuild minify of that graph",
-      "raw": 271781,
-      "gzip9": 76693,
-      "brotli11": 63767,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "ca7890ced1ad94d863fde8c74129b45d15d623f4733b34831463069a1d2501e0"
-    },
-    {
-      "id": "itslil",
-      "name": "@itslil/katex \u00b7 open world",
-      "note": "ESM output from LilScript 4dc4e33.",
-      "primary": true,
-      "world": "open",
-      "raw": 274892,
-      "gzip9": 78490,
-      "brotli11": 64620,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd"
-    },
-    {
-      "id": "itslil-closed",
-      "name": "@itslil/katex \u00b7 closed world",
-      "note": "ESM output from LilScript 4dc4e33.",
-      "world": "closed",
-      "raw": 275209,
-      "gzip9": 78588,
-      "brotli11": 64755,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "cf0f158f34d0796cba3f171fce1f5a888bdaf7128b0727d05b0f4277065185f6"
+      "raw": 271766,
+      "gzip9": 76669,
+      "brotli11": 63757
     },
     {
       "id": "official-source-terser",
-      "name": "Original source build \u00b7 Terser",
-      "note": "Native upstream source build, then public ESM assembly and Terser with three passes.",
+      "name": "Official source · esbuild + Terser",
+      "note": "katex@0.16.22 Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary",
       "strongest": true,
-      "raw": 267051,
-      "gzip9": 76483,
-      "brotli11": 63066,
-      "measuredAt": "2026-09-10T20:37:59Z",
-      "artifactSha256": "b9ef051a9e750dc3e19b62ded65411416149f3c6d0856568c27a18f8f1f39009"
+      "raw": 263654,
+      "gzip9": 74592,
+      "brotli11": 61758
+    },
+    {
+      "id": "itslil",
+      "name": "@itslil/katex · open world",
+      "note": "The npm ESM: the compiler's js-module output with the upstream font-metrics data module and the version export concatenated on; nothing re-minifies it. Public API and option names kept",
+      "primary": true,
+      "world": "open",
+      "raw": 274680,
+      "gzip9": 75914,
+      "brotli11": 62704
+    },
+    {
+      "id": "itslil-closed",
+      "name": "@itslil/katex · closed world",
+      "note": "Same source. The one compiler renames no property, so extern_fields has no effect and the closed config equals the open one: same bytes",
+      "world": "closed",
+      "raw": 274680,
+      "gzip9": 75914,
+      "brotli11": 62704
     }
   ],
+  "delivered": [
+    {
+      "path": "dist/katex.esm.js",
+      "format": "ESM (npm import)",
+      "writtenBy": "compiler",
+      "bar": {
+        "name": "Official · Terser mangle on",
+        "raw": 267050,
+        "gzip9": 76480,
+        "brotli11": 63044
+      },
+      "raw": 274680,
+      "gzip9": 75914,
+      "brotli11": 62704,
+      "previous": {
+        "raw": 275444,
+        "gzip9": 78712,
+        "brotli11": 64907
+      }
+    },
+    {
+      "path": "dist/katex.mjs",
+      "format": "ESM (package exports), a byte copy of katex.esm.js",
+      "writtenBy": "compiler",
+      "bar": {
+        "name": "Official · Terser mangle on",
+        "raw": 267050,
+        "gzip9": 76480,
+        "brotli11": 63044
+      },
+      "raw": 274680,
+      "gzip9": 75914,
+      "brotli11": 62704,
+      "previous": {
+        "raw": 275444,
+        "gzip9": 78712,
+        "brotli11": 64907
+      }
+    },
+    {
+      "path": "dist/katex.closed.js",
+      "format": "ESM, closed world",
+      "writtenBy": "compiler",
+      "bar": {
+        "name": "Official · Terser mangle on",
+        "raw": 267050,
+        "gzip9": 76480,
+        "brotli11": 63044
+      },
+      "raw": 274680,
+      "gzip9": 75914,
+      "brotli11": 62704,
+      "previous": {
+        "raw": 275444,
+        "gzip9": 78712,
+        "brotli11": 64907
+      }
+    },
+    {
+      "path": "dist/katex.cjs",
+      "format": "CommonJS (npm require)",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Official · Terser mangle on",
+        "raw": 267050,
+        "gzip9": 76480,
+        "brotli11": 63044
+      },
+      "raw": 272207,
+      "gzip9": 76483,
+      "brotli11": 63663,
+      "previous": {
+        "raw": 276807,
+        "gzip9": 78475,
+        "brotli11": 65226
+      }
+    },
+    {
+      "path": "dist/katex.umd.js",
+      "format": "browser script",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Official · Terser mangle on",
+        "raw": 267050,
+        "gzip9": 76480,
+        "brotli11": 63044
+      },
+      "raw": 272217,
+      "gzip9": 76489,
+      "brotli11": 63620,
+      "previous": {
+        "raw": 276817,
+        "gzip9": 78478,
+        "brotli11": 65154
+      }
+    },
+    {
+      "path": "dist/katex.min.js",
+      "format": "browser script (CDN)",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Official · Terser mangle on",
+        "raw": 267050,
+        "gzip9": 76480,
+        "brotli11": 63044
+      },
+      "raw": 272217,
+      "gzip9": 76489,
+      "brotli11": 63620,
+      "previous": {
+        "raw": 276817,
+        "gzip9": 78478,
+        "brotli11": 65154
+      }
+    },
+    {
+      "path": "dist/contrib/auto-render.mjs",
+      "format": "contrib ESM",
+      "writtenBy": "compiler (its katex import specifier is rewritten to ../katex.mjs)",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/auto-render.mjs",
+        "raw": 2570,
+        "gzip9": 1205,
+        "brotli11": 1048
+      },
+      "raw": 2846,
+      "gzip9": 1281,
+      "brotli11": 1134,
+      "previous": {
+        "raw": 2777,
+        "gzip9": 1258,
+        "brotli11": 1109
+      }
+    },
+    {
+      "path": "dist/contrib/auto-render.cjs",
+      "format": "contrib CommonJS",
+      "writtenBy": "post-processed by esbuild (bundle + whitespace minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/auto-render.mjs",
+        "raw": 2570,
+        "gzip9": 1205,
+        "brotli11": 1048
+      },
+      "raw": 4183,
+      "gzip9": 1758,
+      "brotli11": 1584,
+      "previous": {
+        "raw": 4094,
+        "gzip9": 1758,
+        "brotli11": 1576
+      }
+    },
+    {
+      "path": "dist/contrib/auto-render.min.js",
+      "format": "contrib browser script",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/auto-render.mjs",
+        "raw": 2570,
+        "gzip9": 1205,
+        "brotli11": 1048
+      },
+      "raw": 3296,
+      "gzip9": 1481,
+      "brotli11": 1336,
+      "previous": {
+        "raw": 3260,
+        "gzip9": 1530,
+        "brotli11": 1377
+      }
+    },
+    {
+      "path": "dist/contrib/copy-tex.mjs",
+      "format": "contrib ESM",
+      "writtenBy": "compiler (its katex import specifier is rewritten to ../katex.mjs)",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/copy-tex.mjs",
+        "raw": 1277,
+        "gzip9": 639,
+        "brotli11": 531
+      },
+      "raw": 1428,
+      "gzip9": 678,
+      "brotli11": 572,
+      "previous": {
+        "raw": 1309,
+        "gzip9": 655,
+        "brotli11": 550
+      }
+    },
+    {
+      "path": "dist/contrib/copy-tex.cjs",
+      "format": "contrib CommonJS",
+      "writtenBy": "post-processed by esbuild (bundle + whitespace minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/copy-tex.mjs",
+        "raw": 1277,
+        "gzip9": 639,
+        "brotli11": 531
+      },
+      "raw": 1498,
+      "gzip9": 718,
+      "brotli11": 601,
+      "previous": {
+        "raw": 1351,
+        "gzip9": 684,
+        "brotli11": 574
+      }
+    },
+    {
+      "path": "dist/contrib/copy-tex.min.js",
+      "format": "contrib browser script",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/copy-tex.mjs",
+        "raw": 1277,
+        "gzip9": 639,
+        "brotli11": 531
+      },
+      "raw": 1400,
+      "gzip9": 688,
+      "brotli11": 592,
+      "previous": {
+        "raw": 1315,
+        "gzip9": 675,
+        "brotli11": 576
+      }
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.mjs",
+      "format": "contrib ESM",
+      "writtenBy": "compiler (its katex import specifier is rewritten to ../katex.mjs)",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/mathtex-script-type.mjs",
+        "raw": 438,
+        "gzip9": 315,
+        "brotli11": 232
+      },
+      "raw": 547,
+      "gzip9": 377,
+      "brotli11": 282,
+      "previous": {
+        "raw": 531,
+        "gzip9": 369,
+        "brotli11": 275
+      }
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.cjs",
+      "format": "contrib CommonJS",
+      "writtenBy": "post-processed by esbuild (bundle + whitespace minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/mathtex-script-type.mjs",
+        "raw": 438,
+        "gzip9": 315,
+        "brotli11": 232
+      },
+      "raw": 1330,
+      "gzip9": 698,
+      "brotli11": 590,
+      "previous": {
+        "raw": 1328,
+        "gzip9": 686,
+        "brotli11": 583
+      }
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.min.js",
+      "format": "contrib browser script",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/mathtex-script-type.mjs",
+        "raw": 438,
+        "gzip9": 315,
+        "brotli11": 232
+      },
+      "raw": 560,
+      "gzip9": 376,
+      "brotli11": 287,
+      "previous": {
+        "raw": 545,
+        "gzip9": 368,
+        "brotli11": 274
+      }
+    },
+    {
+      "path": "dist/contrib/mhchem.mjs",
+      "format": "contrib ESM",
+      "writtenBy": "compiler (its katex import specifier is rewritten to ../katex.mjs)",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/mhchem.mjs",
+        "raw": 32844,
+        "gzip9": 8096,
+        "brotli11": 7413
+      },
+      "raw": 35051,
+      "gzip9": 8839,
+      "brotli11": 8018,
+      "previous": {
+        "raw": 42015,
+        "gzip9": 10145,
+        "brotli11": 9184
+      }
+    },
+    {
+      "path": "dist/contrib/mhchem.cjs",
+      "format": "contrib CommonJS",
+      "writtenBy": "post-processed by esbuild (bundle + whitespace minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/mhchem.mjs",
+        "raw": 32844,
+        "gzip9": 8096,
+        "brotli11": 7413
+      },
+      "raw": 37551,
+      "gzip9": 9569,
+      "brotli11": 8613,
+      "previous": {
+        "raw": 43086,
+        "gzip9": 10471,
+        "brotli11": 9475
+      }
+    },
+    {
+      "path": "dist/contrib/mhchem.min.js",
+      "format": "contrib browser script",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/mhchem.mjs",
+        "raw": 32844,
+        "gzip9": 8096,
+        "brotli11": 7413
+      },
+      "raw": 34373,
+      "gzip9": 8921,
+      "brotli11": 8124,
+      "previous": {
+        "raw": 37430,
+        "gzip9": 9612,
+        "brotli11": 8790
+      }
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.mjs",
+      "format": "contrib ESM",
+      "writtenBy": "compiler (its katex import specifier is rewritten to ../katex.mjs)",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/render-a11y-string.mjs",
+        "raw": 7546,
+        "gzip9": 2428,
+        "brotli11": 2220
+      },
+      "raw": 8313,
+      "gzip9": 2464,
+      "brotli11": 2230,
+      "previous": {
+        "raw": 6895,
+        "gzip9": 2388,
+        "brotli11": 2164
+      }
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.cjs",
+      "format": "contrib CommonJS",
+      "writtenBy": "post-processed by esbuild (bundle + whitespace minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/render-a11y-string.mjs",
+        "raw": 7546,
+        "gzip9": 2428,
+        "brotli11": 2220
+      },
+      "raw": 9846,
+      "gzip9": 2984,
+      "brotli11": 2712,
+      "previous": {
+        "raw": 8080,
+        "gzip9": 2822,
+        "brotli11": 2577
+      }
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.min.js",
+      "format": "contrib browser script",
+      "writtenBy": "post-processed by esbuild (bundle + minify), not compiler-written",
+      "bar": {
+        "name": "Terser of katex@0.16.22 dist/contrib/render-a11y-string.mjs",
+        "raw": 7546,
+        "gzip9": 2428,
+        "brotli11": 2220
+      },
+      "raw": 7794,
+      "gzip9": 2690,
+      "brotli11": 2454,
+      "previous": {
+        "raw": 7401,
+        "gzip9": 2595,
+        "brotli11": 2364
+      }
+    }
+  ],
+  "upstreamServed": [
+    {
+      "path": "dist/katex.mjs",
+      "served": "import \"katex\" (package exports), unminified",
+      "raw": 610145,
+      "gzip9": 149489,
+      "brotli11": 119059
+    },
+    {
+      "path": "dist/katex.min.js",
+      "served": "CDN or deep import, minified by upstream's own build",
+      "raw": 276701,
+      "gzip9": 75840,
+      "brotli11": 62686
+    }
+  ],
+  "previousRelease": {
+    "revision": "13cd81b",
+    "committedAt": "2026-09-10T04:52:06+00:00",
+    "builtBy": "the old LilScript compiler route (deleted 2026-09-24); dist last rebuilt 2026-09-03",
+    "files": {
+      "dist/katex.esm.js": {
+        "raw": 275444,
+        "gzip9": 78712,
+        "brotli11": 64907
+      },
+      "dist/katex.mjs": {
+        "raw": 275444,
+        "gzip9": 78712,
+        "brotli11": 64907
+      },
+      "dist/katex.closed.js": {
+        "raw": 275444,
+        "gzip9": 78712,
+        "brotli11": 64907
+      },
+      "dist/katex.cjs": {
+        "raw": 276807,
+        "gzip9": 78475,
+        "brotli11": 65226
+      },
+      "dist/katex.umd.js": {
+        "raw": 276817,
+        "gzip9": 78478,
+        "brotli11": 65154
+      },
+      "dist/katex.min.js": {
+        "raw": 276817,
+        "gzip9": 78478,
+        "brotli11": 65154
+      },
+      "dist/contrib/auto-render.mjs": {
+        "raw": 2777,
+        "gzip9": 1258,
+        "brotli11": 1109
+      },
+      "dist/contrib/auto-render.cjs": {
+        "raw": 4094,
+        "gzip9": 1758,
+        "brotli11": 1576
+      },
+      "dist/contrib/auto-render.min.js": {
+        "raw": 3260,
+        "gzip9": 1530,
+        "brotli11": 1377
+      },
+      "dist/contrib/copy-tex.mjs": {
+        "raw": 1309,
+        "gzip9": 655,
+        "brotli11": 550
+      },
+      "dist/contrib/copy-tex.cjs": {
+        "raw": 1351,
+        "gzip9": 684,
+        "brotli11": 574
+      },
+      "dist/contrib/copy-tex.min.js": {
+        "raw": 1315,
+        "gzip9": 675,
+        "brotli11": 576
+      },
+      "dist/contrib/mathtex-script-type.mjs": {
+        "raw": 531,
+        "gzip9": 369,
+        "brotli11": 275
+      },
+      "dist/contrib/mathtex-script-type.cjs": {
+        "raw": 1328,
+        "gzip9": 686,
+        "brotli11": 583
+      },
+      "dist/contrib/mathtex-script-type.min.js": {
+        "raw": 545,
+        "gzip9": 368,
+        "brotli11": 274
+      },
+      "dist/contrib/mhchem.mjs": {
+        "raw": 42015,
+        "gzip9": 10145,
+        "brotli11": 9184
+      },
+      "dist/contrib/mhchem.cjs": {
+        "raw": 43086,
+        "gzip9": 10471,
+        "brotli11": 9475
+      },
+      "dist/contrib/mhchem.min.js": {
+        "raw": 37430,
+        "gzip9": 9612,
+        "brotli11": 8790
+      },
+      "dist/contrib/render-a11y-string.mjs": {
+        "raw": 6895,
+        "gzip9": 2388,
+        "brotli11": 2164
+      },
+      "dist/contrib/render-a11y-string.cjs": {
+        "raw": 8080,
+        "gzip9": 2822,
+        "brotli11": 2577
+      },
+      "dist/contrib/render-a11y-string.min.js": {
+        "raw": 7401,
+        "gzip9": 2595,
+        "brotli11": 2364
+      }
+    }
+  },
+  "compiler": {
+    "revision": "aa2052f0",
+    "binarySha256": "13cb49a93fb3e376a5978484835322c84adea692b69ae4720775291377cf18f9",
+    "codecSha256": "125776830df72bbaf9704fee3c38bb0bf29bfc6bcceb5bc8707a0507a128d7b9",
+    "date": "2026-09-24",
+    "artifact": "dist/katex.esm.js",
+    "compile": "src/entry.lil with lilscript.toml, --target js-module",
+    "compileWallMs": [
+      4082,
+      3938,
+      4010
+    ],
+    "buildCompileWallMs": [
+      9637,
+      9256,
+      9581
+    ],
+    "invocations": [
+      {
+        "input": "src/entry.lil",
+        "config": "lilscript.toml",
+        "output": "dist/katex.raw.js",
+        "wallMs": [
+          4082,
+          3938,
+          4010
+        ]
+      },
+      {
+        "input": "src/entry.lil",
+        "config": "lilscript.closed.toml",
+        "output": "dist/katex.closed.raw.js",
+        "wallMs": [
+          4104,
+          3846,
+          4082
+        ]
+      },
+      {
+        "input": "test/support.lil",
+        "config": "lilscript.toml",
+        "output": "dist/katex.contrib-test.js",
+        "wallMs": [
+          11,
+          12,
+          11
+        ]
+      },
+      {
+        "input": "contrib/auto-render/auto-render.lil",
+        "config": "lilscript.toml",
+        "output": "dist/contrib/auto-render.raw.mjs",
+        "wallMs": [
+          21,
+          21,
+          24
+        ]
+      },
+      {
+        "input": "contrib/copy-tex/copy-tex.lil",
+        "config": "lilscript.toml",
+        "output": "dist/contrib/copy-tex.raw.mjs",
+        "wallMs": [
+          13,
+          14,
+          14
+        ]
+      },
+      {
+        "input": "contrib/mathtex-script-type/mathtex-script-type.lil",
+        "config": "lilscript.toml",
+        "output": "dist/contrib/mathtex-script-type.raw.mjs",
+        "wallMs": [
+          8,
+          8,
+          8
+        ]
+      },
+      {
+        "input": "contrib/mhchem/mhchem.lil",
+        "config": "lilscript.toml",
+        "output": "dist/contrib/mhchem.raw.mjs",
+        "wallMs": [
+          1349,
+          1371,
+          1380
+        ]
+      },
+      {
+        "input": "contrib/render-a11y-string/render-a11y-string.lil",
+        "config": "lilscript.toml",
+        "output": "dist/contrib/render-a11y-string.raw.mjs",
+        "wallMs": [
+          49,
+          46,
+          52
+        ]
+      }
+    ],
+    "host": "8 × AMD EPYC 7763 64-Core Processor, Azure B8als_v2 (burstable), Node v24.11.1",
+    "method": "wall clock around each compiler process, timed by scripts/build.mjs; one sample per full build (node scripts/build.mjs --compile --force --force-contrib)",
+    "samplesAt": [
+      "2026-09-24T03:57:04.746Z",
+      "2026-09-24T03:57:14.245Z",
+      "2026-09-24T03:57:24.100Z"
+    ]
+  },
   "throughput": [
     {
       "id": "itslil",
       "name": "@itslil/katex",
-      "documentMs": 7.071173000000272,
-      "p10": 5.791331999998874,
-      "p90": 9.22651599999881,
+      "documentMs": 7.619717999999921,
+      "p10": 5.9177809999982856,
+      "p90": 11.832641000000876,
       "rounds": 30
     },
     {
       "id": "official",
       "name": "katex@0.16.22",
-      "documentMs": 7.683155000000625,
-      "p10": 5.612889999998515,
-      "p90": 11.753603000001021,
+      "documentMs": 7.194050000000061,
+      "p10": 5.1870490000001155,
+      "p90": 10.271994999999151,
       "rounds": 30
     }
   ],
@@ -142,22 +764,22 @@
     "lanes": {
       "itslil": {
         "name": "@itslil/katex",
-        "median": 4.9000000059604645,
-        "p10": 3.9000000059604645,
-        "p90": 7.100000023841858,
-        "min": 3.5999999940395355,
+        "median": 4.5,
+        "p10": 3.899999998509884,
+        "p90": 7.100000001490116,
+        "min": 3.7999999970197678,
         "rounds": 30
       },
       "official": {
         "name": "katex@0.16.22",
-        "median": 4.9000000059604645,
-        "p10": 3.699999988079071,
-        "p90": 7.0999999940395355,
-        "min": 3.4000000059604645,
+        "median": 4.300000004470348,
+        "p10": 3.7000000029802322,
+        "p90": 6.300000004470348,
+        "min": 3.5,
         "rounds": 30
       }
     },
-    "ratio": 1,
+    "ratio": 1.0465116268190067,
     "browser": "Chromium 151.0.7922.34",
     "playwright": "1.62.1"
   },
@@ -1011,7 +1633,9 @@
         "deltaRaw": -57630,
         "deltaBrotli": -9462
       }
-    ]
+    ],
+    "measuredAt": "2026-09-03T18:14:40.253Z",
+    "remeasured": false
   },
   "sources": {
     "measure": "scripts/measure-site.mjs",
@@ -1019,7 +1643,7 @@
     "benchPage": "bench.html",
     "browserTest": "test/browser-perf.test.mjs",
     "attribution": "scripts/attribute-map.mjs",
-    "official": "scripts/lib/official.mjs"
-  },
-  "sizeMeasuredAt": "2026-09-10T20:37:59Z"
+    "official": "scripts/lib/official.mjs",
+    "compiler": "scripts/record-compiler.mjs"
+  }
 }

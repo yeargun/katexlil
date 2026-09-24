@@ -4,17 +4,19 @@ import { defineFunction } from "../defineFunction.lil";
 import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { ParseError } from "../ParseError.lil";
+import { MathNode, TextNode } from "../mathMLTree.lil";
+import { makeSpan, makeSymbol, tryCombineChars } from "../buildCommon.lil";
 
 JsValue makeVerb = undef();
 
 JsValue o1 = JS.object("type", "verb", "names", JS.array("\\verb"));
 JsValue o3 = JS.object("numArgs", 0, "allowedInText", true);
 o1["props"] = o3;
-o1["handler"] = JS.method3((JsValue self, JsValue context, JsValue args, JsValue optArgs) => {
+o1["handler"] = (JsValue context, JsValue args, JsValue optArgs) => {
   throw JS.construct(ParseError, "\\verb ended by end of line instead of matching delimiter");
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue text = JS.call(makeVerb, undef(), group);
   JsValue a4 = JS.array();
   JsValue body = a4;
@@ -26,22 +28,22 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
         c = "\\textasciitilde";
       }
       JsValue a5 = JS.array("mord", "texttt");
-      JS.invoke(body, "push", JS.invoke(buildCommon, "makeSymbol", c, "Typewriter-Regular", group["mode"], newOptions, a5));
+      JS.invoke(body, "push", JS.call(makeSymbol, undef(), c, "Typewriter-Regular", group["mode"], newOptions, a5));
       JsValue u6 = i;
     }
   }
   JsValue a7 = JS.array("mord", "text");
-  return JS.invoke(buildCommon, "makeSpan", JS.invoke(a7, "concat", JS.invoke(newOptions, "sizingClasses", options)), JS.invoke(buildCommon, "tryCombineChars", body), newOptions);
+  return JS.call(makeSpan, undef(), JS.invoke(a7, "concat", JS.invoke(newOptions, "sizingClasses", options)), JS.call(tryCombineChars, undef(), body), newOptions);
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue text = JS.construct(mathMLTree["TextNode"], JS.call(makeVerb, undef(), group));
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue text = JS.construct(TextNode, JS.call(makeVerb, undef(), group));
   JsValue a8 = JS.array(text);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mtext", a8);
+  JsValue node = JS.construct(MathNode, "mtext", a8);
   JS.invoke(node, "setAttribute", "mathvariant", "monospace");
   return node;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 makeVerb = (JsValue group) => {
   JsValue c9 = undef();

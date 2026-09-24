@@ -4,16 +4,18 @@ import { defineFunctionBuilders } from "../defineFunction.lil";
 import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { mathsym } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "atom");
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a2 = JS.array(JS.add("m", group["family"]));
-  return JS.invoke(buildCommon, "mathsym", group["text"], group["mode"], options, a2);
+  return JS.call(mathsym, undef(), group["text"], group["mode"], options, a2);
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a3 = JS.array(JS.invoke(mml, "makeText", group["text"], group["mode"]));
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mo", a3);
+  JsValue node = JS.construct(MathNode, "mo", a3);
   if (JS.strictEqual(group["family"], "bin")) {
     JsValue variant = JS.invoke(mml, "getVariant", group, options);
     if (JS.strictEqual(variant, "bold-italic")) {
@@ -30,7 +32,7 @@ o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   }
   return node;
   return undef();
-});
+};
 JS.call(defineFunctionBuilders, undef(), o1);
 JsValue __star = emptyObject();
 

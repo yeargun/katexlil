@@ -5,15 +5,17 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { Style } from "../Style.lil";
 import { sizingGroup } from "./sizing.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT } from "../Style.lil";
 
 JsValue styleMap = undef();
 
-JsValue o1 = JS.object("display", Style["DISPLAY"], "text", Style["TEXT"], "script", Style["SCRIPT"], "scriptscript", Style["SCRIPTSCRIPT"]);
+JsValue o1 = JS.object("display", DISPLAY, "text", TEXT, "script", SCRIPT, "scriptscript", SCRIPTSCRIPT);
 styleMap = o1;
 JsValue o2 = JS.object("type", "styling", "names", JS.array("\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"));
 JsValue o4 = JS.object("numArgs", 0, "allowedInText", true, "primitive", true);
 o2["props"] = o4;
-o2["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+o2["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;
   JsValue breakOnTokenText = op6["breakOnTokenText"];
   JsValue funcName = op6["funcName"];
@@ -27,18 +29,18 @@ o2["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   o7["body"] = body;
   return o7;
   return undef();
-});
-o2["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o2["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue newStyle = styleMap[group["style"]];
   JsValue newOptions = JS.invoke(JS.invoke(options, "havingStyle", newStyle), "withFont", "");
   return JS.call(sizingGroup, undef(), group["body"], newOptions, options);
   return undef();
-});
-o2["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o2["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue newStyle = styleMap[group["style"]];
   JsValue newOptions = JS.invoke(options, "havingStyle", newStyle);
   JsValue inner = JS.invoke(mml, "buildExpression", group["body"], newOptions);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mstyle", inner);
+  JsValue node = JS.construct(MathNode, "mstyle", inner);
   JsValue o8 = emptyObject();
   JsValue a9 = JS.array("0", "true");
   o8["display"] = a9;
@@ -54,7 +56,7 @@ o2["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   JS.invoke(node, "setAttribute", "displaystyle", attr[1]);
   return node;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o2);
 JsValue __star = emptyObject();
 

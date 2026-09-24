@@ -6,7 +6,7 @@ import { ParseError } from "../ParseError.lil";
 JsValue o1 = JS.object("type", "styling", "names", JS.array("\\(", "$"));
 JsValue o3 = JS.object("numArgs", 0, "allowedInText", true, "allowedInMath", false);
 o1["props"] = o3;
-o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
+o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
   JsValue funcName = op5["funcName"];
   JsValue parser = op5["parser"];
@@ -29,15 +29,15 @@ o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
   o7["body"] = body;
   return o7;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue o8 = JS.object("type", "text", "names", JS.array("\\)", "\\]"));
 JsValue o10 = JS.object("numArgs", 0, "allowedInText", true, "allowedInMath", false);
 o8["props"] = o10;
-o8["handler"] = JS.method2((JsValue self, JsValue context, JsValue args) => {
+o8["handler"] = (JsValue context, JsValue args) => {
   throw JS.construct(ParseError, "Mismatched " + toStr(context["funcName"]));
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o8);
 JsValue __star = emptyObject();
 

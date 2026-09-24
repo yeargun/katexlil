@@ -5,7 +5,7 @@ import { defineFunction } from "../defineFunction.lil";
 JsValue o1 = JS.object("type", "internal", "names", JS.array("\\relax"));
 JsValue o3 = JS.object("numArgs", 0, "allowedInText", true, "allowedInArgument", true);
 o1["props"] = o3;
-o1["handler"] = JS.method1((JsValue self, JsValue p4) => {
+o1["handler"] = (JsValue p4) => {
   JsValue op5 = p4;
   JsValue parser = op5["parser"];
   JsValue o6 = emptyObject();
@@ -13,7 +13,7 @@ o1["handler"] = JS.method1((JsValue self, JsValue p4) => {
   o6["mode"] = parser["mode"];
   return o6;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

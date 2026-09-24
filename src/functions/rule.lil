@@ -5,11 +5,13 @@ import { defineFunction } from "../defineFunction.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { assertNodeType } from "../parseNode.lil";
 import { calculateSize, makeEm } from "../units.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "rule", "names", JS.array("\\rule"));
 JsValue o3 = JS.object("numArgs", 2, "numOptionalArgs", 1, "allowedInText", true, "allowedInMath", true, "argTypes", JS.array("size", "size", "size"));
 o1["props"] = o3;
-o1["handler"] = JS.method3((JsValue self, JsValue p5, JsValue args, JsValue optArgs) => {
+o1["handler"] = (JsValue p5, JsValue args, JsValue optArgs) => {
   JsValue op6 = p5;
   JsValue parser = op6["parser"];
   JsValue shift = optArgs[0];
@@ -27,11 +29,11 @@ o1["handler"] = JS.method3((JsValue self, JsValue p5, JsValue args, JsValue optA
   o7["height"] = height["value"];
   return o7;
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a9 = JS.array("mord", "rule");
   JsValue a10 = JS.array();
-  JsValue rule = JS.invoke(buildCommon, "makeSpan", a9, a10, options);
+  JsValue rule = JS.call(makeSpan, undef(), a9, a10, options);
   JsValue width = JS.call(calculateSize, undef(), group["width"], options);
   JsValue height = JS.call(calculateSize, undef(), group["height"], options);
   JsValue c11 = undef();
@@ -50,8 +52,8 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   rule["maxFontSize"] = (toNum((toNum(height) * toNum(1.125))) * toNum(options["sizeMultiplier"]));
   return rule;
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   number width = toNum(JS.call(calculateSize, undef(), group["width"], options));
   number height = toNum(JS.call(calculateSize, undef(), group["height"], options));
   number shift = 0;
@@ -65,11 +67,11 @@ o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   if (!(color.truthy())) {
     color = "black";
   }
-  JsValue rule = JS.construct(mathMLTree["MathNode"], "mspace");
+  JsValue rule = JS.construct(MathNode, "mspace");
   JS.invoke(rule, "setAttribute", "mathbackground", color);
   JS.invoke(rule, "setAttribute", "width", JS.call(makeEm, undef(), width));
   JS.invoke(rule, "setAttribute", "height", JS.call(makeEm, undef(), height));
-  JsValue wrapper = JS.construct(mathMLTree["MathNode"], "mpadded", JS.array(rule));
+  JsValue wrapper = JS.construct(MathNode, "mpadded", JS.array(rule));
   if (shift >= 0) {
     JS.invoke(wrapper, "setAttribute", "height", JS.call(makeEm, undef(), shift));
   } else {
@@ -78,7 +80,7 @@ o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) 
   }
   JS.invoke(wrapper, "setAttribute", "voffset", JS.call(makeEm, undef(), shift));
   return wrapper;
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

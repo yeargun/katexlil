@@ -8,7 +8,7 @@ import { environments } from "../environments.lil";
 JsValue o1 = JS.object("type", "environment", "names", JS.array("\\begin", "\\end"));
 JsValue o3 = JS.object("numArgs", 1, "argTypes", JS.array("text"));
 o1["props"] = o3;
-o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+o1["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;
   JsValue parser = op6["parser"];
   JsValue funcName = op6["funcName"];
@@ -51,7 +51,7 @@ o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   o10["nameGroup"] = nameGroup;
   return o10;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

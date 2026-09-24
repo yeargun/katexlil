@@ -4,6 +4,8 @@ import { defineFunctionBuilders } from "../defineFunction.lil";
 import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { ParseError } from "../ParseError.lil";
+import { MathNode, TextNode } from "../mathMLTree.lil";
+import { makeOrd, makeSpan, mathsym } from "../buildCommon.lil";
 
 JsValue cssSpace = undef();
 JsValue regularSpace = undef();
@@ -23,7 +25,7 @@ JsValue o7 = JS.object("className", "nobreak");
 o2["\\nobreakspace"] = o7;
 regularSpace = o2;
 JsValue o8 = JS.object("type", "spacing");
-o8["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+o8["htmlBuilder"] = (JsValue group, JsValue options) => {
   if (hasOwn(regularSpace, group["text"])) {
     JsValue or9 = regularSpace[group["text"]]["className"];
     if (!(or9.truthy())) {
@@ -31,40 +33,40 @@ o8["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
     }
     JsValue className = or9;
     if (JS.strictEqual(group["mode"], "text")) {
-      JsValue ord = JS.invoke(buildCommon, "makeOrd", group, options, "textord");
+      JsValue ord = JS.call(makeOrd, undef(), group, options, "textord");
       JS.invoke(ord["classes"], "push", className);
       return ord;
     } else {
       JsValue a10 = JS.array("mspace", className);
-      JsValue a11 = JS.array(JS.invoke(buildCommon, "mathsym", group["text"], group["mode"], options));
-      return JS.invoke(buildCommon, "makeSpan", a10, a11, options);
+      JsValue a11 = JS.array(JS.call(mathsym, undef(), group["text"], group["mode"], options));
+      return JS.call(makeSpan, undef(), a10, a11, options);
     }
   } else {
     if (hasOwn(cssSpace, group["text"])) {
       JsValue a12 = JS.array("mspace", cssSpace[group["text"]]);
       JsValue a13 = JS.array();
-      return JS.invoke(buildCommon, "makeSpan", a12, a13, options);
+      return JS.call(makeSpan, undef(), a12, a13, options);
     } else {
       throw JS.construct(ParseError, "Unknown type of space \"" + toStr(group["text"]) + "\"");
     }
   }
   return undef();
-});
-o8["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o8["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue node = undef();
   if (hasOwn(regularSpace, group["text"])) {
-    JsValue a14 = JS.array(JS.construct(mathMLTree["TextNode"], " "));
-    node = JS.construct(mathMLTree["MathNode"], "mtext", a14);
+    JsValue a14 = JS.array(JS.construct(TextNode, " "));
+    node = JS.construct(MathNode, "mtext", a14);
   } else {
     if (hasOwn(cssSpace, group["text"])) {
-      return JS.construct(mathMLTree["MathNode"], "mspace");
+      return JS.construct(MathNode, "mspace");
     } else {
       throw JS.construct(ParseError, "Unknown type of space \"" + toStr(group["text"]) + "\"");
     }
   }
   return node;
   return undef();
-});
+};
 JS.call(defineFunctionBuilders, undef(), o8);
 JsValue __star = emptyObject();
 

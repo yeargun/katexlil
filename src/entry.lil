@@ -18,6 +18,8 @@ import "./functions.lil";
 import "./environments.lil";
 
 import { emptyObject, getDocument, isUndef, instanceOf, isNullish } from "./host.lil";
+import { makeSpan } from "./buildCommon.lil";
+import { undef } from "./host.lil";
 
 string katexVersion = "0.16.22";
 
@@ -46,10 +48,10 @@ JsValue renderError(JsValue error, JsValue expression, JsValue options) {
     throw error;
   }
   JsValue kids = JS.array();
-  JS.push(kids, JS.construct(SymbolNode, expression));
+  JS.invoke(kids, "push", JS.construct(SymbolNode, expression));
   JsValue classes = JS.array();
-  JS.push(classes, "katex-error");
-  JsValue node = JS.invoke(buildCommon, "makeSpan", classes, kids);
+  JS.invoke(classes, "push", "katex-error");
+  JsValue node = JS.call(makeSpan, undef(), classes, kids);
   JS.invoke(node, "setAttribute", "title", JS.invoke(error, "toString"));
   JS.invoke(node, "setAttribute", "style", JS.add("color:", options["errorColor"]));
   return node;

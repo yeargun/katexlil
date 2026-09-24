@@ -5,11 +5,13 @@ import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { calculateSize } from "../units.lil";
 import { assertNodeType } from "../parseNode.lil";
+import { SpaceNode } from "../mathMLTree.lil";
+import { makeGlue } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "kern", "names", JS.array("\\kern", "\\mkern", "\\hskip", "\\mskip"));
 JsValue o3 = JS.object("numArgs", 1, "argTypes", JS.array("size"), "primitive", true, "allowedInText", true);
 o1["props"] = o3;
-o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+o1["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;
   JsValue parser = op6["parser"];
   JsValue funcName = op6["funcName"];
@@ -36,16 +38,16 @@ o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   o7["dimension"] = size["value"];
   return o7;
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  return JS.invoke(buildCommon, "makeGlue", group["dimension"], options);
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
+  return JS.call(makeGlue, undef(), group["dimension"], options);
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue dimension = JS.call(calculateSize, undef(), group["dimension"], options);
-  return JS.construct(mathMLTree["SpaceNode"], dimension);
+  return JS.construct(SpaceNode, dimension);
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

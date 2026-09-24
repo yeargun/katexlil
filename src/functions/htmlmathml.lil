@@ -4,6 +4,7 @@ import { defineFunction, ordargument } from "../defineFunction.lil";
 import { buildCommon } from "../buildCommon.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { makeFragment } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "htmlmathml", "names", JS.array("\\html@mathml"));
 JsValue o3 = JS.object("numArgs", 2, "allowedInText", true);
@@ -17,7 +18,7 @@ o1["handler"] = (JsValue p4, JsValue args) => {
 };
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["html"], options, false);
-  return JS.invoke(buildCommon, "makeFragment", elements);
+  return JS.call(makeFragment, undef(), elements);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {

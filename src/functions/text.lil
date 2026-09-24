@@ -4,6 +4,7 @@ import { defineFunction, ordargument } from "../defineFunction.lil";
 import { buildCommon } from "../buildCommon.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { makeSpan } from "../buildCommon.lil";
 
 JsValue textFontFamilies = undef();
 JsValue textFontWeights = undef();
@@ -45,7 +46,7 @@ optionsWithFont = (JsValue group, JsValue options) => {
 JsValue o5 = JS.object("type", "text", "names", JS.array("\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal", "\\textbf", "\\textmd", "\\textit", "\\textup", "\\emph"));
 JsValue o7 = JS.object("numArgs", 1, "argTypes", JS.array("text"), "allowedInArgument", true, "allowedInText", true);
 o5["props"] = o7;
-o5["handler"] = JS.method2((JsValue self, JsValue p9, JsValue args) => {
+o5["handler"] = (JsValue p9, JsValue args) => {
   JsValue op10 = p9;
   JsValue parser = op10["parser"];
   JsValue funcName = op10["funcName"];
@@ -57,19 +58,19 @@ o5["handler"] = JS.method2((JsValue self, JsValue p9, JsValue args) => {
   o11["font"] = funcName;
   return o11;
   return undef();
-});
-o5["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o5["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue newOptions = JS.call(optionsWithFont, undef(), group, options);
   JsValue inner = JS.invoke(html, "buildExpression", group["body"], newOptions, true);
   JsValue a12 = JS.array("mord", "text");
-  return JS.invoke(buildCommon, "makeSpan", a12, inner, newOptions);
+  return JS.call(makeSpan, undef(), a12, inner, newOptions);
   return undef();
-});
-o5["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o5["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue newOptions = JS.call(optionsWithFont, undef(), group, options);
   return JS.invoke(mml, "buildExpressionRow", group["body"], newOptions);
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o5);
 JsValue __star = emptyObject();
 

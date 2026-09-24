@@ -6,6 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { stretchy } from "../stretchy.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan, makeVList } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "accentUnder", "names", JS.array("\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow", "\\undergroup", "\\underlinesegment", "\\utilde"));
 JsValue o3 = JS.object("numArgs", 1);
@@ -32,16 +34,16 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue o8 = JS.object("positionType", "top", "positionData", innerGroup["height"]);
   JsValue a9 = JS.array(JS.object("type", "elem", "elem", accentBody, "wrapperClasses", JS.array("svg-align")), JS.object("type", "kern", "size", kern), JS.object("type", "elem", "elem", innerGroup));
   o8["children"] = a9;
-  JsValue vlist = JS.invoke(buildCommon, "makeVList", o8, options);
+  JsValue vlist = JS.call(makeVList, undef(), o8, options);
   JsValue a14 = JS.array("mord", "accentunder");
   JsValue a15 = JS.array(vlist);
-  return JS.invoke(buildCommon, "makeSpan", a14, a15, options);
+  return JS.call(makeSpan, undef(), a14, a15, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue accentNode = JS.invoke(stretchy, "mathMLnode", group["label"]);
   JsValue a16 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options), accentNode);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "munder", a16);
+  JsValue node = JS.construct(MathNode, "munder", a16);
   JS.invoke(node, "setAttribute", "accentunder", "true");
   return node;
   return undef();

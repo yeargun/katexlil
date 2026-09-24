@@ -4,11 +4,12 @@ import { buildCommon } from "../../buildCommon.lil";
 import { utils } from "../../utils.lil";
 import { makeEm } from "../../units.lil";
 import { __star as html } from "../../buildHTML.lil";
+import { makeSpan, makeVList } from "../../buildCommon.lil";
 
 JsValue assembleSupSub = undef();
 
 assembleSupSub = (JsValue base, JsValue supGroup, JsValue subGroup, JsValue options, JsValue style, JsValue slant, JsValue baseShift) => {
-  base = JS.invoke(buildCommon, "makeSpan", JS.array(), JS.array(base));
+  base = JS.call(makeSpan, undef(), JS.array(), JS.array(base));
   bool subIsSingleCharacter = subGroup.truthy() && JS.invoke(utils, "isCharacterBox", subGroup).truthy();
   JsValue sub = undef();
   JsValue sup = undef();
@@ -25,23 +26,23 @@ assembleSupSub = (JsValue base, JsValue supGroup, JsValue subGroup, JsValue opti
   JsValue finalGroup = undef();
   if ((sup.truthy()) && (sub.truthy())) {
     number bottom = spacing5 + toNum(sub["elem"]["height"]) + toNum(sub["elem"]["depth"]) + toNum(sub["kern"]) + toNum(base["depth"]) + shift;
-    finalGroup = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "bottom", "positionData", bottom, "children", JS.array(JS.object("type", "kern", "size", spacing5), JS.object("type", "elem", "elem", sub["elem"], "marginLeft", JS.call(makeEm, undef(), 0 - toNum(slant))), JS.object("type", "kern", "size", sub["kern"]), JS.object("type", "elem", "elem", base), JS.object("type", "kern", "size", sup["kern"]), JS.object("type", "elem", "elem", sup["elem"], "marginLeft", JS.call(makeEm, undef(), slant)), JS.object("type", "kern", "size", spacing5))), options);
+    finalGroup = JS.call(makeVList, undef(), JS.object("positionType", "bottom", "positionData", bottom, "children", JS.array(JS.object("type", "kern", "size", spacing5), JS.object("type", "elem", "elem", sub["elem"], "marginLeft", JS.call(makeEm, undef(), 0 - toNum(slant))), JS.object("type", "kern", "size", sub["kern"]), JS.object("type", "elem", "elem", base), JS.object("type", "kern", "size", sup["kern"]), JS.object("type", "elem", "elem", sup["elem"], "marginLeft", JS.call(makeEm, undef(), slant)), JS.object("type", "kern", "size", spacing5))), options);
   } else if (sub.truthy()) {
     number top = toNum(base["height"]) - shift;
-    finalGroup = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "top", "positionData", top, "children", JS.array(JS.object("type", "kern", "size", spacing5), JS.object("type", "elem", "elem", sub["elem"], "marginLeft", JS.call(makeEm, undef(), 0 - toNum(slant))), JS.object("type", "kern", "size", sub["kern"]), JS.object("type", "elem", "elem", base))), options);
+    finalGroup = JS.call(makeVList, undef(), JS.object("positionType", "top", "positionData", top, "children", JS.array(JS.object("type", "kern", "size", spacing5), JS.object("type", "elem", "elem", sub["elem"], "marginLeft", JS.call(makeEm, undef(), 0 - toNum(slant))), JS.object("type", "kern", "size", sub["kern"]), JS.object("type", "elem", "elem", base))), options);
   } else if (sup.truthy()) {
     number bottom = toNum(base["depth"]) + shift;
-    finalGroup = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "bottom", "positionData", bottom, "children", JS.array(JS.object("type", "elem", "elem", base), JS.object("type", "kern", "size", sup["kern"]), JS.object("type", "elem", "elem", sup["elem"], "marginLeft", JS.call(makeEm, undef(), slant)), JS.object("type", "kern", "size", spacing5))), options);
+    finalGroup = JS.call(makeVList, undef(), JS.object("positionType", "bottom", "positionData", bottom, "children", JS.array(JS.object("type", "elem", "elem", base), JS.object("type", "kern", "size", sup["kern"]), JS.object("type", "elem", "elem", sup["elem"], "marginLeft", JS.call(makeEm, undef(), slant)), JS.object("type", "kern", "size", spacing5))), options);
   } else {
     return base;
   }
   JsValue parts = JS.array(finalGroup);
   if (((sub.truthy()) && (JS.strictNotEqual(slant, 0))) && (!subIsSingleCharacter)) {
-    JsValue spacer = JS.invoke(buildCommon, "makeSpan", JS.array("mspace"), JS.array(), options);
+    JsValue spacer = JS.call(makeSpan, undef(), JS.array("mspace"), JS.array(), options);
     spacer["style"]["marginRight"] = JS.call(makeEm, undef(), slant);
     JS.invoke(parts, "unshift", spacer);
   }
-  return JS.invoke(buildCommon, "makeSpan", JS.array("mop", "op-limits"), parts, options);
+  return JS.call(makeSpan, undef(), JS.array("mop", "op-limits"), parts, options);
 };
 JsValue __star = JS.object("assembleSupSub", assembleSupSub);
 

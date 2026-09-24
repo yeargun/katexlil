@@ -211,3 +211,13 @@ footer.shell { display: flex; justify-content: space-between; gap: 20px; padding
 .bench h1 { font-size: clamp(38px, 6vw, 64px); margin: 0 0 18px; }
 .bench .lede a, .performance p a, .worlds p a, .bytes p a, .hero .lede a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .bench button { min-height: 40px; padding: 0 18px; border: 2px solid var(--ink); background: var(--acid); border-radius: 999px; font-weight: 800; cursor: pointer; }
+
+/* release: delivered files and compile time */
+.release { padding-block: 88px 40px; }
+.release td { font-variant-numeric: tabular-nums; }
+.release td:nth-child(2) { white-space: normal; max-width: 280px; text-align: left; color: var(--muted); font-size: 11px; }
+.release td.post { color: #8a1c1c; }
+.release .perf-note + .table-wrap { margin-top: 40px; }
+.release p a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.release tbody td.verdict.win strong { color: #1f6b2a; }
+.release tbody td.verdict.loss strong { color: #8a1c1c; font-weight: 500; }

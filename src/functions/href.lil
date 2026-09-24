@@ -6,6 +6,7 @@ import { assertNodeType } from "../parseNode.lil";
 import { MathNode } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { makeAnchor } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "href", "names", JS.array("\\href"));
 JsValue o3 = JS.object("numArgs", 2, "argTypes", JS.array("url", "original"), "allowedInText", true);
@@ -26,7 +27,7 @@ o1["handler"] = (JsValue p5, JsValue args) => {
 o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, false);
   JsValue a9 = JS.array();
-  return JS.invoke(buildCommon, "makeAnchor", group["href"], a9, elements, options);
+  return JS.call(makeAnchor, undef(), group["href"], a9, elements, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {

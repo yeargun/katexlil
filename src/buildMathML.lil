@@ -8,6 +8,7 @@ import { symbols, ligatures } from "./symbols.lil";
 import { utils } from "./utils.lil";
 import { _mathmlGroupBuilders as groupBuilders } from "./defineFunction.lil";
 import { MathNode, TextNode } from "./mathMLTree.lil";
+import { fontMap, makeSpan } from "./buildCommon.lil";
 
 JsValue makeText = undef();
 JsValue makeRow = undef();
@@ -22,14 +23,14 @@ makeText = (JsValue text, JsValue mode, JsValue options) => {
   if ((((symbols[mode][text].truthy()) && (symbols[mode][text]["replace"].truthy())) && (JS.strictNotEqual(JS.invoke(text, "charCodeAt", 0), 55349))) && (!(((hasOwn(ligatures, text)) && (options.truthy())) && (((options["fontFamily"].truthy()) && (JS.strictEqual(JS.invoke(options["fontFamily"], "slice", 4, 6), "tt"))) || ((options["font"].truthy()) && (JS.strictEqual(JS.invoke(options["font"], "slice", 4, 6), "tt"))))))) {
     text = symbols[mode][text]["replace"];
   }
-  return JS.construct(mathMLTree["TextNode"], text);
+  return JS.construct(TextNode, text);
   return undef();
 };
 makeRow = (JsValue body) => {
   if (JS.strictEqual(body["length"], 1)) {
     return body[0];
   } else {
-    return JS.construct(mathMLTree["MathNode"], "mrow", body);
+    return JS.construct(MathNode, "mrow", body);
   }
   return undef();
 };
@@ -119,9 +120,9 @@ getVariant = (JsValue group, JsValue options) => {
   if ((symbols[mode][text].truthy()) && (symbols[mode][text]["replace"].truthy())) {
     text = symbols[mode][text]["replace"];
   }
-  JsValue fontName = buildCommon["fontMap"][font]["fontName"];
+  JsValue fontName = fontMap[font]["fontName"];
   if (JS.call(getCharacterMetrics, undef(), text, fontName, mode).truthy()) {
-    return buildCommon["fontMap"][font]["variant"];
+    return fontMap[font]["variant"];
   }
   return null;
   return undef();
@@ -189,12 +190,12 @@ buildExpression = (JsValue expression, JsValue options, JsValue isOrdgroup) => {
                 JsValue ss10 = lastGroup["children"];
                 int sn9 = len(ss10);
                 for (int si8 = 0; si8 < sn9; si8++) {
-                  JS.push(a7, ss10[si8]);
+                  JS.invoke(a7, "push", ss10[si8]);
                 }
                 JsValue ss13 = group["children"];
                 int sn12 = len(ss13);
                 for (int si11 = 0; si11 < sn12; si11++) {
-                  JS.push(a7, ss13[si11]);
+                  JS.invoke(a7, "push", ss13[si11]);
                 }
                 group["children"] = a7;
                 JS.invoke(groups, "pop");
@@ -206,12 +207,12 @@ buildExpression = (JsValue expression, JsValue options, JsValue isOrdgroup) => {
                     JsValue ss17 = lastGroup["children"];
                     int sn16 = len(ss17);
                     for (int si15 = 0; si15 < sn16; si15++) {
-                      JS.push(a14, ss17[si15]);
+                      JS.invoke(a14, "push", ss17[si15]);
                     }
                     JsValue ss20 = base["children"];
                     int sn19 = len(ss20);
                     for (int si18 = 0; si18 < sn19; si18++) {
-                      JS.push(a14, ss20[si18]);
+                      JS.invoke(a14, "push", ss20[si18]);
                     }
                     base["children"] = a14;
                     JS.invoke(groups, "pop");
@@ -248,7 +249,7 @@ buildExpressionRow = (JsValue expression, JsValue options, JsValue isOrdgroup) =
 };
 buildGroup = (JsValue group, JsValue options) => {
   if (!(group.truthy())) {
-    return JS.construct(mathMLTree["MathNode"], "mrow");
+    return JS.construct(MathNode, "mrow");
   }
   if (groupBuilders[group["type"]].truthy()) {
     JsValue result = JS.call(groupBuilders[group["type"]], groupBuilders, group, options);
@@ -265,15 +266,15 @@ buildMathML = (JsValue tree, JsValue texExpression, JsValue options, JsValue isD
   if (((JS.strictEqual(expression["length"], 1)) && (instanceOf(expression[0], MathNode))) && (JS.invoke(utils, "contains", a22, expression[0]["type"]).truthy())) {
     wrapper = expression[0];
   } else {
-    wrapper = JS.construct(mathMLTree["MathNode"], "mrow", expression);
+    wrapper = JS.construct(MathNode, "mrow", expression);
   }
-  JsValue a23 = JS.array(JS.construct(mathMLTree["TextNode"], texExpression));
-  JsValue annotation = JS.construct(mathMLTree["MathNode"], "annotation", a23);
+  JsValue a23 = JS.array(JS.construct(TextNode, texExpression));
+  JsValue annotation = JS.construct(MathNode, "annotation", a23);
   JS.invoke(annotation, "setAttribute", "encoding", "application/x-tex");
   JsValue a24 = JS.array(wrapper, annotation);
-  JsValue semantics = JS.construct(mathMLTree["MathNode"], "semantics", a24);
+  JsValue semantics = JS.construct(MathNode, "semantics", a24);
   JsValue a25 = JS.array(semantics);
-  JsValue math = JS.construct(mathMLTree["MathNode"], "math", a25);
+  JsValue math = JS.construct(MathNode, "math", a25);
   JS.invoke(math, "setAttribute", "xmlns", "http://www.w3.org/1998/Math/MathML");
   if (isDisplayMode.truthy()) {
     JS.invoke(math, "setAttribute", "display", "block");
@@ -287,7 +288,7 @@ buildMathML = (JsValue tree, JsValue texExpression, JsValue options, JsValue isD
   JsValue wrapperClass = c26;
   JsValue a27 = JS.array(wrapperClass);
   JsValue a28 = JS.array(math);
-  return JS.invoke(buildCommon, "makeSpan", a27, a28);
+  return JS.call(makeSpan, undef(), a27, a28);
   return undef();
 };
 JsValue __star = JS.object("makeText", makeText, "makeRow", makeRow, "getVariant", getVariant, "buildExpression", buildExpression, "buildExpressionRow", buildExpressionRow, "buildGroup", buildGroup, "default", buildMathML, "buildMathML", buildMathML);

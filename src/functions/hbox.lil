@@ -5,11 +5,13 @@ import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeFragment } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "hbox", "names", JS.array("\\hbox"));
 JsValue o3 = JS.object("numArgs", 1, "argTypes", JS.array("text"), "allowedInText", true, "primitive", true);
 o1["props"] = o3;
-o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+o1["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;
   JsValue parser = op6["parser"];
   JsValue o7 = emptyObject();
@@ -18,16 +20,16 @@ o1["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   o7["body"] = JS.call(ordargument, undef(), args[0]);
   return o7;
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue elements = JS.invoke(html, "buildExpression", group["body"], options, false);
-  return JS.invoke(buildCommon, "makeFragment", elements);
+  return JS.call(makeFragment, undef(), elements);
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  return JS.construct(mathMLTree["MathNode"], "mrow", JS.invoke(mml, "buildExpression", group["body"], options));
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  return JS.construct(MathNode, "mrow", JS.invoke(mml, "buildExpression", group["body"], options));
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

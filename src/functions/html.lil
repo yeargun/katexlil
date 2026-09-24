@@ -6,6 +6,7 @@ import { assertNodeType } from "../parseNode.lil";
 import { ParseError } from "../ParseError.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { makeSpan } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "html", "names", JS.array("\\htmlClass", "\\htmlId", "\\htmlStyle", "\\htmlData"));
 JsValue o3 = JS.object("numArgs", 2, "argTypes", JS.array("raw", "original"), "allowedInText", true);
@@ -71,7 +72,7 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   if (group["attributes"]["class"].truthy()) {
     pushAll(classes, JS.invoke(JS.invoke(group["attributes"]["class"], "trim"), "split", JS.construct(RegExp, "\\s+", "")));
   }
-  JsValue span = JS.invoke(buildCommon, "makeSpan", classes, elements, options);
+  JsValue span = JS.call(makeSpan, undef(), classes, elements, options);
   for (string attr in group["attributes"]) {
     if ((JS.strictNotEqual(attr, "class")) && (hasOwn(group["attributes"], attr))) {
       JS.invoke(span, "setAttribute", attr, group["attributes"][attr]);

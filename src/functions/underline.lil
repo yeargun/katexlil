@@ -5,11 +5,13 @@ import { buildCommon } from "../buildCommon.lil";
 import { mathMLTree } from "../mathMLTree.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode, TextNode } from "../mathMLTree.lil";
+import { makeLineSpan, makeSpan, makeVList } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "underline", "names", JS.array("\\underline"));
 JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
 o1["props"] = o3;
-o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
+o1["handler"] = (JsValue p4, JsValue args) => {
   JsValue op5 = p4;
   JsValue parser = op5["parser"];
   JsValue o6 = emptyObject();
@@ -18,10 +20,10 @@ o1["handler"] = JS.method2((JsValue self, JsValue p4, JsValue args) => {
   o6["body"] = args[0];
   return o6;
   return undef();
-});
-o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue innerGroup = JS.invoke(html, "buildGroup", group["body"], options);
-  JsValue line = JS.invoke(buildCommon, "makeLineSpan", "underline-line", options);
+  JsValue line = JS.call(makeLineSpan, undef(), "underline-line", options);
   JsValue defaultRuleThickness = JS.invoke(options, "fontMetrics")["defaultRuleThickness"];
   JsValue o7 = emptyObject();
   o7["positionType"] = "top";
@@ -40,22 +42,22 @@ o1["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) =>
   o12["elem"] = innerGroup;
   JsValue a8 = JS.array(o9, o10, o11, o12);
   o7["children"] = a8;
-  JsValue vlist = JS.invoke(buildCommon, "makeVList", o7, options);
+  JsValue vlist = JS.call(makeVList, undef(), o7, options);
   JsValue a13 = JS.array("mord", "underline");
   JsValue a14 = JS.array(vlist);
-  return JS.invoke(buildCommon, "makeSpan", a13, a14, options);
+  return JS.call(makeSpan, undef(), a13, a14, options);
   return undef();
-});
-o1["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue a15 = JS.array(JS.construct(mathMLTree["TextNode"], "‾"));
-  JsValue operator = JS.construct(mathMLTree["MathNode"], "mo", a15);
+};
+o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue a15 = JS.array(JS.construct(TextNode, "‾"));
+  JsValue operator = JS.construct(MathNode, "mo", a15);
   JS.invoke(operator, "setAttribute", "stretchy", "true");
   JsValue a16 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options), operator);
-  JsValue node = JS.construct(mathMLTree["MathNode"], "munder", a16);
+  JsValue node = JS.construct(MathNode, "munder", a16);
   JS.invoke(node, "setAttribute", "accentunder", "true");
   return node;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o1);
 JsValue __star = emptyObject();
 

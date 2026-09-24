@@ -6,6 +6,8 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan } from "../buildCommon.lil";
 
 JsValue o1 = JS.object("type", "lap", "names", JS.array("\\mathllap", "\\mathrlap", "\\mathclap"));
 JsValue o3 = JS.object("numArgs", 1, "allowedInText", true);
@@ -24,23 +26,23 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   if (JS.strictEqual(group["alignment"], "clap")) {
     JsValue a7 = JS.array();
     JsValue a8 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
-    inner = JS.invoke(buildCommon, "makeSpan", a7, a8);
+    inner = JS.call(makeSpan, undef(), a7, a8);
     JsValue a9 = JS.array("inner");
     JsValue a10 = JS.array(inner);
-    inner = JS.invoke(buildCommon, "makeSpan", a9, a10, options);
+    inner = JS.call(makeSpan, undef(), a9, a10, options);
   } else {
     JsValue a11 = JS.array("inner");
     JsValue a12 = JS.array(JS.invoke(html, "buildGroup", group["body"], options));
-    inner = JS.invoke(buildCommon, "makeSpan", a11, a12);
+    inner = JS.call(makeSpan, undef(), a11, a12);
   }
   JsValue a13 = JS.array("fix");
   JsValue a14 = JS.array();
-  JsValue fix = JS.invoke(buildCommon, "makeSpan", a13, a14);
+  JsValue fix = JS.call(makeSpan, undef(), a13, a14);
   JsValue a15 = JS.array(group["alignment"]);
   JsValue a16 = JS.array(inner, fix);
-  JsValue node = JS.invoke(buildCommon, "makeSpan", a15, a16, options);
+  JsValue node = JS.call(makeSpan, undef(), a15, a16, options);
   JsValue a17 = JS.array("strut");
-  JsValue strut = JS.invoke(buildCommon, "makeSpan", a17);
+  JsValue strut = JS.call(makeSpan, undef(), a17);
   strut["style"]["height"] = JS.call(makeEm, undef(), JS.add(node["height"], node["depth"]));
   if (node["depth"].truthy()) {
     strut["style"]["verticalAlign"] = JS.call(makeEm, undef(), JS.number(0) - toNum(node["depth"]));
@@ -48,15 +50,15 @@ o1["htmlBuilder"] = (JsValue group, JsValue options) => {
   JS.invoke(node["children"], "unshift", strut);
   JsValue a18 = JS.array("thinbox");
   JsValue a19 = JS.array(node);
-  node = JS.invoke(buildCommon, "makeSpan", a18, a19, options);
+  node = JS.call(makeSpan, undef(), a18, a19, options);
   JsValue a20 = JS.array("mord", "vbox");
   JsValue a21 = JS.array(node);
-  return JS.invoke(buildCommon, "makeSpan", a20, a21, options);
+  return JS.call(makeSpan, undef(), a20, a21, options);
   return undef();
 };
 o1["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a22 = JS.array(JS.invoke(mml, "buildGroup", group["body"], options));
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mpadded", a22);
+  JsValue node = JS.construct(MathNode, "mpadded", a22);
   if (JS.strictNotEqual(group["alignment"], "rlap")) {
     JsValue c23 = undef();
     if (JS.strictEqual(group["alignment"], "llap")) {

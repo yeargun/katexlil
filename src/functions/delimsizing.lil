@@ -10,6 +10,8 @@ import { assertNodeType, checkSymbolNodeType } from "../parseNode.lil";
 import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan } from "../buildCommon.lil";
 
 JsValue delimiterSizes = undef();
 JsValue delimiters = undef();
@@ -75,7 +77,7 @@ o19["handler"] = (JsValue context, JsValue args) => {
 o19["htmlBuilder"] = (JsValue group, JsValue options) => {
   if (JS.strictEqual(group["delim"], ".")) {
     JsValue a24 = JS.array(group["mclass"]);
-    return JS.invoke(buildCommon, "makeSpan", a24);
+    return JS.call(makeSpan, undef(), a24);
   }
   JsValue a25 = JS.array(group["mclass"]);
   return JS.invoke(delimiter, "sizedDelim", group["delim"], group["size"], options, group["mode"], a25);
@@ -87,7 +89,7 @@ o19["mathmlBuilder"] = (JsValue group) => {
   if (JS.strictNotEqual(group["delim"], ".")) {
     JS.invoke(children, "push", JS.invoke(mml, "makeText", group["delim"], group["mode"]));
   }
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mo", children);
+  JsValue node = JS.construct(MathNode, "mo", children);
   if ((JS.strictEqual(group["mclass"], "mopen")) || (JS.strictEqual(group["mclass"], "mclose"))) {
     JS.invoke(node, "setAttribute", "fence", "true");
   } else {
@@ -201,7 +203,7 @@ o31["htmlBuilder"] = (JsValue group, JsValue options) => {
   }
   JS.invoke(inner, "push", rightDelim);
   JsValue a49 = JS.array("minner");
-  return JS.invoke(buildCommon, "makeSpan", a49, inner, options);
+  return JS.call(makeSpan, undef(), a49, inner, options);
   return undef();
 };
 o31["mathmlBuilder"] = (JsValue group, JsValue options) => {
@@ -209,13 +211,13 @@ o31["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue inner = JS.invoke(mml, "buildExpression", group["body"], options);
   if (JS.strictNotEqual(group["left"], ".")) {
     JsValue a50 = JS.array(JS.invoke(mml, "makeText", group["left"], group["mode"]));
-    JsValue leftNode = JS.construct(mathMLTree["MathNode"], "mo", a50);
+    JsValue leftNode = JS.construct(MathNode, "mo", a50);
     JS.invoke(leftNode, "setAttribute", "fence", "true");
     JS.invoke(inner, "unshift", leftNode);
   }
   if (JS.strictNotEqual(group["right"], ".")) {
     JsValue a51 = JS.array(JS.invoke(mml, "makeText", group["right"], group["mode"]));
-    JsValue rightNode = JS.construct(mathMLTree["MathNode"], "mo", a51);
+    JsValue rightNode = JS.construct(MathNode, "mo", a51);
     JS.invoke(rightNode, "setAttribute", "fence", "true");
     if (group["rightColor"].truthy()) {
       JS.invoke(rightNode, "setAttribute", "mathcolor", group["rightColor"]);
@@ -262,7 +264,7 @@ o52["mathmlBuilder"] = (JsValue group, JsValue options) => {
   }
   JsValue textNode = c59;
   JsValue a60 = JS.array(textNode);
-  JsValue middleNode = JS.construct(mathMLTree["MathNode"], "mo", a60);
+  JsValue middleNode = JS.construct(MathNode, "mo", a60);
   JS.invoke(middleNode, "setAttribute", "fence", "true");
   JS.invoke(middleNode, "setAttribute", "lspace", "0.05em");
   JS.invoke(middleNode, "setAttribute", "rspace", "0.05em");

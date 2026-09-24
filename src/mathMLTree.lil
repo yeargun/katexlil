@@ -187,4 +187,4 @@ JsValue mathMLTree = undef();
 mathMLTree = o19;
 JsValue __star = JS.object("newDocumentFragment", newDocumentFragment, "MathNode", MathNode, "TextNode", TextNode, "default", mathMLTree, "mathMLTree", mathMLTree);
 
-export { __star, newDocumentFragment, MathNode, TextNode, mathMLTree as mathMLTree };
+export { __star, newDocumentFragment, MathNode, TextNode, SpaceNode, mathMLTree as mathMLTree };

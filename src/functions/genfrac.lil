@@ -10,6 +10,9 @@ import { assert } from "../utils.lil";
 import { calculateSize, makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode, TextNode } from "../mathMLTree.lil";
+import { makeLineSpan, makeSpan, makeVList } from "../buildCommon.lil";
+import { DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT } from "../Style.lil";
 
 JsValue adjustStyle = undef();
 JsValue htmlBuilder = undef();
@@ -21,21 +24,21 @@ adjustStyle = (JsValue size, JsValue originalStyle) => {
   JsValue style = originalStyle;
   if (JS.strictEqual(size, "display")) {
     JsValue c1 = undef();
-    if (JS.greaterThanOrEqual(style["id"], Style["SCRIPT"]["id"])) {
+    if (JS.greaterThanOrEqual(style["id"], SCRIPT["id"])) {
       c1 = JS.invoke(style, "text");
     } else {
-      c1 = Style["DISPLAY"];
+      c1 = DISPLAY;
     }
     style = c1;
   } else {
-    if ((JS.strictEqual(size, "text")) && (JS.strictEqual(style["size"], Style["DISPLAY"]["size"]))) {
-      style = Style["TEXT"];
+    if ((JS.strictEqual(size, "text")) && (JS.strictEqual(style["size"], DISPLAY["size"]))) {
+      style = TEXT;
     } else {
       if (JS.strictEqual(size, "script")) {
-        style = Style["SCRIPT"];
+        style = SCRIPT;
       } else {
         if (JS.strictEqual(size, "scriptscript")) {
-          style = Style["SCRIPTSCRIPT"];
+          style = SCRIPTSCRIPT;
         }
       }
     }
@@ -66,9 +69,9 @@ htmlBuilder = (JsValue group, JsValue options) => {
   number ruleSpacing = 0;
   if (group["hasBarLine"].truthy()) {
     if (group["barSize"].truthy()) {
-      rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options, JS.call(calculateSize, undef(), group["barSize"], options));
+      rule = JS.call(makeLineSpan, undef(), "frac-line", options, JS.call(calculateSize, undef(), group["barSize"], options));
     } else {
-      rule = JS.invoke(buildCommon, "makeLineSpan", "frac-line", options);
+      rule = JS.call(makeLineSpan, undef(), "frac-line", options);
     }
     ruleWidth = toNum(rule["height"]);
     ruleSpacing = ruleWidth;
@@ -78,7 +81,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
   number numShift = 0;
   number clearance = 0;
   number denomShift = 0;
-  if ((JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) || (JS.strictEqual(group["size"], "display"))) {
+  if ((JS.strictEqual(style["size"], DISPLAY["size"])) || (JS.strictEqual(group["size"], "display"))) {
     numShift = toNum(JS.invoke(options, "fontMetrics")["num1"]);
     if (ruleWidth > 0) {
       clearance = 3 * ruleSpacing;
@@ -103,7 +106,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
       numShift = numShift + 0.5 * (clearance - candidateClearance);
       denomShift = denomShift + 0.5 * (clearance - candidateClearance);
     }
-    frac = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", numerm, "shift", 0 - numShift))), options);
+    frac = JS.call(makeVList, undef(), JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", numerm, "shift", 0 - numShift))), options);
   } else {
     number axisHeight = toNum(JS.invoke(options, "fontMetrics")["axisHeight"]);
     if ((numShift - toNum(numerm["depth"])) - (axisHeight + 0.5 * ruleWidth) < clearance) {
@@ -113,18 +116,18 @@ htmlBuilder = (JsValue group, JsValue options) => {
       denomShift = denomShift + (clearance - ((axisHeight - 0.5 * ruleWidth) - (toNum(denomm["height"]) - denomShift)));
     }
     number midShift = 0 - (axisHeight - 0.5 * ruleWidth);
-    frac = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", rule, "shift", midShift), JS.object("type", "elem", "elem", numerm, "shift", 0 - numShift))), options);
+    frac = JS.call(makeVList, undef(), JS.object("positionType", "individualShift", "children", JS.array(JS.object("type", "elem", "elem", denomm, "shift", denomShift), JS.object("type", "elem", "elem", rule, "shift", midShift), JS.object("type", "elem", "elem", numerm, "shift", 0 - numShift))), options);
   }
   newOptions = JS.invoke(options, "havingStyle", style);
   number sizeRatio = toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]);
   frac["height"] = toNum(frac["height"]) * sizeRatio;
   frac["depth"] = toNum(frac["depth"]) * sizeRatio;
   JsValue delimSize = undef();
-  if (JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) {
+  if (JS.strictEqual(style["size"], DISPLAY["size"])) {
     delimSize = JS.invoke(options, "fontMetrics")["delim1"];
   } else {
-    if (JS.strictEqual(style["size"], Style["SCRIPTSCRIPT"]["size"])) {
-      delimSize = JS.invoke(JS.invoke(options, "havingStyle", Style["SCRIPT"]), "fontMetrics")["delim2"];
+    if (JS.strictEqual(style["size"], SCRIPTSCRIPT["size"])) {
+      delimSize = JS.invoke(JS.invoke(options, "havingStyle", SCRIPT), "fontMetrics")["delim2"];
     } else {
       delimSize = JS.invoke(options, "fontMetrics")["delim2"];
     }
@@ -137,7 +140,7 @@ htmlBuilder = (JsValue group, JsValue options) => {
     leftDelim = apply(delimiter["customSizedDelim"], delimiter, JS.array(group["leftDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], JS.array("mopen")));
   }
   if (group["continued"].truthy()) {
-    rightDelim = JS.invoke(buildCommon, "makeSpan", JS.array());
+    rightDelim = JS.call(makeSpan, undef(), JS.array());
   } else {
     if (isNullish(group["rightDelim"])) {
       rightDelim = JS.invoke(html, "makeNullDelimiter", options, JS.array("mclose"));
@@ -145,11 +148,11 @@ htmlBuilder = (JsValue group, JsValue options) => {
       rightDelim = apply(delimiter["customSizedDelim"], delimiter, JS.array(group["rightDelim"], delimSize, true, JS.invoke(options, "havingStyle", style), group["mode"], JS.array("mclose")));
     }
   }
-  return JS.invoke(buildCommon, "makeSpan", JS.invoke(JS.array("mord"), "concat", JS.invoke(newOptions, "sizingClasses", options)), JS.array(leftDelim, JS.invoke(buildCommon, "makeSpan", JS.array("mfrac"), JS.array(frac)), rightDelim), options);
+  return JS.call(makeSpan, undef(), JS.invoke(JS.array("mord"), "concat", JS.invoke(newOptions, "sizingClasses", options)), JS.array(leftDelim, JS.call(makeSpan, undef(), JS.array("mfrac"), JS.array(frac)), rightDelim), options);
 };
 mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue a26 = JS.array(JS.invoke(mml, "buildGroup", group["numer"], options), JS.invoke(mml, "buildGroup", group["denom"], options));
-  JsValue node = JS.construct(mathMLTree["MathNode"], "mfrac", a26);
+  JsValue node = JS.construct(MathNode, "mfrac", a26);
   if (!(group["hasBarLine"].truthy())) {
     JS.invoke(node, "setAttribute", "linethickness", "0px");
   } else {
@@ -161,9 +164,9 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue style = JS.call(adjustStyle, undef(), group["size"], options["style"]);
   if (JS.strictNotEqual(style["size"], options["style"]["size"])) {
     JsValue a27 = JS.array(node);
-    node = JS.construct(mathMLTree["MathNode"], "mstyle", a27);
+    node = JS.construct(MathNode, "mstyle", a27);
     JsValue c28 = undef();
-    if (JS.strictEqual(style["size"], Style["DISPLAY"]["size"])) {
+    if (JS.strictEqual(style["size"], DISPLAY["size"])) {
       c28 = "true";
     } else {
       c28 = "false";
@@ -176,15 +179,15 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     JsValue a29 = JS.array();
     JsValue withDelims = a29;
     if (!isNullish(group["leftDelim"])) {
-      JsValue a30 = JS.array(JS.construct(mathMLTree["TextNode"], JS.invoke(group["leftDelim"], "replace", "\\", "")));
-      JsValue leftOp = JS.construct(mathMLTree["MathNode"], "mo", a30);
+      JsValue a30 = JS.array(JS.construct(TextNode, JS.invoke(group["leftDelim"], "replace", "\\", "")));
+      JsValue leftOp = JS.construct(MathNode, "mo", a30);
       JS.invoke(leftOp, "setAttribute", "fence", "true");
       JS.invoke(withDelims, "push", leftOp);
     }
     JS.invoke(withDelims, "push", node);
     if (!isNullish(group["rightDelim"])) {
-      JsValue a31 = JS.array(JS.construct(mathMLTree["TextNode"], JS.invoke(group["rightDelim"], "replace", "\\", "")));
-      JsValue rightOp = JS.construct(mathMLTree["MathNode"], "mo", a31);
+      JsValue a31 = JS.array(JS.construct(TextNode, JS.invoke(group["rightDelim"], "replace", "\\", "")));
+      JsValue rightOp = JS.construct(MathNode, "mo", a31);
       JS.invoke(rightOp, "setAttribute", "fence", "true");
       JS.invoke(withDelims, "push", rightOp);
     }
@@ -262,7 +265,7 @@ JS.call(defineFunction, undef(), o40);
 JsValue o46 = JS.object("type", "infix", "names", JS.array("\\over", "\\choose", "\\atop", "\\brace", "\\brack"));
 JsValue o48 = JS.object("numArgs", 0, "infix", true);
 o46["props"] = o48;
-o46["handler"] = JS.method1((JsValue self, JsValue p49) => {
+o46["handler"] = (JsValue p49) => {
   JsValue op50 = p49;
   JsValue parser = op50["parser"];
   JsValue funcName = op50["funcName"];
@@ -294,7 +297,7 @@ o46["handler"] = JS.method1((JsValue self, JsValue p49) => {
   o52["token"] = token;
   return o52;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o46);
 JsValue a53 = JS.array("display", "text", "script", "scriptscript");
 stylArray = a53;
@@ -316,7 +319,7 @@ delimFromValue = (JsValue delimString) => {
 JsValue o55 = JS.object("type", "genfrac", "names", JS.array("\\genfrac"));
 JsValue o57 = JS.object("numArgs", 6, "allowedInArgument", true, "argTypes", JS.array("math", "math", "size", "text", "math", "math"));
 o55["props"] = o57;
-o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
+o55["handler"] = (JsValue p59, JsValue args) => {
   JsValue op60 = p59;
   JsValue parser = op60["parser"];
   JsValue numer = args[4];
@@ -370,14 +373,14 @@ o55["handler"] = JS.method2((JsValue self, JsValue p59, JsValue args) => {
   o63["size"] = size;
   return o63;
   return undef();
-});
+};
 o55["htmlBuilder"] = htmlBuilder;
 o55["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o55);
 JsValue o64 = JS.object("type", "infix", "names", JS.array("\\above"));
 JsValue o66 = JS.object("numArgs", 1, "argTypes", JS.array("size"), "infix", true);
 o64["props"] = o66;
-o64["handler"] = JS.method2((JsValue self, JsValue p68, JsValue args) => {
+o64["handler"] = (JsValue p68, JsValue args) => {
   JsValue op69 = p68;
   JsValue parser = op69["parser"];
   JsValue funcName = op69["funcName"];
@@ -390,7 +393,7 @@ o64["handler"] = JS.method2((JsValue self, JsValue p68, JsValue args) => {
   o70["token"] = token;
   return o70;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o64);
 JsValue o71 = JS.object("type", "genfrac", "names", JS.array("\\\\abovefrac"));
 JsValue o73 = JS.object("numArgs", 3, "argTypes", JS.array("math", "size", "math"));

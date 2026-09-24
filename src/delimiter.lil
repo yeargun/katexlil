@@ -10,6 +10,8 @@ import { symbols } from "./symbols.lil";
 import { utils } from "./utils.lil";
 import { makeEm } from "./units.lil";
 import { fontMetricsData } from "./data.lil";
+import { makeSpan, makeSvgSpan, makeSymbol, makeVList } from "./buildCommon.lil";
+import { TEXT, SCRIPT, SCRIPTSCRIPT } from "./Style.lil";
 
 JsValue getMetrics = undef();
 JsValue styleWrap = undef();
@@ -61,7 +63,7 @@ getMetrics = (JsValue symbol, JsValue font, JsValue mode) => {
 styleWrap = (JsValue delim, JsValue toStyle, JsValue options, JsValue classes) => {
   JsValue newOptions = JS.invoke(options, "havingBaseStyle", toStyle);
   JsValue a3 = JS.array(delim);
-  JsValue span = JS.invoke(buildCommon, "makeSpan", JS.invoke(classes, "concat", JS.invoke(newOptions, "sizingClasses", options)), a3, options);
+  JsValue span = JS.call(makeSpan, undef(), JS.invoke(classes, "concat", JS.invoke(newOptions, "sizingClasses", options)), a3, options);
   JsValue delimSizeMultiplier = (toNum(newOptions["sizeMultiplier"]) / toNum(options["sizeMultiplier"]));
   JsValue as4 = span["height"];
   span["height"] = (toNum(as4) * toNum(delimSizeMultiplier));
@@ -83,7 +85,7 @@ centerSpan = (JsValue span, JsValue options, JsValue style) => {
   return undef();
 };
 makeSmallDelim = (JsValue delim, JsValue style, JsValue center, JsValue options, JsValue mode, JsValue classes) => {
-  JsValue text = JS.invoke(buildCommon, "makeSymbol", delim, "Main-Regular", mode, options);
+  JsValue text = JS.call(makeSymbol, undef(), delim, "Main-Regular", mode, options);
   JsValue span = JS.call(styleWrap, undef(), text, style, options, classes);
   if (center.truthy()) {
     JS.call(centerSpan, undef(), span, options, style);
@@ -92,16 +94,16 @@ makeSmallDelim = (JsValue delim, JsValue style, JsValue center, JsValue options,
   return undef();
 };
 mathrmSize = (JsValue value, JsValue size, JsValue mode, JsValue options) => {
-  return JS.invoke(buildCommon, "makeSymbol", value, JS.add(JS.add("Size", size), "-Regular"), mode, options);
+  return JS.call(makeSymbol, undef(), value, JS.add(JS.add("Size", size), "-Regular"), mode, options);
   return undef();
 };
 makeLargeDelim = (JsValue delim, JsValue size, JsValue center, JsValue options, JsValue mode, JsValue classes) => {
   JsValue inner = JS.call(mathrmSize, undef(), delim, size, mode, options);
   JsValue a8 = JS.array("delimsizing", JS.add("size", size));
   JsValue a9 = JS.array(inner);
-  JsValue span = JS.call(styleWrap, undef(), JS.invoke(buildCommon, "makeSpan", a8, a9, options), Style["TEXT"], options, classes);
+  JsValue span = JS.call(styleWrap, undef(), JS.call(makeSpan, undef(), a8, a9, options), TEXT, options, classes);
   if (center.truthy()) {
-    JS.call(centerSpan, undef(), span, options, Style["TEXT"]);
+    JS.call(centerSpan, undef(), span, options, TEXT);
   }
   return span;
   return undef();
@@ -116,9 +118,9 @@ makeGlyphSpan = (JsValue symbol, JsValue font, JsValue mode) => {
   JsValue a10 = JS.array("delimsizinginner", sizeClass);
   JsValue a11 = newArray();
   JsValue a12 = JS.array();
-  JsValue a13 = JS.array(JS.invoke(buildCommon, "makeSymbol", symbol, font, mode));
-  JS.push(a11, JS.invoke(buildCommon, "makeSpan", a12, a13));
-  JsValue corner = JS.invoke(buildCommon, "makeSpan", a10, a11);
+  JsValue a13 = JS.array(JS.call(makeSymbol, undef(), symbol, font, mode));
+  JS.invoke(a11, "push", JS.call(makeSpan, undef(), a12, a13));
+  JsValue corner = JS.call(makeSpan, undef(), a10, a11);
   JsValue o14 = JS.object("type", "elem", "elem", corner);
   return o14;
   return undef();
@@ -137,7 +139,7 @@ makeInner = (JsValue ch, JsValue height, JsValue options) => {
   JsValue svgNode = JS.construct(SvgNode, a16, o17);
   JsValue a18 = JS.array();
   JsValue a19 = JS.array(svgNode);
-  JsValue span = JS.invoke(buildCommon, "makeSvgSpan", a18, a19, options);
+  JsValue span = JS.call(makeSvgSpan, undef(), a18, a19, options);
   span["height"] = height;
   span["style"]["height"] = JS.call(makeEm, undef(), height);
   span["style"]["width"] = JS.call(makeEm, undef(), width);
@@ -353,7 +355,7 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     JsValue width = JS.add(JS.invoke(toNum(viewBoxWidth) / 1000, "toFixed", 3), "em");
     JsValue height = JS.add(JS.invoke(viewBoxHeight / 1000, "toFixed", 3), "em");
     JsValue svg = JS.construct(SvgNode, JS.array(path), JS.object("width", width, "height", height, "viewBox", "0 0 " + toStr(viewBoxWidth) + " " + toStr(viewBoxHeight)));
-    JsValue wrapper = JS.invoke(buildCommon, "makeSvgSpan", JS.array(), JS.array(svg), options);
+    JsValue wrapper = JS.call(makeSvgSpan, undef(), JS.array(), JS.array(svg), options);
     wrapper["height"] = viewBoxHeight / 1000;
     wrapper["style"]["width"] = width;
     wrapper["style"]["height"] = height;
@@ -375,9 +377,9 @@ makeStackedDelim = (JsValue delim, JsValue heightTotal, JsValue center, JsValue 
     JS.invoke(stack, "push", lap);
     JS.invoke(stack, "push", JS.call(makeGlyphSpan, undef(), top, font, mode));
   }
-  JsValue newOptions = JS.invoke(options, "havingBaseStyle", Style["TEXT"]);
-  JsValue inner = JS.invoke(buildCommon, "makeVList", JS.object("positionType", "bottom", "positionData", depth, "children", stack), newOptions);
-  return JS.call(styleWrap, undef(), JS.invoke(buildCommon, "makeSpan", JS.array("delimsizing", "mult"), JS.array(inner), newOptions), Style["TEXT"], options, classes);
+  JsValue newOptions = JS.invoke(options, "havingBaseStyle", TEXT);
+  JsValue inner = JS.call(makeVList, undef(), JS.object("positionType", "bottom", "positionData", depth, "children", stack), newOptions);
+  return JS.call(styleWrap, undef(), JS.call(makeSpan, undef(), JS.array("delimsizing", "mult"), JS.array(inner), newOptions), TEXT, options, classes);
   return undef();
 };
 vbPad = 80;
@@ -390,7 +392,7 @@ sqrtSvg = (JsValue sqrtName, JsValue height, JsValue viewBoxHeight, JsValue extr
   JsValue svg = JS.construct(SvgNode, a33, o34);
   JsValue a35 = JS.array("hide-tail");
   JsValue a36 = JS.array(svg);
-  return JS.invoke(buildCommon, "makeSvgSpan", a35, a36, options);
+  return JS.call(makeSvgSpan, undef(), a35, a36, options);
   return undef();
 };
 makeSqrtImage = (JsValue height, JsValue options) => {
@@ -465,11 +467,11 @@ makeSizedDelim = (JsValue delim, JsValue size, JsValue options, JsValue mode, Js
   }
   return undef();
 };
-JsValue a44 = JS.array(JS.object("type", "small", "style", Style["SCRIPTSCRIPT"]), JS.object("type", "small", "style", Style["SCRIPT"]), JS.object("type", "small", "style", Style["TEXT"]), JS.object("type", "large", "size", 1), JS.object("type", "large", "size", 2), JS.object("type", "large", "size", 3), JS.object("type", "large", "size", 4));
+JsValue a44 = JS.array(JS.object("type", "small", "style", SCRIPTSCRIPT), JS.object("type", "small", "style", SCRIPT), JS.object("type", "small", "style", TEXT), JS.object("type", "large", "size", 1), JS.object("type", "large", "size", 2), JS.object("type", "large", "size", 3), JS.object("type", "large", "size", 4));
 stackNeverDelimiterSequence = a44;
-JsValue a52 = JS.array(JS.object("type", "small", "style", Style["SCRIPTSCRIPT"]), JS.object("type", "small", "style", Style["SCRIPT"]), JS.object("type", "small", "style", Style["TEXT"]), JS.object("type", "stack"));
+JsValue a52 = JS.array(JS.object("type", "small", "style", SCRIPTSCRIPT), JS.object("type", "small", "style", SCRIPT), JS.object("type", "small", "style", TEXT), JS.object("type", "stack"));
 stackAlwaysDelimiterSequence = a52;
-JsValue a57 = JS.array(JS.object("type", "small", "style", Style["SCRIPTSCRIPT"]), JS.object("type", "small", "style", Style["SCRIPT"]), JS.object("type", "small", "style", Style["TEXT"]), JS.object("type", "large", "size", 1), JS.object("type", "large", "size", 2), JS.object("type", "large", "size", 3), JS.object("type", "large", "size", 4), JS.object("type", "stack"));
+JsValue a57 = JS.array(JS.object("type", "small", "style", SCRIPTSCRIPT), JS.object("type", "small", "style", SCRIPT), JS.object("type", "small", "style", TEXT), JS.object("type", "large", "size", 1), JS.object("type", "large", "size", 2), JS.object("type", "large", "size", 3), JS.object("type", "large", "size", 4), JS.object("type", "stack"));
 stackLargeDelimiterSequence = a57;
 delimTypeToFont = (JsValue type) => {
   if (JS.strictEqual(type["type"], "small")) {

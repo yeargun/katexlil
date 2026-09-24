@@ -14,6 +14,7 @@ import {
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { spawnSync } from "node:child_process"
+import { performance } from "node:perf_hooks"
 import { build as esbuild } from "esbuild"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
@@ -43,7 +44,13 @@ function run(cmd, args) {
   if (result.status !== 0) process.exit(result.status ?? 1)
 }
 
+// Compile time is a published number (site/results.json `compiler`, written by
+// scripts/record-compiler.mjs). Every compiler invocation of this build is timed
+// here, wall clock around the process, and written to .tmp/compile-times/ when the
+// build finishes: one file per build, so a sample is always one whole build.
+const compileTimes = []
 function compileLil(compiler, configName, input, output) {
+  const started = performance.now()
   run(compiler, [
     resolve(root, input),
     "--target",
@@ -53,6 +60,16 @@ function compileLil(compiler, configName, input, output) {
     "-o",
     resolve(root, output),
   ])
+  compileTimes.push({ input, config: configName, output, wallMs: Math.round(performance.now() - started) })
+}
+
+function writeCompileTimes(compiler) {
+  if (compileTimes.length === 0) return
+  const dir = resolve(root, ".tmp", "compile-times")
+  mkdirSync(dir, { recursive: true })
+  const at = new Date().toISOString()
+  const record = { at, compiler, argv: process.argv.slice(2), invocations: compileTimes }
+  writeFileSync(resolve(dir, `${at.replace(/[:.]/g, "-")}.json`), `${JSON.stringify(record, null, 2)}\n`)
 }
 
 function compileIfRequested() {
@@ -240,7 +257,7 @@ const compiledContrib = [
   ["auto-render", "contrib/auto-render/auto-render.lil"],
   ["copy-tex", "contrib/copy-tex/copy-tex.lil"],
   ["mathtex-script-type", "contrib/mathtex-script-type/mathtex-script-type.lil"],
-  ["mhchem", "contrib/mhchem/mhchem.lil", "lilscript.mhchem.toml"],
+  ["mhchem", "contrib/mhchem/mhchem.lil"],
   ["render-a11y-string", "contrib/render-a11y-string/render-a11y-string.lil"],
 ]
 for (const [name, source, configName] of compiledContrib) {
@@ -308,4 +325,5 @@ copyFileSync(resolve(root, "assets", "katex.min.css"), resolve(dist, "katex.min.
 cpSync(resolve(root, "fonts"), resolve(dist, "fonts"), { recursive: true })
 
 copyFileSync(resolve(root, "types", `${file}.d.ts`), resolve(dist, `${file}.d.ts`))
+writeCompileTimes(compiler)
 console.log(`wrote core, contrib, CSS, fonts, and declarations under dist/`)

@@ -6,6 +6,7 @@ import { mathMLTree } from "../mathMLTree.lil";
 import { utils } from "../utils.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
 
 JsValue makeSpan = undef();
 JsValue htmlBuilder = undef();
@@ -23,21 +24,21 @@ mathmlBuilder = (JsValue group, JsValue options) => {
   JsValue node = undef();
   JsValue inner = JS.invoke(mml, "buildExpression", group["body"], options);
   if (JS.strictEqual(group["mclass"], "minner")) {
-    node = JS.construct(mathMLTree["MathNode"], "mpadded", inner);
+    node = JS.construct(MathNode, "mpadded", inner);
   } else {
     if (JS.strictEqual(group["mclass"], "mord")) {
       if (group["isCharacterBox"].truthy()) {
         node = inner[0];
         node["type"] = "mi";
       } else {
-        node = JS.construct(mathMLTree["MathNode"], "mi", inner);
+        node = JS.construct(MathNode, "mi", inner);
       }
     } else {
       if (group["isCharacterBox"].truthy()) {
         node = inner[0];
         node["type"] = "mo";
       } else {
-        node = JS.construct(mathMLTree["MathNode"], "mo", inner);
+        node = JS.construct(MathNode, "mo", inner);
       }
       if (JS.strictEqual(group["mclass"], "mbin")) {
         node["attributes"]["lspace"] = "0.22em";
@@ -66,7 +67,7 @@ mathmlBuilder = (JsValue group, JsValue options) => {
 JsValue o2 = JS.object("type", "mclass", "names", JS.array("\\mathord", "\\mathbin", "\\mathrel", "\\mathopen", "\\mathclose", "\\mathpunct", "\\mathinner"));
 JsValue o4 = JS.object("numArgs", 1, "primitive", true);
 o2["props"] = o4;
-o2["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
+o2["handler"] = (JsValue p5, JsValue args) => {
   JsValue op6 = p5;
   JsValue parser = op6["parser"];
   JsValue funcName = op6["funcName"];
@@ -79,7 +80,7 @@ o2["handler"] = JS.method2((JsValue self, JsValue p5, JsValue args) => {
   o7["isCharacterBox"] = JS.invoke(utils, "isCharacterBox", body);
   return o7;
   return undef();
-});
+};
 o2["htmlBuilder"] = htmlBuilder;
 o2["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o2);
@@ -101,7 +102,7 @@ binrelClass = (JsValue arg) => {
 JsValue o9 = JS.object("type", "mclass", "names", JS.array("\\@binrel"));
 JsValue o11 = JS.object("numArgs", 2);
 o9["props"] = o11;
-o9["handler"] = JS.method2((JsValue self, JsValue p12, JsValue args) => {
+o9["handler"] = (JsValue p12, JsValue args) => {
   JsValue op13 = p12;
   JsValue parser = op13["parser"];
   JsValue o14 = emptyObject();
@@ -112,12 +113,12 @@ o9["handler"] = JS.method2((JsValue self, JsValue p12, JsValue args) => {
   o14["isCharacterBox"] = JS.invoke(utils, "isCharacterBox", args[1]);
   return o14;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o9);
 JsValue o15 = JS.object("type", "mclass", "names", JS.array("\\stackrel", "\\overset", "\\underset"));
 JsValue o17 = JS.object("numArgs", 2);
 o15["props"] = o17;
-o15["handler"] = JS.method2((JsValue self, JsValue p18, JsValue args) => {
+o15["handler"] = (JsValue p18, JsValue args) => {
   JsValue op19 = p18;
   JsValue parser = op19["parser"];
   JsValue funcName = op19["funcName"];
@@ -167,7 +168,7 @@ o15["handler"] = JS.method2((JsValue self, JsValue p18, JsValue args) => {
   o24["isCharacterBox"] = JS.invoke(utils, "isCharacterBox", supsub);
   return o24;
   return undef();
-});
+};
 o15["htmlBuilder"] = htmlBuilder;
 o15["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o15);

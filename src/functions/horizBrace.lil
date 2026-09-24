@@ -8,6 +8,9 @@ import { Style } from "../Style.lil";
 import { assertNodeType } from "../parseNode.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { makeSpan, makeVList } from "../buildCommon.lil";
+import { DISPLAY } from "../Style.lil";
 
 JsValue htmlBuilder = undef();
 JsValue mathmlBuilder = undef();
@@ -28,16 +31,16 @@ htmlBuilder = (JsValue grp, JsValue options) => {
   } else {
     group = JS.call(assertNodeType, undef(), grp, "horizBrace");
   }
-  JsValue body = JS.invoke(html, "buildGroup", group["base"], JS.invoke(options, "havingBaseStyle", Style["DISPLAY"]));
+  JsValue body = JS.invoke(html, "buildGroup", group["base"], JS.invoke(options, "havingBaseStyle", DISPLAY));
   JsValue braceBody = JS.invoke(stretchy, "svgSpan", group, options);
   JsValue vlist = undef();
   if (group["isOver"].truthy()) {
     JsValue o2 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", body), JS.object("type", "kern", "size", 0.1), JS.object("type", "elem", "elem", braceBody)));
-    vlist = JS.invoke(buildCommon, "makeVList", o2, options);
+    vlist = JS.call(makeVList, undef(), o2, options);
     JS.invoke(vlist["children"][0]["children"][0]["children"][1]["classes"], "push", "svg-align");
   } else {
     JsValue o7 = JS.object("positionType", "bottom", "positionData", JS.add(JS.add(body["depth"], 0.1), braceBody["height"]), "children", JS.array(JS.object("type", "elem", "elem", braceBody), JS.object("type", "kern", "size", 0.1), JS.object("type", "elem", "elem", body)));
-    vlist = JS.invoke(buildCommon, "makeVList", o7, options);
+    vlist = JS.call(makeVList, undef(), o7, options);
     JS.invoke(vlist["children"][0]["children"][0]["children"][0]["classes"], "push", "svg-align");
   }
   if (supSubGroup.truthy()) {
@@ -48,15 +51,15 @@ htmlBuilder = (JsValue grp, JsValue options) => {
     } else {
       c13 = "munder";
     }
-    JS.push(a12, c13);
+    JS.invoke(a12, "push", c13);
     JsValue a14 = JS.array(vlist);
-    JsValue vSpan = JS.invoke(buildCommon, "makeSpan", a12, a14, options);
+    JsValue vSpan = JS.call(makeSpan, undef(), a12, a14, options);
     if (group["isOver"].truthy()) {
       JsValue o15 = JS.object("positionType", "firstBaseline", "children", JS.array(JS.object("type", "elem", "elem", vSpan), JS.object("type", "kern", "size", 0.2), JS.object("type", "elem", "elem", supSubGroup)));
-      vlist = JS.invoke(buildCommon, "makeVList", o15, options);
+      vlist = JS.call(makeVList, undef(), o15, options);
     } else {
       JsValue o20 = JS.object("positionType", "bottom", "positionData", JS.add(JS.add(JS.add(vSpan["depth"], 0.2), supSubGroup["height"]), supSubGroup["depth"]), "children", JS.array(JS.object("type", "elem", "elem", supSubGroup), JS.object("type", "kern", "size", 0.2), JS.object("type", "elem", "elem", vSpan)));
-      vlist = JS.invoke(buildCommon, "makeVList", o20, options);
+      vlist = JS.call(makeVList, undef(), o20, options);
     }
   }
   JsValue a25 = JS.array("mord");
@@ -66,9 +69,9 @@ htmlBuilder = (JsValue grp, JsValue options) => {
   } else {
     c26 = "munder";
   }
-  JS.push(a25, c26);
+  JS.invoke(a25, "push", c26);
   JsValue a27 = JS.array(vlist);
-  return JS.invoke(buildCommon, "makeSpan", a25, a27, options);
+  return JS.call(makeSpan, undef(), a25, a27, options);
   return undef();
 };
 mathmlBuilder = (JsValue group, JsValue options) => {
@@ -80,13 +83,13 @@ mathmlBuilder = (JsValue group, JsValue options) => {
     c28 = "munder";
   }
   JsValue a29 = JS.array(JS.invoke(mml, "buildGroup", group["base"], options), accentNode);
-  return JS.construct(mathMLTree["MathNode"], c28, a29);
+  return JS.construct(MathNode, c28, a29);
   return undef();
 };
 JsValue o30 = JS.object("type", "horizBrace", "names", JS.array("\\overbrace", "\\underbrace"));
 JsValue o32 = JS.object("numArgs", 1);
 o30["props"] = o32;
-o30["handler"] = JS.method2((JsValue self, JsValue p33, JsValue args) => {
+o30["handler"] = (JsValue p33, JsValue args) => {
   JsValue op34 = p33;
   JsValue parser = op34["parser"];
   JsValue funcName = op34["funcName"];
@@ -98,7 +101,7 @@ o30["handler"] = JS.method2((JsValue self, JsValue p33, JsValue args) => {
   o35["base"] = args[0];
   return o35;
   return undef();
-});
+};
 o30["htmlBuilder"] = htmlBuilder;
 o30["mathmlBuilder"] = mathmlBuilder;
 JS.call(defineFunction, undef(), o30);

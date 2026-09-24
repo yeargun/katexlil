@@ -9,6 +9,8 @@ import { makeEm } from "./units.lil";
 import { spacings, tightSpacings } from "./spacingData.lil";
 import { _htmlGroupBuilders as groupBuilders } from "./defineFunction.lil";
 import { DocumentFragment } from "./tree.lil";
+import { makeGlue, tryCombineChars } from "./buildCommon.lil";
+import { DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT } from "./Style.lil";
 
 JsValue makeSpan = undef();
 JsValue binLeftCanceller = undef();
@@ -30,7 +32,7 @@ JsValue a1 = JS.array("leftmost", "mbin", "mopen", "mrel", "mop", "mpunct");
 binLeftCanceller = a1;
 JsValue a2 = JS.array("rightmost", "mrel", "mclose", "mpunct");
 binRightCanceller = a2;
-JsValue o3 = JS.object("display", Style["DISPLAY"], "text", Style["TEXT"], "script", Style["SCRIPT"], "scriptscript", Style["SCRIPTSCRIPT"]);
+JsValue o3 = JS.object("display", DISPLAY, "text", TEXT, "script", SCRIPT, "scriptscript", SCRIPTSCRIPT);
 styleMap = o3;
 JsValue o4 = JS.object("mord", "mord", "mop", "mop", "mbin", "mbin", "mrel", "mrel", "mopen", "mopen", "mclose", "mclose", "mpunct", "mpunct", "minner", "minner");
 DomEnum = o4;
@@ -53,7 +55,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
       JsValue u7 = i;
     }
   }
-  JS.invoke(buildCommon, "tryCombineChars", groups);
+  JS.call(tryCombineChars, undef(), groups);
   if (!(isRealGroup.truthy())) {
     return groups;
   }
@@ -73,7 +75,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
   if (!(or9.truthy())) {
     or9 = "leftmost";
   }
-  JS.push(a8, or9);
+  JS.invoke(a8, "push", or9);
   JsValue a10 = JS.array();
   JsValue dummyPrev = JS.call(makeSpan, undef(), a8, a10, options);
   JsValue a11 = newArray();
@@ -81,7 +83,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
   if (!(or12.truthy())) {
     or12 = "rightmost";
   }
-  JS.push(a11, or12);
+  JS.invoke(a11, "push", or12);
   JsValue a13 = JS.array();
   JsValue dummyNext = JS.call(makeSpan, undef(), a11, a13, options);
   JsValue isRoot = JS.strictEqual(isRealGroup, "root");
@@ -116,7 +118,7 @@ buildExpression = (JsValue expression, JsValue options, JsValue isRealGroup, JsV
   }
   JsValue space = c15;
   if (space.truthy()) {
-    return JS.invoke(buildCommon, "makeGlue", space, glueOptions);
+    return JS.call(makeGlue, undef(), space, glueOptions);
   }
   return undef();
   }, o17, dummyNext, isRoot);

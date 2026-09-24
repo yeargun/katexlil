@@ -8,12 +8,19 @@
 // corpus (site/corpus.js) in this Node, and in headless Chromium through Playwright
 // (scripts/lib/browser-bench.mjs, the same page as site/bench.html). `--spec` re-runs the
 // official Jest suites and counts them; otherwise the previous count is kept.
+//
+// Delivered files: every file the package ships, measured the same way and labelled with
+// who wrote it (the compiler, or esbuild re-bundling the compiler's ESM), against the
+// previous release (`--previous-release <git revision>` measures that revision's dist/ once;
+// later runs carry it) and against a Terser bar. Compile time is recorded separately by
+// scripts/record-compiler.mjs and carried here.
 import { mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { spawnSync } from "node:child_process"
 import { tmpdir } from "node:os"
 import { performance } from "node:perf_hooks"
-import { published, fromSource, pin, codecPath, root } from "./lib/official.mjs"
+import { minify } from "terser"
+import { published, fromSource, pin, codecPath, root, terserOptions } from "./lib/official.mjs"
 import { benchmark, summarize, parity, corpus } from "../site/corpus.js"
 
 const argv = process.argv.slice(2)
@@ -36,8 +43,8 @@ const lanes = [
   { id: "official-terser-nomangle", name: "Official · Terser mangle off", file: "official.terser-nomangle.js", text: official.terserNoMangle, note: "Terser compress of that graph, mangle: false" },
   { id: "official-esbuild", name: "Official · esbuild minify", file: "official.esbuild.js", text: official.esbuildMinify, note: "esbuild minify of that graph" },
   { id: "official-source-terser", name: "Official source · esbuild + Terser", file: "official.source-terser.js", text: source.code, note: `katex@${pin} Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary`, strongest: true },
-  { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: direct LilScript js-module output, extern_fields = true, public API and option names kept", primary: true, world: "open" },
-  { id: "itslil-closed", name: "@itslil/katex · closed world", path: "dist/katex.closed.js", note: "Same source, extern_fields = false: JavaScript-facing option and node fields may mangle", world: "closed" },
+  { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: the compiler's js-module output with the upstream font-metrics data module and the version export concatenated on; nothing re-minifies it. Public API and option names kept", primary: true, world: "open" },
+  { id: "itslil-closed", name: "@itslil/katex · closed world", path: "dist/katex.closed.js", note: "Same source. The one compiler renames no property, so extern_fields has no effect and the closed config equals the open one: same bytes", world: "closed" },
 ]
 for (const lane of lanes) {
   if (lane.text != null) { lane.path = join(work, lane.file); writeFileSync(lane.path, lane.text) } else lane.path = resolve(root, lane.path)
@@ -50,6 +57,73 @@ const size = lanes.map((lane, i) => {
   const { text, path, file, ...rest } = lane
   return { ...rest, raw, gzip9, brotli11 }
 })
+// ---- delivered files ----
+const measure = (paths) => {
+  const run = spawnSync(codecPath(), ["--json", ...paths], { encoding: "utf8", maxBuffer: 1 << 26 })
+  if (run.status !== 0) throw new Error(`lilscript-codec: ${run.stderr}`)
+  return JSON.parse(run.stdout).artifacts.map(({ raw, gzip9, brotli11 }) => ({ raw, gzip9, brotli11 }))
+}
+const compilerWritten = "compiler"
+const esbuildMinified = "post-processed by esbuild (bundle + minify), not compiler-written"
+const esbuildWhitespace = "post-processed by esbuild (bundle + whitespace minify), not compiler-written"
+const contribNames = ["auto-render", "copy-tex", "mathtex-script-type", "mhchem", "render-a11y-string"]
+const baselineLane = size.find((lane) => lane.baseline)
+const coreBar = { name: baselineLane.name, raw: baselineLane.raw, gzip9: baselineLane.gzip9, brotli11: baselineLane.brotli11 }
+const contribBarPaths = []
+for (const name of contribNames) {
+  const upstreamContrib = readFileSync(resolve(root, `node_modules/katex/dist/contrib/${name}.mjs`), "utf8")
+  const path = join(work, `official.contrib.${name}.terser.js`)
+  writeFileSync(path, (await minify({ [`${name}.mjs`]: upstreamContrib }, terserOptions)).code)
+  contribBarPaths.push(path)
+}
+const contribBars = Object.fromEntries(measure(contribBarPaths).map((sizes, i) => [contribNames[i], { name: `Terser of katex@${pin} dist/contrib/${contribNames[i]}.mjs`, ...sizes }]))
+const deliveredFiles = [
+  { path: "dist/katex.esm.js", format: "ESM (npm import)", writtenBy: compilerWritten, bar: coreBar },
+  { path: "dist/katex.mjs", format: "ESM (package exports), a byte copy of katex.esm.js", writtenBy: compilerWritten, bar: coreBar },
+  { path: "dist/katex.closed.js", format: "ESM, closed world", writtenBy: compilerWritten, bar: coreBar },
+  { path: "dist/katex.cjs", format: "CommonJS (npm require)", writtenBy: esbuildMinified, bar: coreBar },
+  { path: "dist/katex.umd.js", format: "browser script", writtenBy: esbuildMinified, bar: coreBar },
+  { path: "dist/katex.min.js", format: "browser script (CDN)", writtenBy: esbuildMinified, bar: coreBar },
+  ...contribNames.flatMap((name) => [
+    { path: `dist/contrib/${name}.mjs`, format: "contrib ESM", writtenBy: `${compilerWritten} (its katex import specifier is rewritten to ../katex.mjs)`, bar: contribBars[name] },
+    { path: `dist/contrib/${name}.cjs`, format: "contrib CommonJS", writtenBy: esbuildWhitespace, bar: contribBars[name] },
+    { path: `dist/contrib/${name}.min.js`, format: "contrib browser script", writtenBy: esbuildMinified, bar: contribBars[name] },
+  ]),
+]
+const deliveredSizes = measure(deliveredFiles.map((file) => resolve(root, file.path)))
+
+// The previous release: that revision's committed dist/, measured once by this codec.
+let previousRelease = previous.previousRelease ?? null
+const previousRevision = flag("previous-release", null)
+if (previousRevision) {
+  const git = (...args) => spawnSync("git", args, { cwd: root, encoding: "utf8", maxBuffer: 1 << 26 })
+  const revision = git("rev-parse", "--short", previousRevision).stdout.trim()
+  const present = []
+  for (const file of deliveredFiles) {
+    const shown = spawnSync("git", ["show", `${revision}:${file.path}`], { cwd: root, maxBuffer: 1 << 26 })
+    if (shown.status !== 0) continue
+    const path = join(work, "previous", file.path)
+    mkdirSync(join(path, ".."), { recursive: true })
+    writeFileSync(path, shown.stdout)
+    present.push({ file: file.path, path })
+  }
+  const sizes = measure(present.map(({ path }) => path))
+  previousRelease = {
+    revision,
+    committedAt: git("show", "-s", "--format=%cI", revision).stdout.trim(),
+    builtBy: flag("previous-compiler", "the previous LilScript compiler"),
+    files: Object.fromEntries(present.map(({ file }, i) => [file, sizes[i]])),
+  }
+}
+const delivered = deliveredFiles.map((file, i) => ({ ...file, ...deliveredSizes[i], previous: previousRelease?.files?.[file.path] ?? null }))
+// What upstream's package itself serves: `import "katex"` resolves to an unminified file, and
+// the minified browser build is reachable only by CDN or a deep import.
+const upstreamFiles = [
+  { path: "dist/katex.mjs", served: `import "katex" (package exports), unminified` },
+  { path: "dist/katex.min.js", served: "CDN or deep import, minified by upstream's own build" },
+]
+const upstreamServed = measure(upstreamFiles.map(({ path }) => resolve(root, "node_modules/katex", path))).map((sizes, i) => ({ ...upstreamFiles[i], ...sizes }))
+
 const codecLabel = `lilscript-codec: zlib ${measured.codecs.gzip9.libraryVersion} gzip-${measured.codecs.gzip9.level} / Google Brotli ${measured.codecs.brotli11.libraryVersion} q${measured.codecs.brotli11.quality} w${measured.codecs.brotli11.lgwin}`
 // The official lane the playground and benchmark load: the Terser-minified published graph.
 writeFileSync(join(site, "official.js"), official.terserMangle)
@@ -85,7 +159,13 @@ if (has("spec")) {
 }
 
 const attributionPath = flag("attribution", null)
-const attribution = attributionPath ? JSON.parse(readFileSync(resolve(root, attributionPath), "utf8")) : previous.attribution ?? null
+// A fresh attribution needs a compiler that writes source maps. Without one the previous
+// table is carried, dated, and marked as not remeasured, so the page can say so.
+const attribution = attributionPath
+  ? { ...JSON.parse(readFileSync(resolve(root, attributionPath), "utf8")), measuredAt: new Date().toISOString(), remeasured: true }
+  : previous.attribution
+    ? { ...previous.attribution, measuredAt: previous.attribution.measuredAt ?? previous.measuredAt, remeasured: false }
+    : null
 
 const results = {
   pin: `katex@${pin}`,
@@ -100,10 +180,14 @@ const results = {
   warmupDiscard: 5,
   corpus: corpus.length,
   rounds,
-  comparison: `Official rows are an esbuild bundle of katex@${pin} plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's output, never post-minified. Open world keeps the public API and option names; closed world sets extern_fields = false.`,
+  comparison: `Official rows are an esbuild bundle of katex@${pin} plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.`,
   spec,
   play: previous.play ?? { kind: "tex-html", sample: corpus[0], samples: [{ label: "frac", value: corpus[0] }, { label: "scripts", value: corpus[1] }] },
   size,
+  delivered,
+  upstreamServed,
+  previousRelease,
+  compiler: previous.compiler ?? null,
   throughput: nodeSummary.map((row) => ({ id: row.id, name: row.name, documentMs: row.median, p10: row.p10, p90: row.p90, rounds: row.rounds })),
   nodeParity: { compared: nodeParity.compared, mismatches: nodeParity.mismatches.length },
   browser,
@@ -115,6 +199,7 @@ const results = {
     browserTest: "test/browser-perf.test.mjs",
     attribution: "scripts/attribute-map.mjs",
     official: "scripts/lib/official.mjs",
+    compiler: "scripts/record-compiler.mjs",
   },
 }
 writeFileSync(resultsPath, `${JSON.stringify(results, null, 2)}\n`)

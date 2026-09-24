@@ -64,10 +64,10 @@ defineFunctionBuilders = (JsValue p12) => {
   o14["names"] = a15;
   JsValue o16 = JS.object("numArgs", 0);
   o14["props"] = o16;
-  o14["handler"] = JS.method0((JsValue self) => {
+  o14["handler"] = () => {
   throw makeError(toStr("Should never be called."));
   return undef();
-  });
+  };
   o14["htmlBuilder"] = htmlBuilder;
   o14["mathmlBuilder"] = mathmlBuilder;
   JS.call(defineFunction, undef(), o14);

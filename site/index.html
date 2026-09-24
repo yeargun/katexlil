@@ -19,6 +19,7 @@
       </a>
       <nav aria-label="Main navigation">
         
+        <a href="#release">release</a>
         <a href="#performance">performance</a>
         <a href="#lab">playground</a>
         <a href="#worlds">open / closed</a>
@@ -56,14 +57,44 @@
           </div>
           <p class="score-note" id="score-note">
             Official rows are one esbuild bundle of <code>katex@0.16.22</code> plus the packages it needs at runtime, then Terser or esbuild.
-            LilScript is not post-minified. The measured ESM is the Brotli-scored compile. A loss is printed as a loss.
+            The LilScript row is the npm ESM, the compiler's own file, not post-minified. The CJS and browser builds are esbuild re-bundles and are labelled below. A loss is printed as a loss.
           </p>
         </div>
       </section>
       <section class="ticker" aria-label="Supported features">
         <div>renderToString <span>✦</span> render <span>✦</span> frac <span>✦</span> sqrt <span>✦</span> scripts <span>✦</span> greek <span>✦</span> matrix</div>
       </section>
-<section class="performance shell" id="performance">
+      <section class="release shell" id="release">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">This release · one compiler</p>
+            <h2>What ships,<br />who wrote it.</h2>
+          </div>
+          <p id="release-intro">
+            Every file the package ships, measured with <code>lilscript-codec</code>, against the previous release and against
+            Terser. <strong>Written by</strong> says whether a file is the compiler's output or esbuild re-bundling it; a
+            post-processed file is labelled as such and is not counted as the compiler's result. Compile time is wall clock
+            around each compiler process on the build host, recorded by
+            <a href="https://github.com/yeargun/katexlil/blob/main/scripts/record-compiler.mjs">scripts/record-compiler.mjs</a>.
+          </p>
+        </div>
+        <div class="perf-cards" id="release-cards"></div>
+        <div class="table-wrap light">
+          <table>
+            <thead><tr><th>File</th><th>Written by</th><th>Raw</th><th>gzip-9</th><th>Brotli-11</th><th>Previous release</th><th>vs previous</th><th>Terser bar</th><th>vs Terser</th></tr></thead>
+            <tbody id="release-body"></tbody>
+          </table>
+        </div>
+        <p class="perf-note" id="release-note"></p>
+        <div class="table-wrap light">
+          <table>
+            <thead><tr><th>Compiler invocation</th><th>Config</th><th>Wall time, each build</th><th>Median</th></tr></thead>
+            <tbody id="compile-body"></tbody>
+          </table>
+        </div>
+        <p class="perf-note" id="compile-note"></p>
+      </section>
+      <section class="performance shell" id="performance">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Measured in Chromium, by Playwright</p>
@@ -137,8 +168,9 @@
             <strong>Open world</strong> is the reusable library: the public ESM names, the option-object keys and every
             JavaScript-visible field stay as written, so <code>renderToString(tex, {displayMode: true})</code> works
             unchanged. Its fair opponent is Terser, Oxc or esbuild with identifier mangling on and property mangling off.
-            <strong>Closed world</strong> is the same source under <code>extern_fields = false</code>: fields the compiler
-            owns may be renamed, the way Closure ADVANCED renames an app. Configs:
+            <strong>Closed world</strong> is the lane where fields the compiler owns may be renamed, the way Closure ADVANCED
+            renames an app. The one LilScript compiler renames no property yet, so the closed config is the open one and the
+            two files are the same bytes. Configs:
             <a href="https://github.com/yeargun/katexlil/blob/main/lilscript.toml">lilscript.toml</a>,
             <a href="https://github.com/yeargun/katexlil/blob/main/lilscript.closed.toml">lilscript.closed.toml</a>.
           </p>
@@ -160,7 +192,7 @@
             </div>
             <p>
               Official katex@0.16.22 bundled with its runtime graph, then Terser (mangle on/off) and esbuild minify; plus the
-              strongest JavaScript lane, the Flow sources themselves through esbuild and Terser. LilScript is not post-minified.
+              strongest JavaScript lane, the Flow sources themselves through esbuild and Terser. The LilScript rows are the compiler's ESM, not post-minified.
               Encoders: <span id="codec-label"></span>.
             </p>
           </div>

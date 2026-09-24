@@ -6,5 +6,3 @@ candidate_search = "off"
 [mangle]
 identifiers = true
 properties = true
-exports = false
-extern_fields = true

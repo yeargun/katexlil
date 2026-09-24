@@ -463,7 +463,7 @@ makeVList = (JsValue params, JsValue options) => {
     JsValue a69 = newArray();
     JsValue a70 = JS.array("vlist-r");
     JsValue a71 = JS.array(vlist);
-    JS.push(a69, JS.call(makeSpan, undef(), a70, a71));
+    JS.invoke(a69, "push", JS.call(makeSpan, undef(), a70, a71));
     rows = a69;
   }
   JsValue a72 = JS.array("vlist-t");
@@ -557,4 +557,4 @@ JsValue buildCommon = undef();
 buildCommon = o100;
 JsValue __star = JS.object("default", buildCommon, "buildCommon", buildCommon);
 
-export { __star, buildCommon as buildCommon };
+export { __star, buildCommon as buildCommon, fontMap, makeAnchor, makeFragment, makeGlue, makeLineSpan, makeOrd, makeSpan, makeSvgSpan, makeSymbol, makeVList, mathsym, staticSvg, svgData, tryCombineChars, wrapFragment };

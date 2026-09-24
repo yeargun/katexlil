@@ -8,6 +8,8 @@ import { ParseError } from "../ParseError.lil";
 import { makeEm } from "../units.lil";
 import { __star as html } from "../buildHTML.lil";
 import { __star as mml } from "../buildMathML.lil";
+import { MathNode } from "../mathMLTree.lil";
+import { wrapFragment } from "../buildCommon.lil";
 
 JsValue cdArrowFunctionName = undef();
 JsValue newCell = undef();
@@ -209,7 +211,7 @@ parseCD = (JsValue parser) => {
 JsValue o45 = JS.object("type", "cdlabel", "names", JS.array("\\\\cdleft", "\\\\cdright"));
 JsValue o47 = JS.object("numArgs", 1);
 o45["props"] = o47;
-o45["handler"] = JS.method2((JsValue self, JsValue p48, JsValue args) => {
+o45["handler"] = (JsValue p48, JsValue args) => {
   JsValue op49 = p48;
   JsValue parser = op49["parser"];
   JsValue funcName = op49["funcName"];
@@ -220,39 +222,39 @@ o45["handler"] = JS.method2((JsValue self, JsValue p48, JsValue args) => {
   o50["label"] = args[0];
   return o50;
   return undef();
-});
-o45["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o45["htmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue newOptions = JS.invoke(options, "havingStyle", JS.invoke(options["style"], "sup"));
-  JsValue label = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["label"], newOptions, options), options);
+  JsValue label = JS.call(wrapFragment, undef(), JS.invoke(html, "buildGroup", group["label"], newOptions, options), options);
   JS.invoke(label["classes"], "push", JS.add("cd-label-", group["side"]));
   label["style"]["bottom"] = JS.call(makeEm, undef(), (toNum(0.8) - toNum(label["depth"])));
   label["height"] = 0;
   label["depth"] = 0;
   return label;
   return undef();
-});
-o45["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o45["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a51 = JS.array(JS.invoke(mml, "buildGroup", group["label"], options));
-  JsValue label = JS.construct(mathMLTree["MathNode"], "mrow", a51);
+  JsValue label = JS.construct(MathNode, "mrow", a51);
   JsValue a52 = JS.array(label);
-  label = JS.construct(mathMLTree["MathNode"], "mpadded", a52);
+  label = JS.construct(MathNode, "mpadded", a52);
   JS.invoke(label, "setAttribute", "width", "0");
   if (JS.strictEqual(group["side"], "left")) {
     JS.invoke(label, "setAttribute", "lspace", "-1width");
   }
   JS.invoke(label, "setAttribute", "voffset", "0.7em");
   JsValue a53 = JS.array(label);
-  label = JS.construct(mathMLTree["MathNode"], "mstyle", a53);
+  label = JS.construct(MathNode, "mstyle", a53);
   JS.invoke(label, "setAttribute", "displaystyle", "false");
   JS.invoke(label, "setAttribute", "scriptlevel", "1");
   return label;
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o45);
 JsValue o54 = JS.object("type", "cdlabelparent", "names", JS.array("\\\\cdparent"));
 JsValue o56 = JS.object("numArgs", 1);
 o54["props"] = o56;
-o54["handler"] = JS.method2((JsValue self, JsValue p57, JsValue args) => {
+o54["handler"] = (JsValue p57, JsValue args) => {
   JsValue op58 = p57;
   JsValue parser = op58["parser"];
   JsValue o59 = emptyObject();
@@ -261,18 +263,18 @@ o54["handler"] = JS.method2((JsValue self, JsValue p57, JsValue args) => {
   o59["fragment"] = args[0];
   return o59;
   return undef();
-});
-o54["htmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
-  JsValue parent = JS.invoke(buildCommon, "wrapFragment", JS.invoke(html, "buildGroup", group["fragment"], options), options);
+};
+o54["htmlBuilder"] = (JsValue group, JsValue options) => {
+  JsValue parent = JS.call(wrapFragment, undef(), JS.invoke(html, "buildGroup", group["fragment"], options), options);
   JS.invoke(parent["classes"], "push", "cd-vert-arrow");
   return parent;
   return undef();
-});
-o54["mathmlBuilder"] = JS.method2((JsValue self, JsValue group, JsValue options) => {
+};
+o54["mathmlBuilder"] = (JsValue group, JsValue options) => {
   JsValue a60 = JS.array(JS.invoke(mml, "buildGroup", group["fragment"], options));
-  return JS.construct(mathMLTree["MathNode"], "mrow", a60);
+  return JS.construct(MathNode, "mrow", a60);
   return undef();
-});
+};
 JS.call(defineFunction, undef(), o54);
 JsValue __star = JS.object("parseCD", parseCD);
 
