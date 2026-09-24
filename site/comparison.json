@@ -1,10 +1,10 @@
 {
   "schemaVersion": 2,
-  "measuredAt": "2026-09-10T20:37:59Z",
+  "measuredAt": "2026-09-24T04:08:55Z",
   "name": "katexlil",
   "compiler": {
-    "commit": "4dc4e3337d9ffd758d65e3852682d6e13d9331c1",
-    "sha256": "0616048498eb9eb2e4bd75b39e8e6a083733ada647e16108edfee30ad183beeb"
+    "commit": "aa2052f081ca8184666ca280ee9b91d476e46cfc",
+    "sha256": "13cb49a93fb3e376a5978484835322c84adea692b69ae4720775291377cf18f9"
   },
   "upstream": {
     "package": "katex",
@@ -12,7 +12,7 @@
     "repository": "https://github.com/KaTeX/KaTeX.git",
     "commit": "613c3da85b083f602c0d5265da0f735ddb728dbb"
   },
-  "scope": "Pinned KaTeX Flow source tree: Babel type stripping, esbuild bundling and Terser passes=3; three sequential samples, dependencies already installed.. Original ESM assembled from the pinned Git source build.",
+  "scope": "katex@0.16.22 public ESM runtime graph assembled from the pinned Git source build: esbuild bundle, then Terser with three passes and mangling. Canonical gzip-9 and Brotli-11 compression.",
   "compatibility": "Runtime checks: 21/21 pass.",
   "tests": {
     "pass": 21,
@@ -21,30 +21,30 @@
   "buildComplete": true,
   "machine": {
     "provider": "Azure",
-    "instanceClass": "Standard_D16als_v7",
-    "cpu": "AMD EPYC 9V45 96-Core Processor",
-    "logicalCpus": 16,
-    "memoryBytes": 33648427008,
-    "os": "Ubuntu 24.04.4 LTS",
-    "kernel": "6.17.0-1022-azure",
+    "instanceClass": "Standard_B8als_v2 (burstable)",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 8,
+    "memoryBytes": 16706420736,
+    "os": "Ubuntu 24.04.3 LTS",
+    "kernel": "7.0.0-1014-azure",
     "node": "v24.11.1",
     "rayonThreads": 8,
     "loadAtStart": [
-      1.3115234375,
-      1.45458984375,
-      1.796875
+      2.42578125,
+      4.14892578125,
+      4.45361328125
     ],
     "loadAtEnd": [
-      1.560546875,
-      1.4404296875,
-      1.65234375
+      2.12744140625,
+      3.72900390625,
+      4.28369140625
     ]
   },
   "build": {
     "compilerSeconds": null,
-    "packageSeconds": 164.19008037599997,
-    "originalSeconds": 6.778053211000042,
-    "originalEsmSeconds": 0.7138328669999999,
+    "packageSeconds": 9.58257035400311,
+    "originalSeconds": 12.998229661003279,
+    "originalEsmSeconds": 1.3328593530000004,
     "packageScope": "node scripts/build.mjs --compile --force",
     "originalScope": "corepack yarn build",
     "protocol": {
@@ -52,15 +52,15 @@
       "cleanOutputs": true,
       "dependencyInstallationTimedSeparately": true,
       "sourceArchives": "Pinned Git checkouts; original repository package build commands, followed by production ESM assembly.",
-      "workerUse": "Both implementations use the same machine and Node version. This shared build pool also runs unrelated jobs; timings are contextual wall times, with CPU time recorded separately."
+      "workerUse": "Both implementations use the same machine and Node version: the single LilScript development host, a burstable Azure VM that also runs other compiler sessions. Timings are contextual wall times, with CPU time recorded separately."
     }
   },
   "esm": {
     "lilscript": {
-      "raw": 274892,
-      "gzip9": 78490,
-      "brotli11": 64620,
-      "sha256": "7f4a6b58a769eb518a6b1c0d489dc13ebf9d820706f4380fbd3a49305abb37fd",
+      "raw": 274680,
+      "gzip9": 75914,
+      "brotli11": 62704,
+      "sha256": "f31cd3e9736d7205623b5d4ac20765bfd19515f71f6361902f007b8f6dcd9479",
       "file": "./esm-comparison/lilscript.js"
     },
     "original": {
@@ -74,9 +74,9 @@
   "sourceBuild": {
     "original": {
       "complete": true,
-      "medianSeconds": 6.778053211000042,
-      "minimumSeconds": 6.777482163000059,
-      "maximumSeconds": 6.877012079999986,
+      "medianSeconds": 12.998229661003279,
+      "minimumSeconds": 12.99495774499519,
+      "maximumSeconds": 14.959664249996422,
       "samples": [
         {
           "command": [
@@ -84,12 +84,12 @@
             "yarn",
             "build"
           ],
-          "wallSeconds": 6.877012079999986,
-          "cpuSeconds": 12.837661999999998,
+          "wallSeconds": 14.959664249996422,
+          "cpuSeconds": 26.735823000000003,
           "exitCode": 0,
           "timedOut": false,
           "log": "original-build-1.log",
-          "logSha256": "fbd07d2c8aa61f6091685f87edf65657159c233dc9b1d1ace4f87e403913751b"
+          "logSha256": "e503cb8ac26b8adc1f6efc38964ff5e737837154b46e76b5a0d413cbd5d554cf"
         },
         {
           "command": [
@@ -97,12 +97,12 @@
             "yarn",
             "build"
           ],
-          "wallSeconds": 6.778053211000042,
-          "cpuSeconds": 13.002869000000018,
+          "wallSeconds": 12.99495774499519,
+          "cpuSeconds": 24.020040999999996,
           "exitCode": 0,
           "timedOut": false,
           "log": "original-build-2.log",
-          "logSha256": "8f6032b27c606040756092317afb6e0acb5df02ca00a247ecd764568bedfbbb1"
+          "logSha256": "58a458febcafc4e85d47e033c58077310a3ac8792f8085adffbfad1bdc8f5f00"
         },
         {
           "command": [
@@ -110,20 +110,20 @@
             "yarn",
             "build"
           ],
-          "wallSeconds": 6.777482163000059,
-          "cpuSeconds": 12.933487999999961,
+          "wallSeconds": 12.998229661003279,
+          "cpuSeconds": 24.05903300000001,
           "exitCode": 0,
           "timedOut": false,
           "log": "original-build-3.log",
-          "logSha256": "4d1e80ec6477e5db568f81ef5187dd004d6a7ff31713d97b66bd1a39e6ac581d"
+          "logSha256": "e900789426ee3d5834bc6624035fb3aba22a7346b8d6892dbe35ac1262582fdd"
         }
       ]
     },
     "lilscript": {
       "complete": true,
-      "medianSeconds": 164.19008037599997,
-      "minimumSeconds": 164.18840047499998,
-      "maximumSeconds": 164.3893072970004,
+      "medianSeconds": 9.58257035400311,
+      "minimumSeconds": 9.582402388994524,
+      "maximumSeconds": 9.934387939996668,
       "samples": [
         {
           "command": [
@@ -131,8 +131,8 @@
             "-c",
             "node scripts/build.mjs --compile --force"
           ],
-          "wallSeconds": 164.18840047499998,
-          "cpuSeconds": 257.794516,
+          "wallSeconds": 9.934387939996668,
+          "cpuSeconds": 9.822456999999996,
           "exitCode": 0,
           "timedOut": false,
           "log": "lilscript-build-1.log",
@@ -144,8 +144,8 @@
             "-c",
             "node scripts/build.mjs --compile --force"
           ],
-          "wallSeconds": 164.3893072970004,
-          "cpuSeconds": 258.6011009999999,
+          "wallSeconds": 9.582402388994524,
+          "cpuSeconds": 9.483118000000005,
           "exitCode": 0,
           "timedOut": false,
           "log": "lilscript-build-2.log",
@@ -157,8 +157,8 @@
             "-c",
             "node scripts/build.mjs --compile --force"
           ],
-          "wallSeconds": 164.19008037599997,
-          "cpuSeconds": 258.477386,
+          "wallSeconds": 9.58257035400311,
+          "cpuSeconds": 9.497161000000009,
           "exitCode": 0,
           "timedOut": false,
           "log": "lilscript-build-3.log",

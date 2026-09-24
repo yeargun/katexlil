@@ -28,31 +28,36 @@ The LilScript compiler lives next door at `../lilscript`.
 
 Built by the one LilScript compiler at revision `aa2052f0` (binary SHA-256 `13cb49a9…77cf18f9`).
 Brotli-11 and raw bytes from `lilscript-codec`. The bar is Terser (compress with 3 passes, mangle)
-over the published `katex@0.16.22` graph. The previous release is `13cd81b`, whose dist was built by
-the old compiler route on 2026-09-03.
+over the published `katex@0.16.22` graph. The previous release is `7f33e78`, whose dist was built on
+2026-09-10 by LilScript `4dc4e33`, the old compiler route.
 
 | File | Written by | Raw | Brotli-11 | Previous release | Terser bar | vs bar |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| `dist/katex.esm.js` / `katex.mjs` (npm ESM) | compiler | 274,680 | **62,704** | 64,907 | 63,044 | **−340** |
-| `dist/katex.closed.js` | compiler | 274,680 | 62,704 | 64,907 | 63,044 | −340 |
-| `dist/katex.cjs` | esbuild re-bundle, **not compiler-written** | 272,207 | 63,663 | 65,226 | 63,044 | +619 |
-| `dist/katex.umd.js` / `katex.min.js` | esbuild re-bundle, **not compiler-written** | 272,217 | 63,620 | 65,154 | 63,044 | +576 |
+| `dist/katex.esm.js` / `katex.mjs` (npm ESM) | compiler | 274,680 | **62,704** | 64,620 | 63,044 | **−340** |
+| `dist/katex.closed.js` | compiler | 274,680 | 62,704 | 64,755 | 63,044 | −340 |
+| `dist/katex.cjs` | esbuild re-bundle, **not compiler-written** | 272,207 | 63,663 | 65,023 | 63,044 | +619 |
+| `dist/katex.umd.js` / `katex.min.js` | esbuild re-bundle, **not compiler-written** | 272,217 | 63,620 | 65,087 | 63,044 | +576 |
 
 The core ESM also wins gzip-9 (75,914 against 76,480) and loses raw (274,680 against 267,050): its
-cost model is Brotli. Our files carry a 76-byte licence banner the bar lacks. Two other baselines:
-the Flow sources through esbuild and Terser give 61,758 (the stretch bar), and katex's npm package
+cost model is Brotli. Our files carry a 76-byte licence banner the bar lacks. Other baselines: the
+upstream Git source built natively and then assembled through esbuild and Terser gives 63,066; the
+Flow sources through esbuild and Terser give 61,758 (the stretch bar); and katex's npm package
 itself serves `import "katex"` unminified (610,145 raw / 119,059 Brotli-11; the minified
 `katex.min.js`, 62,686, is CDN-only).
 
 The contrib ESM files are compiler-written and lose to Terser of upstream's `dist/contrib/*.mjs`:
 auto-render 1,134 against 1,048, copy-tex 572 against 531, mathtex-script-type 282 against 232,
-mhchem 8,018 against 7,413, render-a11y-string 2,230 against 2,220. Their `.cjs` and `.min.js`
+mhchem 8,018 against 7,413, render-a11y-string 2,230 against 2,220. Against the previous release
+mhchem is 1,040 smaller and the other four are 13 to 80 bytes larger. Their `.cjs` and `.min.js`
 builds are esbuild re-bundles. The site lists every file with its label.
 
 Compile time on the build host (8 vCPU burstable Azure VM), wall clock per compiler process over
 three full builds: the core ESM takes about 4.0 s, and all eight compiles of a build about 9.5 s.
 `scripts/build.mjs` times every invocation into `.tmp/compile-times/`, and
 `node scripts/record-compiler.mjs --revision <rev>` writes them to `site/results.json`.
+Built from source on the same host, three alternating runs each, the whole package build
+(`node scripts/build.mjs --compile --force`) takes 9.58 s median and KaTeX's own `yarn build` takes
+13.00 s median; the records are in `comparison/source-build/`.
 
 ## The site and its receipts
 
