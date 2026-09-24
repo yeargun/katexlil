@@ -23,5 +23,12 @@ await cp(join(root, "dist", `${file}.esm.js`), join(output, `${file}.js`))
 await writeFile(join(output, ".nojekyll"), "")
 console.log(`Built GitHub Pages site at ${output}`)
 
-// Publish current build facts using the existing page typography.
-await import("./build-comparison.mjs").then(({writeComparison}) => writeComparison({root, output}));
+// Publish current build facts using the existing page typography. They are the
+// release's recorded measurements, and the guard refuses a dist/ that differs
+// from them. `--unpublished` builds the pages for a local run of the current
+// dist/ (the browser benchmark) without those facts.
+if (process.argv.includes("--unpublished")) {
+  console.log("Unpublished build: the release's comparison facts are left out")
+} else {
+  await import("./build-comparison.mjs").then(({writeComparison}) => writeComparison({root, output}));
+}

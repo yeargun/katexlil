@@ -19,7 +19,8 @@ const maxRegressionPercent = Number(process.env.KATEXLIL_MAX_REGRESSION_PERCENT 
 describe("browser performance (Playwright, Chromium)", () => {
   it("renders the corpus identically and within the regression guard rail", async () => {
     if (!existsSync(resolve(siteDir, "bench.html"))) {
-      const built = spawnSync(process.execPath, [resolve(root, "scripts/build-site.mjs")], { cwd: root, stdio: "inherit" })
+      // The benchmark measures the current dist/, which need not be the recorded release.
+      const built = spawnSync(process.execPath, [resolve(root, "scripts/build-site.mjs"), "--unpublished"], { cwd: root, stdio: "inherit" })
       assert.equal(built.status, 0, "build-site failed")
     }
     const result = await runBrowserBench({ siteDir, rounds: Number(process.env.KATEXLIL_BENCH_ROUNDS ?? 20) })
