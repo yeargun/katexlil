@@ -97,6 +97,7 @@ __domTree["LineNode"] = LineNode;
 
 JsValue katexApi = JS.object("version", katexVersion, "render", render, "renderToString", renderToString, "ParseError", ParseError, "SETTINGS_SCHEMA", SETTINGS_SCHEMA, "__parse", __parse, "__renderToDomTree", __renderToDomTree, "__renderToHTMLTree", __renderToHTMLTree, "__setFontMetrics", setFontMetrics, "__defineSymbol", defineSymbol, "__defineFunction", defineFunction, "__defineMacro", defineMacro, "__domTree", __domTree);
 
+export string version = katexVersion;
 export JsValue __setFontMetrics = setFontMetrics;
 export JsValue __defineSymbol = defineSymbol;
 export JsValue __defineFunction = defineFunction;

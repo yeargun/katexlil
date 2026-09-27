@@ -43,7 +43,7 @@ const lanes = [
   { id: "official-terser-nomangle", name: "Official · Terser mangle off", file: "official.terser-nomangle.js", text: official.terserNoMangle, note: "Terser compress of that graph, mangle: false" },
   { id: "official-esbuild", name: "Official · esbuild minify", file: "official.esbuild.js", text: official.esbuildMinify, note: "esbuild minify of that graph" },
   { id: "official-source-terser", name: "Official source · esbuild + Terser", file: "official.source-terser.js", text: source.code, note: `katex@${pin} Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary`, strongest: true },
-  { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: the compiler's js-module output with the upstream font-metrics data module and the version export concatenated on; nothing re-minifies it. Public API and option names kept", primary: true, world: "open" },
+  { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: the compiler's js-module output, with the font-metrics table (src/data.lil) and the version export compiled in; the build adds a licence banner and drops internal names from the export list, and nothing re-minifies it. Public API and option names kept", primary: true, world: "open" },
   { id: "itslil-closed", name: "@itslil/katex · closed world", path: "dist/katex.closed.js", note: "Same source. The one compiler renames no property, so extern_fields has no effect and the closed config equals the open one: same bytes", world: "closed" },
 ]
 for (const lane of lanes) {

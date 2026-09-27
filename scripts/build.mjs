@@ -130,8 +130,6 @@ if (!existsSync(rawPath)) {
   throw new Error(`dist/${file}.raw.js is missing. Run with --compile after building LilScript.`)
 }
 
-copyFileSync(resolve(root, "src", "fontMetricsData.js"), resolve(dist, "fontMetricsData.js"))
-
 // The build ships what the compiler wrote. Two regex rewrites used to live here (a `**`
 // fold and a `:==x&&(y=z)` reshaping); the compiler emits neither shape now, and a
 // rewrite between compiler and artifact is the first place a size number goes wrong.
@@ -143,17 +141,8 @@ for (const path of [rawPath, closedRaw]) {
     throw new Error(`${path}: the compiler emitted a shape this build used to rewrite; fix the compiler, not the build`)
   }
 }
-function stitchData(compiled) {
-  const metrics = readFileSync(resolve(dist, "fontMetricsData.js"), "utf8")
-    .replace(/\bexport\s*\{[^}]*\}/g, "")
-    .replace(/\bexport\s+default\s+/, "var fontMetricsData=")
-    .replace(/\bvar e=/, "var fontMetricsData=")
-    .trim()
-  const body = compiled
-    .replace(/import\{default as generatedFontMetricsData\}from["']\.\/fontMetricsData\.js["'];/, "")
-  const host = "var generatedFontMetricsData=fontMetricsData"
-  return `${metrics}\n${host};${body}\nconst version="0.16.22";export{version};`
-}
+// The font metrics are LilScript data (src/data.lil) and `version` a LilScript
+// export: the compiler writes the whole module, and nothing is stitched in.
 
 const publicExports = "ParseError,SETTINGS_SCHEMA,__defineFunction,__defineMacro,__defineSymbol,__domTree,__parse,__renderToDomTree,__renderToHTMLTree,__setFontMetrics,default,render,renderToString,version"
 const testPath = resolve(dist, `${file}.test.js`)
@@ -167,14 +156,14 @@ function filterExports(source) {
     return entries.length ? `export{${entries.join(",")}}` : ""
   })
 }
-const testSource = `${banner}${stitchData(readFileSync(rawPath, "utf8")).trimEnd()}\n`
+const testSource = `${banner}${readFileSync(rawPath, "utf8").trimEnd()}\n`
 writeFileSync(testPath, testSource)
 writeFileSync(resolve(dist, `${file}.esm.js`), filterExports(testSource))
 copyFileSync(resolve(dist, `${file}.esm.js`), resolve(dist, `${file}.mjs`))
 
 const closedPath = resolve(dist, `${file}.closed.js`)
 if (!existsSync(closedRaw)) throw new Error(`dist/${file}.closed.raw.js is missing`)
-const closedSource = `${banner}${stitchData(readFileSync(closedRaw, "utf8")).trimEnd()}\n`
+const closedSource = `${banner}${readFileSync(closedRaw, "utf8").trimEnd()}\n`
 writeFileSync(closedPath, filterExports(closedSource))
 
 await esbuild({
