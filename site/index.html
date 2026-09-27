@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="@itslil/katex is katex@0.16.22 rewritten in LilScript. Size is versus the official runtime graph minified by Terser and esbuild." />
+    <meta name="description" content="@itslil/katex is katex@0.16.22 rewritten in LilScript. Size is versus the official runtime graph and its Flow sources minified by Terser, esbuild and SWC." />
     <meta name="theme-color" content="#c9a227" />
     <title>itslil/katex — katex@0.16.22 through LilScript</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" />
@@ -56,7 +56,8 @@
             <div><strong id="hero-spec">—</strong><span>official jest suite</span></div>
           </div>
           <p class="score-note" id="score-note">
-            Official rows are one esbuild bundle of <code>katex@0.16.22</code> plus the packages it needs at runtime, then Terser or esbuild.
+            Official rows are one esbuild bundle of <code>katex@0.16.22</code> plus the packages it needs at runtime, then Terser, esbuild or SWC;
+            the source rows are its Flow sources through esbuild, then Terser or SWC.
             The LilScript row is the npm ESM, the compiler's own file, not post-minified. The CJS and browser builds are esbuild re-bundles and are labelled below. A loss is printed as a loss.
           </p>
         </div>
@@ -191,8 +192,9 @@
               <h2>Raw, gzip,<br />and Brotli.</h2>
             </div>
             <p>
-              Official katex@0.16.22 bundled with its runtime graph, then Terser (mangle on/off) and esbuild minify; plus the
-              strongest JavaScript lane, the Flow sources themselves through esbuild and Terser. The LilScript rows are the compiler's ESM, not post-minified.
+              Official katex@0.16.22 bundled with its runtime graph, then Terser (mangle on/off), esbuild minify and SWC; plus the
+              Flow sources themselves through esbuild, then Terser or SWC. The smallest of these under Brotli is the strongest bar, and
+              every lane must import and render a formula before it is measured. The LilScript rows are the compiler's ESM, not post-minified.
               Encoders: <span id="codec-label"></span>.
             </p>
           </div>

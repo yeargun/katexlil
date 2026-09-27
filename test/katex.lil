@@ -1,0 +1,25 @@
+// The test build, dist/katex.test.js: the public API of src/entry.lil plus the internal
+// modules the official Jest suites import from upstream's src/. The npm entry exports the
+// public API only; this entry is compiled separately with the same config.
+import {
+  render, renderToString, __parse, __renderToDomTree, __renderToHTMLTree, version,
+  __setFontMetrics, __defineSymbol, __defineFunction, __defineMacro, ParseError,
+  SETTINGS_SCHEMA, __domTree, default as katex
+} from "../src/entry.lil";
+import { parseTree } from "../src/parseTree.lil";
+import { Settings } from "../src/Settings.lil";
+import { Options } from "../src/Options.lil";
+import { Style } from "../src/Style.lil";
+import { buildTree } from "../src/buildTree.lil";
+import { buildMathML } from "../src/buildMathML.lil";
+import { symbols } from "../src/symbols.lil";
+import { macros } from "../src/macros.lil";
+import { Lexer } from "../src/Lexer.lil";
+import { scriptFromCodepoint, supportedCodepoint } from "../src/unicodeScripts.lil";
+
+export { render, renderToString, __parse, __renderToDomTree, __renderToHTMLTree, version };
+export { __setFontMetrics, __defineSymbol, __defineFunction, __defineMacro };
+export { ParseError, SETTINGS_SCHEMA, __domTree };
+export { parseTree, Settings, Options, Style, buildTree, buildMathML, symbols, macros, Lexer };
+export { scriptFromCodepoint, supportedCodepoint };
+export { katex as default };

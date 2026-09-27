@@ -103,6 +103,8 @@ export JsValue __defineSymbol = defineSymbol;
 export JsValue __defineFunction = defineFunction;
 export JsValue __defineMacro = defineMacro;
 export { ParseError, SETTINGS_SCHEMA, __domTree };
-export { parseTree, Settings, Options, Style, buildTree, buildMathML, symbols, macros, Lexer };
-export { scriptFromCodepoint, supportedCodepoint };
 export { katexApi as default };
+// The public API only, so the compiler sees the real export surface of the npm file.
+// The internal modules the official Jest suites import (parseTree, Settings, Options,
+// ...) are exported by the test entry, test/katex.lil, which scripts/build.mjs compiles
+// into dist/katex.test.js. The imports above stay, and so does module initialization order.

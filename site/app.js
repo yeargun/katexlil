@@ -92,7 +92,10 @@ function renderHero() {
   const strongest = data.size.find((lane) => lane.strongest)
   if (strongest) {
     const vsStrongest = smallerThan(itslil.brotli11, strongest.brotli11)
-    document.querySelector("#score-note").insertAdjacentHTML("beforeend", ` Against the strongest lane, the upstream sources through esbuild and Terser (${formatter.format(strongest.brotli11)} B), the open-world file is ${vsStrongest.text}.`)
+    const judged = data.verdict?.brotli11
+    const verdict = judged ? { win: "a win", tie: "a tie, not a win", loss: "a loss" }[judged.verdict] : null
+    const rule = judged ? ` A win needs max(100 B, 1% of the bar) below the bar, ${formatter.format(judged.winAt)} B or less; at or below the bar is a tie.` : ""
+    document.querySelector("#score-note").insertAdjacentHTML("beforeend", ` Against the strongest JavaScript lane under Brotli, ${strongest.name} (${formatter.format(strongest.brotli11)} B), the open-world file is ${vsStrongest.text}${verdict ? `: ${verdict}` : ""}.${rule}`)
   }
   if (data.codec) document.querySelector("#codec-label").textContent = data.codec
   if (data.measuredAt) document.querySelector("#footer-note").textContent += ` — measured ${data.measuredAt.slice(0, 10)}`

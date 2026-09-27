@@ -76,6 +76,7 @@ function compileIfRequested() {
   const generated = [
     resolve(dist, `${file}.raw.js`),
     resolve(dist, `${file}.closed.raw.js`),
+    resolve(dist, `${file}.test.raw.js`),
     resolve(dist, `${file}.contrib-test.js`),
   ]
   const compiler = compilerPath()
@@ -83,6 +84,7 @@ function compileIfRequested() {
   // source changed, or its bytes are never measured on this port.
   const sourceMtime = Math.max(
     newestMtime(resolve(root, "src")),
+    statSync(resolve(root, "test/katex.lil")).mtimeMs,
     statSync(resolve(root, "test/support.lil")).mtimeMs,
     statSync(resolve(root, "lilscript.toml")).mtimeMs,
     statSync(resolve(root, "lilscript.closed.toml")).mtimeMs,
@@ -100,6 +102,9 @@ function compileIfRequested() {
   mkdirSync(dist, { recursive: true })
   compileLil(compiler, mapConfig("lilscript.toml"), "src/entry.lil", `dist/${file}.raw.js`)
   compileLil(compiler, mapConfig("lilscript.closed.toml"), "src/entry.lil", `dist/${file}.closed.raw.js`)
+  // The official Jest suites import internal modules; the test entry exports them next
+  // to the public API, so the npm entry never has to.
+  compileLil(compiler, "lilscript.toml", "test/katex.lil", `dist/${file}.test.raw.js`)
   compileLil(compiler, "lilscript.toml", "test/support.lil", `dist/${file}.contrib-test.js`)
 }
 
@@ -144,27 +149,32 @@ for (const path of [rawPath, closedRaw]) {
 // The font metrics are LilScript data (src/data.lil) and `version` a LilScript
 // export: the compiler writes the whole module, and nothing is stitched in.
 
+// src/entry.lil exports the public API and nothing else, so the compiler sees the real
+// export surface and the build ships its output as written (plus the banner). The build
+// used to compile the internal test exports into the npm entry and filter them out of the
+// export list afterwards, which left their names unmangled and their functions uninlined.
 const publicExports = "ParseError,SETTINGS_SCHEMA,__defineFunction,__defineMacro,__defineSymbol,__domTree,__parse,__renderToDomTree,__renderToHTMLTree,__setFontMetrics,default,render,renderToString,version"
-const testPath = resolve(dist, `${file}.test.js`)
-const allowedExports = new Set(publicExports.split(","))
-function filterExports(source) {
-  return source.replace(/export\s*\{([^}]*)\}/g, (_, body) => {
-    const entries = body.split(",").filter((entry) => {
-      const parts = entry.trim().split(/\s+as\s+/)
-      return allowedExports.has(parts[parts.length - 1])
-    })
-    return entries.length ? `export{${entries.join(",")}}` : ""
-  })
+function assertPublicExports(path, source) {
+  const exported = [...source.matchAll(/export\s*\{([^}]*)\}/g)]
+    .flatMap(([, body]) => body.split(",").map((entry) => entry.trim().split(/\s+as\s+/).at(-1)))
+    .sort()
+    .join(",")
+  if (exported !== publicExports) throw new Error(`${path}: exports ${exported}, expected the public API ${publicExports}`)
 }
-const testSource = `${banner}${readFileSync(rawPath, "utf8").trimEnd()}\n`
-writeFileSync(testPath, testSource)
-writeFileSync(resolve(dist, `${file}.esm.js`), filterExports(testSource))
+const esmSource = `${banner}${readFileSync(rawPath, "utf8").trimEnd()}\n`
+assertPublicExports(`dist/${file}.esm.js`, esmSource)
+writeFileSync(resolve(dist, `${file}.esm.js`), esmSource)
 copyFileSync(resolve(dist, `${file}.esm.js`), resolve(dist, `${file}.mjs`))
+
+const testRaw = resolve(dist, `${file}.test.raw.js`)
+if (!existsSync(testRaw)) throw new Error(`dist/${file}.test.raw.js is missing`)
+writeFileSync(resolve(dist, `${file}.test.js`), `${banner}${readFileSync(testRaw, "utf8").trimEnd()}\n`)
 
 const closedPath = resolve(dist, `${file}.closed.js`)
 if (!existsSync(closedRaw)) throw new Error(`dist/${file}.closed.raw.js is missing`)
 const closedSource = `${banner}${readFileSync(closedRaw, "utf8").trimEnd()}\n`
-writeFileSync(closedPath, filterExports(closedSource))
+assertPublicExports(`dist/${file}.closed.js`, closedSource)
+writeFileSync(closedPath, closedSource)
 
 await esbuild({
   absWorkingDir: dist,
@@ -244,7 +254,9 @@ mkdirSync(contribDist, { recursive: true })
 const compiler = compilerPath()
 const compiledContrib = [
   ["auto-render", "contrib/auto-render/auto-render.lil"],
-  ["copy-tex", "contrib/copy-tex/copy-tex.lil"],
+  // Its own config: lilscript.toml plus host_modules = "embed", which carries
+  // contrib/copy-tex/instanceof.js (upstream's `instanceof`) into the artifact.
+  ["copy-tex", "contrib/copy-tex/copy-tex.lil", "lilscript.copy-tex.toml"],
   ["mathtex-script-type", "contrib/mathtex-script-type/mathtex-script-type.lil"],
   ["mhchem", "contrib/mhchem/mhchem.lil"],
   ["render-a11y-string", "contrib/render-a11y-string/render-a11y-string.lil"],

@@ -4,7 +4,9 @@
 //   node scripts/measure-site.mjs [--spec] [--rounds 30] [--no-browser] [--attribution <json>]
 //
 // Sizes: lilscript-codec (zlib 1.3.1 gzip-9, Google Brotli 1.1.0 q11 / w22) on the shipped ESM,
-// the closed build, and the official lanes from scripts/lib/official.mjs. Throughput: the shared
+// the closed build, and the official lanes from scripts/lib/official.mjs; every lane must import
+// and render a formula before it is measured, and the smallest official lane in each codec is the
+// strongest bar that codec's verdict is judged against. Throughput: the shared
 // corpus (site/corpus.js) in this Node, and in headless Chromium through Playwright
 // (scripts/lib/browser-bench.mjs, the same page as site/bench.html). `--spec` re-runs the
 // official Jest suites and counts them; otherwise the previous count is kept.
@@ -16,11 +18,12 @@
 // scripts/record-compiler.mjs and carried here.
 import { mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
+import { pathToFileURL } from "node:url"
 import { spawnSync } from "node:child_process"
 import { tmpdir } from "node:os"
 import { performance } from "node:perf_hooks"
 import { minify } from "terser"
-import { published, fromSource, pin, codecPath, root, terserOptions } from "./lib/official.mjs"
+import { published, fromSource, pin, codecPath, root, terserOptions, swcOptions } from "./lib/official.mjs"
 import { benchmark, summarize, parity, corpus } from "../site/corpus.js"
 
 const argv = process.argv.slice(2)
@@ -37,17 +40,30 @@ mkdirSync(work, { recursive: true })
 // ---- sizes ----
 const official = await published()
 const source = await fromSource({ work: join(work, "source") })
+const swcVersion = JSON.parse(readFileSync(resolve(root, "node_modules/@swc/core/package.json"), "utf8")).version
+const swcLabel = `compress ${swcOptions.compress.passes} passes, ecma ${swcOptions.ecma}, top-level mangle`
 const lanes = [
   { id: "official", name: `Official katex@${pin} graph`, file: "official.bundle.js", text: official.bundle, note: "esbuild bundle of the published package plus runtime deps, unminified" },
   { id: "official-terser-mangle", name: "Official · Terser mangle on", file: "official.terser.js", text: official.terserMangle, note: "Terser compress (3 passes) of that graph, mangle: true", baseline: true },
   { id: "official-terser-nomangle", name: "Official · Terser mangle off", file: "official.terser-nomangle.js", text: official.terserNoMangle, note: "Terser compress of that graph, mangle: false" },
   { id: "official-esbuild", name: "Official · esbuild minify", file: "official.esbuild.js", text: official.esbuildMinify, note: "esbuild minify of that graph" },
-  { id: "official-source-terser", name: "Official source · esbuild + Terser", file: "official.source-terser.js", text: source.code, note: `katex@${pin} Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary`, strongest: true },
-  { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: the compiler's js-module output, with the font-metrics table (src/data.lil) and the version export compiled in; the build adds a licence banner and drops internal names from the export list, and nothing re-minifies it. Public API and option names kept", primary: true, world: "open" },
+  { id: "official-swc", name: "Official · SWC", file: "official.swc.js", text: official.swc, note: `SWC ${swcVersion} minify of that graph: ${swcLabel}` },
+  { id: "official-source-terser", name: "Official source · esbuild + Terser", file: "official.source-terser.js", text: source.code, note: `katex@${pin} Flow sources type-stripped, bundled by esbuild with __VERSION__ defined as upstream's build does, Terser mangle on: the same source boundary the port rewrites` },
+  { id: "official-source-swc", name: "Official source · esbuild + SWC", file: "official.source-swc.js", text: source.swc, note: `The same Flow-source bundle through SWC ${swcVersion}: ${swcLabel}` },
+  { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: the compiler's js-module output, with the font-metrics table (src/data.lil) and the version export compiled in; src/entry.lil exports the public API only, the build adds a licence banner, and nothing re-minifies it. Public API and option names kept", primary: true, world: "open" },
   { id: "itslil-closed", name: "@itslil/katex · closed world", path: "dist/katex.closed.js", note: "Same source. The one compiler renames no property, so extern_fields has no effect and the closed config equals the open one: same bytes", world: "closed" },
 ]
 for (const lane of lanes) {
   if (lane.text != null) { lane.path = join(work, lane.file); writeFileSync(lane.path, lane.text) } else lane.path = resolve(root, lane.path)
+}
+// A bar must be a working program: import each lane and render a formula with it.
+for (const lane of lanes) {
+  const probe = lane.path.endsWith(".js") && lane.text != null ? `${lane.path.slice(0, -3)}.probe.mjs` : lane.path
+  if (probe !== lane.path) writeFileSync(probe, lane.text)
+  const module = await import(pathToFileURL(probe).href)
+  const renderToString = module.renderToString ?? module.default?.renderToString
+  const html = renderToString?.("c = \\pm\\sqrt{a^2 + b^2}")
+  if (typeof html !== "string" || !html.includes("katex")) throw new Error(`${lane.id}: the lane does not render`)
 }
 const codec = spawnSync(codecPath(), ["--json", ...lanes.map((l) => l.path)], { encoding: "utf8", maxBuffer: 1 << 26 })
 if (codec.status !== 0) throw new Error(`lilscript-codec: ${codec.stderr}`)
@@ -57,6 +73,23 @@ const size = lanes.map((lane, i) => {
   const { text, path, file, ...rest } = lane
   return { ...rest, raw, gzip9, brotli11 }
 })
+// The strongest bar per codec is the smallest minified official lane in that codec, whichever
+// tool wrote it; the Brotli one is flagged `strongest`. The verdict against it: a win is at least
+// max(100 B, 1% of the bar) below the bar, a tie is at or below the bar, a loss is above it.
+const bars = size.filter((lane) => lane.id.startsWith("official") && lane.id !== "official")
+const itslilLane = size.find((lane) => lane.id === "itslil")
+const judge = (metric) => {
+  const lane = bars.reduce((a, b) => (b[metric] < a[metric] ? b : a))
+  const ours = itslilLane[metric], bar = lane[metric], margin = Math.max(100, bar / 100)
+  return { against: lane.id, name: lane.name, ours, bar, delta: ours - bar, winAt: Math.floor(bar - margin), verdict: ours <= bar - margin ? "win" : ours <= bar ? "tie" : "loss" }
+}
+const verdict = {
+  rule: "win: at least max(100 B, 1% of the bar) below the bar; tie: at or below it; loss: above it",
+  brotli11: judge("brotli11"),
+  gzip9: judge("gzip9"),
+  raw: judge("raw"),
+}
+size.find((lane) => lane.id === verdict.brotli11.against).strongest = true
 // ---- delivered files ----
 const measure = (paths) => {
   const run = spawnSync(codecPath(), ["--json", ...paths], { encoding: "utf8", maxBuffer: 1 << 26 })
@@ -184,10 +217,11 @@ const results = {
   warmupDiscard: 5,
   corpus: corpus.length,
   rounds,
-  comparison: `Official rows are an esbuild bundle of katex@${pin} plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.`,
+  comparison: `Official rows are an esbuild bundle of katex@${pin} plus its runtime graph, then Terser, esbuild or SWC; the source lanes are the Flow sources through esbuild, then Terser or SWC. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.`,
   spec,
   play: previous.play ?? { kind: "tex-html", sample: corpus[0], samples: [{ label: "frac", value: corpus[0] }, { label: "scripts", value: corpus[1] }] },
   size,
+  verdict,
   delivered,
   upstreamServed,
   previousRelease,
@@ -211,6 +245,6 @@ const baseline = size.find((l) => l.baseline)
 const strongest = size.find((l) => l.strongest)
 const open = size.find((l) => l.id === "itslil")
 const closed = size.find((l) => l.id === "itslil-closed")
-console.log(`Brotli-11: open ${open.brotli11}  closed ${closed.brotli11}  Terser(published) ${baseline.brotli11}  Terser(source) ${strongest.brotli11}`)
+console.log(`Brotli-11: open ${open.brotli11}  closed ${closed.brotli11}  Terser(published) ${baseline.brotli11}  strongest ${strongest.name} ${strongest.brotli11}: ${verdict.brotli11.verdict} (${verdict.brotli11.delta > 0 ? "+" : ""}${verdict.brotli11.delta}; a win needs <= ${verdict.brotli11.winAt})`)
 console.log(`Node: ${nodeSummary.map((r) => `${r.name} ${r.median.toFixed(2)} ms`).join("  ")}  parity ${nodeParity.compared - nodeParity.mismatches.length}/${nodeParity.compared}`)
 if (browser) console.log(`${browser.browser}: ${Object.values(browser.lanes).map((r) => `${r.name} ${r.median.toFixed(2)} ms`).join("  ")}  ratio ${browser.ratio.toFixed(3)}`)

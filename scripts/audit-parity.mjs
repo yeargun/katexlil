@@ -65,6 +65,15 @@ const missingContrib = expectedContrib.filter((path) => !existsSync(resolve(root
 const runtimeHostContrib = walk(resolve(root, "contrib"))
   .filter((path) => path.endsWith(".host.mjs"))
   .map((path) => relative(resolve(root, "contrib"), path))
+// JavaScript the compiler embeds into a contrib artifact at build time ([bundle] host_modules =
+// "embed"): reported, and refused if a delivered contrib module still imports it at run time.
+const embeddedHostContrib = walk(resolve(root, "contrib"))
+  .filter((path) => path.endsWith(".js"))
+  .map((path) => relative(resolve(root, "contrib"), path))
+const unembeddedHostContrib = walk(resolve(root, "dist/contrib"))
+  .filter((path) => path.endsWith(".mjs"))
+  .filter((path) => [...readFileSync(path, "utf8").matchAll(/(?:import|from)\s*["']([^"']+)["']/g)].some(([, specifier]) => specifier !== "../katex.mjs"))
+  .map((path) => relative(root, path))
 const runtimeHostSource = walk(resolve(root, "src"))
   .filter((path) => path.endsWith(".js") && !hostData.has(relative(resolve(root, "src"), path)))
   .map((path) => relative(resolve(root, "src"), path))
@@ -154,6 +163,8 @@ const report = {
     lilContrib: expectedContrib,
     runtimeHostSource,
     runtimeHostContrib,
+    embeddedHostContrib,
+    unembeddedHostContrib,
     checkedGeneratedData: dataChecks,
   },
   declarations: { matchesUpstreamSurface: declarationMatches },
@@ -170,6 +181,6 @@ const report = {
 }
 
 console.log(JSON.stringify(report, null, 2))
-if (missingModules.length || missingContrib.length || runtimeHostSource.length || runtimeHostContrib.length || dataChecks.some(({ matchesUpstream }) => !matchesUpstream) || assetMismatches.length || missingExports.length || !declarationMatches || apiVersion !== "0.16.22" || JSON.stringify(localApiKeys) !== JSON.stringify(officialApiKeys)) {
+if (missingModules.length || missingContrib.length || runtimeHostSource.length || runtimeHostContrib.length || unembeddedHostContrib.length || dataChecks.some(({ matchesUpstream }) => !matchesUpstream) || assetMismatches.length || missingExports.length || !declarationMatches || apiVersion !== "0.16.22" || JSON.stringify(localApiKeys) !== JSON.stringify(officialApiKeys)) {
   process.exitCode = 1
 }

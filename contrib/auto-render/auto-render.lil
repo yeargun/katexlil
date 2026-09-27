@@ -2,8 +2,8 @@ import extern { default as katex } from "../../dist/katex.mjs";
 import { splitAtDelimiters } from "./splitAtDelimiters.lil";
 
 extern JsValue katex;
-extern JsValue globalThis;
-extern JsValue Object;
+extern JsValue document;
+extern JsValue console;
 extern JsValue Error;
 
 int length(JsValue value) {
@@ -13,7 +13,6 @@ int length(JsValue value) {
 JsValue renderMathInText(string text, JsValue optionsCopy) {
   JsValue data = splitAtDelimiters(text, optionsCopy["delimiters"]);
   if (length(data) == 1 && JS.strictEqual(data[0]["type"], "text")) return null;
-  JsValue document = globalThis["document"];
   JsValue fragment = JS.invoke(document, "createDocumentFragment");
   int i = 0;
   while (i < length(data)) {
@@ -27,7 +26,7 @@ JsValue renderMathInText(string text, JsValue optionsCopy) {
       optionsCopy["displayMode"] = part["display"];
       try {
         if (optionsCopy["preProcess"].truthy()) {
-          math = JS.call(optionsCopy["preProcess"], JS.undefined(), math);
+          math = JS.invoke(optionsCopy, "preProcess", math);
         }
         JS.invoke(katex, "render", math, span, optionsCopy);
       } catch (JsValue error) {
@@ -73,7 +72,7 @@ void renderElem(JsValue element, JsValue optionsCopy) {
     } else if (JS.strictEqual(childNode["nodeType"], 1)) {
       string className = " " + JS.string(childNode["className"]) + " ";
       string nodeName = JS.string(childNode["nodeName"]).toLowerCase();
-      bool shouldRender = JS.number(JS.invoke(optionsCopy["ignoredTags"], "indexOf", nodeName)).toInt() == -1;
+      bool shouldRender = JS.strictEqual(JS.invoke(optionsCopy["ignoredTags"], "indexOf", nodeName), -1);
       int classIndex = 0;
       while (shouldRender && classIndex < length(optionsCopy["ignoredClasses"])) {
         string ignored = " " + JS.string(optionsCopy["ignoredClasses"][classIndex]) + " ";
@@ -89,14 +88,8 @@ void renderElem(JsValue element, JsValue optionsCopy) {
 void renderMathInElement(JsValue element, JsValue options = null) {
   if (JS.isNullish(element)) throw JS.construct(Error, "No element provided to render");
   JsValue optionsCopy = JS.object();
-  if (!JS.isNullish(options)) {
-    JsValue keys = JS.invoke(Object, "keys", options);
-    int i = 0;
-    while (i < length(keys)) {
-      string key = JS.string(keys[i]);
-      optionsCopy[key] = options[key];
-      i += 1;
-    }
+  for (string option in options) {
+    if (JS.invoke(options, "hasOwnProperty", option).truthy()) optionsCopy[option] = options[option];
   }
   if (!optionsCopy["delimiters"].truthy()) {
     optionsCopy["delimiters"] = JS.array(
@@ -114,7 +107,7 @@ void renderMathInElement(JsValue element, JsValue options = null) {
     optionsCopy["ignoredTags"] = JS.array("script", "noscript", "style", "textarea", "pre", "code", "option");
   }
   if (!optionsCopy["ignoredClasses"].truthy()) optionsCopy["ignoredClasses"] = JS.array();
-  if (!optionsCopy["errorCallback"].truthy()) optionsCopy["errorCallback"] = globalThis["console"]["error"];
+  if (!optionsCopy["errorCallback"].truthy()) optionsCopy["errorCallback"] = console["error"];
   if (!optionsCopy["macros"].truthy()) optionsCopy["macros"] = JS.object();
   renderElem(element, optionsCopy);
 }

@@ -1,22 +1,22 @@
 import { katexReplaceWithTex } from "./katex2tex.lil";
+import extern { isInstance as instanceOfHost } from "./instanceof.js";
 
-extern JsValue globalThis;
+extern bool instanceOfHost(JsValue value, JsValue constructor);
+
+extern JsValue document;
+extern JsValue window;
+extern JsValue Element;
+extern JsValue Text;
 extern JsValue Array;
 
-bool instanceOfHost(JsValue value, JsValue constructor) {
-  return !JS.isNullish(value) && JS.call(constructor["prototype"]["isPrototypeOf"], constructor["prototype"], value).truthy();
-}
-
 JsValue closestKatex(JsValue node) {
-  JsValue element = node["parentElement"];
-  if (instanceOfHost(node, globalThis["Element"])) element = node;
+  JsValue element = if (instanceOfHost(node, Element)) { node } else { node["parentElement"] };
   if (element.truthy()) return JS.invoke(element, "closest", ".katex");
   return null;
 }
 
-JsValue document = globalThis["document"];
 JS.invoke(document, "addEventListener", "copy", (JsValue event) => {
-  JsValue selection = JS.invoke(globalThis, "getSelection");
+  JsValue selection = JS.invoke(window, "getSelection");
   if (selection["isCollapsed"].truthy() || !event["clipboardData"].truthy()) return;
   JsValue clipboardData = event["clipboardData"];
   JsValue range = JS.invoke(selection, "getRangeAt", 0);
@@ -27,7 +27,7 @@ JS.invoke(document, "addEventListener", "copy", (JsValue event) => {
   JsValue fragment = JS.invoke(range, "cloneContents");
   if (!JS.invoke(fragment, "querySelector", ".katex-mathml").truthy()) return;
   JsValue mapped = JS.call(Array["prototype"]["map"], fragment["childNodes"], (JsValue element) => {
-    if (instanceOfHost(element, globalThis["Text"])) return element["textContent"];
+    if (instanceOfHost(element, Text)) return element["textContent"];
     return element["outerHTML"];
   });
   JS.invoke(clipboardData, "setData", "text/html", JS.invoke(mapped, "join", ""));

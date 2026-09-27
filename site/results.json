@@ -4,14 +4,14 @@
   "file": "katex",
   "lilExport": "renderToString",
   "officialExport": "default",
-  "measuredAt": "2026-09-27T10:26:08.977Z",
+  "measuredAt": "2026-09-27T16:26:27.014Z",
   "node": "v24.11.1",
   "codec": "lilscript-codec: zlib 1.3.1 gzip-9 / Google Brotli 1.1.0 q11 w22",
   "runtime": "Node v24.11.1",
   "warmupDiscard": 5,
   "corpus": 30,
   "rounds": 30,
-  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser or esbuild; the source lane is the Flow sources through esbuild and Terser. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.",
+  "comparison": "Official rows are an esbuild bundle of katex@0.16.22 plus its runtime graph, then Terser, esbuild or SWC; the source lanes are the Flow sources through esbuild, then Terser or SWC. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.",
   "spec": {
     "total": 1230,
     "pass": 1230,
@@ -66,34 +66,80 @@
       "brotli11": 63757
     },
     {
+      "id": "official-swc",
+      "name": "Official · SWC",
+      "note": "SWC 1.16.2 minify of that graph: compress 2 passes, ecma 2020, top-level mangle",
+      "raw": 264370,
+      "gzip9": 75361,
+      "brotli11": 62399
+    },
+    {
       "id": "official-source-terser",
       "name": "Official source · esbuild + Terser",
-      "note": "katex@0.16.22 Flow sources type-stripped, esbuild bundle, Terser mangle on: the strongest JavaScript lane on the same source boundary",
-      "strongest": true,
-      "raw": 263654,
-      "gzip9": 74592,
-      "brotli11": 61758
+      "note": "katex@0.16.22 Flow sources type-stripped, bundled by esbuild with __VERSION__ defined as upstream's build does, Terser mangle on: the same source boundary the port rewrites",
+      "raw": 263560,
+      "gzip9": 74551,
+      "brotli11": 61631
+    },
+    {
+      "id": "official-source-swc",
+      "name": "Official source · esbuild + SWC",
+      "note": "The same Flow-source bundle through SWC 1.16.2: compress 2 passes, ecma 2020, top-level mangle",
+      "raw": 259210,
+      "gzip9": 73168,
+      "brotli11": 60778,
+      "strongest": true
     },
     {
       "id": "itslil",
       "name": "@itslil/katex · open world",
-      "note": "The npm ESM: the compiler's js-module output, with the font-metrics table (src/data.lil) and the version export compiled in; the build adds a licence banner and drops internal names from the export list, and nothing re-minifies it. Public API and option names kept",
+      "note": "The npm ESM: the compiler's js-module output, with the font-metrics table (src/data.lil) and the version export compiled in; src/entry.lil exports the public API only, the build adds a licence banner, and nothing re-minifies it. Public API and option names kept",
       "primary": true,
       "world": "open",
-      "raw": 261313,
-      "gzip9": 72187,
-      "brotli11": 60281
+      "raw": 261015,
+      "gzip9": 72094,
+      "brotli11": 60056
     },
     {
       "id": "itslil-closed",
       "name": "@itslil/katex · closed world",
       "note": "Same source. The one compiler renames no property, so extern_fields has no effect and the closed config equals the open one: same bytes",
       "world": "closed",
-      "raw": 261313,
-      "gzip9": 72187,
-      "brotli11": 60281
+      "raw": 261015,
+      "gzip9": 72094,
+      "brotli11": 60056
     }
   ],
+  "verdict": {
+    "rule": "win: at least max(100 B, 1% of the bar) below the bar; tie: at or below it; loss: above it",
+    "brotli11": {
+      "against": "official-source-swc",
+      "name": "Official source · esbuild + SWC",
+      "ours": 60056,
+      "bar": 60778,
+      "delta": -722,
+      "winAt": 60170,
+      "verdict": "win"
+    },
+    "gzip9": {
+      "against": "official-source-swc",
+      "name": "Official source · esbuild + SWC",
+      "ours": 72094,
+      "bar": 73168,
+      "delta": -1074,
+      "winAt": 72436,
+      "verdict": "win"
+    },
+    "raw": {
+      "against": "official-source-swc",
+      "name": "Official source · esbuild + SWC",
+      "ours": 261015,
+      "bar": 259210,
+      "delta": 1805,
+      "winAt": 256617,
+      "verdict": "loss"
+    }
+  },
   "delivered": [
     {
       "path": "dist/katex.esm.js",
@@ -105,13 +151,13 @@
         "gzip9": 76480,
         "brotli11": 63044
       },
-      "raw": 261313,
-      "gzip9": 72187,
-      "brotli11": 60281,
+      "raw": 261015,
+      "gzip9": 72094,
+      "brotli11": 60056,
       "previous": {
-        "raw": 274680,
-        "gzip9": 75914,
-        "brotli11": 62704
+        "raw": 261313,
+        "gzip9": 72187,
+        "brotli11": 60281
       }
     },
     {
@@ -124,13 +170,13 @@
         "gzip9": 76480,
         "brotli11": 63044
       },
-      "raw": 261313,
-      "gzip9": 72187,
-      "brotli11": 60281,
+      "raw": 261015,
+      "gzip9": 72094,
+      "brotli11": 60056,
       "previous": {
-        "raw": 274680,
-        "gzip9": 75914,
-        "brotli11": 62704
+        "raw": 261313,
+        "gzip9": 72187,
+        "brotli11": 60281
       }
     },
     {
@@ -143,13 +189,13 @@
         "gzip9": 76480,
         "brotli11": 63044
       },
-      "raw": 261313,
-      "gzip9": 72187,
-      "brotli11": 60281,
+      "raw": 261015,
+      "gzip9": 72094,
+      "brotli11": 60056,
       "previous": {
-        "raw": 274680,
-        "gzip9": 75914,
-        "brotli11": 62704
+        "raw": 261313,
+        "gzip9": 72187,
+        "brotli11": 60281
       }
     },
     {
@@ -162,13 +208,13 @@
         "gzip9": 76480,
         "brotli11": 63044
       },
-      "raw": 260037,
-      "gzip9": 72679,
-      "brotli11": 60962,
+      "raw": 259911,
+      "gzip9": 72655,
+      "brotli11": 61061,
       "previous": {
-        "raw": 272207,
-        "gzip9": 76483,
-        "brotli11": 63663
+        "raw": 260037,
+        "gzip9": 72679,
+        "brotli11": 60962
       }
     },
     {
@@ -181,13 +227,13 @@
         "gzip9": 76480,
         "brotli11": 63044
       },
-      "raw": 260047,
-      "gzip9": 72680,
-      "brotli11": 61147,
+      "raw": 259921,
+      "gzip9": 72656,
+      "brotli11": 61045,
       "previous": {
-        "raw": 272217,
-        "gzip9": 76489,
-        "brotli11": 63620
+        "raw": 260047,
+        "gzip9": 72680,
+        "brotli11": 61147
       }
     },
     {
@@ -200,13 +246,13 @@
         "gzip9": 76480,
         "brotli11": 63044
       },
-      "raw": 260047,
-      "gzip9": 72680,
-      "brotli11": 61147,
+      "raw": 259921,
+      "gzip9": 72656,
+      "brotli11": 61045,
       "previous": {
-        "raw": 272217,
-        "gzip9": 76489,
-        "brotli11": 63620
+        "raw": 260047,
+        "gzip9": 72680,
+        "brotli11": 61147
       }
     },
     {
@@ -219,13 +265,13 @@
         "gzip9": 1205,
         "brotli11": 1048
       },
-      "raw": 2784,
-      "gzip9": 1275,
-      "brotli11": 1113,
+      "raw": 2746,
+      "gzip9": 1251,
+      "brotli11": 1103,
       "previous": {
-        "raw": 2846,
-        "gzip9": 1281,
-        "brotli11": 1134
+        "raw": 2784,
+        "gzip9": 1275,
+        "brotli11": 1113
       }
     },
     {
@@ -238,13 +284,13 @@
         "gzip9": 1205,
         "brotli11": 1048
       },
-      "raw": 4132,
-      "gzip9": 1780,
-      "brotli11": 1589,
+      "raw": 4060,
+      "gzip9": 1734,
+      "brotli11": 1560,
       "previous": {
-        "raw": 4183,
-        "gzip9": 1758,
-        "brotli11": 1584
+        "raw": 4132,
+        "gzip9": 1780,
+        "brotli11": 1589
       }
     },
     {
@@ -257,13 +303,13 @@
         "gzip9": 1205,
         "brotli11": 1048
       },
-      "raw": 3256,
-      "gzip9": 1507,
-      "brotli11": 1358,
+      "raw": 3218,
+      "gzip9": 1476,
+      "brotli11": 1334,
       "previous": {
-        "raw": 3296,
-        "gzip9": 1481,
-        "brotli11": 1336
+        "raw": 3256,
+        "gzip9": 1507,
+        "brotli11": 1358
       }
     },
     {
@@ -276,13 +322,13 @@
         "gzip9": 639,
         "brotli11": 531
       },
-      "raw": 1399,
-      "gzip9": 676,
-      "brotli11": 563,
+      "raw": 1322,
+      "gzip9": 645,
+      "brotli11": 528,
       "previous": {
-        "raw": 1428,
-        "gzip9": 678,
-        "brotli11": 572
+        "raw": 1399,
+        "gzip9": 676,
+        "brotli11": 563
       }
     },
     {
@@ -295,13 +341,13 @@
         "gzip9": 639,
         "brotli11": 531
       },
-      "raw": 1469,
-      "gzip9": 716,
-      "brotli11": 615,
+      "raw": 1382,
+      "gzip9": 680,
+      "brotli11": 561,
       "previous": {
-        "raw": 1498,
-        "gzip9": 718,
-        "brotli11": 601
+        "raw": 1469,
+        "gzip9": 716,
+        "brotli11": 615
       }
     },
     {
@@ -314,13 +360,13 @@
         "gzip9": 639,
         "brotli11": 531
       },
-      "raw": 1400,
-      "gzip9": 688,
-      "brotli11": 589,
+      "raw": 1322,
+      "gzip9": 659,
+      "brotli11": 555,
       "previous": {
         "raw": 1400,
         "gzip9": 688,
-        "brotli11": 592
+        "brotli11": 589
       }
     },
     {
@@ -333,9 +379,9 @@
         "gzip9": 315,
         "brotli11": 232
       },
-      "raw": 547,
-      "gzip9": 377,
-      "brotli11": 282,
+      "raw": 438,
+      "gzip9": 316,
+      "brotli11": 228,
       "previous": {
         "raw": 547,
         "gzip9": 377,
@@ -352,9 +398,9 @@
         "gzip9": 315,
         "brotli11": 232
       },
-      "raw": 1330,
-      "gzip9": 698,
-      "brotli11": 590,
+      "raw": 1219,
+      "gzip9": 636,
+      "brotli11": 537,
       "previous": {
         "raw": 1330,
         "gzip9": 698,
@@ -371,9 +417,9 @@
         "gzip9": 315,
         "brotli11": 232
       },
-      "raw": 560,
-      "gzip9": 376,
-      "brotli11": 287,
+      "raw": 452,
+      "gzip9": 322,
+      "brotli11": 244,
       "previous": {
         "raw": 560,
         "gzip9": 376,
@@ -390,13 +436,13 @@
         "gzip9": 8096,
         "brotli11": 7413
       },
-      "raw": 35019,
-      "gzip9": 8811,
-      "brotli11": 8007,
+      "raw": 34074,
+      "gzip9": 8635,
+      "brotli11": 7862,
       "previous": {
-        "raw": 35051,
-        "gzip9": 8839,
-        "brotli11": 8018
+        "raw": 35019,
+        "gzip9": 8811,
+        "brotli11": 8007
       }
     },
     {
@@ -409,13 +455,13 @@
         "gzip9": 8096,
         "brotli11": 7413
       },
-      "raw": 37526,
-      "gzip9": 9565,
-      "brotli11": 8590,
+      "raw": 36406,
+      "gzip9": 9239,
+      "brotli11": 8363,
       "previous": {
-        "raw": 37551,
-        "gzip9": 9569,
-        "brotli11": 8613
+        "raw": 37526,
+        "gzip9": 9565,
+        "brotli11": 8590
       }
     },
     {
@@ -428,13 +474,13 @@
         "gzip9": 8096,
         "brotli11": 7413
       },
-      "raw": 34401,
-      "gzip9": 8925,
-      "brotli11": 8118,
+      "raw": 33460,
+      "gzip9": 8666,
+      "brotli11": 7921,
       "previous": {
-        "raw": 34373,
-        "gzip9": 8921,
-        "brotli11": 8124
+        "raw": 34401,
+        "gzip9": 8925,
+        "brotli11": 8118
       }
     },
     {
@@ -447,13 +493,13 @@
         "gzip9": 2428,
         "brotli11": 2220
       },
-      "raw": 8227,
-      "gzip9": 2459,
-      "brotli11": 2226,
+      "raw": 6985,
+      "gzip9": 2413,
+      "brotli11": 2182,
       "previous": {
-        "raw": 8313,
-        "gzip9": 2464,
-        "brotli11": 2230
+        "raw": 8227,
+        "gzip9": 2459,
+        "brotli11": 2226
       }
     },
     {
@@ -466,13 +512,13 @@
         "gzip9": 2428,
         "brotli11": 2220
       },
-      "raw": 9747,
-      "gzip9": 2982,
-      "brotli11": 2713,
+      "raw": 8601,
+      "gzip9": 2931,
+      "brotli11": 2654,
       "previous": {
-        "raw": 9846,
-        "gzip9": 2984,
-        "brotli11": 2712
+        "raw": 9747,
+        "gzip9": 2982,
+        "brotli11": 2713
       }
     },
     {
@@ -485,13 +531,13 @@
         "gzip9": 2428,
         "brotli11": 2220
       },
-      "raw": 7778,
-      "gzip9": 2675,
-      "brotli11": 2429,
+      "raw": 7336,
+      "gzip9": 2633,
+      "brotli11": 2394,
       "previous": {
-        "raw": 7794,
-        "gzip9": 2690,
-        "brotli11": 2454
+        "raw": 7778,
+        "gzip9": 2675,
+        "brotli11": 2429
       }
     }
   ],
@@ -512,69 +558,69 @@
     }
   ],
   "previousRelease": {
-    "revision": "d9e8464",
-    "committedAt": "2026-09-24T08:03:40+00:00",
-    "builtBy": "LilScript aa2052f0 (the one compiler, 2026-09-24)",
+    "revision": "55c34b5",
+    "committedAt": "2026-09-27T10:47:16+00:00",
+    "builtBy": "LilScript a430d5df (batch D, 2026-09-27; its dist rebuilds byte for byte with d1d48c4c)",
     "files": {
       "dist/katex.esm.js": {
-        "raw": 274680,
-        "gzip9": 75914,
-        "brotli11": 62704
+        "raw": 261313,
+        "gzip9": 72187,
+        "brotli11": 60281
       },
       "dist/katex.mjs": {
-        "raw": 274680,
-        "gzip9": 75914,
-        "brotli11": 62704
+        "raw": 261313,
+        "gzip9": 72187,
+        "brotli11": 60281
       },
       "dist/katex.closed.js": {
-        "raw": 274680,
-        "gzip9": 75914,
-        "brotli11": 62704
+        "raw": 261313,
+        "gzip9": 72187,
+        "brotli11": 60281
       },
       "dist/katex.cjs": {
-        "raw": 272207,
-        "gzip9": 76483,
-        "brotli11": 63663
+        "raw": 260037,
+        "gzip9": 72679,
+        "brotli11": 60962
       },
       "dist/katex.umd.js": {
-        "raw": 272217,
-        "gzip9": 76489,
-        "brotli11": 63620
+        "raw": 260047,
+        "gzip9": 72680,
+        "brotli11": 61147
       },
       "dist/katex.min.js": {
-        "raw": 272217,
-        "gzip9": 76489,
-        "brotli11": 63620
+        "raw": 260047,
+        "gzip9": 72680,
+        "brotli11": 61147
       },
       "dist/contrib/auto-render.mjs": {
-        "raw": 2846,
-        "gzip9": 1281,
-        "brotli11": 1134
+        "raw": 2784,
+        "gzip9": 1275,
+        "brotli11": 1113
       },
       "dist/contrib/auto-render.cjs": {
-        "raw": 4183,
-        "gzip9": 1758,
-        "brotli11": 1584
+        "raw": 4132,
+        "gzip9": 1780,
+        "brotli11": 1589
       },
       "dist/contrib/auto-render.min.js": {
-        "raw": 3296,
-        "gzip9": 1481,
-        "brotli11": 1336
+        "raw": 3256,
+        "gzip9": 1507,
+        "brotli11": 1358
       },
       "dist/contrib/copy-tex.mjs": {
-        "raw": 1428,
-        "gzip9": 678,
-        "brotli11": 572
+        "raw": 1399,
+        "gzip9": 676,
+        "brotli11": 563
       },
       "dist/contrib/copy-tex.cjs": {
-        "raw": 1498,
-        "gzip9": 718,
-        "brotli11": 601
+        "raw": 1469,
+        "gzip9": 716,
+        "brotli11": 615
       },
       "dist/contrib/copy-tex.min.js": {
         "raw": 1400,
         "gzip9": 688,
-        "brotli11": 592
+        "brotli11": 589
       },
       "dist/contrib/mathtex-script-type.mjs": {
         "raw": 547,
@@ -592,53 +638,53 @@
         "brotli11": 287
       },
       "dist/contrib/mhchem.mjs": {
-        "raw": 35051,
-        "gzip9": 8839,
-        "brotli11": 8018
+        "raw": 35019,
+        "gzip9": 8811,
+        "brotli11": 8007
       },
       "dist/contrib/mhchem.cjs": {
-        "raw": 37551,
-        "gzip9": 9569,
-        "brotli11": 8613
+        "raw": 37526,
+        "gzip9": 9565,
+        "brotli11": 8590
       },
       "dist/contrib/mhchem.min.js": {
-        "raw": 34373,
-        "gzip9": 8921,
-        "brotli11": 8124
+        "raw": 34401,
+        "gzip9": 8925,
+        "brotli11": 8118
       },
       "dist/contrib/render-a11y-string.mjs": {
-        "raw": 8313,
-        "gzip9": 2464,
-        "brotli11": 2230
+        "raw": 8227,
+        "gzip9": 2459,
+        "brotli11": 2226
       },
       "dist/contrib/render-a11y-string.cjs": {
-        "raw": 9846,
-        "gzip9": 2984,
-        "brotli11": 2712
+        "raw": 9747,
+        "gzip9": 2982,
+        "brotli11": 2713
       },
       "dist/contrib/render-a11y-string.min.js": {
-        "raw": 7794,
-        "gzip9": 2690,
-        "brotli11": 2454
+        "raw": 7778,
+        "gzip9": 2675,
+        "brotli11": 2429
       }
     }
   },
   "compiler": {
-    "revision": "a430d5df",
-    "binarySha256": "6d307b5fcbdce7e673aa0d48e9465b6e038c38c0cf517fa88f62d436b1fa2d4f",
-    "codecSha256": "e05c58fe270a0bb52c8804522ecbe5a71f81713320742a9c14df7371a300c68a",
+    "revision": "d1d48c4c",
+    "binarySha256": "47048e41164027e92d3bf1d1840d8d83e04c60532c031ceb3346222e194b3041",
+    "codecSha256": "85329d361ef3339d4ff7b7ca1f00065d561340eb4fc98a2799af327134a3a3f0",
     "date": "2026-09-27",
     "artifact": "dist/katex.esm.js",
     "compile": "src/entry.lil with lilscript.toml, --target js-module",
     "compileWallMs": [
-      29172,
-      34691,
-      20194
+      22186,
+      26712,
+      29216
     ],
     "buildCompileWallMs": [
-      71689,
-      71825,
-      41625
+      69099,
+      80364,
+      82834
     ],
     "invocations": [
       {
@@ -646,9 +692,9 @@
         "config": "lilscript.toml",
         "output": "dist/katex.raw.js",
         "wallMs": [
-          29172,
-          34691,
-          20194
+          22186,
+          26712,
+          29216
         ]
       },
       {
@@ -656,9 +702,19 @@
         "config": "lilscript.closed.toml",
         "output": "dist/katex.closed.raw.js",
         "wallMs": [
-          38786,
-          33679,
-          19308
+          19103,
+          28280,
+          23786
+        ]
+      },
+      {
+        "input": "test/katex.lil",
+        "config": "lilscript.toml",
+        "output": "dist/katex.test.raw.js",
+        "wallMs": [
+          24929,
+          22817,
+          26412
         ]
       },
       {
@@ -666,9 +722,9 @@
         "config": "lilscript.toml",
         "output": "dist/katex.contrib-test.js",
         "wallMs": [
-          79,
-          25,
-          25
+          38,
+          30,
+          63
         ]
       },
       {
@@ -676,19 +732,19 @@
         "config": "lilscript.toml",
         "output": "dist/contrib/auto-render.raw.mjs",
         "wallMs": [
-          115,
-          57,
-          62
+          94,
+          89,
+          168
         ]
       },
       {
         "input": "contrib/copy-tex/copy-tex.lil",
-        "config": "lilscript.toml",
+        "config": "lilscript.copy-tex.toml",
         "output": "dist/contrib/copy-tex.raw.mjs",
         "wallMs": [
-          59,
-          36,
-          36
+          57,
+          56,
+          112
         ]
       },
       {
@@ -696,9 +752,9 @@
         "config": "lilscript.toml",
         "output": "dist/contrib/mathtex-script-type.raw.mjs",
         "wallMs": [
-          24,
           14,
-          14
+          12,
+          29
         ]
       },
       {
@@ -706,9 +762,9 @@
         "config": "lilscript.toml",
         "output": "dist/contrib/mhchem.raw.mjs",
         "wallMs": [
-          3176,
-          3155,
-          1830
+          2410,
+          2130,
+          2810
         ]
       },
       {
@@ -716,35 +772,35 @@
         "config": "lilscript.toml",
         "output": "dist/contrib/render-a11y-string.raw.mjs",
         "wallMs": [
-          278,
-          168,
-          156
+          268,
+          238,
+          238
         ]
       }
     ],
-    "host": "8 × AMD EPYC 7763 64-Core Processor, Azure B8als_v2 (burstable), Node v24.11.1, shared with other compiler sessions during the samples",
+    "host": "8 × AMD EPYC 7763 64-Core Processor, Azure B8als_v2 (burstable), Node v24.11.1, shared with other compiler sessions during the samples (load average 7.9 to 9.4)",
     "method": "wall clock around each compiler process, timed by scripts/build.mjs; one sample per full build (node scripts/build.mjs --compile --force --force-contrib)",
     "samplesAt": [
-      "2026-09-27T10:15:01.814Z",
-      "2026-09-27T10:16:14.030Z",
-      "2026-09-27T10:16:55.932Z"
+      "2026-09-27T16:13:36.911Z",
+      "2026-09-27T16:14:57.687Z",
+      "2026-09-27T16:16:21.255Z"
     ]
   },
   "throughput": [
     {
       "id": "itslil",
       "name": "@itslil/katex",
-      "documentMs": 6.59745500000281,
-      "p10": 5.262484000002587,
-      "p90": 7.838281000000279,
+      "documentMs": 10.527318999997078,
+      "p10": 8.22896199999741,
+      "p90": 12.918130999998539,
       "rounds": 30
     },
     {
       "id": "official",
       "name": "katex@0.16.22",
-      "documentMs": 5.487444999998843,
-      "p10": 5.0172029999994265,
-      "p90": 7.906689999999799,
+      "documentMs": 9.908331000002363,
+      "p10": 7.8754900000021735,
+      "p90": 12.858133000001544,
       "rounds": 30
     }
   ],
@@ -764,22 +820,22 @@
     "lanes": {
       "itslil": {
         "name": "@itslil/katex",
-        "median": 4.600000023841858,
-        "p10": 4,
-        "p90": 7.600000023841858,
-        "min": 3.800000011920929,
+        "median": 8.800000011920929,
+        "p10": 7,
+        "p90": 13.800000011920929,
+        "min": 6.400000035762787,
         "rounds": 30
       },
       "official": {
         "name": "katex@0.16.22",
-        "median": 4.399999976158142,
-        "p10": 3.599999964237213,
-        "p90": 6.699999988079071,
-        "min": 3.5,
+        "median": 8.5,
+        "p10": 6.199999988079071,
+        "p90": 13.199999988079071,
+        "min": 5.300000011920929,
         "rounds": 30
       }
     },
-    "ratio": 1.0454545565380537,
+    "ratio": 1.035294119049521,
     "browser": "Chromium 151.0.7922.34",
     "playwright": "1.62.1"
   },

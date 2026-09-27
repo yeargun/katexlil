@@ -1,11 +1,11 @@
 // The official lanes: katex@<pin> as the JavaScript ecosystem ships it.
 //
 // `published()`  — the npm package's dist/katex.mjs bundled by esbuild with its runtime graph,
-//                  then Terser (mangle on / off) and esbuild minify. What a user downloads.
+//                  then Terser (mangle on / off), esbuild minify and SWC. What a user downloads.
 // `fromSource()` — the package's Flow sources type-stripped with Babel, bundled by esbuild with
-//                  a source map, then Terser with the map composed: the strongest JavaScript
-//                  toolchain on the same source boundary the port rewrites, with every token
-//                  attributable to an upstream module.
+//                  a source map, then Terser with the map composed (every token attributable to
+//                  an upstream module), and SWC: the same source boundary the port rewrites.
+//                  SWC over this bundle is the smallest JavaScript lane under Brotli.
 import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { dirname, join, relative, resolve } from "node:path"
 import { tmpdir } from "node:os"
@@ -13,11 +13,16 @@ import { parse } from "@babel/parser"
 import { transformSync } from "@babel/core"
 import { build } from "esbuild"
 import { minify } from "terser"
+import swc from "@swc/core"
 
 export const root = resolve(import.meta.dirname, "..", "..")
 export const upstream = resolve(root, "node_modules/katex")
 export const pin = JSON.parse(readFileSync(resolve(upstream, "package.json"), "utf8")).version
 export const terserOptions = { module: true, compress: { passes: 3 }, mangle: true }
+// SWC 1.16.2 (the devDependency is pinned exactly), the 2026-09-27 scorecard's recipe: 2 compress
+// passes, ECMAScript 2020 parsing and output, top-level mangling, no comments. Other SWC settings
+// (3 passes, compress.ecma) move the Flow-source bar by a few tens of bytes either way.
+export const swcOptions = { module: true, ecma: 2020, compress: { passes: 2 }, mangle: { topLevel: true }, format: { comments: false } }
 
 function walk(path) {
   return readdirSync(path).flatMap((name) => {
@@ -34,7 +39,8 @@ export async function published() {
   const mangle = (await minify({ "official.js": code }, terserOptions)).code
   const noMangle = (await minify({ "official.js": code }, { ...terserOptions, mangle: false })).code
   const esbuildMin = (await build({ ...esbuildBase, entryPoints: [resolve(upstream, "dist/katex.mjs")], outfile: "official.min.js", minify: true })).outputFiles[0].text
-  return { bundle: code, terserMangle: mangle, terserNoMangle: noMangle, esbuildMinify: esbuildMin }
+  const swcMin = (await swc.minify(code, swcOptions)).code
+  return { bundle: code, terserMangle: mangle, terserNoMangle: noMangle, esbuildMinify: esbuildMin, swc: swcMin }
 }
 
 // Babel 7 preset-flow semantics, by hand: the packages that are installed are the parser,
@@ -82,13 +88,20 @@ export async function fromSource({ work = join(tmpdir(), "katexlil-official-sour
     })
     writeFileSync(out, code)
   }
-  const bundle = await build({ ...esbuildBase, entryPoints: [join(stripped, "katex.js")], sourcemap: "external", sourceRoot: stripped, outfile: join(work, "official.bundle.js") })
+  // katex.js reads the webpack constant `__VERSION__` at module top level; without a
+  // definition the bundle throws a ReferenceError on import. esbuild keys the two CommonJS
+  // modules (unicodeAccents, unicodeSymbols) by their path from the working directory, and
+  // those strings ship in every minified lane: resolving from the stripped tree keeps them
+  // `src/...` wherever the work directory is, so the bars do not depend on the machine.
+  const bundle = await build({ ...esbuildBase, absWorkingDir: stripped, entryPoints: [join(stripped, "katex.js")], define: { __VERSION__: JSON.stringify(pin) }, sourcemap: "external", sourceRoot: stripped, outfile: join(work, "official.bundle.js") })
   const bundledCode = bundle.outputFiles.find((f) => f.path.endsWith(".js")).text
   const bundledMap = JSON.parse(bundle.outputFiles.find((f) => f.path.endsWith(".map")).text)
   const terser = await minify({ "official.bundle.js": bundledCode }, { ...terserOptions, sourceMap: { content: bundledMap, asObject: true } })
   writeFileSync(join(work, "official.terser.js"), terser.code)
   writeFileSync(join(work, "official.terser.js.map"), JSON.stringify(terser.map))
-  return { work, bundle: bundledCode, code: terser.code, map: terser.map, files: files.map((f) => relative(upstream, f)) }
+  const swcMin = (await swc.minify(bundledCode, swcOptions)).code
+  writeFileSync(join(work, "official.swc.js"), swcMin)
+  return { work, bundle: bundledCode, code: terser.code, map: terser.map, swc: swcMin, files: files.map((f) => relative(upstream, f)) }
 }
 
 // One measurement call for many artifacts, with the port's pinned encoders.

@@ -3,6 +3,124 @@ import extern { default as katex } from "../../dist/katex.mjs";
 extern JsValue katex;
 extern JsValue Error;
 
+// Upstream's speech tables, as plain objects read with `table[key] || key`, the way upstream
+// reads them (keys inherited from Object.prototype included).
+JsValue stringMap = JS.object(
+  "(", "left parenthesis",
+  ")", "right parenthesis",
+  "[", "open bracket",
+  "]", "close bracket",
+  "\\{", "left brace",
+  "\\}", "right brace",
+  "\\lvert", "open vertical bar",
+  "\\rvert", "close vertical bar",
+  "|", "vertical bar",
+  "\\uparrow", "up arrow",
+  "\\Uparrow", "up arrow",
+  "\\downarrow", "down arrow",
+  "\\Downarrow", "down arrow",
+  "\\updownarrow", "up down arrow",
+  "\\leftarrow", "left arrow",
+  "\\Leftarrow", "left arrow",
+  "\\rightarrow", "right arrow",
+  "\\Rightarrow", "right arrow",
+  "\\langle", "open angle",
+  "\\rangle", "close angle",
+  "\\lfloor", "open floor",
+  "\\rfloor", "close floor",
+  "\\int", "integral",
+  "\\intop", "integral",
+  "\\lim", "limit",
+  "\\ln", "natural log",
+  "\\log", "log",
+  "\\sin", "sine",
+  "\\cos", "cosine",
+  "\\tan", "tangent",
+  "\\cot", "cotangent",
+  "\\sum", "sum",
+  "/", "slash",
+  ",", "comma",
+  ".", "point",
+  "-", "negative",
+  "+", "plus",
+  "~", "tilde",
+  ":", "colon",
+  "?", "question mark",
+  "'", "apostrophe",
+  "\\%", "percent",
+  " ", "space",
+  "\\ ", "space",
+  "\\$", "dollar sign",
+  "\\angle", "angle",
+  "\\degree", "degree",
+  "\\circ", "circle",
+  "\\vec", "vector",
+  "\\triangle", "triangle",
+  "\\pi", "pi",
+  "\\prime", "prime",
+  "\\infty", "infinity",
+  "\\alpha", "alpha",
+  "\\beta", "beta",
+  "\\gamma", "gamma",
+  "\\omega", "omega",
+  "\\theta", "theta",
+  "\\sigma", "sigma",
+  "\\lambda", "lambda",
+  "\\tau", "tau",
+  "\\Delta", "delta",
+  "\\delta", "delta",
+  "\\mu", "mu",
+  "\\rho", "rho",
+  "\\nabla", "del",
+  "\\ell", "ell",
+  "\\ldots", "dots",
+  "\\hat", "hat",
+  "\\acute", "acute"
+);
+JsValue binMap = JS.object(
+  "+", "plus",
+  "-", "minus",
+  "\\pm", "plus minus",
+  "\\cdot", "dot",
+  "*", "times",
+  "\\times", "times",
+  "/", "divided by",
+  "\\div", "divided by",
+  "\\circ", "circle",
+  "\\bullet", "bullet"
+);
+JsValue relMap = JS.object(
+  "=", "equals",
+  "\\approx", "approximately equals",
+  "≠", "does not equal",
+  "\\geq", "is greater than or equal to",
+  "\\ge", "is greater than or equal to",
+  "\\leq", "is less than or equal to",
+  "\\le", "is less than or equal to",
+  ">", "is greater than",
+  "<", "is less than",
+  "\\leftarrow", "left arrow",
+  "\\Leftarrow", "left arrow",
+  "\\rightarrow", "right arrow",
+  "\\Rightarrow", "right arrow",
+  ":", "colon"
+);
+JsValue accentUnderMap = JS.object(
+  "\\underleftarrow", "left arrow",
+  "\\underrightarrow", "right arrow",
+  "\\underleftrightarrow", "left-right arrow",
+  "\\undergroup", "group",
+  "\\underlinesegment", "line segment",
+  "\\utilde", "tilde"
+);
+JsValue powerMap = JS.object(
+  "prime", "prime",
+  "degree", "degrees",
+  "circle", "degrees",
+  "2", "squared",
+  "3", "cubed"
+);
+
 pure bool isDigits(string value) {
   if (value.length == 0) return false;
   int i = 0;
@@ -14,115 +132,8 @@ pure bool isDigits(string value) {
   return true;
 }
 
-pure string normalString(string value) {
-  if (value == "(") return "left parenthesis";
-  if (value == ")") return "right parenthesis";
-  if (value == "[") return "open bracket";
-  if (value == "]") return "close bracket";
-  if (value == "\\{") return "left brace";
-  if (value == "\\}") return "right brace";
-  if (value == "\\lvert") return "open vertical bar";
-  if (value == "\\rvert") return "close vertical bar";
-  if (value == "|") return "vertical bar";
-  if (value == "\\uparrow" || value == "\\Uparrow") return "up arrow";
-  if (value == "\\downarrow" || value == "\\Downarrow") return "down arrow";
-  if (value == "\\updownarrow") return "up down arrow";
-  if (value == "\\leftarrow" || value == "\\Leftarrow") return "left arrow";
-  if (value == "\\rightarrow" || value == "\\Rightarrow") return "right arrow";
-  if (value == "\\langle") return "open angle";
-  if (value == "\\rangle") return "close angle";
-  if (value == "\\lfloor") return "open floor";
-  if (value == "\\rfloor") return "close floor";
-  if (value == "\\int" || value == "\\intop") return "integral";
-  if (value == "\\lim") return "limit";
-  if (value == "\\ln") return "natural log";
-  if (value == "\\log") return "log";
-  if (value == "\\sin") return "sine";
-  if (value == "\\cos") return "cosine";
-  if (value == "\\tan") return "tangent";
-  if (value == "\\cot") return "cotangent";
-  if (value == "\\sum") return "sum";
-  if (value == "/") return "slash";
-  if (value == ",") return "comma";
-  if (value == ".") return "point";
-  if (value == "-") return "negative";
-  if (value == "+") return "plus";
-  if (value == "~") return "tilde";
-  if (value == ":") return "colon";
-  if (value == "?") return "question mark";
-  if (value == "'") return "apostrophe";
-  if (value == "\\%") return "percent";
-  if (value == " " || value == "\\ ") return "space";
-  if (value == "\\$") return "dollar sign";
-  if (value == "\\angle") return "angle";
-  if (value == "\\degree") return "degree";
-  if (value == "\\circ") return "circle";
-  if (value == "\\vec") return "vector";
-  if (value == "\\triangle") return "triangle";
-  if (value == "\\pi") return "pi";
-  if (value == "\\prime") return "prime";
-  if (value == "\\infty") return "infinity";
-  if (value == "\\alpha") return "alpha";
-  if (value == "\\beta") return "beta";
-  if (value == "\\gamma") return "gamma";
-  if (value == "\\omega") return "omega";
-  if (value == "\\theta") return "theta";
-  if (value == "\\sigma") return "sigma";
-  if (value == "\\lambda") return "lambda";
-  if (value == "\\tau") return "tau";
-  if (value == "\\Delta" || value == "\\delta") return "delta";
-  if (value == "\\mu") return "mu";
-  if (value == "\\rho") return "rho";
-  if (value == "\\nabla") return "del";
-  if (value == "\\ell") return "ell";
-  if (value == "\\ldots") return "dots";
-  if (value == "\\hat") return "hat";
-  if (value == "\\acute") return "acute";
-  return value;
-}
-
-pure string binaryString(string value) {
-  if (value == "+") return "plus";
-  if (value == "-") return "minus";
-  if (value == "\\pm") return "plus minus";
-  if (value == "\\cdot") return "dot";
-  if (value == "*" || value == "\\times") return "times";
-  if (value == "/" || value == "\\div") return "divided by";
-  if (value == "\\circ") return "circle";
-  if (value == "\\bullet") return "bullet";
-  return value;
-}
-
-pure string relationString(string value) {
-  if (value == "=") return "equals";
-  if (value == "\\approx") return "approximately equals";
-  if (value == "≠") return "does not equal";
-  if (value == "\\geq" || value == "\\ge") return "is greater than or equal to";
-  if (value == "\\leq" || value == "\\le") return "is less than or equal to";
-  if (value == ">") return "is greater than";
-  if (value == "<") return "is less than";
-  if (value == "\\leftarrow" || value == "\\Leftarrow") return "left arrow";
-  if (value == "\\rightarrow" || value == "\\Rightarrow") return "right arrow";
-  if (value == ":") return "colon";
-  return value;
-}
-
-pure string accentUnderString(string value) {
-  if (value == "\\underleftarrow") return "left arrow";
-  if (value == "\\underrightarrow") return "right arrow";
-  if (value == "\\underleftrightarrow") return "left-right arrow";
-  if (value == "\\undergroup") return "group";
-  if (value == "\\underlinesegment") return "line segment";
-  if (value == "\\utilde") return "tilde";
-  return "";
-}
-
-pure string powerString(string value) {
-  if (value == "prime") return "prime";
-  if (value == "degree" || value == "circle") return "degrees";
-  if (value == "2") return "squared";
-  if (value == "3") return "cubed";
-  return "";
+string normalString(string value) {
+  return JS.string(JS.or(stringMap[value], value));
 }
 
 void buildString(JsValue value, string type, JsValue strings) {
@@ -138,9 +149,9 @@ void buildString(JsValue value, string type, JsValue strings) {
     else if (text == ".") result = "";
     else result = normalString(text);
   } else if (type == "bin") {
-    result = binaryString(text);
+    result = JS.string(JS.or(binMap[text], text));
   } else if (type == "rel") {
-    result = relationString(text);
+    result = JS.string(JS.or(relMap[text], text));
   } else {
     result = normalString(text);
   }
@@ -148,7 +159,7 @@ void buildString(JsValue value, string type, JsValue strings) {
   if (isDigits(result) && length > 0 && isDigits(JS.string(strings[length - 1]))) {
     strings[length - 1] = JS.add(strings[length - 1], result);
   } else if (result != "") {
-    JS.push(strings, result);
+    JS.invoke(strings, "push", result);
   }
 }
 
@@ -166,7 +177,7 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   string type = JS.string(tree["type"]);
   if (type == "accent") {
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     buildA11yStrings(tree["base"], region, atomType);
     JS.push(region, "with");
     buildString(tree["label"], "normal", region);
@@ -175,10 +186,10 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   }
   if (type == "accentUnder") {
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     buildA11yStrings(tree["base"], region, atomType);
     JS.push(region, "with");
-    buildString(accentUnderString(JS.string(tree["label"])), "normal", region);
+    buildString(accentUnderMap[tree["label"]], "normal", region);
     JS.push(region, "underneath");
     return;
   }
@@ -194,7 +205,7 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   if (type == "color") {
     string color = JS.string(JS.invoke(tree["color"], "replace", "katex-", ""));
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     JS.push(region, "start color " + color);
     buildA11yStrings(tree["body"], region, atomType);
     JS.push(region, "end color " + color);
@@ -206,7 +217,7 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   }
   if (type == "genfrac") {
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     if (tree["hasBarLine"].truthy()) {
       JS.push(region, "start fraction");
       if (tree["leftDelim"].truthy()) buildString(tree["leftDelim"], "open", region);
@@ -233,7 +244,7 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   if (type == "kern") return;
   if (type == "leftright") {
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     buildString(tree["left"], "open", region);
     buildA11yStrings(tree["body"], region, atomType);
     buildString(tree["right"], "close", region);
@@ -259,31 +270,31 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   if (type == "overline" || type == "underline") {
     string name = type;
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     JS.push(region, "start " + name);
     buildA11yStrings(tree["body"], region, atomType);
     JS.push(region, "end " + name);
     return;
   }
   if (type == "pmb") {
-    JS.push(strings, "bold");
+    JS.invoke(strings, "push", "bold");
     return;
   }
   if (type == "phantom") {
-    JS.push(strings, "empty space");
+    JS.invoke(strings, "push", "empty space");
     return;
   }
   if (type == "rule") {
-    JS.push(strings, "rectangle");
+    JS.invoke(strings, "push", "rectangle");
     return;
   }
   if (type == "spacing") {
-    JS.push(strings, "space");
+    JS.invoke(strings, "push", "space");
     return;
   }
   if (type == "sqrt") {
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     if (tree["index"].truthy()) {
       JsValue indexStrings = JS.array();
       buildA11yStrings(tree["index"], indexStrings, atomType);
@@ -315,17 +326,17 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
       string regionName = "subscript";
       if (isLog) regionName = "base";
       JsValue region = JS.array();
-      JS.push(strings, region);
+      JS.invoke(strings, "push", region);
       JS.push(region, "start " + regionName);
       buildA11yStrings(tree["sub"], region, atomType);
       JS.push(region, "end " + regionName);
     }
     if (tree["sup"].truthy()) {
       JsValue region = JS.array();
-      JS.push(strings, region);
+      JS.invoke(strings, "push", region);
       JsValue supStrings = JS.array();
       buildA11yStrings(tree["sup"], supStrings, atomType);
-      string spokenPower = powerString(JS.string(JS.invoke(flatten(supStrings), "join", ",")));
+      string spokenPower = JS.string(JS.or(powerMap[JS.invoke(flatten(supStrings), "join", ",")], ""));
       if (spokenPower != "") {
         JS.push(region, spokenPower);
         return;
@@ -338,7 +349,7 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
   }
   if (type == "text") {
     JsValue region = JS.array();
-    JS.push(strings, region);
+    JS.invoke(strings, "push", region);
     if (JS.strictEqual(tree["font"], "\\textbf")) {
       JS.push(region, "start bold text");
       buildA11yStrings(tree["body"], region, atomType);
@@ -363,7 +374,7 @@ void buildA11yStrings(JsValue tree, JsValue strings, string atomType) {
     else if (label.indexOf("phase") != -1) regionName = "phase angle";
     if (regionName != "") {
       JsValue region = JS.array();
-      JS.push(strings, region);
+      JS.invoke(strings, "push", region);
       JS.push(region, "start " + regionName);
       buildA11yStrings(tree["body"], region, atomType);
       JS.push(region, "end " + regionName);
