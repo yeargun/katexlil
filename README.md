@@ -26,38 +26,45 @@ The LilScript compiler lives next door at `../lilscript`.
 
 ## This release
 
-Built by the one LilScript compiler at revision `aa2052f0` (binary SHA-256 `13cb49a9…77cf18f9`).
-Brotli-11 and raw bytes from `lilscript-codec`. The bar is Terser (compress with 3 passes, mangle)
-over the published `katex@0.16.22` graph. The previous release is `7f33e78`, whose dist was built on
-2026-09-10 by LilScript `4dc4e33`, the old compiler route.
+Built by the LilScript compiler at revision `a430d5df` (batch D on `finer/059-idiom-directed-naming`,
+which makes data tables a codec-judged choice; binary SHA-256 `6d307b5f…b1fa2d4f`). Brotli-11 and raw
+bytes from `lilscript-codec`. The bar is Terser (compress with 3 passes, mangle) over the published
+`katex@0.16.22` graph. The previous release is `d9e8464`, whose dist was built on 2026-09-24 by
+LilScript `aa2052f0`.
+
+What changed: the font-metrics table is LilScript data now (`src/data.lil`), and `version` is a
+LilScript export. The compiler writes the whole module and picks the table's encoding against the
+codec; the build no longer concatenates upstream's data module and a `version` export onto it.
 
 | File | Written by | Raw | Brotli-11 | Previous release | Terser bar | vs bar |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| `dist/katex.esm.js` / `katex.mjs` (npm ESM) | compiler | 274,680 | **62,704** | 64,620 | 63,044 | **−340** |
-| `dist/katex.closed.js` | compiler | 274,680 | 62,704 | 64,755 | 63,044 | −340 |
-| `dist/katex.cjs` | esbuild re-bundle, **not compiler-written** | 272,207 | 63,663 | 65,023 | 63,044 | +619 |
-| `dist/katex.umd.js` / `katex.min.js` | esbuild re-bundle, **not compiler-written** | 272,217 | 63,620 | 65,087 | 63,044 | +576 |
+| `dist/katex.esm.js` / `katex.mjs` (npm ESM) | compiler | 261,313 | **60,281** | 62,704 | 63,044 | **−2,763** |
+| `dist/katex.closed.js` | compiler | 261,313 | 60,281 | 62,704 | 63,044 | −2,763 |
+| `dist/katex.cjs` | post-processed by esbuild, **not compiler-written** (plan M12.2) | 260,037 | 60,962 | 63,663 | 63,044 | −2,082 |
+| `dist/katex.umd.js` / `katex.min.js` | post-processed by esbuild, **not compiler-written** (plan M12.2) | 260,047 | 61,147 | 63,620 | 63,044 | −1,897 |
 
-The core ESM also wins gzip-9 (75,914 against 76,480) and loses raw (274,680 against 267,050): its
-cost model is Brotli. Our files carry a 76-byte licence banner the bar lacks. Other baselines: the
+The core ESM also wins gzip-9 (72,187 against 76,480) and raw (261,313 against 267,050), though its
+cost model is Brotli. Our files carry a 73-byte licence banner the bar lacks. Other baselines: the
 upstream Git source built natively and then assembled through esbuild and Terser gives 63,066; the
-Flow sources through esbuild and Terser give 61,758 (the stretch bar); and katex's npm package
-itself serves `import "katex"` unminified (610,145 raw / 119,059 Brotli-11; the minified
-`katex.min.js`, 62,686, is CDN-only).
+Flow sources through esbuild and Terser give 61,758 (the stretch bar, 1,477 above the core ESM); and
+katex's npm package itself serves `import "katex"` unminified (610,145 raw / 119,059 Brotli-11; the
+minified `katex.min.js`, 62,686, is CDN-only).
 
-The contrib ESM files are compiler-written and lose to Terser of upstream's `dist/contrib/*.mjs`:
-auto-render 1,134 against 1,048, copy-tex 572 against 531, mathtex-script-type 282 against 232,
-mhchem 8,018 against 7,413, render-a11y-string 2,230 against 2,220. Against the previous release
-mhchem is 1,040 smaller and the other four are 13 to 80 bytes larger. Their `.cjs` and `.min.js`
-builds are esbuild re-bundles. The site lists every file with its label.
+The contrib ESM files are compiler-written and still lose to Terser of upstream's `dist/contrib/*.mjs`:
+auto-render 1,113 against 1,048, copy-tex 563 against 531, mathtex-script-type 282 against 232,
+mhchem 8,007 against 7,413, render-a11y-string 2,226 against 2,220. Against the previous release four
+are 4 to 21 bytes smaller and mathtex-script-type is byte-identical. Their `.cjs` and `.min.js`
+builds are post-processed by esbuild, not compiler-written. The site lists every file with its label.
 
-Compile time on the build host (8 vCPU burstable Azure VM), wall clock per compiler process over
-three full builds: the core ESM takes about 4.0 s, and all eight compiles of a build about 9.5 s.
-`scripts/build.mjs` times every invocation into `.tmp/compile-times/`, and
-`node scripts/record-compiler.mjs --revision <rev>` writes them to `site/results.json`.
-Built from source on the same host, three alternating runs each, the whole package build
-(`node scripts/build.mjs --compile --force`) takes 9.58 s median and KaTeX's own `yarn build` takes
-13.00 s median; the records are in `comparison/source-build/`.
+Compile time on the build host (8 vCPU burstable Azure VM, shared with other compiler sessions while
+these ran), wall clock per compiler process over three full builds: the core ESM took 29.2, 34.7 and
+20.2 s, and all eight compiles of a build 71.7, 71.8 and 41.6 s. The previous release's compiler
+took about 4.0 s for the core ESM. `scripts/build.mjs` times every invocation into
+`.tmp/compile-times/`, and `node scripts/record-compiler.mjs --revision <rev>` writes them to
+`site/results.json`. Built from source on the same host, three alternating runs each, the whole
+package build (`node scripts/build.mjs --compile --force`) takes 54.89 s median (42.11–57.03) and
+KaTeX's own `yarn build` takes 14.36 s median (13.50–28.82); the records are in
+`comparison/source-build/`.
 
 ## The site and its receipts
 
@@ -78,10 +85,14 @@ source maps yet, so the site's per-module table is the 2026-09-03 one, marked as
 remeasured.
 
 The root API, CLI, TypeScript declarations, CSS, 60 font files, and all five
-official contrib subpaths mirror KaTeX 0.16.22. `src/fontMetricsData.js` remains
-generated host data: it contains no runtime algorithm or useful type/layout
-information, and embedding its literals in LilScript produces a larger Brotli
-artifact. `npm run audit` checks its values against `katex@0.16.22`. The unicode
+official contrib subpaths mirror KaTeX 0.16.22. The font metrics are LilScript
+data: `src/data.lil` holds upstream's generated table as an object literal, and the
+compiler chooses its encoding against the codec (under Brotli, for this release,
+columns of integers scaled by 10^5 with delta-coded keys). `src/fontMetricsData.js`,
+upstream's generated module, stays as the reference: `npm run audit` checks it
+against `katex@0.16.22` and `scripts/attribute-core.mjs` reads it. The audit does
+not parse `src/data.lil`; for this release its 18 fonts and 2,038 entries were
+compared with `src/fontMetricsData.js` and are identical. The unicode
 symbol table is built at load by `src/unicodeSymbols.lil`, as upstream does. All five contrib implementations,
 including the complete mhchem state machine and render-a11y tree walker, are
 normative `.lil` sources; no runtime `.host.mjs` exception remains.
@@ -104,8 +115,8 @@ package, site, and parity checks. `npm run audit` reports the complete source
 map, generated-data and asset hashes, declaration/export checks, and raw,
 gzip-9, and Brotli-11 sizes for core and contrib artifacts. The library and
 closed artifacts are the compiler's output with no post-compilation minifier; the
-build only concatenates the upstream font-metrics data module and the `version`
-export onto it. `katex.cjs`, `katex.umd.js`, `katex.min.js` and the contrib `.cjs`
+build adds a licence banner and drops internal names from the export list, and
+concatenates nothing onto it. `katex.cjs`, `katex.umd.js`, `katex.min.js` and the contrib `.cjs`
 and `.min.js` files are esbuild re-bundles of the compiler's ESM (the compiler
 writes ES modules and closed scripts, not CommonJS or IIFE bundles), and they are
 labelled as such wherever they are measured.

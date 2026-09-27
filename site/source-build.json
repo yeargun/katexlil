@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "katexlil",
-  "startedAt": "2026-09-24T04:07:29Z",
+  "startedAt": "2026-09-27T10:21:05Z",
   "machine": {
     "provider": "Azure",
     "instanceClass": "Standard_B8als_v2 (burstable)",
@@ -13,19 +13,19 @@
     "node": "v24.11.1",
     "rayonThreads": 8,
     "loadAtStart": [
-      2.42578125,
-      4.14892578125,
-      4.45361328125
+      9.04248046875,
+      7.87255859375,
+      7.79345703125
     ],
     "loadAtEnd": [
-      2.12744140625,
-      3.72900390625,
-      4.28369140625
+      6.947265625,
+      7.77197265625,
+      7.78515625
     ]
   },
   "compiler": {
-    "commit": "aa2052f081ca8184666ca280ee9b91d476e46cfc",
-    "sha256": "13cb49a93fb3e376a5978484835322c84adea692b69ae4720775291377cf18f9"
+    "commit": "a430d5dfd970f321091c642814906269460b11c0",
+    "sha256": "6d307b5fcbdce7e673aa0d48e9465b6e038c38c0cf517fa88f62d436b1fa2d4f"
   },
   "source": {
     "repository": "https://github.com/KaTeX/KaTeX.git",
@@ -35,7 +35,7 @@
     "directory": "."
   },
   "portSource": {
-    "commit": "5eec4fa191c04a63a5cf6aff11dc5a6e23726940"
+    "commit": "07d90d6925ee119a6cf965ed20501e0f5347f7b0"
   },
   "prerequisiteAdjustments": null,
   "steps": {
@@ -48,13 +48,13 @@
         "--mode=skip-build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 3.6276149949990213,
-      "cpuSeconds": 4.983150000000001,
+      "wallSeconds": 1.067707172012888,
+      "cpuSeconds": 1.560931,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-install.log",
-      "logSha256": "da07ff5800947085202f8a6397b27555405066562bf28c1c2f4f0df7569239a0",
-      "tail": "\u27a4 YN0000: \u00b7 Yarn 4.1.1\n\u27a4 YN0000: \u250c Resolution step\n\u27a4 YN0000: \u2514 Completed\n\u27a4 YN0000: \u250c Post-resolution validation\n\u27a4 YN0060: \u2502 stylelint is listed by your project with version 14.16.1, which doesn't satisfy what stylelint-scss (p518d7) requests (^16.0.2).\n\u27a4 YN0086: \u2502 Some peer dependencies are incorrectly met; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code.\n\u27a4 YN0000: \u2514 Completed\n\u27a4 YN0000: \u250c Fetch step\n\u27a4 YN0013: \u2502 1384 packages were added to the project (+ 58.9 MiB).\n\u27a4 YN0000: \u2514 Completed in 1s 88ms\n\u27a4 YN0000: \u250c Link step\n\u27a4 YN0000: \u2502 ESM support for PnP uses the experimental loader API and is therefore experimental\n\u27a4 YN0000: \u2514 Completed in 1s 675ms\n\u27a4 YN0000: \u00b7 Done with warnings in 3s 143ms\n"
+      "logSha256": "b31bf9936e33351fb450454a100b226575956413667d470971d78bb957be77a0",
+      "tail": "\u27a4 YN0000: \u00b7 Yarn 4.1.1\n\u27a4 YN0000: \u250c Resolution step\n\u27a4 YN0000: \u2514 Completed\n\u27a4 YN0000: \u250c Post-resolution validation\n\u27a4 YN0060: \u2502 stylelint is listed by your project with version 14.16.1, which doesn't satisfy what stylelint-scss (p518d7) requests (^16.0.2).\n\u27a4 YN0086: \u2502 Some peer dependencies are incorrectly met; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code.\n\u27a4 YN0000: \u2514 Completed\n\u27a4 YN0000: \u250c Fetch step\n\u27a4 YN0000: \u2514 Completed in 0s 270ms\n\u27a4 YN0000: \u250c Link step\n\u27a4 YN0000: \u2502 ESM support for PnP uses the experimental loader API and is therefore experimental\n\u27a4 YN0000: \u2514 Completed\n\u27a4 YN0000: \u00b7 Done with warnings in 0s 663ms\n"
     },
     "original-build-1": {
       "command": [
@@ -63,13 +63,13 @@
         "build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 14.959664249996422,
-      "cpuSeconds": 26.735823000000003,
+      "wallSeconds": 13.497615194006357,
+      "cpuSeconds": 24.176135000000002,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-build-1.log",
-      "logSha256": "e503cb8ac26b8adc1f6efc38964ff5e737837154b46e76b5a0d413cbd5d554cf",
-      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 7491 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2361 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2865 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2356 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2200 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2352 ms\n"
+      "logSha256": "f5f1cacb4684b092fd6ddc060392423f8a0e32d1fa9e976e05a6813ae27df0ca",
+      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 6683 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2002 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2061 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2587 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2024 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2583 ms\n"
     },
     "lilscript-build-1": {
       "command": [
@@ -78,8 +78,8 @@
         "node scripts/build.mjs --compile --force"
       ],
       "cwd": "port",
-      "wallSeconds": 9.934387939996668,
-      "cpuSeconds": 9.822456999999996,
+      "wallSeconds": 57.027030648023356,
+      "cpuSeconds": 53.707093,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-build-1.log",
@@ -88,131 +88,131 @@
       "invocations": [
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js"
           ],
-          "startedAt": 1790222867.7190242,
-          "wallSeconds": 4.000334739685059,
+          "startedAt": 1790504480.3372712,
+          "wallSeconds": 27.53382706642151,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.closed.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.closed.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js"
           ],
-          "startedAt": 1790222871.7583096,
-          "wallSeconds": 3.98600172996521,
+          "startedAt": 1790504507.9257178,
+          "wallSeconds": 25.810217142105103,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/test/support.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/test/support.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js"
           ],
-          "startedAt": 1790222875.7830412,
-          "wallSeconds": 0.009202957153320312,
+          "startedAt": 1790504533.7984571,
+          "wallSeconds": 0.035730838775634766,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js",
-          "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js",
+          "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
           ],
-          "startedAt": 1790222875.945101,
-          "wallSeconds": 0.019527912139892578,
+          "startedAt": 1790504534.1221223,
+          "wallSeconds": 0.0858316421508789,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
-          "sha256": "998fe2037833dcb0b910370b81e14b9b124f870aa9bf6e5815945baf0bf39a4d"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
+          "sha256": "7ccc713cc217c4060d232480e9c11dcf011c0dbaabb9e9b8b66eda411f7204a8"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
           ],
-          "startedAt": 1790222876.0014882,
-          "wallSeconds": 0.012104034423828125,
+          "startedAt": 1790504534.2694933,
+          "wallSeconds": 0.05426836013793945,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
-          "sha256": "1907d1de936bed96cee6fb8f9e4b4eceed6e812a71614cf4bcecb03d48ce0d13"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
+          "sha256": "1dffa2ee6a190bf9a97da1fe4c8d4ab041382ac5a0feb7ad3f2251d182bb90ba"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
           ],
-          "startedAt": 1790222876.0503974,
-          "wallSeconds": 0.007681846618652344,
+          "startedAt": 1790504534.3781588,
+          "wallSeconds": 0.0199429988861084,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
           "sha256": "95f59593777e7795b6a70f743594485ec217885b73f7be399fd93c6434d36691"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
           ],
-          "startedAt": 1790222876.0956476,
-          "wallSeconds": 1.271876335144043,
+          "startedAt": 1790504534.449669,
+          "wallSeconds": 2.4487955570220947,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
-          "sha256": "5913b1c1cb1797a21873b6935e2798e6b77879ab0d11c44c9b290fe26be3fefb"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
+          "sha256": "9b38dbb614f615789a8132d5fcbfa2b4b673de2fc449ca807e8e170b08fd0a65"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
           ],
-          "startedAt": 1790222877.406123,
-          "wallSeconds": 0.04439377784729004,
+          "startedAt": 1790504536.9600136,
+          "wallSeconds": 0.1932210922241211,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
-          "sha256": "73a45aa91dbf8e5184cfedacf253dfbb506109265d7600fe4e150c4b4270a8b0"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
+          "sha256": "863d654f9691c951c5c470ddb112715a8ffd184eb0fa22e49b7d5cdf4fdf6308"
         }
       ]
     },
@@ -223,8 +223,8 @@
         "node scripts/build.mjs --compile --force"
       ],
       "cwd": "port",
-      "wallSeconds": 9.582402388994524,
-      "cpuSeconds": 9.483118000000005,
+      "wallSeconds": 42.11435307003558,
+      "cpuSeconds": 41.86284299999999,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-build-2.log",
@@ -233,131 +233,131 @@
       "invocations": [
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js"
           ],
-          "startedAt": 1790222877.657901,
-          "wallSeconds": 3.8228073120117188,
+          "startedAt": 1790504537.4328387,
+          "wallSeconds": 21.24880814552307,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.closed.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.closed.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js"
           ],
-          "startedAt": 1790222881.5187361,
-          "wallSeconds": 3.8535099029541016,
+          "startedAt": 1790504558.7281818,
+          "wallSeconds": 18.106537103652954,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/test/support.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/test/support.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js"
           ],
-          "startedAt": 1790222885.4106822,
-          "wallSeconds": 0.008928775787353516,
+          "startedAt": 1790504576.8768878,
+          "wallSeconds": 0.02297806739807129,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js",
-          "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js",
+          "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
           ],
-          "startedAt": 1790222885.57584,
-          "wallSeconds": 0.019068479537963867,
+          "startedAt": 1790504577.0663276,
+          "wallSeconds": 0.054015159606933594,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
-          "sha256": "998fe2037833dcb0b910370b81e14b9b124f870aa9bf6e5815945baf0bf39a4d"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
+          "sha256": "7ccc713cc217c4060d232480e9c11dcf011c0dbaabb9e9b8b66eda411f7204a8"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
           ],
-          "startedAt": 1790222885.6320527,
-          "wallSeconds": 0.012232065200805664,
+          "startedAt": 1790504577.1590543,
+          "wallSeconds": 0.0331730842590332,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
-          "sha256": "1907d1de936bed96cee6fb8f9e4b4eceed6e812a71614cf4bcecb03d48ce0d13"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
+          "sha256": "1dffa2ee6a190bf9a97da1fe4c8d4ab041382ac5a0feb7ad3f2251d182bb90ba"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
           ],
-          "startedAt": 1790222885.6808841,
-          "wallSeconds": 0.006295442581176758,
+          "startedAt": 1790504577.230082,
+          "wallSeconds": 0.01183772087097168,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
           "sha256": "95f59593777e7795b6a70f743594485ec217885b73f7be399fd93c6434d36691"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
           ],
-          "startedAt": 1790222885.7234201,
-          "wallSeconds": 1.2538881301879883,
+          "startedAt": 1790504577.2788596,
+          "wallSeconds": 1.8041210174560547,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
-          "sha256": "5913b1c1cb1797a21873b6935e2798e6b77879ab0d11c44c9b290fe26be3fefb"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
+          "sha256": "9b38dbb614f615789a8132d5fcbfa2b4b673de2fc449ca807e8e170b08fd0a65"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
           ],
-          "startedAt": 1790222887.0147653,
-          "wallSeconds": 0.044384002685546875,
+          "startedAt": 1790504579.12194,
+          "wallSeconds": 0.15339398384094238,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
-          "sha256": "73a45aa91dbf8e5184cfedacf253dfbb506109265d7600fe4e150c4b4270a8b0"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
+          "sha256": "863d654f9691c951c5c470ddb112715a8ffd184eb0fa22e49b7d5cdf4fdf6308"
         }
       ]
     },
@@ -368,13 +368,13 @@
         "build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 12.99495774499519,
-      "cpuSeconds": 24.020040999999996,
+      "wallSeconds": 14.358363304985687,
+      "cpuSeconds": 25.530260000000002,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-build-2.log",
-      "logSha256": "58a458febcafc4e85d47e033c58077310a3ac8792f8085adffbfad1bdc8f5f00",
-      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 6326 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2227 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2225 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2224 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1911 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1910 ms\n"
+      "logSha256": "f17be859e453739fe021d71fc5a113c65c4a52553aacb639ba50bddd035b0819",
+      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 7657 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2595 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2594 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2212 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2211 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2216 ms\n"
     },
     "original-build-3": {
       "command": [
@@ -383,13 +383,13 @@
         "build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 12.998229661003279,
-      "cpuSeconds": 24.05903300000001,
+      "wallSeconds": 28.81580462300917,
+      "cpuSeconds": 34.98828399999998,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-build-3.log",
-      "logSha256": "e900789426ee3d5834bc6624035fb3aba22a7346b8d6892dbe35ac1262582fdd",
-      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 6424 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1914 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1913 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1910 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1907 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1907 ms\n"
+      "logSha256": "31d71617468cf2cbd1ba0ae5baeb1b60e1df5e0cd781c76e9a1263a1061d65f6",
+      "tail": "4.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 15063 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5195 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5192 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5189 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5180 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5178 ms\n"
     },
     "lilscript-build-3": {
       "command": [
@@ -398,8 +398,8 @@
         "node scripts/build.mjs --compile --force"
       ],
       "cwd": "port",
-      "wallSeconds": 9.58257035400311,
-      "cpuSeconds": 9.497161000000009,
+      "wallSeconds": 54.88805258600041,
+      "cpuSeconds": 50.379039000000006,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-build-3.log",
@@ -408,144 +408,144 @@
       "invocations": [
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js"
           ],
-          "startedAt": 1790222913.239607,
-          "wallSeconds": 3.855098247528076,
+          "startedAt": 1790504622.8276331,
+          "wallSeconds": 31.37853455543518,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.closed.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.closed.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js"
           ],
-          "startedAt": 1790222917.1343157,
-          "wallSeconds": 3.824521780014038,
+          "startedAt": 1790504654.2500541,
+          "wallSeconds": 20.264968156814575,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/test/support.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/test/support.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js"
           ],
-          "startedAt": 1790222920.996054,
-          "wallSeconds": 0.009029626846313477,
+          "startedAt": 1790504674.563852,
+          "wallSeconds": 0.023894548416137695,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js",
-          "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js",
+          "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
           ],
-          "startedAt": 1790222921.1593862,
-          "wallSeconds": 0.01906561851501465,
+          "startedAt": 1790504674.8126292,
+          "wallSeconds": 0.08104705810546875,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
-          "sha256": "998fe2037833dcb0b910370b81e14b9b124f870aa9bf6e5815945baf0bf39a4d"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
+          "sha256": "7ccc713cc217c4060d232480e9c11dcf011c0dbaabb9e9b8b66eda411f7204a8"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
           ],
-          "startedAt": 1790222921.2145355,
-          "wallSeconds": 0.012137651443481445,
+          "startedAt": 1790504674.9436862,
+          "wallSeconds": 0.04721879959106445,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
-          "sha256": "1907d1de936bed96cee6fb8f9e4b4eceed6e812a71614cf4bcecb03d48ce0d13"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
+          "sha256": "1dffa2ee6a190bf9a97da1fe4c8d4ab041382ac5a0feb7ad3f2251d182bb90ba"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
           ],
-          "startedAt": 1790222921.2651682,
-          "wallSeconds": 0.0064280033111572266,
+          "startedAt": 1790504675.0454905,
+          "wallSeconds": 0.012752532958984375,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
           "sha256": "95f59593777e7795b6a70f743594485ec217885b73f7be399fd93c6434d36691"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
           ],
-          "startedAt": 1790222921.3081396,
-          "wallSeconds": 1.2630207538604736,
+          "startedAt": 1790504675.1027794,
+          "wallSeconds": 2.0617001056671143,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
-          "sha256": "5913b1c1cb1797a21873b6935e2798e6b77879ab0d11c44c9b290fe26be3fefb"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
+          "sha256": "9b38dbb614f615789a8132d5fcbfa2b4b673de2fc449ca807e8e170b08fd0a65"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
           ],
-          "startedAt": 1790222922.6095273,
-          "wallSeconds": 0.04442310333251953,
+          "startedAt": 1790504677.206239,
+          "wallSeconds": 0.16577506065368652,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
-          "sha256": "73a45aa91dbf8e5184cfedacf253dfbb506109265d7600fe4e150c4b4270a8b0"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
+          "sha256": "863d654f9691c951c5c470ddb112715a8ffd184eb0fa22e49b7d5cdf4fdf6308"
         }
       ]
     },
     "original-esm": {
       "command": [
         "node",
-        "/home/azureuser/lilscript-work/releases/katexlil/source-build/tools/source-esm.mjs",
-        "/home/azureuser/lilscript-work/releases/katexlil/source-build",
+        "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/tools/source-esm.mjs",
+        "/home/azureuser/lilscript-work/releases/katexlil-d/source-build",
         "katexlil"
       ],
       "cwd": "upstream",
-      "wallSeconds": 7.579094786000496,
-      "cpuSeconds": 10.494195999999995,
+      "wallSeconds": 9.495334433973767,
+      "cpuSeconds": 12.869400000000013,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-esm.log",
@@ -559,13 +559,13 @@
         "node --test test/*.test.mjs && node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/official/jest.config.mjs --runInBand"
       ],
       "cwd": "port",
-      "wallSeconds": 8.934654609998688,
-      "cpuSeconds": 11.344538,
+      "wallSeconds": 11.399528709007427,
+      "cpuSeconds": 13.68198999999998,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-tests.log",
-      "logSha256": "8ebaca3280e10dbfcbb54133429fc2cad6d5b96e5ecffe27bbae658c045689c8",
-      "tail": "Chromium 151.0.7922.34: @itslil/katex median 5.00 ms, katex@0.16.22 median 4.40 ms, ratio 1.136; parity 30/30\n\u25b6 browser performance (Playwright, Chromium)\n  \u2714 renders the corpus identically and within the regression guard rail (634.158576ms)\n\u2714 browser performance (Playwright, Chromium) (635.194516ms)\n\u25b6 contrib LilScript parity\n  \u2714 contains no runtime JavaScript host modules (1.159342ms)\n  \u2714 matches official render-a11y-string outputs and errors (78.618318ms)\n  \u2714 matches official mhchem rendering across parser state machines (75.308697ms)\n\u2714 contrib LilScript parity (156.613278ms)\n\u25b6 @itslil/katex\n  \u2714 renders x^2 with MathML and HTML (31.169512ms)\n  \u2714 renders frac (1.938723ms)\n  \u2714 matches the upstream root exports (1.607593ms)\n  \u2714 honors throwOnError and errorColor (1.871346ms)\n  \u2714 pins option keys on the library artifact (1.85698ms)\n  \u2714 render appends a DOM tree and covers the TeX surface (11.835567ms)\n  \u2714 closed artifact performs the core call (36.536399ms)\n\u2714 @itslil/katex (92.106695ms)\n\u25b6 published surface\n  \u2714 reports the pinned upstream version in ESM, CJS, and the CLI (171.396922ms)\n  \u2714 matches pinned upstream root and contrib export keys (45.333141ms)\n  \u2714 renders stdin through the CLI (89.667171ms)\n  \u2714 loads ESM and CommonJS contrib entry points (2.230068ms)\n  \u2714 loads browser builds as classic scripts (43.815327ms)\n  \u2714 matches official mhchem output (41.657575ms)\n  \u2714 matches official output across the screenshot corpus (300.583518ms)\n\u2714 published surface (696.140421ms)\n\u25b6 site\n  \u2714 has a markedlil-style lab with receipts (1.373854ms)\n  \u2714 ships the benchmark page and the corpus it shares with Node (1.262045ms)\n  \u2714 publishes results that name their sources and both worlds (1.063623ms)\n\u2714 site (5.213148ms)\n\u2139 tests 21\n\u2139 suites 5\n\u2139 pass 21\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1191.013424\n(node:2440482) ExperimentalWarning: VM Modules is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS test/official/katex-spec.js\nPASS test/official/contrib/render-a11y-string-spec.js\nPASS test/official/errors-spec.js\nPASS test/official/contrib/auto-render-spec.js\nPASS test/official/unicode-spec.js\nPASS test/official/mathml-spec.js\nPASS test/official/screenshotter-spec.js\nPASS test/official/dup-spec.js\n\nTest Suites: 8 passed, 8 total\nTests:       1230 passed, 1230 total\nSnapshots:   123 passed, 123 total\nTime:        7.214 s\nRan all test suites.\n"
+      "logSha256": "36add88cd1c733e98742d5cd26cdbc190ac9743f247eb040b958f6826756aec0",
+      "tail": "Built GitHub Pages site at /home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/_site\nUnpublished build: the release's comparison facts are left out\nChromium 151.0.7922.34: @itslil/katex median 6.80 ms, katex@0.16.22 median 6.10 ms, ratio 1.115; parity 30/30\n\u25b6 browser performance (Playwright, Chromium)\n  \u2714 renders the corpus identically and within the regression guard rail (1046.1433ms)\n\u2714 browser performance (Playwright, Chromium) (1047.388093ms)\n\u25b6 contrib LilScript parity\n  \u2714 contains no runtime JavaScript host modules (0.86436ms)\n  \u2714 matches official render-a11y-string outputs and errors (92.370924ms)\n  \u2714 matches official mhchem rendering across parser state machines (110.52776ms)\n\u2714 contrib LilScript parity (204.975676ms)\n\u25b6 @itslil/katex\n  \u2714 renders x^2 with MathML and HTML (43.453516ms)\n  \u2714 renders frac (3.834828ms)\n  \u2714 matches the upstream root exports (2.141965ms)\n  \u2714 honors throwOnError and errorColor (3.496084ms)\n  \u2714 pins option keys on the library artifact (1.387572ms)\n  \u2714 render appends a DOM tree and covers the TeX surface (16.923763ms)\n  \u2714 closed artifact performs the core call (39.774107ms)\n\u2714 @itslil/katex (112.867221ms)\n\u25b6 published surface\n  \u2714 reports the pinned upstream version in ESM, CJS, and the CLI (233.926247ms)\n  \u2714 matches pinned upstream root and contrib export keys (54.707256ms)\n  \u2714 renders stdin through the CLI (94.585819ms)\n  \u2714 loads ESM and CommonJS contrib entry points (2.261539ms)\n  \u2714 loads browser builds as classic scripts (56.702406ms)\n  \u2714 matches official mhchem output (49.668631ms)\n  \u2714 matches official output across the screenshot corpus (329.295836ms)\n\u2714 published surface (823.041563ms)\n\u25b6 site\n  \u2714 has a markedlil-style lab with receipts (1.419601ms)\n  \u2714 ships the benchmark page and the corpus it shares with Node (1.311608ms)\n  \u2714 publishes results that name their sources and both worlds (1.034439ms)\n\u2714 site (5.272823ms)\n\u2139 tests 21\n\u2139 suites 5\n\u2139 pass 21\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1744.578006\n(node:2058227) ExperimentalWarning: VM Modules is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS test/official/katex-spec.js\nPASS test/official/contrib/render-a11y-string-spec.js\nPASS test/official/errors-spec.js\nPASS test/official/contrib/auto-render-spec.js\nPASS test/official/unicode-spec.js (6.033 s)\nPASS test/official/mathml-spec.js\nPASS test/official/screenshotter-spec.js\nPASS test/official/dup-spec.js\n\nTest Suites: 8 passed, 8 total\nTests:       1230 passed, 1230 total\nSnapshots:   123 passed, 123 total\nTime:        8.919 s\nRan all test suites.\n"
     }
   },
   "nativeBuilds": [
@@ -576,13 +576,13 @@
         "build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 14.959664249996422,
-      "cpuSeconds": 26.735823000000003,
+      "wallSeconds": 13.497615194006357,
+      "cpuSeconds": 24.176135000000002,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-build-1.log",
-      "logSha256": "e503cb8ac26b8adc1f6efc38964ff5e737837154b46e76b5a0d413cbd5d554cf",
-      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 7491 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2361 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2865 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2356 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2200 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2352 ms\n"
+      "logSha256": "f5f1cacb4684b092fd6ddc060392423f8a0e32d1fa9e976e05a6813ae27df0ca",
+      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 6683 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2002 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2061 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2587 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2024 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2583 ms\n"
     },
     {
       "command": [
@@ -591,13 +591,13 @@
         "build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 12.99495774499519,
-      "cpuSeconds": 24.020040999999996,
+      "wallSeconds": 14.358363304985687,
+      "cpuSeconds": 25.530260000000002,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-build-2.log",
-      "logSha256": "58a458febcafc4e85d47e033c58077310a3ac8792f8085adffbfad1bdc8f5f00",
-      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 6326 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2227 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2225 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2224 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1911 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1910 ms\n"
+      "logSha256": "f17be859e453739fe021d71fc5a113c65c4a52553aacb639ba50bddd035b0819",
+      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 7657 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2595 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2594 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2212 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2211 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 2216 ms\n"
     },
     {
       "command": [
@@ -606,13 +606,13 @@
         "build"
       ],
       "cwd": "upstream",
-      "wallSeconds": 12.998229661003279,
-      "cpuSeconds": 24.05903300000001,
+      "wallSeconds": 28.81580462300917,
+      "cpuSeconds": 34.98828399999998,
       "exitCode": 0,
       "timedOut": false,
       "log": "original-build-3.log",
-      "logSha256": "e900789426ee3d5834bc6624035fb3aba22a7346b8d6892dbe35ac1262582fdd",
-      "tail": "24.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 6424 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1914 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1913 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1910 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1907 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 1907 ms\n"
+      "logSha256": "31d71617468cf2cbd1ba0ae5baeb1b60e1df5e0cd781c76e9a1263a1061d65f6",
+      "tail": "4.9 KiB (css/mini-extract)\n  \u001b[1m./katex.webpack.js + 86 modules\u001b[39m\u001b[22m 617 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  css ./.yarn/__virtual__/css-loader-virtual-ee879bf828/0/cache/css-loader-npm-6.10.0-5561e0c62e-1abd52e24a.zip/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./.yarn/__virtual__/postcss-loader-virtual-199470d063/0/cache/postcss-loader-npm-7.0.1-444ecd58b4-575c86eb2e.zip/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./.yarn/__virtual__/sass-loader-virtual-c2e3acdacc/0/cache/sass-loader-npm-14.2.1-dc50026ea1-9cb864fd8d.zip/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[3]!\u001b[1m./src/styles/katex.scss\u001b[39m\u001b[22m 24.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 15063 ms\n\nasset \u001b[1m\u001b[32mcontrib/auto-render.min.js\u001b[39m\u001b[22m 3.39 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/auto-render)\nruntime modules 718 bytes 3 modules\norphan modules 1.93 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\nbuilt modules 6.71 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/auto-render/auto-render.js + 1 modules\u001b[39m\u001b[22m 6.67 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5195 ms\n\nasset \u001b[1m\u001b[32mcontrib/mhchem.min.js\u001b[39m\u001b[22m 32.9 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mhchem)\nruntime modules 718 bytes 3 modules\nbuilt modules 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mhchem/mhchem.js\u001b[39m\u001b[22m 73.4 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5192 ms\n\nasset \u001b[1m\u001b[32mcontrib/copy-tex.min.js\u001b[39m\u001b[22m 1.63 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/copy-tex)\norphan modules 2.04 KiB \u001b[1m\u001b[33m[orphan]\u001b[39m\u001b[22m 1 module\n\u001b[1m./contrib/copy-tex/copy-tex.js + 1 modules\u001b[39m\u001b[22m 3.73 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5189 ms\n\nasset \u001b[1m\u001b[32mcontrib/mathtex-script-type.min.js\u001b[39m\u001b[22m 1.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/mathtex-script-type)\nruntime modules 718 bytes 3 modules\nbuilt modules 788 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/mathtex-script-type/mathtex-script-type.js\u001b[39m\u001b[22m 746 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5180 ms\n\nasset \u001b[1m\u001b[32mcontrib/render-a11y-string.min.js\u001b[39m\u001b[22m 8.26 KiB \u001b[1m\u001b[32m[emitted]\u001b[39m\u001b[22m \u001b[1m\u001b[32m[minimized]\u001b[39m\u001b[22m (name: contrib/render-a11y-string)\nruntime modules 718 bytes 3 modules\nbuilt modules 20 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m\n  \u001b[1m./contrib/render-a11y-string/render-a11y-string.js\u001b[39m\u001b[22m 19.9 KiB \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\n  \u001b[1mexternal \"katex\"\u001b[39m\u001b[22m 42 bytes \u001b[1m\u001b[33m[built]\u001b[39m\u001b[22m \u001b[1m\u001b[33m[code generated]\u001b[39m\u001b[22m\nwebpack 5.94.0 compiled \u001b[1m\u001b[32msuccessfully\u001b[39m\u001b[22m in 5178 ms\n"
     }
   ],
   "lilscriptBuilds": [
@@ -623,8 +623,8 @@
         "node scripts/build.mjs --compile --force"
       ],
       "cwd": "port",
-      "wallSeconds": 9.934387939996668,
-      "cpuSeconds": 9.822456999999996,
+      "wallSeconds": 57.027030648023356,
+      "cpuSeconds": 53.707093,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-build-1.log",
@@ -633,131 +633,131 @@
       "invocations": [
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js"
           ],
-          "startedAt": 1790222867.7190242,
-          "wallSeconds": 4.000334739685059,
+          "startedAt": 1790504480.3372712,
+          "wallSeconds": 27.53382706642151,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.closed.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.closed.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js"
           ],
-          "startedAt": 1790222871.7583096,
-          "wallSeconds": 3.98600172996521,
+          "startedAt": 1790504507.9257178,
+          "wallSeconds": 25.810217142105103,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/test/support.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/test/support.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js"
           ],
-          "startedAt": 1790222875.7830412,
-          "wallSeconds": 0.009202957153320312,
+          "startedAt": 1790504533.7984571,
+          "wallSeconds": 0.035730838775634766,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js",
-          "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js",
+          "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
           ],
-          "startedAt": 1790222875.945101,
-          "wallSeconds": 0.019527912139892578,
+          "startedAt": 1790504534.1221223,
+          "wallSeconds": 0.0858316421508789,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
-          "sha256": "998fe2037833dcb0b910370b81e14b9b124f870aa9bf6e5815945baf0bf39a4d"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
+          "sha256": "7ccc713cc217c4060d232480e9c11dcf011c0dbaabb9e9b8b66eda411f7204a8"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
           ],
-          "startedAt": 1790222876.0014882,
-          "wallSeconds": 0.012104034423828125,
+          "startedAt": 1790504534.2694933,
+          "wallSeconds": 0.05426836013793945,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
-          "sha256": "1907d1de936bed96cee6fb8f9e4b4eceed6e812a71614cf4bcecb03d48ce0d13"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
+          "sha256": "1dffa2ee6a190bf9a97da1fe4c8d4ab041382ac5a0feb7ad3f2251d182bb90ba"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
           ],
-          "startedAt": 1790222876.0503974,
-          "wallSeconds": 0.007681846618652344,
+          "startedAt": 1790504534.3781588,
+          "wallSeconds": 0.0199429988861084,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
           "sha256": "95f59593777e7795b6a70f743594485ec217885b73f7be399fd93c6434d36691"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
           ],
-          "startedAt": 1790222876.0956476,
-          "wallSeconds": 1.271876335144043,
+          "startedAt": 1790504534.449669,
+          "wallSeconds": 2.4487955570220947,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
-          "sha256": "5913b1c1cb1797a21873b6935e2798e6b77879ab0d11c44c9b290fe26be3fefb"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
+          "sha256": "9b38dbb614f615789a8132d5fcbfa2b4b673de2fc449ca807e8e170b08fd0a65"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
           ],
-          "startedAt": 1790222877.406123,
-          "wallSeconds": 0.04439377784729004,
+          "startedAt": 1790504536.9600136,
+          "wallSeconds": 0.1932210922241211,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
-          "sha256": "73a45aa91dbf8e5184cfedacf253dfbb506109265d7600fe4e150c4b4270a8b0"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
+          "sha256": "863d654f9691c951c5c470ddb112715a8ffd184eb0fa22e49b7d5cdf4fdf6308"
         }
       ]
     },
@@ -768,8 +768,8 @@
         "node scripts/build.mjs --compile --force"
       ],
       "cwd": "port",
-      "wallSeconds": 9.582402388994524,
-      "cpuSeconds": 9.483118000000005,
+      "wallSeconds": 42.11435307003558,
+      "cpuSeconds": 41.86284299999999,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-build-2.log",
@@ -778,131 +778,131 @@
       "invocations": [
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js"
           ],
-          "startedAt": 1790222877.657901,
-          "wallSeconds": 3.8228073120117188,
+          "startedAt": 1790504537.4328387,
+          "wallSeconds": 21.24880814552307,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.closed.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.closed.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js"
           ],
-          "startedAt": 1790222881.5187361,
-          "wallSeconds": 3.8535099029541016,
+          "startedAt": 1790504558.7281818,
+          "wallSeconds": 18.106537103652954,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/test/support.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/test/support.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js"
           ],
-          "startedAt": 1790222885.4106822,
-          "wallSeconds": 0.008928775787353516,
+          "startedAt": 1790504576.8768878,
+          "wallSeconds": 0.02297806739807129,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js",
-          "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js",
+          "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
           ],
-          "startedAt": 1790222885.57584,
-          "wallSeconds": 0.019068479537963867,
+          "startedAt": 1790504577.0663276,
+          "wallSeconds": 0.054015159606933594,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
-          "sha256": "998fe2037833dcb0b910370b81e14b9b124f870aa9bf6e5815945baf0bf39a4d"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
+          "sha256": "7ccc713cc217c4060d232480e9c11dcf011c0dbaabb9e9b8b66eda411f7204a8"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
           ],
-          "startedAt": 1790222885.6320527,
-          "wallSeconds": 0.012232065200805664,
+          "startedAt": 1790504577.1590543,
+          "wallSeconds": 0.0331730842590332,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
-          "sha256": "1907d1de936bed96cee6fb8f9e4b4eceed6e812a71614cf4bcecb03d48ce0d13"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
+          "sha256": "1dffa2ee6a190bf9a97da1fe4c8d4ab041382ac5a0feb7ad3f2251d182bb90ba"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
           ],
-          "startedAt": 1790222885.6808841,
-          "wallSeconds": 0.006295442581176758,
+          "startedAt": 1790504577.230082,
+          "wallSeconds": 0.01183772087097168,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
           "sha256": "95f59593777e7795b6a70f743594485ec217885b73f7be399fd93c6434d36691"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
           ],
-          "startedAt": 1790222885.7234201,
-          "wallSeconds": 1.2538881301879883,
+          "startedAt": 1790504577.2788596,
+          "wallSeconds": 1.8041210174560547,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
-          "sha256": "5913b1c1cb1797a21873b6935e2798e6b77879ab0d11c44c9b290fe26be3fefb"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
+          "sha256": "9b38dbb614f615789a8132d5fcbfa2b4b673de2fc449ca807e8e170b08fd0a65"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
           ],
-          "startedAt": 1790222887.0147653,
-          "wallSeconds": 0.044384002685546875,
+          "startedAt": 1790504579.12194,
+          "wallSeconds": 0.15339398384094238,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
-          "sha256": "73a45aa91dbf8e5184cfedacf253dfbb506109265d7600fe4e150c4b4270a8b0"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
+          "sha256": "863d654f9691c951c5c470ddb112715a8ffd184eb0fa22e49b7d5cdf4fdf6308"
         }
       ]
     },
@@ -913,8 +913,8 @@
         "node scripts/build.mjs --compile --force"
       ],
       "cwd": "port",
-      "wallSeconds": 9.58257035400311,
-      "cpuSeconds": 9.497161000000009,
+      "wallSeconds": 54.88805258600041,
+      "cpuSeconds": 50.379039000000006,
       "exitCode": 0,
       "timedOut": false,
       "log": "lilscript-build-3.log",
@@ -923,131 +923,131 @@
       "invocations": [
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js"
           ],
-          "startedAt": 1790222913.239607,
-          "wallSeconds": 3.855098247528076,
+          "startedAt": 1790504622.8276331,
+          "wallSeconds": 31.37853455543518,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/src/entry.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/src/entry.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.closed.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.closed.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js"
           ],
-          "startedAt": 1790222917.1343157,
-          "wallSeconds": 3.824521780014038,
+          "startedAt": 1790504654.2500541,
+          "wallSeconds": 20.264968156814575,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.closed.raw.js",
-          "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.closed.raw.js",
+          "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/test/support.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/test/support.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js"
           ],
-          "startedAt": 1790222920.996054,
-          "wallSeconds": 0.009029626846313477,
+          "startedAt": 1790504674.563852,
+          "wallSeconds": 0.023894548416137695,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/katex.contrib-test.js",
-          "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/katex.contrib-test.js",
+          "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/auto-render/auto-render.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs"
           ],
-          "startedAt": 1790222921.1593862,
-          "wallSeconds": 0.01906561851501465,
+          "startedAt": 1790504674.8126292,
+          "wallSeconds": 0.08104705810546875,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
-          "sha256": "998fe2037833dcb0b910370b81e14b9b124f870aa9bf6e5815945baf0bf39a4d"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/auto-render.raw.mjs",
+          "sha256": "7ccc713cc217c4060d232480e9c11dcf011c0dbaabb9e9b8b66eda411f7204a8"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/copy-tex/copy-tex.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs"
           ],
-          "startedAt": 1790222921.2145355,
-          "wallSeconds": 0.012137651443481445,
+          "startedAt": 1790504674.9436862,
+          "wallSeconds": 0.04721879959106445,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
-          "sha256": "1907d1de936bed96cee6fb8f9e4b4eceed6e812a71614cf4bcecb03d48ce0d13"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/copy-tex.raw.mjs",
+          "sha256": "1dffa2ee6a190bf9a97da1fe4c8d4ab041382ac5a0feb7ad3f2251d182bb90ba"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs"
           ],
-          "startedAt": 1790222921.2651682,
-          "wallSeconds": 0.0064280033111572266,
+          "startedAt": 1790504675.0454905,
+          "wallSeconds": 0.012752532958984375,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mathtex-script-type.raw.mjs",
           "sha256": "95f59593777e7795b6a70f743594485ec217885b73f7be399fd93c6434d36691"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/mhchem/mhchem.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs"
           ],
-          "startedAt": 1790222921.3081396,
-          "wallSeconds": 1.2630207538604736,
+          "startedAt": 1790504675.1027794,
+          "wallSeconds": 2.0617001056671143,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
-          "sha256": "5913b1c1cb1797a21873b6935e2798e6b77879ab0d11c44c9b290fe26be3fefb"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/mhchem.raw.mjs",
+          "sha256": "9b38dbb614f615789a8132d5fcbfa2b4b673de2fc449ca807e8e170b08fd0a65"
         },
         {
           "args": [
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
             "--target",
             "js-module",
             "--config",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/lilscript.toml",
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/lilscript.toml",
             "-o",
-            "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
+            "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs"
           ],
-          "startedAt": 1790222922.6095273,
-          "wallSeconds": 0.04442310333251953,
+          "startedAt": 1790504677.206239,
+          "wallSeconds": 0.16577506065368652,
           "exitCode": 0,
-          "output": "/home/azureuser/lilscript-work/releases/katexlil/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
-          "sha256": "73a45aa91dbf8e5184cfedacf253dfbb506109265d7600fe4e150c4b4270a8b0"
+          "output": "/home/azureuser/lilscript-work/releases/katexlil-d/source-build/ports/katexlil/dist/contrib/render-a11y-string.raw.mjs",
+          "sha256": "863d654f9691c951c5c470ddb112715a8ffd184eb0fa22e49b7d5cdf4fdf6308"
         }
       ]
     }
@@ -1072,19 +1072,19 @@
     "external": [],
     "samples": [
       {
-        "bundleSeconds": 0.10797323399999999,
-        "wallSeconds": 1.63926158
+        "bundleSeconds": 0.13659986899999998,
+        "wallSeconds": 2.149306907
       },
       {
-        "bundleSeconds": 0.0870679869999999,
-        "wallSeconds": 1.261765296
+        "bundleSeconds": 0.13269201500000008,
+        "wallSeconds": 1.618258691
       },
       {
-        "bundleSeconds": 0.09037431199999992,
-        "wallSeconds": 1.3328593530000004
+        "bundleSeconds": 0.12381714499999998,
+        "wallSeconds": 1.7239872320000005
       }
     ],
-    "medianSeconds": 1.3328593530000004,
+    "medianSeconds": 1.7239872320000005,
     "toolchain": {
       "esbuild": "0.28.1",
       "terser": "5.51.2"
@@ -1127,101 +1127,94 @@
   "lilscriptArtifacts": [
     {
       "path": "dist/katex.closed.js",
-      "raw": 274680,
-      "gzip9": 75914,
-      "brotli11": 62704,
-      "sha256": "f31cd3e9736d7205623b5d4ac20765bfd19515f71f6361902f007b8f6dcd9479"
+      "raw": 261313,
+      "gzip9": 72187,
+      "brotli11": 60281,
+      "sha256": "e9f45f9c36be3a3c8562ad747da22ce8550d9c74a1ccb7f253ab0090c3f68950"
     },
     {
       "path": "dist/katex.cjs",
-      "raw": 272207,
-      "gzip9": 76483,
-      "brotli11": 63663,
-      "sha256": "27bf99f4251a0ed2ade45646c3b2c53dfe72be542ca950da69b72c38c75a8c85"
-    },
-    {
-      "path": "dist/fontMetricsData.js",
-      "raw": 57656,
-      "gzip9": 11320,
-      "brotli11": 9209,
-      "sha256": "0f095095723f7cdeef08ed3a8a0ee3b28be8a5421a165289c70f516dbbcc84d8"
+      "raw": 260037,
+      "gzip9": 72679,
+      "brotli11": 60962,
+      "sha256": "8f8eff3561f54027a50671661ce6ba44bc4060731ccc453308bf3cab48a01482"
     },
     {
       "path": "dist/katex.closed.raw.js",
-      "raw": 217090,
-      "gzip9": 63971,
-      "brotli11": 53350,
-      "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+      "raw": 261389,
+      "gzip9": 72201,
+      "brotli11": 60169,
+      "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
     },
     {
       "path": "dist/katex.mjs",
-      "raw": 274680,
-      "gzip9": 75914,
-      "brotli11": 62704,
-      "sha256": "f31cd3e9736d7205623b5d4ac20765bfd19515f71f6361902f007b8f6dcd9479"
+      "raw": 261313,
+      "gzip9": 72187,
+      "brotli11": 60281,
+      "sha256": "e9f45f9c36be3a3c8562ad747da22ce8550d9c74a1ccb7f253ab0090c3f68950"
     },
     {
       "path": "dist/katex.esm.js",
-      "raw": 274680,
-      "gzip9": 75914,
-      "brotli11": 62704,
-      "sha256": "f31cd3e9736d7205623b5d4ac20765bfd19515f71f6361902f007b8f6dcd9479"
+      "raw": 261313,
+      "gzip9": 72187,
+      "brotli11": 60281,
+      "sha256": "e9f45f9c36be3a3c8562ad747da22ce8550d9c74a1ccb7f253ab0090c3f68950"
     },
     {
       "path": "dist/katex.contrib-test.js",
-      "raw": 787,
-      "gzip9": 437,
-      "brotli11": 394,
-      "sha256": "ee7abb8f6c57dc1252aeb7c4fd54d6a50f50bcdf8c1f50488049e3f480745df6"
+      "raw": 774,
+      "gzip9": 439,
+      "brotli11": 390,
+      "sha256": "6f5975b53f5fa0282679306f2cb051300bd76a446359862afc4f76284a3b1cc3"
     },
     {
       "path": "dist/katex.min.js",
-      "raw": 272217,
-      "gzip9": 76489,
-      "brotli11": 63620,
-      "sha256": "fe4389b4c9039bc6298ae0889bff38607b5df2b39ff4f0ab7664c81bb2a291f6"
+      "raw": 260047,
+      "gzip9": 72680,
+      "brotli11": 61147,
+      "sha256": "2ce54461806bc87ea6676330f3ad388064470d0d019199c4d64501246156d5f2"
     },
     {
       "path": "dist/katex.test.js",
-      "raw": 274830,
-      "gzip9": 75983,
-      "brotli11": 62804,
-      "sha256": "86f8a39366d6074824f088efb293952704707f594814e3c4caae9d122ff0a6a6"
+      "raw": 261463,
+      "gzip9": 72255,
+      "brotli11": 60242,
+      "sha256": "e795bfb733640928a5bb7d5f90a635cc98a859178e9e5f999ee89611eb3d0452"
     },
     {
       "path": "dist/katex.raw.js",
-      "raw": 217090,
-      "gzip9": 63971,
-      "brotli11": 53350,
-      "sha256": "955c45b1bf9817720cd54f7cfaf5e9d149675c6151d5ffb519f4574072a3d930"
+      "raw": 261389,
+      "gzip9": 72201,
+      "brotli11": 60169,
+      "sha256": "1c51050264fc382da83688e971288cd7915460ea373a530f4c401201febc6c4d"
     },
     {
       "path": "dist/katex.umd.js",
-      "raw": 272217,
-      "gzip9": 76489,
-      "brotli11": 63620,
-      "sha256": "fe4389b4c9039bc6298ae0889bff38607b5df2b39ff4f0ab7664c81bb2a291f6"
+      "raw": 260047,
+      "gzip9": 72680,
+      "brotli11": 61147,
+      "sha256": "2ce54461806bc87ea6676330f3ad388064470d0d019199c4d64501246156d5f2"
     },
     {
       "path": "dist/contrib/mhchem.cjs",
-      "raw": 37551,
-      "gzip9": 9569,
-      "brotli11": 8613,
-      "sha256": "17f8257c7ffad902c51b343abd264e9a4d16227ee68a4454fa114e2dd22b7d71"
+      "raw": 37526,
+      "gzip9": 9565,
+      "brotli11": 8590,
+      "sha256": "a316fd565eb005298d7717fad554a23a0ae9b9577f954e0d0c7162dff0000d1e"
     },
     {
       "path": "dist/contrib/copy-tex.cjs",
-      "raw": 1498,
-      "gzip9": 718,
-      "brotli11": 601,
-      "sha256": "46b13de843d3e7c9cc2cb86b97055c5c3fadd9b91013fe98fbf3752792ca4a28"
+      "raw": 1469,
+      "gzip9": 716,
+      "brotli11": 615,
+      "sha256": "700f58f9a8f0017337f3e873a9b6b7a48bfc1a93fde2c3d201a2f9443a702acd"
     },
     {
       "path": "dist/contrib/copy-tex.min.js",
       "raw": 1400,
       "gzip9": 688,
-      "brotli11": 592,
-      "sha256": "411ee332fea87ff680df1cf2840c3addc08301ccd52aa2870348d94d4e3d5cf6"
+      "brotli11": 589,
+      "sha256": "8c5073621779e0456fc05ee2e471d3f750304fe1cbcf35825745b7191c060245"
     },
     {
       "path": "dist/contrib/mathtex-script-type.cjs",
@@ -1232,17 +1225,17 @@
     },
     {
       "path": "dist/contrib/copy-tex.mjs",
-      "raw": 1428,
-      "gzip9": 678,
-      "brotli11": 572,
-      "sha256": "a86a2d5e9e21148962c6142ebf5bf3cc549e00154befeb5998ea07a9f9c269e6"
+      "raw": 1399,
+      "gzip9": 676,
+      "brotli11": 563,
+      "sha256": "80c5f5efdb99ab31911bb0a7dec0076911d9d66fccb145e09b9ca234c304cbed"
     },
     {
       "path": "dist/contrib/render-a11y-string.cjs",
-      "raw": 9846,
-      "gzip9": 2984,
-      "brotli11": 2712,
-      "sha256": "013181640c79d3bc734a34ff7633a95c56aa708ed3dbb94f29b854b0ce14f0fc"
+      "raw": 9747,
+      "gzip9": 2982,
+      "brotli11": 2713,
+      "sha256": "4e42e4852573c00d4f2c30db0d1f59b0e62aae06dddaa25cc35a02af51a32280"
     },
     {
       "path": "dist/contrib/mathtex-script-type.min.js",
@@ -1253,10 +1246,10 @@
     },
     {
       "path": "dist/contrib/auto-render.cjs",
-      "raw": 4183,
-      "gzip9": 1758,
-      "brotli11": 1584,
-      "sha256": "d82be6a83727939938c50fb06ac8126da1e808b55b86673596d340198fb6f169"
+      "raw": 4132,
+      "gzip9": 1780,
+      "brotli11": 1589,
+      "sha256": "a8c9a398b45c8c2c487daedfb015f0391988ac59d8224f0e21ae2108c1ed2492"
     },
     {
       "path": "dist/contrib/mathtex-script-type.mjs",
@@ -1267,74 +1260,69 @@
     },
     {
       "path": "dist/contrib/render-a11y-string.mjs",
-      "raw": 8313,
-      "gzip9": 2464,
-      "brotli11": 2230,
-      "sha256": "8b07e4201cfc76cab3c800a8a20ad16f0cdb911ed87606969cb036e16a3c3555"
+      "raw": 8227,
+      "gzip9": 2459,
+      "brotli11": 2226,
+      "sha256": "1ae036f84869bd6f17cd0675e9957ea23f6d0b35ede5f4728df0b25b9daa87c6"
     },
     {
       "path": "dist/contrib/mhchem.mjs",
-      "raw": 35051,
-      "gzip9": 8839,
-      "brotli11": 8018,
-      "sha256": "b6ba72d29c84905675b71cd6a528e9980a046a057cb87177f6e143a041e80fdd"
+      "raw": 35019,
+      "gzip9": 8811,
+      "brotli11": 8007,
+      "sha256": "17efa3ea4ba5664045e57aed0efd154db4c536922d54a424fcd6d3d375e2e697"
     },
     {
       "path": "dist/contrib/auto-render.min.js",
-      "raw": 3296,
-      "gzip9": 1481,
-      "brotli11": 1336,
-      "sha256": "5c845b801b05e51c596ebe4f1d230aad09641ec02fafa8b9bc5986e8808faeaf"
+      "raw": 3256,
+      "gzip9": 1507,
+      "brotli11": 1358,
+      "sha256": "f59c32ba3794d2d971096378aa89a80536cd6d2be5d1e99dbf112d4701933125"
     },
     {
       "path": "dist/contrib/render-a11y-string.min.js",
-      "raw": 7794,
-      "gzip9": 2690,
-      "brotli11": 2454,
-      "sha256": "0d50396d1aa94074965fbbf774ce44fb48433a7c702be46a8b86af05983c06ad"
+      "raw": 7778,
+      "gzip9": 2675,
+      "brotli11": 2429,
+      "sha256": "69ab65450cfd2a4b150ae8d9a768393e357944775b77f1a05e958e874fd3417d"
     },
     {
       "path": "dist/contrib/mhchem.min.js",
-      "raw": 34373,
-      "gzip9": 8921,
-      "brotli11": 8124,
-      "sha256": "90aa541a0b8f410500bf112fdb8df5bb89c8b23d026155f6ecf59ca59f14d248"
+      "raw": 34401,
+      "gzip9": 8925,
+      "brotli11": 8118,
+      "sha256": "e641fbd66cd877235b3f90eed6e04542bc3974036e50673c20e46f0c4b80e1c3"
     },
     {
       "path": "dist/contrib/auto-render.mjs",
-      "raw": 2846,
-      "gzip9": 1281,
-      "brotli11": 1134,
-      "sha256": "00e8965e19baf9363b8e2f7711569e2782fb568cc097411897e67f88f78b1ed3"
+      "raw": 2784,
+      "gzip9": 1275,
+      "brotli11": 1113,
+      "sha256": "793e42dcfe66fc4e7e301c2bade8f410f1f429aade85caba3ada62e0565e81f5"
     }
   ],
   "nativeBuildsSummary": {
     "samples": 3,
     "successful": 3,
-    "medianSeconds": 12.998229661003279,
-    "minimumSeconds": 12.99495774499519,
-    "maximumSeconds": 14.959664249996422
+    "medianSeconds": 14.358363304985687,
+    "minimumSeconds": 13.497615194006357,
+    "maximumSeconds": 28.81580462300917
   },
   "lilscriptBuildsSummary": {
     "samples": 3,
     "successful": 3,
-    "medianSeconds": 9.58257035400311,
-    "minimumSeconds": 9.582402388994524,
-    "maximumSeconds": 9.934387939996668
+    "medianSeconds": 54.88805258600041,
+    "minimumSeconds": 42.11435307003558,
+    "maximumSeconds": 57.027030648023356
   },
   "status": "complete",
-  "finishedAt": "2026-09-24T04:08:55Z",
-  "testsRerun": {
-    "reason": "The first test run failed one test, browser-perf, only because build-site refused the comparison records this run was producing (source fingerprint guard). The command was re-run in the same checkout after the records were written.",
-    "firstExitCode": 1,
-    "firstLogSha256": "43773d0b47836291ccee7fa4af69435765e8f361fa03a2ff2a4ea583ec0c915c"
-  },
+  "finishedAt": "2026-09-27T10:25:02Z",
   "sourceBuild": {
     "original": {
       "complete": true,
-      "medianSeconds": 12.998229661003279,
-      "minimumSeconds": 12.99495774499519,
-      "maximumSeconds": 14.959664249996422,
+      "medianSeconds": 14.358363304985687,
+      "minimumSeconds": 13.497615194006357,
+      "maximumSeconds": 28.81580462300917,
       "samples": [
         {
           "command": [
@@ -1342,12 +1330,12 @@
             "yarn",
             "build"
           ],
-          "wallSeconds": 14.959664249996422,
-          "cpuSeconds": 26.735823000000003,
+          "wallSeconds": 13.497615194006357,
+          "cpuSeconds": 24.176135000000002,
           "exitCode": 0,
           "timedOut": false,
           "log": "original-build-1.log",
-          "logSha256": "e503cb8ac26b8adc1f6efc38964ff5e737837154b46e76b5a0d413cbd5d554cf"
+          "logSha256": "f5f1cacb4684b092fd6ddc060392423f8a0e32d1fa9e976e05a6813ae27df0ca"
         },
         {
           "command": [
@@ -1355,12 +1343,12 @@
             "yarn",
             "build"
           ],
-          "wallSeconds": 12.99495774499519,
-          "cpuSeconds": 24.020040999999996,
+          "wallSeconds": 14.358363304985687,
+          "cpuSeconds": 25.530260000000002,
           "exitCode": 0,
           "timedOut": false,
           "log": "original-build-2.log",
-          "logSha256": "58a458febcafc4e85d47e033c58077310a3ac8792f8085adffbfad1bdc8f5f00"
+          "logSha256": "f17be859e453739fe021d71fc5a113c65c4a52553aacb639ba50bddd035b0819"
         },
         {
           "command": [
@@ -1368,20 +1356,20 @@
             "yarn",
             "build"
           ],
-          "wallSeconds": 12.998229661003279,
-          "cpuSeconds": 24.05903300000001,
+          "wallSeconds": 28.81580462300917,
+          "cpuSeconds": 34.98828399999998,
           "exitCode": 0,
           "timedOut": false,
           "log": "original-build-3.log",
-          "logSha256": "e900789426ee3d5834bc6624035fb3aba22a7346b8d6892dbe35ac1262582fdd"
+          "logSha256": "31d71617468cf2cbd1ba0ae5baeb1b60e1df5e0cd781c76e9a1263a1061d65f6"
         }
       ]
     },
     "lilscript": {
       "complete": true,
-      "medianSeconds": 9.58257035400311,
-      "minimumSeconds": 9.582402388994524,
-      "maximumSeconds": 9.934387939996668,
+      "medianSeconds": 54.88805258600041,
+      "minimumSeconds": 42.11435307003558,
+      "maximumSeconds": 57.027030648023356,
       "samples": [
         {
           "command": [
@@ -1389,8 +1377,8 @@
             "-c",
             "node scripts/build.mjs --compile --force"
           ],
-          "wallSeconds": 9.934387939996668,
-          "cpuSeconds": 9.822456999999996,
+          "wallSeconds": 57.027030648023356,
+          "cpuSeconds": 53.707093,
           "exitCode": 0,
           "timedOut": false,
           "log": "lilscript-build-1.log",
@@ -1402,8 +1390,8 @@
             "-c",
             "node scripts/build.mjs --compile --force"
           ],
-          "wallSeconds": 9.582402388994524,
-          "cpuSeconds": 9.483118000000005,
+          "wallSeconds": 42.11435307003558,
+          "cpuSeconds": 41.86284299999999,
           "exitCode": 0,
           "timedOut": false,
           "log": "lilscript-build-2.log",
@@ -1415,8 +1403,8 @@
             "-c",
             "node scripts/build.mjs --compile --force"
           ],
-          "wallSeconds": 9.58257035400311,
-          "cpuSeconds": 9.497161000000009,
+          "wallSeconds": 54.88805258600041,
+          "cpuSeconds": 50.379039000000006,
           "exitCode": 0,
           "timedOut": false,
           "log": "lilscript-build-3.log",

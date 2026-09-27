@@ -245,7 +245,7 @@ function renderRelease() {
   const release = data.previousRelease
   const parts = []
   if (release) parts.push(`Previous release: katexlil ${release.revision} (${String(release.committedAt ?? "").slice(0, 10)}), built by ${release.builtBy}; its committed dist/ measured with the same codec.`)
-  parts.push("Terser bar: the core files against Terser (compress, 3 passes, mangle) of the published katex@0.16.22 graph; contrib files against Terser of upstream's own dist/contrib/<name>.mjs. The core files carry a 76-byte licence banner that the bar lacks.")
+  parts.push("Terser bar: the core files against Terser (compress, 3 passes, mangle) of the published katex@0.16.22 graph; contrib files against Terser of upstream's own dist/contrib/<name>.mjs. The core files carry a 73-byte licence banner that the bar lacks.")
   const servedEsm = (data.upstreamServed ?? []).find((file) => file.path === "dist/katex.mjs")
   const servedMin = (data.upstreamServed ?? []).find((file) => file.path === "dist/katex.min.js")
   if (servedEsm && primary) parts.push(`Upstream as served: import "katex" resolves to its unminified dist/katex.mjs, ${formatter.format(servedEsm.raw)} B raw and ${formatter.format(servedEsm.brotli11)} B Brotli-11, so without a re-minifying bundler the npm ESM here is ${smallerThan(primary.brotli11, servedEsm.brotli11).text}.`)
