@@ -176,8 +176,13 @@ function renderPerf() {
 
 function renderAttribution() {
   const attribution = data.attribution
-  if (!attribution?.rows) {
-    document.querySelector("#bytes").hidden = true
+  const revision = data.compiler?.revision
+  // A table describes the artifact of the compiler whose source map it read; it is shown
+  // only while that compiler is the recorded one (scripts/measure-site.mjs stamps it).
+  if (!attribution?.rows || !attribution.compilerRevision || attribution.compilerRevision !== revision) {
+    document.querySelector("#bytes .table-wrap").hidden = true
+    document.querySelector("#bytes-note").textContent =
+      `Not available for this compiler${revision ? ` (lilscript ${revision})` : ""}: it does not emit source maps, and the LilScript lane can only be charged to its modules through one. The table published before this release was measured on an earlier compiler and artifact, so it is not shown against this one.`
     return
   }
   const rows = [...attribution.rows].sort((a, b) => b.deltaBrotli - a.deltaBrotli)
@@ -188,11 +193,9 @@ function renderAttribution() {
     .join("")
   const losing = rows.filter((row) => row.deltaBrotli > 0)
   const winning = rows.filter((row) => row.deltaBrotli < 0)
-  const stale = attribution.remeasured === false
-    ? `Not remeasured for this release: this table was measured ${String(attribution.measuredAt ?? "").slice(0, 10)} on the previous compiler, which wrote source maps; the current compiler does not emit them yet, so the per-module split is from the previous build. `
-    : ""
+  const measured = `measured ${String(attribution.measuredAt ?? "").slice(0, 10)} on lilscript ${attribution.compilerRevision}`
   document.querySelector("#bytes-note").textContent =
-    `${stale}${attribution.lil.path ?? "the compiler's artifact"} ${formatter.format(attribution.lil.raw)} B raw / ${formatter.format(attribution.lil.brotli11)} B Brotli against the source lane ${formatter.format(attribution.official.raw)} / ${formatter.format(attribution.official.brotli11)} (before the shared font-metrics table is stitched in). ${losing.length} modules are bigger here, ${winning.length} are smaller; the top ${shown.length} by Brotli delta are shown. Marginal costs are not additive: Brotli shares matches across modules.`
+    `${attribution.lil.path ?? "the compiler's artifact"} ${formatter.format(attribution.lil.raw)} B raw / ${formatter.format(attribution.lil.brotli11)} B Brotli against the source lane ${formatter.format(attribution.official.raw)} / ${formatter.format(attribution.official.brotli11)}, ${measured}. ${losing.length} modules are bigger here, ${winning.length} are smaller; the top ${shown.length} by Brotli delta are shown. Marginal costs are not additive: Brotli shares matches across modules.`
 }
 
 function median(values) {

@@ -159,12 +159,16 @@ if (has("spec")) {
 }
 
 const attributionPath = flag("attribution", null)
-// A fresh attribution needs a compiler that writes source maps. Without one the previous
-// table is carried, dated, and marked as not remeasured, so the page can say so.
+// A fresh attribution needs a compiler that writes source maps. A table describes the
+// artifact of the compiler that mapped it, so it is stamped with that compiler's revision
+// (site/results.json `compiler`, written by scripts/record-compiler.mjs) and carried only
+// while that compiler is the recorded one. Otherwise there is no table, and the page says
+// attribution is not available for this compiler.
+const compilerRevision = previous.compiler?.revision ?? null
 const attribution = attributionPath
-  ? { ...JSON.parse(readFileSync(resolve(root, attributionPath), "utf8")), measuredAt: new Date().toISOString(), remeasured: true }
-  : previous.attribution
-    ? { ...previous.attribution, measuredAt: previous.attribution.measuredAt ?? previous.measuredAt, remeasured: false }
+  ? { ...JSON.parse(readFileSync(resolve(root, attributionPath), "utf8")), measuredAt: new Date().toISOString(), compilerRevision }
+  : previous.attribution?.compilerRevision && previous.attribution.compilerRevision === compilerRevision
+    ? previous.attribution
     : null
 
 const results = {

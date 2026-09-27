@@ -253,13 +253,14 @@
       <section class="bytes shell" id="bytes">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Source maps, both lanes</p>
+            <p class="eyebrow">Per-module attribution</p>
             <h2>Where the<br />bytes go.</h2>
           </div>
           <p id="bytes-intro">
-            The compiler emits a Source Map v3 for its artifact, and the official lane is rebuilt from the Flow sources with
-            esbuild and Terser maps composed, so every token on both sides names its module. Per module: the raw bytes it owns,
-            and its marginal Brotli-11 cost (the artifact minus that module's tokens). Positive is where this port is bigger.
+            Every token on both sides is charged to its module through a source map: the official lane is rebuilt from the Flow
+            sources with esbuild and Terser maps composed, and the LilScript lane needs a Source Map v3 from the compiler that
+            wrote the artifact. Per module: the raw bytes it owns, and its marginal Brotli-11 cost (the artifact minus that
+            module's tokens). Positive is where this port is bigger.
             Tool: <a href="https://github.com/yeargun/katexlil/blob/main/scripts/attribute-map.mjs">scripts/attribute-map.mjs</a>.
           </p>
         </div>

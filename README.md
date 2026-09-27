@@ -80,9 +80,12 @@ render the corpus identically and the port may not exceed the regression guard
 rail. `node scripts/build.mjs --compile --map` (a compiler with
 `[javascript.source_map]`) writes `dist/katex.raw.js.map`, and
 `node scripts/attribute-map.mjs --json out.json` charges every byte of both lanes
-to its module, with marginal Brotli per module. The current compiler does not emit
-source maps yet, so the site's per-module table is the 2026-09-03 one, marked as not
-remeasured.
+to its module, with marginal Brotli per module. The compiler of this release
+(a430d5df) does not emit source maps (`lilscript --help` has no map option), so
+per-module attribution is not available for it: the site says so, and the table
+measured on 2026-09-03 for an earlier compiler and artifact is no longer published.
+`measure-site.mjs` stamps a fresh table with the recorded compiler's revision and
+carries it only while that compiler is the recorded one.
 
 The root API, CLI, TypeScript declarations, CSS, 60 font files, and all five
 official contrib subpaths mirror KaTeX 0.16.22. The font metrics are LilScript
@@ -90,9 +93,11 @@ data: `src/data.lil` holds upstream's generated table as an object literal, and 
 compiler chooses its encoding against the codec (under Brotli, for this release,
 columns of integers scaled by 10^5 with delta-coded keys). `src/fontMetricsData.js`,
 upstream's generated module, stays as the reference: `npm run audit` checks it
-against `katex@0.16.22` and `scripts/attribute-core.mjs` reads it. The audit does
-not parse `src/data.lil`; for this release its 18 fonts and 2,038 entries were
-compared with `src/fontMetricsData.js` and are identical. The unicode
+against `katex@0.16.22` and `scripts/attribute-core.mjs` reads it. What ships is
+the table the built artifact decodes, so `test/font-metrics.test.mjs` (part of
+`npm test`) reads it back from every built `dist/katex.*` file through the public
+`__setFontMetrics` and holds it to `src/fontMetricsData.js`: the same 18 fonts and
+2,038 entries, the same key order per font, every number `Object.is`-equal. The unicode
 symbol table is built at load by `src/unicodeSymbols.lil`, as upstream does. All five contrib implementations,
 including the complete mhchem state machine and render-a11y tree walker, are
 normative `.lil` sources; no runtime `.host.mjs` exception remains.
@@ -106,13 +111,14 @@ typed at the LilScript boundary.
 
 Mhchem used to build with its own bounded config, because the old compiler's
 level-13 search over its large fixed transition graph did not finish in a
-practical build window. The one compiler builds it with `lilscript.toml` in about
-1.4 s, 1,435 Brotli-11 bytes smaller than the bounded config gave, so that config
-is gone. The build never falls back to the upstream JavaScript host.
+practical build window. The one compiler builds it with `lilscript.toml`: this
+release's three recorded builds took 3,176, 3,155 and 1,830 ms (median 3,155 ms;
+`site/results.json` `compiler.invocations`), 1,435 Brotli-11 bytes smaller than the
+bounded config gave, so that config is gone. The build never falls back to the upstream JavaScript host.
 
 Run `npm run check` for build, TypeScript, official and differential tests,
-package, site, and parity checks. `npm run audit` reports the complete source
-map, generated-data and asset hashes, declaration/export checks, and raw,
+package, site, and parity checks. `npm run audit` reports the complete
+upstream-module to `.lil` map, generated-data and asset hashes, declaration/export checks, and raw,
 gzip-9, and Brotli-11 sizes for core and contrib artifacts. The library and
 closed artifacts are the compiler's output with no post-compilation minifier; the
 build adds a licence banner and drops internal names from the export list, and
