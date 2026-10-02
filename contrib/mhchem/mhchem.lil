@@ -1,7 +1,7 @@
 // KaTeX mhchem 3.3.0 parser, ported file-for-file from KaTeX 0.16.22.
 // Copyright (c) 2011-2015 The MathJax Consortium and 2015-2018 Martin Hensel.
 // Licensed under Apache-2.0; KaTeX adaptations are MIT licensed.
-import extern { default as katex } from "../../dist/katex.mjs";
+import extern { default as katex } from "@itslil/katex";
 
 extern JsValue katex;
 extern JsValue RegExp;

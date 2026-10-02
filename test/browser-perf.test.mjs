@@ -3,7 +3,6 @@
 // https://yeargun.github.io/katexlil/bench.html). Fails if any corpus expression renders
 // different HTML, or if the port is slower than the guard rail.
 import assert from "node:assert/strict"
-import { existsSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { spawnSync } from "node:child_process"
@@ -18,11 +17,11 @@ const maxRegressionPercent = Number(process.env.KATEXLIL_MAX_REGRESSION_PERCENT 
 
 describe("browser performance (Playwright, Chromium)", () => {
   it("renders the corpus identically and within the regression guard rail", async () => {
-    if (!existsSync(resolve(siteDir, "bench.html"))) {
-      // The benchmark measures the current dist/, which need not be the recorded release.
-      const built = spawnSync(process.execPath, [resolve(root, "scripts/build-site.mjs"), "--unpublished"], { cwd: root, stdio: "inherit" })
-      assert.equal(built.status, 0, "build-site failed")
-    }
+    // Refresh the benchmark from the current dist/, including when a previous
+    // site's bench.html already exists. A failed package build must not trigger
+    // an implicit compiler retry inside this runtime test.
+    const built = spawnSync(process.execPath, [resolve(root, "scripts/build-site.mjs"), "--unpublished", "--require-dist"], { cwd: root, stdio: "inherit" })
+    assert.equal(built.status, 0, "build-site failed")
     const result = await runBrowserBench({ siteDir, rounds: Number(process.env.KATEXLIL_BENCH_ROUNDS ?? 20) })
     const lil = result.lanes.itslil
     const official = result.lanes.official

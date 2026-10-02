@@ -22,14 +22,15 @@ identifiers = true
 properties = true
 pool_strings = false
 
-# External paths describe the installed package, not the source directory.
+# The core is an external provider during compilation, so clean builds do not
+# read generated dist/. Map it to the installed sibling artifact for each format.
 [delivery]
 mode = "single"
 directory = "."
 host_modules = "external"
 entry_names = "contrib/auto-render.mjs"
 [delivery.external_specifiers]
-"../../dist/katex.mjs" = "./katex.mjs"
+"@itslil/katex" = "./katex.mjs"
 [delivery.entries]
 entry = "../contrib/auto-render/auto-render.lil"
 [[delivery.also]]
@@ -37,7 +38,7 @@ name = "cjs"
 format = "cjs"
 exports = "default"
 entry_names = "contrib/auto-render.cjs"
-external_specifiers = {"../../dist/katex.mjs" = "./katex.cjs"}
+external_specifiers = {"@itslil/katex" = "./katex.cjs"}
 [[delivery.also]]
 name = "browser"
 format = "iife"
@@ -45,4 +46,4 @@ exports = "default"
 global = "renderMathInElement"
 global_binding = "property"
 entry_names = "contrib/auto-render.min.js"
-globals = {"../../dist/katex.mjs" = "katex"}
+globals = {"@itslil/katex" = "katex"}

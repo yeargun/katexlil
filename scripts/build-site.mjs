@@ -9,6 +9,9 @@ const output = join(root, "_site")
 const file = "katex"
 
 if (!existsSync(join(root, "dist", `${file}.esm.js`))) {
+  if (process.argv.includes("--require-dist")) {
+    throw Error("The current dist/katex.esm.js is missing. Run npm run build before testing the browser site.")
+  }
   const built = spawnSync(process.execPath, [join(root, "scripts", "build.mjs"), "--compile"], {
     cwd: root,
     stdio: "inherit",

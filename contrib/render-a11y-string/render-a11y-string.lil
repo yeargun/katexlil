@@ -1,4 +1,4 @@
-import extern { default as katex } from "../../dist/katex.mjs";
+import extern { default as katex } from "@itslil/katex";
 
 extern JsValue katex;
 extern JsValue Error;
