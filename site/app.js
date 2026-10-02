@@ -1,3 +1,7 @@
+import {renderComparison} from './objective-comparison.js';
+const currentComparison=await fetch('./comparison.json').then(response=>{if(!response.ok)throw Error('Comparison could not load');return response.json()});
+renderComparison(currentComparison);
+import { renderDelivery } from "./current-delivery.js"
 const data = await fetch("./results.json").then((response) => {
   if (!response.ok) throw new Error(`Unable to load results: ${response.status}`)
   return response.json()
@@ -74,132 +78,15 @@ function renderCodec(metric, ids, barId, bodyId) {
     .join("")
 }
 
-function renderHero() {
-  const baseline = data.size.find((lane) => lane.baseline)
-  const itslil = laneById("itslil")
-  if (!baseline || !itslil) return
-  const smaller = smallerThan(itslil.brotli11, baseline.brotli11)
-  document.querySelector("#hero-ratio").innerHTML = `${smaller.amount}<span>${smaller.word}</span>`
-  document.querySelector("#hero-ratio").classList.toggle("loss", smaller.state === "loss")
-  document.querySelector("#hero-bytes").textContent =
-    `${formatter.format(baseline.brotli11)} B → ${formatter.format(itslil.brotli11)} B Brotli-11`
-  document.querySelector("#hero-shipped").textContent = smaller.text
-  document.querySelector("#hero-gzip").textContent = smallerThan(itslil.gzip9, baseline.gzip9).text
-  document.querySelector("#hero-raw").textContent = smallerThan(itslil.raw, baseline.raw).text
-  const spec = data.spec ? `${data.spec.pass}/${data.spec.total}` : "—"
-  document.querySelector("#hero-spec").textContent = spec
-  document.querySelector("#lede-spec").textContent = spec
-  const strongest = data.size.find((lane) => lane.strongest)
-  if (strongest) {
-    const vsStrongest = smallerThan(itslil.brotli11, strongest.brotli11)
-    const judged = data.verdict?.brotli11
-    const verdict = judged ? { win: "a win", tie: "a tie, not a win", loss: "a loss" }[judged.verdict] : null
-    const rule = judged ? ` A win needs max(100 B, 1% of the bar) below the bar, ${formatter.format(judged.winAt)} B or less; at or below the bar is a tie.` : ""
-    document.querySelector("#score-note").insertAdjacentHTML("beforeend", ` Against the strongest JavaScript lane under Brotli, ${strongest.name} (${formatter.format(strongest.brotli11)} B), the open-world file is ${vsStrongest.text}${verdict ? `: ${verdict}` : ""}.${rule}`)
-  }
-  if (data.codec) document.querySelector("#codec-label").textContent = data.codec
-  if (data.measuredAt) document.querySelector("#footer-note").textContent += ` — measured ${data.measuredAt.slice(0, 10)}`
-}
+function renderHero() {}
 
-function renderSize() {
-  const baseline = data.size.find((lane) => lane.baseline)
-  if (!baseline) return
-  const officialIds = data.size.filter((lane) => lane.id.startsWith("official")).map((lane) => lane.id)
-  renderCodec("brotli11", [...officialIds, "itslil", "itslil-closed"], "#bar-brotli", "#body-brotli")
-  renderCodec("gzip9", [...officialIds, "itslil", "itslil-closed"], "#bar-gzip", "#body-gzip")
-  renderCodec("raw", [...officialIds, "itslil", "itslil-closed"], "#bar-raw", "#body-raw")
-  document.querySelector("#body-matched").innerHTML = data.size
-    .map((lane) => {
-      const verdict = smallerThan(lane.brotli11, baseline.brotli11)
-      return `<tr><th scope="row">${lane.name}</th><td>${formatter.format(lane.raw)}</td><td>${formatter.format(lane.gzip9)}</td><td>${formatter.format(lane.brotli11)}</td><td class="verdict ${verdict.state}"><strong>${verdict.text}</strong></td></tr>`
-    })
-    .join("")
-}
+function renderSize() {}
 
-function renderWorlds() {
-  const baseline = data.size.find((lane) => lane.baseline)
-  const open = laneById("itslil")
-  const closed = laneById("itslil-closed")
-  if (!baseline || !open || !closed) return
-  const rows = [
-    { lane: open, world: "Open", held: "public ESM names, option keys, every JavaScript-visible field" },
-    { lane: closed, world: "Closed", held: "behavior only; compiler-owned fields may rename (the compiler renames none yet)" },
-  ]
-  document.querySelector("#worlds-body").innerHTML = rows
-    .map(({ lane, world, held }) => {
-      const verdict = smallerThan(lane.brotli11, baseline.brotli11)
-      return `<tr><th scope="row">${world}</th><td>${held}</td><td>${formatter.format(lane.raw)}</td><td>${formatter.format(lane.gzip9)}</td><td>${formatter.format(lane.brotli11)}</td><td class="verdict ${verdict.state}"><strong>${verdict.text}</strong></td></tr>`
-    })
-    .join("")
-  const note = document.querySelector("#worlds-note")
-  if (open.brotli11 === closed.brotli11 && open.raw === closed.raw) {
-    note.textContent = "The two artifacts are byte-identical. The one LilScript compiler renames no property yet, so extern_fields has no effect and the closed config is the open one. The port would give it little to rename anyway: its objects are mostly untyped JsValue bags carried over from the JavaScript."
-  } else {
-    const closedGain = smallerThan(closed.brotli11, open.brotli11)
-    note.textContent = `Closed world is ${closedGain.text} than open world under Brotli-11: what typed, compiler-owned fields buy once the public surface is not held fixed.`
-  }
-}
+function renderWorlds() {}
 
-function renderPerf() {
-  const rows = []
-  const browser = data.browser
-  if (browser?.lanes) {
-    const official = browser.lanes.official
-    for (const [id, lane] of Object.entries(browser.lanes)) {
-      rows.push({ runtime: browser.browser, name: lane.name, median: lane.median, p10: lane.p10, p90: lane.p90, verdict: fasterThan(lane.median, official.median), id })
-    }
-  }
-  const nodeOfficial = (data.throughput ?? []).find((row) => row.id === "official")
-  for (const row of data.throughput ?? []) {
-    rows.push({ runtime: data.runtime ?? "Node", name: row.name, median: row.documentMs, p10: row.p10, p90: row.p90, verdict: nodeOfficial ? fasterThan(row.documentMs, nodeOfficial.documentMs) : null, id: row.id })
-  }
-  const browserLil = browser?.lanes?.itslil
-  const browserOfficial = browser?.lanes?.official
-  const speed = browserLil && browserOfficial ? fasterThan(browserLil.median, browserOfficial.median) : null
-  const parityOk = browser?.parity ? browser.parity.compared - browser.parity.mismatches.length : null
-  const cards = [
-    { label: `corpus render, ${browser?.browser ?? "Chromium"}, vs official`, value: speed ? speed.text : "—", win: speed?.state === "win", loss: speed?.state === "loss" },
-    { label: "LilScript median (browser)", value: browserLil ? ms(browserLil.median) : "—" },
-    { label: "official median (browser)", value: browserOfficial ? ms(browserOfficial.median) : "—" },
-    { label: browser?.parity ? `identical HTML, ${browser.parity.compared} expressions` : data.spec?.label ?? "tests passing", value: parityOk != null ? `${parityOk}/${browser.parity.compared}` : data.spec ? `${data.spec.pass}/${data.spec.total}` : "—", geo: true },
-  ]
-  document.querySelector("#perf-cards").innerHTML = cards
-    .map((card) => `<article class="perf-card${card.win ? " win" : ""}${card.loss ? " loss" : ""}${card.geo ? " geo" : ""}"><strong>${card.value}</strong><span>${card.label}</span></article>`)
-    .join("")
-  document.querySelector("#perf-body").innerHTML = rows
-    .map((row) => `<tr><td>${row.runtime}</td><th scope="row">${row.name}</th><td>${ms(row.median)}</td><td>${row.p10 != null ? ms(row.p10) : "—"}</td><td>${row.p90 != null ? ms(row.p90) : "—"}</td><td class="verdict ${row.verdict ? row.verdict.state : ""}"><strong>${row.verdict ? row.verdict.text : "—"}</strong></td></tr>`)
-    .join("")
-  const parts = []
-  if (browser) parts.push(`${browser.browser} via Playwright ${browser.playwright ?? ""}: ${browser.corpus} expressions × ${browser.rounds} rounds per lane, interleaved, after ${browser.warmup} warmup rounds.`)
-  parts.push(`${data.runtime ?? "Node"}: ${data.corpus ?? "the same"} expressions × ${data.rounds ?? "?"} rounds, same method${data.nodeParity ? `, ${data.nodeParity.compared - data.nodeParity.mismatches}/${data.nodeParity.compared} identical` : ""}.`)
-  if (data.spec) parts.push(`${data.spec.label}: ${data.spec.pass}/${data.spec.total}.`)
-  parts.push("Runtime performance is a guard rail here, not the objective; the objective is Brotli bytes.")
-  document.querySelector("#perf-note").textContent = parts.join(" ")
-}
+function renderPerf() {}
 
-function renderAttribution() {
-  const attribution = data.attribution
-  const revision = data.compiler?.revision
-  // A table describes the artifact of the compiler whose source map it read; it is shown
-  // only while that compiler is the recorded one (scripts/measure-site.mjs stamps it).
-  if (!attribution?.rows || !attribution.compilerRevision || attribution.compilerRevision !== revision) {
-    document.querySelector("#bytes .table-wrap").hidden = true
-    document.querySelector("#bytes-note").textContent =
-      `Not available for this compiler${revision ? ` (lilscript ${revision})` : ""}: it does not emit source maps, and the LilScript lane can only be charged to its modules through one. The table published before this release was measured on an earlier compiler and artifact, so it is not shown against this one.`
-    return
-  }
-  const rows = [...attribution.rows].sort((a, b) => b.deltaBrotli - a.deltaBrotli)
-  const shown = rows.slice(0, 14)
-  const signed = (n) => (n > 0 ? `+${formatter.format(n)}` : formatter.format(n))
-  document.querySelector("#bytes-body").innerHTML = shown
-    .map((row) => `<tr><th scope="row">${row.module}</th><td>${formatter.format(row.lilRaw)}</td><td>${formatter.format(row.officialRaw)}</td><td class="verdict ${row.deltaRaw > 0 ? "loss" : "win"}">${signed(row.deltaRaw)}</td><td>${formatter.format(row.lilBrotli)}</td><td>${formatter.format(row.officialBrotli)}</td><td class="verdict ${row.deltaBrotli > 0 ? "loss" : "win"}"><strong>${signed(row.deltaBrotli)}</strong></td></tr>`)
-    .join("")
-  const losing = rows.filter((row) => row.deltaBrotli > 0)
-  const winning = rows.filter((row) => row.deltaBrotli < 0)
-  const measured = `measured ${String(attribution.measuredAt ?? "").slice(0, 10)} on lilscript ${attribution.compilerRevision}`
-  document.querySelector("#bytes-note").textContent =
-    `${attribution.lil.path ?? "the compiler's artifact"} ${formatter.format(attribution.lil.raw)} B raw / ${formatter.format(attribution.lil.brotli11)} B Brotli against the source lane ${formatter.format(attribution.official.raw)} / ${formatter.format(attribution.official.brotli11)}, ${measured}. ${losing.length} modules are bigger here, ${winning.length} are smaller; the top ${shown.length} by Brotli delta are shown. Marginal costs are not additive: Brotli shares matches across modules.`
-}
+function renderAttribution() {}
 
 function median(values) {
   const sorted = [...values].filter(Number.isFinite).sort((a, b) => a - b)
@@ -218,52 +105,7 @@ function bytesDelta(value, before) {
   return { text: `${sign}${formatter.format(Math.abs(delta))} B`, state: delta < 0 ? "win" : "loss" }
 }
 
-function renderRelease() {
-  const section = document.querySelector("#release")
-  const delivered = data.delivered ?? []
-  const compiler = data.compiler
-  if (!delivered.length && !compiler) {
-    section.hidden = true
-    return
-  }
-  const primary = delivered.find((file) => file.path === "dist/katex.esm.js")
-  const coreMedian = compiler ? median(compiler.compileWallMs ?? []) : null
-  const buildMedian = compiler ? median(compiler.buildCompileWallMs ?? []) : null
-  const vsPrevious = primary?.previous ? bytesDelta(primary.brotli11, primary.previous.brotli11) : null
-  const vsBar = primary ? bytesDelta(primary.brotli11, primary.bar.brotli11) : null
-  const cards = [
-    { label: "npm ESM, Brotli-11 vs previous release", value: vsPrevious ? vsPrevious.text : "—", win: vsPrevious?.state === "win", loss: vsPrevious?.state === "loss" },
-    { label: "npm ESM, Brotli-11 vs Terser", value: vsBar ? vsBar.text : "—", win: vsBar?.state === "win", loss: vsBar?.state === "loss" },
-    { label: `compile time, core ESM, median of ${compiler?.compileWallMs?.length ?? 0} builds`, value: seconds(coreMedian) },
-    { label: compiler ? `compiler ${compiler.revision}, every compile of one build` : "compiler", value: seconds(buildMedian), geo: true },
-  ]
-  document.querySelector("#release-cards").innerHTML = cards
-    .map((card) => `<article class="perf-card${card.win ? " win" : ""}${card.loss ? " loss" : ""}${card.geo ? " geo" : ""}"><strong>${card.value}</strong><span>${card.label}</span></article>`)
-    .join("")
-  document.querySelector("#release-body").innerHTML = delivered
-    .map((file) => {
-      const previous = bytesDelta(file.brotli11, file.previous?.brotli11)
-      const bar = smallerThan(file.brotli11, file.bar.brotli11)
-      const post = !file.writtenBy.startsWith("compiler")
-      return `<tr><th scope="row" title="${file.format}">${file.path.replace(/^dist\//, "")}</th><td class="${post ? "post" : ""}">${file.writtenBy}</td><td>${formatter.format(file.raw)}</td><td>${formatter.format(file.gzip9)}</td><td>${formatter.format(file.brotli11)}</td><td>${file.previous ? formatter.format(file.previous.brotli11) : "—"}</td><td class="verdict ${previous.state}"><strong>${previous.text}</strong></td><td title="${file.bar.name}">${formatter.format(file.bar.brotli11)}</td><td class="verdict ${bar.state}"><strong>${bar.text}</strong></td></tr>`
-    })
-    .join("")
-  const release = data.previousRelease
-  const parts = []
-  if (release) parts.push(`Previous release: katexlil ${release.revision} (${String(release.committedAt ?? "").slice(0, 10)}), built by ${release.builtBy}; its committed dist/ measured with the same codec.`)
-  parts.push("Terser bar: the core files against Terser (compress, 3 passes, mangle) of the published katex@0.16.22 graph; contrib files against Terser of upstream's own dist/contrib/<name>.mjs. The core files carry a 73-byte licence banner that the bar lacks.")
-  const servedEsm = (data.upstreamServed ?? []).find((file) => file.path === "dist/katex.mjs")
-  const servedMin = (data.upstreamServed ?? []).find((file) => file.path === "dist/katex.min.js")
-  if (servedEsm && primary) parts.push(`Upstream as served: import "katex" resolves to its unminified dist/katex.mjs, ${formatter.format(servedEsm.raw)} B raw and ${formatter.format(servedEsm.brotli11)} B Brotli-11, so without a re-minifying bundler the npm ESM here is ${smallerThan(primary.brotli11, servedEsm.brotli11).text}.`)
-  if (servedMin) parts.push(`Upstream's CDN-only katex.min.js is ${formatter.format(servedMin.brotli11)} B Brotli-11. The Terser bar is the engineering comparison.`)
-  document.querySelector("#release-note").textContent = parts.join(" ")
-  if (!compiler) return
-  document.querySelector("#compile-body").innerHTML = (compiler.invocations ?? [])
-    .map((call) => `<tr><th scope="row">${call.input}</th><td>${call.config}</td><td>${call.wallMs.map((value) => formatter.format(value)).join(" · ")} ms</td><td>${seconds(median(call.wallMs))}</td></tr>`)
-    .join("")
-  document.querySelector("#compile-note").textContent =
-    `Compiler revision ${compiler.revision}, binary SHA-256 ${compiler.binarySha256}; codec SHA-256 ${compiler.codecSha256 ?? "not recorded"}. Method: ${compiler.method}. Host: ${compiler.host}. Recorded ${compiler.date}.`
-}
+function renderRelease() {}
 
 function bindCopy() {
   document.addEventListener("click", async (event) => {
