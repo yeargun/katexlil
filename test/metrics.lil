@@ -1,0 +1,2 @@
+import {fontMetricsData} from "../src/data.lil";
+export {fontMetricsData};

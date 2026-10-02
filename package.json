@@ -85,9 +85,33 @@
     "README.md"
   ],
   "sideEffects": [
-    "./dist/contrib/mhchem.*",
-    "./dist/contrib/copy-tex.*",
-    "./dist/contrib/mathtex-script-type.*"
+    "./dist/contrib/auto-render.cjs",
+    "./dist/contrib/auto-render.min.js",
+    "./dist/contrib/auto-render.mjs",
+    "./dist/contrib/copy-tex.cjs",
+    "./dist/contrib/copy-tex.min.js",
+    "./dist/contrib/copy-tex.mjs",
+    "./dist/contrib/mathtex-script-type.cjs",
+    "./dist/contrib/mathtex-script-type.min.js",
+    "./dist/contrib/mathtex-script-type.mjs",
+    "./dist/contrib/mhchem.cjs",
+    "./dist/contrib/mhchem.min.js",
+    "./dist/contrib/mhchem.mjs",
+    "./dist/contrib/render-a11y-string.cjs",
+    "./dist/contrib/render-a11y-string.min.js",
+    "./dist/contrib/render-a11y-string.mjs",
+    "./dist/katex.cjs",
+    "./dist/katex.closed.js",
+    "./dist/katex.closed.raw.js",
+    "./dist/katex.contrib-test.js",
+    "./dist/katex.esm.js",
+    "./dist/katex.metrics.mjs",
+    "./dist/katex.min.js",
+    "./dist/katex.mjs",
+    "./dist/katex.raw.js",
+    "./dist/katex.test.js",
+    "./dist/katex.test.raw.js",
+    "./dist/katex.umd.js"
   ],
   "engines": {
     "node": ">=18"

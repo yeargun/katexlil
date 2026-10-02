@@ -22,40 +22,27 @@ identifiers = true
 properties = true
 pool_strings = false
 
+# External paths describe the installed package, not the source directory.
 [delivery]
 mode = "single"
 directory = "."
-select = ["katex"]
-entry_names = "katex.esm.js"
+host_modules = "embed"
+entry_names = "contrib/copy-tex.mjs"
+[delivery.external_specifiers]
+"../../dist/katex.mjs" = "./katex.mjs"
 [delivery.entries]
-katex = "src/entry.lil"
-default = "src/package-default.lil"
-test = "test/katex.lil"
-contrib-test = "test/support.lil"
-metrics = "test/metrics.lil"
+entry = "../contrib/copy-tex/copy-tex.lil"
 [[delivery.also]]
 name = "cjs"
 format = "cjs"
-entries = ["default"]
-exports = "default"
-entry_names = "katex.cjs"
+exports = "named"
+entry_names = "contrib/copy-tex.cjs"
+external_specifiers = {"../../dist/katex.mjs" = "./katex.cjs"}
 [[delivery.also]]
 name = "browser"
 format = "iife"
-entries = ["default"]
-exports = "default"
-global = "katex"
+exports = "named"
+global = "katexCopyTex"
 global_binding = "property"
-entry_names = "katex.umd.js"
-[[delivery.also]]
-name = "test"
-entries = ["test"]
-entry_names = "katex.test.js"
-[[delivery.also]]
-name = "contrib-test"
-entries = ["contrib-test"]
-entry_names = "katex.contrib-test.js"
-[[delivery.also]]
-name = "metrics"
-entries = ["metrics"]
-entry_names = "katex.metrics.mjs"
+entry_names = "contrib/copy-tex.min.js"
+globals = {"../../dist/katex.mjs" = "katex"}

@@ -48,11 +48,11 @@ const upstreamModules = walk(resolve(upstream, "src"))
   .filter((path) => path.endsWith(".js"))
   .map((path) => relative(resolve(upstream, "src"), path))
   .sort()
-// unicodeSymbols is a LilScript module now (src/unicodeSymbols.lil builds the table at load,
-// as upstream does); only the font metrics table stays host JavaScript.
+// All runtime tables are LilScript source. Compare the compiler data entry
+// with the independently pinned upstream table, not a duplicate local JS file.
 const hostData = new Set(["fontMetricsData.js"])
 const expectedModules = upstreamModules.map((path) => {
-  if (hostData.has(path)) return path
+  if (hostData.has(path)) return "data.lil"
   return path.replace(/\.js$/, ".lil")
 })
 const missingModules = expectedModules.filter((path) => !existsSync(resolve(root, "src", path)))
@@ -79,7 +79,7 @@ const runtimeHostSource = walk(resolve(root, "src"))
   .map((path) => relative(resolve(root, "src"), path))
 
 const localData = {
-  "fontMetricsData.js": (await import(resolve(root, "src/fontMetricsData.js"))).default,
+  "fontMetricsData.js": (await import(resolve(root, "dist/katex.metrics.mjs"))).fontMetricsData,
 }
 const fontSandbox = {}
 runInNewContext(
@@ -91,9 +91,9 @@ const officialData = {
   "fontMetricsData.js": fontSandbox.value,
 }
 const dataChecks = [...hostData].map((name) => {
-  const local = resolve(root, "src", name)
+  const local = resolve(root, "dist/katex.metrics.mjs")
   return {
-    name,
+    name, source: "src/data.lil", artifact: "dist/katex.metrics.mjs",
     matchesUpstream: existsSync(local) && valueDigest(localData[name]) === valueDigest(officialData[name]),
     ...size(local),
   }

@@ -8,8 +8,7 @@ import vm from "node:vm"
 
 // The font metrics ship as LilScript data (src/data.lil), and the compiler picks their
 // encoding, so the table a user gets is whatever the built artifact decodes at load.
-// `npm run audit` holds src/fontMetricsData.js (upstream's generated module) to
-// katex@0.16.22; this holds every shipped build's decoded table to src/fontMetricsData.js:
+// Every shipped build is compared directly to katex@0.16.22's independent table:
 // the same fonts in the same order, the same keys in the same order per font, and every
 // number Object.is-equal.
 //
@@ -20,7 +19,10 @@ import vm from "node:vm"
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const require = createRequire(import.meta.url)
 const probeKey = "__katexlilFontMetricsProbe"
-const expected = (await import(pathToFileURL(resolve(root, "src/fontMetricsData.js")).href)).default
+const upstreamData = readFileSync(resolve(root, "node_modules/katex/src/fontMetricsData.js"), "utf8")
+const fontSandbox = {}
+vm.runInNewContext(upstreamData.replace("export default", "globalThis.value ="), fontSandbox)
+const expected = fontSandbox.value
 
 const probeSource = `(() => {
   let table
@@ -75,7 +77,7 @@ function check(table, lane) {
   assert.ok(table, `${lane}: the probe did not reach the font metrics table (did its representation change?)`)
   assert.equal(Object.hasOwn(table, probeKey), false, `${lane}: the probe wrote into the table`)
   const found = differences(table, expected)
-  assert.deepEqual(found.slice(0, 20), [], `${lane}: ${found.length} differences from src/fontMetricsData.js`)
+  assert.deepEqual(found.slice(0, 20), [], `${lane}: ${found.length} differences from the pinned upstream table`)
 }
 
 function classicScript(filename) {
@@ -100,19 +102,19 @@ describe("font metrics in the built dist", () => {
   })
 
   for (const filename of ["katex.mjs", "katex.esm.js", "katex.closed.js"]) {
-    it(`dist/${filename} decodes src/fontMetricsData.js exactly`, async () => {
+    it(`dist/${filename} decodes the pinned upstream metrics exactly`, async () => {
       const katex = await import(pathToFileURL(resolve(root, "dist", filename)).href)
       check(probeIn(katex), filename)
       check(probeIn(katex.default), `${filename} default`)
     })
   }
 
-  it("dist/katex.cjs decodes src/fontMetricsData.js exactly", () => {
+  it("dist/katex.cjs decodes the pinned upstream metrics exactly", () => {
     check(probeIn(require(resolve(root, "dist/katex.cjs"))), "katex.cjs")
   })
 
   for (const filename of ["katex.umd.js", "katex.min.js"]) {
-    it(`dist/${filename} decodes src/fontMetricsData.js exactly`, () => {
+    it(`dist/${filename} decodes the pinned upstream metrics exactly`, () => {
       check(classicScript(filename), filename)
     })
   }

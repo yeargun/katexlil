@@ -1,27 +1,48 @@
-# contrib/copy-tex only: lilscript.toml plus [bundle] host_modules = "embed", so the
-# compiler carries contrib/copy-tex/instanceof.js into the artifact instead of
-# importing it. The other contrib entries import dist/katex.mjs, which must stay
-# an import, so they keep lilscript.toml.
-# reusable ESM — host-visible names stay
+# Compiler-owned delivery; no JavaScript post-minifier or export rewriting.
+[policy]
+version = 3
 [javascript]
-# Measured on this port: the objects it reads are plain data, so a member
-# read is not a coercion hook and the value can nest into its consumer.
+# Plain-data reads must not run getters; disable for effectful accessor integrations.
 assume_pure_property_reads = true
 priority = "size-first"
-optimization_level = 13
-# 290 KB of artifact gets `level_limit.div_ceil(12)` probes by default, which
-# exhausts before the terminal cleanup families are scored. Measured on this
-# port: 63,146 -> 62,505 Brotli, converged by 256.
-terminal_codec_probe_limit = 256
-cost_model = "brotli"
+# Assumes unpatched platform builtins; disable when consumers replace them.
 assume_pristine_builtins = true
-strip_console = true
-candidate_search = "always"
+# Remove debugLog instrumentation; ordinary print and host console effects remain.
+strip_debug = true
 
+# Preserved effort setting. 13 favors size; 14/15 allow more expensive marginal searches.
+[effort]
+level = 13
+
+# Optimize the delivered files for this codec, independently of raw/gzip objectives.
+[objective]
+codecs = "brotli"
 [mangle]
 identifiers = true
 properties = true
 pool_strings = false
 
-[bundle]
+# External paths describe the installed package, not the source directory.
+[delivery]
+mode = "single"
+directory = "."
 host_modules = "embed"
+entry_names = "contrib/copy-tex.mjs"
+[delivery.external_specifiers]
+"../../dist/katex.mjs" = "./katex.mjs"
+[delivery.entries]
+entry = "contrib/copy-tex/copy-tex.lil"
+[[delivery.also]]
+name = "cjs"
+format = "cjs"
+exports = "named"
+entry_names = "contrib/copy-tex.cjs"
+external_specifiers = {"../../dist/katex.mjs" = "./katex.cjs"}
+[[delivery.also]]
+name = "browser"
+format = "iife"
+exports = "named"
+global = "katexCopyTex"
+global_binding = "property"
+entry_names = "contrib/copy-tex.min.js"
+globals = {"../../dist/katex.mjs" = "katex"}

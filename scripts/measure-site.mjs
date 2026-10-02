@@ -38,8 +38,10 @@ rmSync(work, { recursive: true, force: true })
 mkdirSync(work, { recursive: true })
 
 // ---- sizes ----
+const originalMeasurementStarted = performance.now()
 const official = await published()
 const source = await fromSource({ work: join(work, "source") })
+writeFileSync(join(root, ".tmp", "original-build-time.json"), JSON.stringify({originalSeconds:(performance.now()-originalMeasurementStarted)/1000})+"\n")
 const swcVersion = JSON.parse(readFileSync(resolve(root, "node_modules/@swc/core/package.json"), "utf8")).version
 const swcLabel = `compress ${swcOptions.compress.passes} passes, ecma ${swcOptions.ecma}, top-level mangle`
 const lanes = [
@@ -51,7 +53,7 @@ const lanes = [
   { id: "official-source-terser", name: "Official source · esbuild + Terser", file: "official.source-terser.js", text: source.code, note: `katex@${pin} Flow sources type-stripped, bundled by esbuild with __VERSION__ defined as upstream's build does, Terser mangle on: the same source boundary the port rewrites` },
   { id: "official-source-swc", name: "Official source · esbuild + SWC", file: "official.source-swc.js", text: source.swc, note: `The same Flow-source bundle through SWC ${swcVersion}: ${swcLabel}` },
   { id: "itslil", name: "@itslil/katex · open world", path: "dist/katex.esm.js", note: "The npm ESM: the compiler's js-module output, with the font-metrics table (src/data.lil) and the version export compiled in; src/entry.lil exports the public API only, the build adds a licence banner, and nothing re-minifies it. Public API and option names kept", primary: true, world: "open" },
-  { id: "itslil-closed", name: "@itslil/katex · closed world", path: "dist/katex.closed.js", note: "Same source. The one compiler renames no property, so extern_fields has no effect and the closed config equals the open one: same bytes", world: "closed" },
+  { id: "itslil-closed", name: "@itslil/katex · closed world", path: "dist/katex.closed.js", note: "Same source and equivalent optimization settings; this diagnostic artifact is byte-identical to the npm ESM", world: "closed" },
 ]
 for (const lane of lanes) {
   if (lane.text != null) { lane.path = join(work, lane.file); writeFileSync(lane.path, lane.text) } else lane.path = resolve(root, lane.path)
@@ -217,7 +219,7 @@ const results = {
   warmupDiscard: 5,
   corpus: corpus.length,
   rounds,
-  comparison: `Official rows are an esbuild bundle of katex@${pin} plus its runtime graph, then Terser, esbuild or SWC; the source lanes are the Flow sources through esbuild, then Terser or SWC. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the closed world lane is the same compile, because the one compiler renames no property.`,
+  comparison: `Official rows are an esbuild bundle of katex@${pin} plus its runtime graph, then Terser, esbuild or SWC; the source lanes are the Flow sources through esbuild, then Terser or SWC. LilScript rows are the compiler's ESM output, never post-minified; the CJS and browser builds are esbuild re-bundles of it and are labelled as such under delivered. Open world keeps the public API and option names; the diagnostic closed lane currently uses equivalent optimization settings and produces the same bytes.`,
   spec,
   play: previous.play ?? { kind: "tex-html", sample: corpus[0], samples: [{ label: "frac", value: corpus[0] }, { label: "scripts", value: corpus[1] }] },
   size,
