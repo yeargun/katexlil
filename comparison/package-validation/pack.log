@@ -1,0 +1,5 @@
+
+> @itslil/katex@0.16.24 check:pack
+> node scripts/check-pack.mjs
+
+npm pack: 190 files, 1444667 bytes packed, 3614654 bytes unpacked

@@ -1,0 +1,203 @@
+TAP version 13
+# Built current objective comparisons at /home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/_site
+# Chromium 151.0.7922.34: @itslil/katex median 4.60 ms, katex@0.16.22 median 4.60 ms, ratio 1.000; parity 30/30
+# Subtest: browser performance (Playwright, Chromium)
+    # Subtest: renders the corpus identically and within the regression guard rail
+    ok 1 - renders the corpus identically and within the regression guard rail
+      ---
+      duration_ms: 1384.934601
+      ...
+    1..1
+ok 1 - browser performance (Playwright, Chromium)
+  ---
+  duration_ms: 1386.195544
+  type: 'suite'
+  ...
+# Subtest: contrib LilScript parity
+    # Subtest: contains no runtime JavaScript host modules
+    ok 1 - contains no runtime JavaScript host modules
+      ---
+      duration_ms: 0.984304
+      ...
+    # Subtest: matches official render-a11y-string outputs and errors
+    ok 2 - matches official render-a11y-string outputs and errors
+      ---
+      duration_ms: 67.181728
+      ...
+    # Subtest: matches official mhchem rendering across parser state machines
+    ok 3 - matches official mhchem rendering across parser state machines
+      ---
+      duration_ms: 63.448593
+      ...
+    1..3
+ok 2 - contrib LilScript parity
+  ---
+  duration_ms: 133.062107
+  type: 'suite'
+  ...
+# Subtest: font metrics in the built dist
+    # Subtest: reference is upstream's full table
+    ok 1 - reference is upstream's full table
+      ---
+      duration_ms: 1.082097
+      ...
+    # Subtest: dist/katex.mjs decodes the pinned upstream metrics exactly
+    ok 2 - dist/katex.mjs decodes the pinned upstream metrics exactly
+      ---
+      duration_ms: 30.604929
+      ...
+    # Subtest: dist/katex.esm.js decodes the pinned upstream metrics exactly
+    ok 3 - dist/katex.esm.js decodes the pinned upstream metrics exactly
+      ---
+      duration_ms: 23.38486
+      ...
+    # Subtest: dist/katex.closed.js decodes the pinned upstream metrics exactly
+    ok 4 - dist/katex.closed.js decodes the pinned upstream metrics exactly
+      ---
+      duration_ms: 24.08417
+      ...
+    # Subtest: dist/katex.cjs decodes the pinned upstream metrics exactly
+    ok 5 - dist/katex.cjs decodes the pinned upstream metrics exactly
+      ---
+      duration_ms: 21.129483
+      ...
+    # Subtest: dist/katex.umd.js decodes the pinned upstream metrics exactly
+    ok 6 - dist/katex.umd.js decodes the pinned upstream metrics exactly
+      ---
+      duration_ms: 21.338244
+      ...
+    # Subtest: dist/katex.min.js decodes the pinned upstream metrics exactly
+    ok 7 - dist/katex.min.js decodes the pinned upstream metrics exactly
+      ---
+      duration_ms: 10.233997
+      ...
+    1..7
+ok 3 - font metrics in the built dist
+  ---
+  duration_ms: 133.477164
+  type: 'suite'
+  ...
+# Subtest: @itslil/katex
+    # Subtest: renders x^2 with MathML and HTML
+    ok 1 - renders x^2 with MathML and HTML
+      ---
+      duration_ms: 30.66991
+      ...
+    # Subtest: renders frac
+    ok 2 - renders frac
+      ---
+      duration_ms: 1.870756
+      ...
+    # Subtest: matches the upstream root exports
+    ok 3 - matches the upstream root exports
+      ---
+      duration_ms: 0.818614
+      ...
+    # Subtest: honors throwOnError and errorColor
+    ok 4 - honors throwOnError and errorColor
+      ---
+      duration_ms: 1.538693
+      ...
+    # Subtest: pins option keys on the library artifact
+    ok 5 - pins option keys on the library artifact
+      ---
+      duration_ms: 1.03038
+      ...
+    # Subtest: render appends a DOM tree and covers the TeX surface
+    ok 6 - render appends a DOM tree and covers the TeX surface
+      ---
+      duration_ms: 10.527377
+      ...
+    # Subtest: closed artifact performs the core call
+    ok 7 - closed artifact performs the core call
+      ---
+      duration_ms: 27.618533
+      ...
+    1..7
+ok 4 - @itslil/katex
+  ---
+  duration_ms: 75.625339
+  type: 'suite'
+  ...
+# Subtest: published surface
+    # Subtest: reports the pinned upstream version in ESM, CJS, and the CLI
+    ok 1 - reports the pinned upstream version in ESM, CJS, and the CLI
+      ---
+      duration_ms: 139.367963
+      ...
+    # Subtest: matches pinned upstream root and contrib export keys
+    ok 2 - matches pinned upstream root and contrib export keys
+      ---
+      duration_ms: 52.596848
+      ...
+    # Subtest: renders stdin through the CLI
+    ok 3 - renders stdin through the CLI
+      ---
+      duration_ms: 75.334785
+      ...
+    # Subtest: loads ESM and CommonJS contrib entry points
+    ok 4 - loads ESM and CommonJS contrib entry points
+      ---
+      duration_ms: 1.714853
+      ...
+    # Subtest: loads browser builds as classic scripts
+    ok 5 - loads browser builds as classic scripts
+      ---
+      duration_ms: 40.672284
+      ...
+    # Subtest: matches official mhchem output
+    ok 6 - matches official mhchem output
+      ---
+      duration_ms: 39.918962
+      ...
+    # Subtest: matches official output across the screenshot corpus
+    ok 7 - matches official output across the screenshot corpus
+      ---
+      duration_ms: 311.646305
+      ...
+    1..7
+ok 5 - published surface
+  ---
+  duration_ms: 662.959838
+  type: 'suite'
+  ...
+# Subtest: three independently targeted builds have current artifact and config hashes
+ok 6 - three independently targeted builds have current artifact and config hashes
+  ---
+  duration_ms: 7.367776
+  ...
+# Subtest: public comparison describes current versus original and distinguishes build stages
+ok 7 - public comparison describes current versus original and distinguishes build stages
+  ---
+  duration_ms: 0.569126
+  ...
+# Subtest: built Pages artifact contains the current data and measured downloads
+ok 8 - built Pages artifact contains the current data and measured downloads
+  ---
+  duration_ms: 0.558356
+  ...
+1..8
+# tests 28
+# suites 5
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3164.499386
+(node:874748) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS test/official/katex-spec.js
+PASS test/official/contrib/render-a11y-string-spec.js
+PASS test/official/errors-spec.js
+PASS test/official/contrib/auto-render-spec.js
+PASS test/official/unicode-spec.js (7.238 s)
+PASS test/official/mathml-spec.js
+PASS test/official/screenshotter-spec.js
+PASS test/official/dup-spec.js
+
+Test Suites: 8 passed, 8 total
+Tests:       1230 passed, 1230 total
+Snapshots:   123 passed, 123 total
+Time:        9.962 s
+Ran all test suites.
