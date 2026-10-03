@@ -1,0 +1,915 @@
+{
+  "schemaVersion": 1,
+  "package": "@itslil/katex",
+  "version": "0.16.24",
+  "checkedAt": "2026-10-03T13:57:08.432603+00:00",
+  "compilerSha256": "8ff44fabb92c949e68240ce6541038fd52e2f3c04d1a9ac470031e4238541c3a",
+  "buildReport": "./comparison/package-build-report.json",
+  "packageBuildSeconds": 602.861,
+  "validation": {
+    "ok": true,
+    "checks": [
+      {
+        "suite": "test",
+        "command": [
+          "bash",
+          "-c",
+          "node --test-concurrency=1 --test test/*.test.mjs && node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config test/official/jest.config.mjs --runInBand"
+        ],
+        "returncode": 0,
+        "log": "./comparison/package-validation/test.log",
+        "logSha256": "8637863b757bc79832dc6fcca3f5de4fa6a85bbd8337a913a122bf8a176d5c01"
+      },
+      {
+        "suite": "pack",
+        "command": [
+          "npm",
+          "run",
+          "check:pack"
+        ],
+        "returncode": 0,
+        "log": "./comparison/package-validation/pack.log",
+        "logSha256": "88b7767a99558dfad57d0e7cb1df6e53b4da38efaccd0baa10d34453dd457940"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "src/Lexer.lil",
+      "sha256": "44a78d3b1007fa87f8a8d91fa2f31159db1d1ea8c3042fde4d47afe170383202"
+    },
+    {
+      "path": "src/MacroExpander.lil",
+      "sha256": "68d22b744e2d5238a2fe1933a12d5a152f6c065ca3ef13d945eb66ef589774e9"
+    },
+    {
+      "path": "src/Namespace.lil",
+      "sha256": "ca5102814783aa82514e02cc47c8c48300b12aedcf4f0af1d3532b5e5cd411b2"
+    },
+    {
+      "path": "src/Options.lil",
+      "sha256": "3cc2777cc32f7901a25cb628005191ab9a1505358c5069ceea9ce993ec59f943"
+    },
+    {
+      "path": "src/ParseError.lil",
+      "sha256": "0d7db20f2dfa558f64867eb69aab11052f82fad5a85255146368e4ef39ce9bec"
+    },
+    {
+      "path": "src/Parser.lil",
+      "sha256": "b2cf2eb7fe108081a4877a1bad70f2a8832a4faa20122e818025e0d98374a429"
+    },
+    {
+      "path": "src/Settings.lil",
+      "sha256": "2d480d3dcd7d58112bc0a1e930213b31a16b022039c6204169b851fd334cb147"
+    },
+    {
+      "path": "src/SourceLocation.lil",
+      "sha256": "63d72a7f5a1aa6b18397a7c617d195a5e4cfd66a73c9de9821bf13c5e7c41fc7"
+    },
+    {
+      "path": "src/Style.lil",
+      "sha256": "9414d7dad072f48e81374dee102d6eea77860e18ba07ff8c0aa7a1ee9165aa7a"
+    },
+    {
+      "path": "src/Token.lil",
+      "sha256": "7a53da1cf300110a2e3d6c1b67d2dacc7859c4fe4705e18087d67c5ee1b8f7c6"
+    },
+    {
+      "path": "src/buildCommon.lil",
+      "sha256": "b94e0b63e9a69d734efb8278233af7804d6ff777388121c826367455c94fb7b7"
+    },
+    {
+      "path": "src/buildHTML.lil",
+      "sha256": "8e6c2025ccca2dc0aa12463f1d53cff4cec2984b3b71d070763c56f77fd0f89e"
+    },
+    {
+      "path": "src/buildMathML.lil",
+      "sha256": "e81539abef08d81bacf4a0b7c1a9c439f07f83912bd9eaeb39176efcc8fed4d8"
+    },
+    {
+      "path": "src/buildTree.lil",
+      "sha256": "55313d10baf61d26e7e7d9b9ec8374ea5a06d851fd43acf24317f534b1101e84"
+    },
+    {
+      "path": "src/data.lil",
+      "sha256": "3bbda8cf14b80cbf83efaba0fb598133238cfff83bc9ed7f0b80def39b693265"
+    },
+    {
+      "path": "src/defineEnvironment.lil",
+      "sha256": "ab0d53a09880e24aff6c5748da113e89851d13de2f7d3e0a8f6a92252d73e1c3"
+    },
+    {
+      "path": "src/defineFunction.lil",
+      "sha256": "6aa2adcacbd76b8c5ca7c878edb4bea54a9eea2aec06b9b4696fcef15e1976b4"
+    },
+    {
+      "path": "src/defineMacro.lil",
+      "sha256": "bae9c8030104665b5c7144909c2b98ae6003c61c63d1598ada29fecbdeb8ff14"
+    },
+    {
+      "path": "src/delimiter.lil",
+      "sha256": "ac50e83378df73f1d991fa970699dceadef5b441933bcb8ce991105dc7a96fb1"
+    },
+    {
+      "path": "src/domTree.lil",
+      "sha256": "8b1a57fcec7b4d60440ab86847077cf640fa7143e1f60db3cfc4a16483089816"
+    },
+    {
+      "path": "src/entry.lil",
+      "sha256": "6100074d02e32bea179d520f7388bbeaae04879c51638ba1765451248035947f"
+    },
+    {
+      "path": "src/environments/array.lil",
+      "sha256": "310c23a5cd303f8de89c2bd43aa9024aa6d37898c6d3856d3edc0e090696db42"
+    },
+    {
+      "path": "src/environments/cd.lil",
+      "sha256": "ab9fdf42d4999e2609c4e4377fdd56c6114b18c42059f44ef91ff99ad813005a"
+    },
+    {
+      "path": "src/environments.lil",
+      "sha256": "3533530820f857a5f5624b8acad86e1e84c43a3d0e419e04abbe8324e9ac7933"
+    },
+    {
+      "path": "src/fontMetrics.lil",
+      "sha256": "19c1a520a5720b8bec9ff03e199ef537d047b85243ad661e371e31967a1920f8"
+    },
+    {
+      "path": "src/functions/accent.lil",
+      "sha256": "12c9e013672e147a04ba4268794980f26c7bba92c2752e03c60ab67e06aa3df4"
+    },
+    {
+      "path": "src/functions/accentunder.lil",
+      "sha256": "05ef7e88d0d9a771fe9e37525de13198c08fdc513f0196a3b09525e3a29565aa"
+    },
+    {
+      "path": "src/functions/arrow.lil",
+      "sha256": "50249987655f7c736f9e9cdaa28f8b18c9e887da880e83b216caa57b743bc4de"
+    },
+    {
+      "path": "src/functions/char.lil",
+      "sha256": "a1462b99d68880542b96e1b813d0d80d093a71494641f4cc7b67cbbaac91d82f"
+    },
+    {
+      "path": "src/functions/color.lil",
+      "sha256": "7311d64d845a614a025577d423506c2864eb024574b6efdac5dc3ea89e294845"
+    },
+    {
+      "path": "src/functions/cr.lil",
+      "sha256": "a1250131ba471d415ad522453d0b65b5780c907f1b83ceb6d8dcfed523bbf4c5"
+    },
+    {
+      "path": "src/functions/def.lil",
+      "sha256": "4a506f0d04b67bfe2480d7fed2d239e9aca84a0870241be06af6e325e4c1f338"
+    },
+    {
+      "path": "src/functions/delimsizing.lil",
+      "sha256": "ee84d0ae03a22c6806994eec21988500c94a14f5bb598b853dc164ddd5af3969"
+    },
+    {
+      "path": "src/functions/enclose.lil",
+      "sha256": "d035bf4499c15b57edb883f958db9da3893e3394f36c4ac3e7c2b33c59fa2ed3"
+    },
+    {
+      "path": "src/functions/environment.lil",
+      "sha256": "ad14756d979be5ed2eb5f21e4202fb98a6a056e8ceb688f24a7cd15760010b4c"
+    },
+    {
+      "path": "src/functions/font.lil",
+      "sha256": "bf8f1e518db2ae8aca8928a0a1e96dbfc43ab84ebfce00489224822b714a76ee"
+    },
+    {
+      "path": "src/functions/genfrac.lil",
+      "sha256": "ff3d54057548a3be8aa2f3d0aa9f07c31f4639959cb322d194f1e805c338d7e2"
+    },
+    {
+      "path": "src/functions/hbox.lil",
+      "sha256": "cd2b4edcf7446d0971c821fe5774de1cd91ea394b46b0fb0589a9e7ed14e6397"
+    },
+    {
+      "path": "src/functions/horizBrace.lil",
+      "sha256": "c6c3f7e918ba0c67be42f51365110eb6e255fb81e1ef51e61355901c5ab93755"
+    },
+    {
+      "path": "src/functions/href.lil",
+      "sha256": "24930053465e9383ae1c5fded736de6a0c5addf7d37b6ca0ed888781b6a8a5e4"
+    },
+    {
+      "path": "src/functions/html.lil",
+      "sha256": "228dfa835090655735710a0de182b61a846323c51b2bbdafb85ca74ce01a557f"
+    },
+    {
+      "path": "src/functions/htmlmathml.lil",
+      "sha256": "7222400f081102c9be7e0542e298237a8dbfae74bdd9a4989e5bebb56c0b3376"
+    },
+    {
+      "path": "src/functions/includegraphics.lil",
+      "sha256": "65e09a09a77255f33c2daaa368826b182b4c36c86a3f12ea96e7f1b47adc1a86"
+    },
+    {
+      "path": "src/functions/kern.lil",
+      "sha256": "0b3dc615b1f71ecb0a91ecefc4c2d67e83a55c72742c57d62e719c38607e1d28"
+    },
+    {
+      "path": "src/functions/lap.lil",
+      "sha256": "d20d8f9c8784f0ba90a3f806e64610602d5804358acdc0f4a58b627176f62d2e"
+    },
+    {
+      "path": "src/functions/math.lil",
+      "sha256": "2187fc8108f3f4428a6192ea02219b067ab60487c8bf00179e774f1db79e612e"
+    },
+    {
+      "path": "src/functions/mathchoice.lil",
+      "sha256": "4b16d14453b13d0268ecb1713a02e9b88b6ef072aca69569fa2b1e79e7ebe8d6"
+    },
+    {
+      "path": "src/functions/mclass.lil",
+      "sha256": "779363a214c9cd39613fc095587252add8b873f7696b31cca2ee3bb8b2082bfa"
+    },
+    {
+      "path": "src/functions/op.lil",
+      "sha256": "f79ce0a1477dc761b9848fbb92fd165f621d5d61e6256167681fcf55e5a9d1ea"
+    },
+    {
+      "path": "src/functions/operatorname.lil",
+      "sha256": "aa773def2fc959aec9631b29b5be765b5ca75cc945aaa706197fc693cc555a10"
+    },
+    {
+      "path": "src/functions/ordgroup.lil",
+      "sha256": "a9655a2716d336549858c8781ae93dbeee9c8cd65002e720dc66a884e04e5b24"
+    },
+    {
+      "path": "src/functions/overline.lil",
+      "sha256": "f53affead061d054809d476a768823e13b20f0c76e125cf258e3a6b6a1928cff"
+    },
+    {
+      "path": "src/functions/phantom.lil",
+      "sha256": "1070fb99ce18e8997cd1937393acee5acc2b8781dc7e74b24605fd070fed46d7"
+    },
+    {
+      "path": "src/functions/pmb.lil",
+      "sha256": "ff422333f7d8844312084e6009537e9f36eadebfc9df196cf10564a0559a4291"
+    },
+    {
+      "path": "src/functions/raisebox.lil",
+      "sha256": "470eae4f744aa5c66dfee7d111459aadf2bc07f40fb77c6874c061eaf7dade25"
+    },
+    {
+      "path": "src/functions/relax.lil",
+      "sha256": "0b49b19114da590bd582155738f2e30af68b519ed80be28e5924ae5ab38b9bf7"
+    },
+    {
+      "path": "src/functions/rule.lil",
+      "sha256": "d6934078d74855ab6a49328f6698a10638c8ce561780e8f8997084fddefb4874"
+    },
+    {
+      "path": "src/functions/sizing.lil",
+      "sha256": "b7548ecb8b7cf4a135f9ce44f5ac0d1c9cfd0e5f23fcac7af0e01da697f3e17b"
+    },
+    {
+      "path": "src/functions/smash.lil",
+      "sha256": "db76426e49a6fef9533655edf29818fc8fd8459964d08f454813de7244a50790"
+    },
+    {
+      "path": "src/functions/sqrt.lil",
+      "sha256": "969b4dbbd54f381c37fa05e3087c6fd17e56989841c949ab09a2e1d8de3df88e"
+    },
+    {
+      "path": "src/functions/styling.lil",
+      "sha256": "8590c5e7d73458bf0ed866b0779392c8f511bcaa147539f1932b57a0b9041d00"
+    },
+    {
+      "path": "src/functions/supsub.lil",
+      "sha256": "8e268c068361deed51709015f5c3f88b73cc0ee97032b816fc9a84063ea506c2"
+    },
+    {
+      "path": "src/functions/symbolsOp.lil",
+      "sha256": "9b349fd66609cc41f45fad4c528189cd049de5c6160950952cfee549e4a8aa02"
+    },
+    {
+      "path": "src/functions/symbolsOrd.lil",
+      "sha256": "6c0da9598b15bcd056d31fe3cc24963e80dc4efae7bba07e6f9d90f885c77a66"
+    },
+    {
+      "path": "src/functions/symbolsSpacing.lil",
+      "sha256": "036d7b790d12ef44ef3c093b3c67128b35cbab01e27f9f4c8256edfd47daaf4e"
+    },
+    {
+      "path": "src/functions/tag.lil",
+      "sha256": "7fa65638c1afd56a21319c8b415678bbfb8fd9cf704d58808b002a158e635840"
+    },
+    {
+      "path": "src/functions/text.lil",
+      "sha256": "1e4b1cb541a66836de81a2812ad0d58d24850de96c0dacb2f963f33ded5755cf"
+    },
+    {
+      "path": "src/functions/underline.lil",
+      "sha256": "1fd9407fdaa2cded6eaa01dbbfef5782c2b94562aac90d20704793a1b146ef9a"
+    },
+    {
+      "path": "src/functions/utils/assembleSupSub.lil",
+      "sha256": "d5d14ee62c907313d9e04fd202a4f52988e334789c5b60fab63bad239de4d4b7"
+    },
+    {
+      "path": "src/functions/vcenter.lil",
+      "sha256": "79658a4995f85f28f9b9589faebc98a05b1e00ab92be8bf659c4448273c8a0bf"
+    },
+    {
+      "path": "src/functions/verb.lil",
+      "sha256": "0a6c5b7640db0606641b130a2268c2f909a8fa04cbed8460f518121bfa164ebb"
+    },
+    {
+      "path": "src/functions.lil",
+      "sha256": "eb105bbe59bb5a4c0ce43ae24cf26646c67bad28e530f50bc13a6dc2f34935e2"
+    },
+    {
+      "path": "src/host.lil",
+      "sha256": "1ade65c1f2a835d3a39186a08d1f1bc2cd8cbfc3139622bb2abcfe2cc65eeecc"
+    },
+    {
+      "path": "src/macros.lil",
+      "sha256": "c42e10b997a447e545486a107e1d4559a5afe909ed4a7b22bac193d04d9b63a3"
+    },
+    {
+      "path": "src/mathMLTree.lil",
+      "sha256": "5fe140900e0e707cf33217360956ab82b1705167f31e31651c0b943c758a149a"
+    },
+    {
+      "path": "src/package-default.lil",
+      "sha256": "e7ae39346829ba48610e3d7037976a509c0ac3e246f23ec83b928a02803da579"
+    },
+    {
+      "path": "src/parseNode.lil",
+      "sha256": "45414e9d740cbbbff4d1ce0c83c86532195154076c54c63fa1871e9f44f3ed30"
+    },
+    {
+      "path": "src/parseTree.lil",
+      "sha256": "85a288f10cccae41b0fb7e46de048c0d42bb225a153d2a6e08d05c65517ceac7"
+    },
+    {
+      "path": "src/spacingData.lil",
+      "sha256": "676f36bb2dd416453b49495096bc483726785db83b2f104c03a171482633425b"
+    },
+    {
+      "path": "src/stretchy.lil",
+      "sha256": "d829013395a65e801728810ec2624cc0858f8a53480996c9fa96819e9af6a1e8"
+    },
+    {
+      "path": "src/svgGeometry.lil",
+      "sha256": "a5536984854b47edacf9c37d87494d2f79d7a3ee1a72f4aeb52f31dcca12762a"
+    },
+    {
+      "path": "src/symbols.lil",
+      "sha256": "324176d25ece7e16a84583bcdb8aec57269ca6543bd1c3c84dff1d07a1a81ffe"
+    },
+    {
+      "path": "src/tree.lil",
+      "sha256": "8750276950490197073d50b262e10cf0b82981c66ae791b42194381d5a7941ae"
+    },
+    {
+      "path": "src/types.lil",
+      "sha256": "b5ae0146a8e65007e0ed4850a36915e8e06f9edcfdcd4f95915c74ca8728a3f1"
+    },
+    {
+      "path": "src/unicodeAccents.lil",
+      "sha256": "ceb5f221f3b36ab7076f3f8f81ad568a3b098f9a8add2fd1c1c92d59927522e4"
+    },
+    {
+      "path": "src/unicodeScripts.lil",
+      "sha256": "713b1af0879ef5c765d2152ec2a72dd2dd45116903a38cf204078a9cec64e60f"
+    },
+    {
+      "path": "src/unicodeSupOrSub.lil",
+      "sha256": "41b65488735bd1c02a6712eae65304fdeef7d60553f2dd2981c7a34d6a49dc9b"
+    },
+    {
+      "path": "src/unicodeSymbols.lil",
+      "sha256": "9091e5d368de49d94e7a798ad6aeaa5b1d73f04fe4583ab8e48814960ebaef00"
+    },
+    {
+      "path": "src/units.lil",
+      "sha256": "67427c241e0b8001fd46a0b169bcb430644c9a020f92bd99aeb7cc753156a61d"
+    },
+    {
+      "path": "src/utils.lil",
+      "sha256": "90fdc44dac5734508cf1a8e1ba153df756a84509f4b2edb6e65f380e5865a9ea"
+    },
+    {
+      "path": "src/wide-character.lil",
+      "sha256": "3deafd83cc7039b338512e0ea4448a2d1bee7d98247393ac94a79a711cf07dda"
+    },
+    {
+      "path": "config/auto-render.toml",
+      "sha256": "506496ed56b0bb132c88fd2af9a9c674bd677bace5c0eabfc3bcf021129ad6e4"
+    },
+    {
+      "path": "config/copy-tex.toml",
+      "sha256": "d2910d1f06677c0a43c6cc38dee0ae4fdc68fd61c096336b46485c230d19a93b"
+    },
+    {
+      "path": "config/mathtex-script-type.toml",
+      "sha256": "665b87e42cf96bc2cfeab47379da2c1718001c6efa82a5971508d2e87d8f67a1"
+    },
+    {
+      "path": "config/mhchem.toml",
+      "sha256": "923bd8bd77b9df5a35ebabab61a9a6fa35cc3a55e2537d62873fc86da6958ed9"
+    },
+    {
+      "path": "config/render-a11y-string.toml",
+      "sha256": "e794853aa5812439100e0de3c327a0d97d3a37060914ef0bfa95bdf9d6171999"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "dist/.lilscript/auto-render.json",
+      "bytes": 6225,
+      "sha256": "7b8e2e34037b8baf20523c487f696174a8955ec717a416fa48e37037438ac23f"
+    },
+    {
+      "path": "dist/.lilscript/closed.json",
+      "bytes": 42091,
+      "sha256": "055f6622adad29d8fe4e11eb030ea2b3518ff80ae03d8886659621ae3097fea7"
+    },
+    {
+      "path": "dist/.lilscript/copy-tex.json",
+      "bytes": 6382,
+      "sha256": "46f012c54a4125c4a1c8586dc451b1b55e09d9784e5c3681af6a5b2c181eead8"
+    },
+    {
+      "path": "dist/.lilscript/mathtex-script-type.json",
+      "bytes": 5879,
+      "sha256": "b00dbfb0e350bdce13a7062f01a5f20e5f7fb4f59afa49d0b2d511da3e199be7"
+    },
+    {
+      "path": "dist/.lilscript/mhchem.json",
+      "bytes": 5683,
+      "sha256": "0a68a3ced66ca9e0f7b872792d787b06658d30f2f6d5d22c90d548ff66b7bfc3"
+    },
+    {
+      "path": "dist/.lilscript/public.json",
+      "bytes": 71457,
+      "sha256": "98f69d993f9bbcf2870963d42b7e11e8c36e37dba56398c002bc71c875a4e9ba"
+    },
+    {
+      "path": "dist/.lilscript/render-a11y-string.json",
+      "bytes": 5885,
+      "sha256": "4e54a90a89e064619f7f66b72479e53ee7c2309308a2f2eec5eb241c21d59ea6"
+    },
+    {
+      "path": "dist/contrib/auto-render.cjs",
+      "bytes": 2787,
+      "sha256": "b31a19d49a01cb7dfbc1b721c0780795a7f52b07d2a029f79d7bc15e76a329aa"
+    },
+    {
+      "path": "dist/contrib/auto-render.min.js",
+      "bytes": 3000,
+      "sha256": "69f30160dbcd8ba4ce29b95a96c7fdaa8ded96a667b9c21348db13f90761e8cd"
+    },
+    {
+      "path": "dist/contrib/auto-render.mjs",
+      "bytes": 2672,
+      "sha256": "b796ea2da38589f3cfade8e20d025f302856341dd1b0e78d08aa5a28b7c03d74"
+    },
+    {
+      "path": "dist/contrib/copy-tex.cjs",
+      "bytes": 1345,
+      "sha256": "6e0ec71b7822260313f4b424860777d5cfcd7bf7cbf6e69a026faaf40d81f813"
+    },
+    {
+      "path": "dist/contrib/copy-tex.min.js",
+      "bytes": 1452,
+      "sha256": "9ca612feed5d57226fbbdccdadb265697bdcf4af698c80115bbd62a06ee1bc21"
+    },
+    {
+      "path": "dist/contrib/copy-tex.mjs",
+      "bytes": 1283,
+      "sha256": "830c9fb3e94f2d833d71754b71cda0296b4588b95eaeb2f8f9b1bc8ef13f9cec"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.cjs",
+      "bytes": 480,
+      "sha256": "03131e480f86b321278df0884b81accaa90f8b95964c50ec3a59f8d693451e77"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.min.js",
+      "bytes": 712,
+      "sha256": "45ea891c4af4b1fb675e41fe586affe28d84356df9751ec1437cacd35330dd5e"
+    },
+    {
+      "path": "dist/contrib/mathtex-script-type.mjs",
+      "bytes": 418,
+      "sha256": "f6634352e0499f2bad2cf5ba48bac7ecfaf4c3e81d4ada5bb0c7bd186ea8b58a"
+    },
+    {
+      "path": "dist/contrib/mhchem.cjs",
+      "bytes": 33371,
+      "sha256": "5116e251046f1534e8a3b26418d6bb6d8f4cca4d4116ab266885b62ae9f6e524"
+    },
+    {
+      "path": "dist/contrib/mhchem.min.js",
+      "bytes": 33638,
+      "sha256": "46fd0354a2bc09250598ed24ed7147117f3a66be2f853e61955dedee7da70f72"
+    },
+    {
+      "path": "dist/contrib/mhchem.mjs",
+      "bytes": 33296,
+      "sha256": "0c2105e3adee2602b8ae517f04f9e6c59855f8f3d8a7ca4be155285acfbee6fa"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.cjs",
+      "bytes": 7068,
+      "sha256": "59ec6805351a320a8055d2b01d26084c04af85fd67bfded68f0ccf66df39191a"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.min.js",
+      "bytes": 7198,
+      "sha256": "a32895acc07c4357e7db839648f5c1821a0b093017491237b3844ee4dca20581"
+    },
+    {
+      "path": "dist/contrib/render-a11y-string.mjs",
+      "bytes": 6840,
+      "sha256": "e1a652c2a48ff602bbe9502b5f4ccad524735450eb0877f42b0fbf65c83909a8"
+    },
+    {
+      "path": "dist/fonts/KaTeX_AMS-Regular.ttf",
+      "bytes": 63632,
+      "sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13"
+    },
+    {
+      "path": "dist/fonts/KaTeX_AMS-Regular.woff",
+      "bytes": 33516,
+      "sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251"
+    },
+    {
+      "path": "dist/fonts/KaTeX_AMS-Regular.woff2",
+      "bytes": 28076,
+      "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Caligraphic-Bold.ttf",
+      "bytes": 12368,
+      "sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Caligraphic-Bold.woff",
+      "bytes": 7716,
+      "sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Caligraphic-Bold.woff2",
+      "bytes": 6912,
+      "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Caligraphic-Regular.ttf",
+      "bytes": 12344,
+      "sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Caligraphic-Regular.woff",
+      "bytes": 7656,
+      "sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Caligraphic-Regular.woff2",
+      "bytes": 6908,
+      "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Fraktur-Bold.ttf",
+      "bytes": 19584,
+      "sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Fraktur-Bold.woff",
+      "bytes": 13296,
+      "sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Fraktur-Bold.woff2",
+      "bytes": 11348,
+      "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Fraktur-Regular.ttf",
+      "bytes": 19572,
+      "sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Fraktur-Regular.woff",
+      "bytes": 13208,
+      "sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Fraktur-Regular.woff2",
+      "bytes": 11316,
+      "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Bold.ttf",
+      "bytes": 51336,
+      "sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Bold.woff",
+      "bytes": 29912,
+      "sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Bold.woff2",
+      "bytes": 25324,
+      "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-BoldItalic.ttf",
+      "bytes": 32968,
+      "sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-BoldItalic.woff",
+      "bytes": 19412,
+      "sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-BoldItalic.woff2",
+      "bytes": 16780,
+      "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Italic.ttf",
+      "bytes": 33580,
+      "sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Italic.woff",
+      "bytes": 19676,
+      "sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Italic.woff2",
+      "bytes": 16988,
+      "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Regular.ttf",
+      "bytes": 53580,
+      "sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Regular.woff",
+      "bytes": 30772,
+      "sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Main-Regular.woff2",
+      "bytes": 26272,
+      "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Math-BoldItalic.ttf",
+      "bytes": 31196,
+      "sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Math-BoldItalic.woff",
+      "bytes": 18668,
+      "sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Math-BoldItalic.woff2",
+      "bytes": 16400,
+      "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Math-Italic.ttf",
+      "bytes": 31308,
+      "sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Math-Italic.woff",
+      "bytes": 18748,
+      "sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Math-Italic.woff2",
+      "bytes": 16440,
+      "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Bold.ttf",
+      "bytes": 24504,
+      "sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Bold.woff",
+      "bytes": 14408,
+      "sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Bold.woff2",
+      "bytes": 12216,
+      "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Italic.ttf",
+      "bytes": 22364,
+      "sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Italic.woff",
+      "bytes": 14112,
+      "sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Italic.woff2",
+      "bytes": 12028,
+      "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Regular.ttf",
+      "bytes": 19436,
+      "sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Regular.woff",
+      "bytes": 12316,
+      "sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605"
+    },
+    {
+      "path": "dist/fonts/KaTeX_SansSerif-Regular.woff2",
+      "bytes": 10344,
+      "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Script-Regular.ttf",
+      "bytes": 16648,
+      "sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Script-Regular.woff",
+      "bytes": 10588,
+      "sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Script-Regular.woff2",
+      "bytes": 9644,
+      "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size1-Regular.ttf",
+      "bytes": 12228,
+      "sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size1-Regular.woff",
+      "bytes": 6496,
+      "sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size1-Regular.woff2",
+      "bytes": 5468,
+      "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size2-Regular.ttf",
+      "bytes": 11508,
+      "sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size2-Regular.woff",
+      "bytes": 6188,
+      "sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size2-Regular.woff2",
+      "bytes": 5208,
+      "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size3-Regular.ttf",
+      "bytes": 7588,
+      "sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size3-Regular.woff",
+      "bytes": 4420,
+      "sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size3-Regular.woff2",
+      "bytes": 3624,
+      "sha256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size4-Regular.ttf",
+      "bytes": 10364,
+      "sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size4-Regular.woff",
+      "bytes": 5980,
+      "sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Size4-Regular.woff2",
+      "bytes": 4928,
+      "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Typewriter-Regular.ttf",
+      "bytes": 27556,
+      "sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Typewriter-Regular.woff",
+      "bytes": 16028,
+      "sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7"
+    },
+    {
+      "path": "dist/fonts/KaTeX_Typewriter-Regular.woff2",
+      "bytes": 13568,
+      "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
+    },
+    {
+      "path": "dist/katex.cjs",
+      "bytes": 246665,
+      "sha256": "2d1488c20473874771781fbf3503097b25ece7c8246f89bfd06270096feba402"
+    },
+    {
+      "path": "dist/katex.closed.js",
+      "bytes": 266817,
+      "sha256": "790c5fe12831ba88576089fe95fdeab3cbc431efebae2da6ef24f07da917ccd5"
+    },
+    {
+      "path": "dist/katex.closed.raw.js",
+      "bytes": 266817,
+      "sha256": "790c5fe12831ba88576089fe95fdeab3cbc431efebae2da6ef24f07da917ccd5"
+    },
+    {
+      "path": "dist/katex.contrib-test.js",
+      "bytes": 732,
+      "sha256": "64c410bc497df19d4d01c2c3eba5fca6307cb469739d438b0a7863952f4ab5cd"
+    },
+    {
+      "path": "dist/katex.css",
+      "bytes": 31329,
+      "sha256": "009f1e58806819e90d02e90ffecafa988a3ee4b54418f8cab70f4f2cbf8ce2d8"
+    },
+    {
+      "path": "dist/katex.d.ts",
+      "bytes": 8686,
+      "sha256": "3c7e39e0f06c23cc1e4ee88c7962a512f8e4dba118eca6140b0daac3ae94fa51"
+    },
+    {
+      "path": "dist/katex.esm.js",
+      "bytes": 248330,
+      "sha256": "27384ae9a93898b14d877b35130008a20323dc9f2dd4512dd1093a4b18a0d0dd"
+    },
+    {
+      "path": "dist/katex.metrics.mjs",
+      "bytes": 46096,
+      "sha256": "418fe14fdcaeb09d9998ee5241d89d0695b6299b07ca26dc0acba645c82e431b"
+    },
+    {
+      "path": "dist/katex.min.css",
+      "bytes": 23352,
+      "sha256": "19095127357ed6d29fe0a63a6b000c913a89f7f1963b765dd3715e97c9852e75"
+    },
+    {
+      "path": "dist/katex.min.js",
+      "bytes": 247126,
+      "sha256": "b637a7ca9d650f592129f90ae03c5eda26cabfd64d3f0e03857b6e0aa4d01e8a"
+    },
+    {
+      "path": "dist/katex.mjs",
+      "bytes": 248330,
+      "sha256": "27384ae9a93898b14d877b35130008a20323dc9f2dd4512dd1093a4b18a0d0dd"
+    },
+    {
+      "path": "dist/katex.raw.js",
+      "bytes": 248330,
+      "sha256": "27384ae9a93898b14d877b35130008a20323dc9f2dd4512dd1093a4b18a0d0dd"
+    },
+    {
+      "path": "dist/katex.test.js",
+      "bytes": 248234,
+      "sha256": "9e942c641fdd90378f352ba0000bc0f897d78f8a60d4ab38ac7091daede4e9ad"
+    },
+    {
+      "path": "dist/katex.test.raw.js",
+      "bytes": 248234,
+      "sha256": "9e942c641fdd90378f352ba0000bc0f897d78f8a60d4ab38ac7091daede4e9ad"
+    },
+    {
+      "path": "dist/katex.umd.js",
+      "bytes": 247126,
+      "sha256": "b637a7ca9d650f592129f90ae03c5eda26cabfd64d3f0e03857b6e0aa4d01e8a"
+    },
+    {
+      "path": "dist/lilscript.manifest.json",
+      "bytes": 62884,
+      "sha256": "6aa06e36e23539eb7a232d36143202fd35855083df9b858c876b4ed2038de4bb"
+    }
+  ],
+  "scope": "Checked repository package; independent of npm publication. Main-entry objective comparisons have separate artifacts and timings."
+}

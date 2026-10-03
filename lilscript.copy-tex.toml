@@ -46,3 +46,9 @@ global = "katexCopyTex"
 global_binding = "property"
 entry_names = "contrib/copy-tex.min.js"
 globals = {"../../dist/katex.mjs" = "katex"}
+
+[policy.resources]
+logical_work = 2000000000
+
+[execution]
+jobs = 1

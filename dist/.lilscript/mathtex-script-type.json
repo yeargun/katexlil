@@ -1,0 +1,293 @@
+{
+  "version": 5,
+  "source_sha256": "2e93b0891af5656ac8ce875c53fa0f44c3be0e8e1ceaf3d41088e06a476a3e06",
+  "inputs": {
+    "root": 0,
+    "entries": [
+      {
+        "name": "entry",
+        "module": 0
+      }
+    ],
+    "modules": [
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/contrib/mathtex-script-type/mathtex-script-type.lil",
+        "bytes": 1088,
+        "sha256": "b831a99988d886ac5e5422212fcf714c0a834c9e3e6b72fbc76f807bf9738102",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      }
+    ],
+    "host_modules": [],
+    "host_reserved": []
+  },
+  "outputs": [
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mathtex-script-type.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mathtex-script-type.mjs"
+          ],
+          "row": 223,
+          "raw_row": 418
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mathtex-script-type.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mathtex-script-type.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 418,
+          "codec_bytes": 223,
+          "sha256": "f6634352e0499f2bad2cf5ba48bac7ecfaf4c3e81d4ada5bb0c7bd186ea8b58a"
+        }
+      ],
+      "side_effects": [
+        "contrib/mathtex-script-type.mjs"
+      ],
+      "codec_total": 223,
+      "rows_total": 223,
+      "setters": 0,
+      "output": "primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        11,
+        240,
+        53,
+        173,
+        138,
+        226,
+        44,
+        50,
+        234,
+        22,
+        4,
+        45,
+        80,
+        133,
+        207,
+        119,
+        65,
+        207,
+        242,
+        52,
+        211,
+        89,
+        250,
+        103,
+        206,
+        237,
+        163,
+        184,
+        60,
+        187,
+        222,
+        86
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mathtex-script-type.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/mathtex-script-type.min.js"
+          ],
+          "row": 322,
+          "raw_row": 712
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mathtex-script-type.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mathtex-script-type.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 712,
+          "codec_bytes": 322,
+          "sha256": "45ea891c4af4b1fb675e41fe586affe28d84356df9751ec1437cacd35330dd5e"
+        }
+      ],
+      "side_effects": [
+        "contrib/mathtex-script-type.min.js"
+      ],
+      "codec_total": 322,
+      "rows_total": 322,
+      "setters": 0,
+      "output": "browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        213,
+        189,
+        243,
+        117,
+        141,
+        62,
+        111,
+        203,
+        27,
+        192,
+        238,
+        167,
+        70,
+        185,
+        42,
+        200,
+        43,
+        250,
+        126,
+        29,
+        126,
+        250,
+        126,
+        102,
+        78,
+        196,
+        10,
+        156,
+        12,
+        200,
+        227,
+        23
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mathtex-script-type.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mathtex-script-type.cjs"
+          ],
+          "row": 260,
+          "raw_row": 480
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mathtex-script-type.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mathtex-script-type.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 480,
+          "codec_bytes": 260,
+          "sha256": "03131e480f86b321278df0884b81accaa90f8b95964c50ec3a59f8d693451e77"
+        }
+      ],
+      "side_effects": [
+        "contrib/mathtex-script-type.cjs"
+      ],
+      "codec_total": 260,
+      "rows_total": 260,
+      "setters": 0,
+      "output": "cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        254,
+        66,
+        43,
+        105,
+        160,
+        157,
+        232,
+        138,
+        53,
+        224,
+        111,
+        241,
+        96,
+        39,
+        146,
+        4,
+        61,
+        131,
+        61,
+        38,
+        88,
+        5,
+        212,
+        164,
+        235,
+        139,
+        152,
+        161,
+        181,
+        93,
+        66,
+        152
+      ]
+    }
+  ]
+}

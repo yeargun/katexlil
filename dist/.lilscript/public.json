@@ -1,0 +1,2509 @@
+{
+  "version": 5,
+  "source_sha256": "40361430c563d8d4ec9cb8b21c25feeb0d693a2a5ac526d53fa727ec785ced2e",
+  "inputs": {
+    "root": 0,
+    "entries": [
+      {
+        "name": "contrib-test",
+        "module": 0
+      },
+      {
+        "name": "default",
+        "module": 2
+      },
+      {
+        "name": "katex",
+        "module": 3
+      },
+      {
+        "name": "metrics",
+        "module": 92
+      },
+      {
+        "name": "test",
+        "module": 93
+      }
+    ],
+    "modules": [
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/test/support.lil",
+        "bytes": 113,
+        "sha256": "e89c695509da90ea6ddf47f335f3991d6199ba5ab60de6faee596dc0fddd21ec",
+        "dependencies": [
+          1
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/contrib/auto-render/splitAtDelimiters.lil",
+        "bytes": 2191,
+        "sha256": "64f99c21efb3eab701e416dbb21710a366fff5b7aaca7fcd5f1b608c7f3422f4",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/package-default.lil",
+        "bytes": 73,
+        "sha256": "e7ae39346829ba48610e3d7037976a509c0ac3e246f23ec83b928a02803da579",
+        "dependencies": [
+          3
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/entry.lil",
+        "bytes": 4824,
+        "sha256": "6100074d02e32bea179d520f7388bbeaae04879c51638ba1765451248035947f",
+        "dependencies": [
+          4,
+          8,
+          10,
+          28,
+          13,
+          14,
+          22,
+          25,
+          50,
+          20,
+          12,
+          19,
+          26,
+          88,
+          86,
+          15,
+          30,
+          47,
+          5,
+          13,
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/ParseError.lil",
+        "bytes": 2394,
+        "sha256": "0d7db20f2dfa558f64867eb69aab11052f82fad5a85255146368e4ef39ce9bec",
+        "dependencies": [
+          5,
+          6
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/host.lil",
+        "bytes": 7460,
+        "sha256": "1ade65c1f2a835d3a39186a08d1f1bc2cd8cbfc3139622bb2abcfe2cc65eeecc",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Token.lil",
+        "bytes": 996,
+        "sha256": "7a53da1cf300110a2e3d6c1b67d2dacc7859c4fe4705e18087d67c5ee1b8f7c6",
+        "dependencies": [
+          5,
+          7
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/SourceLocation.lil",
+        "bytes": 1425,
+        "sha256": "63d72a7f5a1aa6b18397a7c617d195a5e4cfd66a73c9de9821bf13c5e7c41fc7",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Settings.lil",
+        "bytes": 9816,
+        "sha256": "2d480d3dcd7d58112bc0a1e930213b31a16b022039c6204169b851fd334cb147",
+        "dependencies": [
+          5,
+          9,
+          4,
+          6
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/utils.lil",
+        "bytes": 4045,
+        "sha256": "90fdc44dac5734508cf1a8e1ba153df756a84509f4b2edb6e65f380e5865a9ea",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/buildTree.lil",
+        "bytes": 3379,
+        "sha256": "55313d10baf61d26e7e7d9b9ec8374ea5a06d851fd43acf24317f534b1101e84",
+        "dependencies": [
+          5,
+          11,
+          26,
+          13,
+          19,
+          8,
+          12,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/buildHTML.lil",
+        "bytes": 13115,
+        "sha256": "8e6c2025ccca2dc0aa12463f1d53cff4cec2984b3b71d070763c56f77fd0f89e",
+        "dependencies": [
+          5,
+          4,
+          12,
+          13,
+          14,
+          9,
+          18,
+          24,
+          25,
+          17,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Style.lil",
+        "bytes": 2776,
+        "sha256": "9414d7dad072f48e81374dee102d6eea77860e18ba07ff8c0aa7a1ee9165aa7a",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/buildCommon.lil",
+        "bytes": 23754,
+        "sha256": "b94e0b63e9a69d734efb8278233af7804d6ff777388121c826367455c94fb7b7",
+        "dependencies": [
+          5,
+          14,
+          20,
+          22,
+          23,
+          18,
+          17
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/domTree.lil",
+        "bytes": 16161,
+        "sha256": "8b1a57fcec7b4d60440ab86847077cf640fa7143e1f60db3cfc4a16483089816",
+        "dependencies": [
+          5,
+          15,
+          9,
+          16,
+          17,
+          18,
+          4
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/unicodeScripts.lil",
+        "bytes": 2566,
+        "sha256": "713b1af0879ef5c765d2152ec2a72dd2dd45116903a38cf204078a9cec64e60f",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/svgGeometry.lil",
+        "bytes": 26777,
+        "sha256": "a5536984854b47edacf9c37d87494d2f79d7a3ee1a72f4aeb52f31dcca12762a",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/tree.lil",
+        "bytes": 2056,
+        "sha256": "8750276950490197073d50b262e10cf0b82981c66ae791b42194381d5a7941ae",
+        "dependencies": [
+          5,
+          9
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/units.lil",
+        "bytes": 3126,
+        "sha256": "67427c241e0b8001fd46a0b169bcb430644c9a020f92bd99aeb7cc753156a61d",
+        "dependencies": [
+          5,
+          4,
+          19
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Options.lil",
+        "bytes": 7796,
+        "sha256": "3cc2777cc32f7901a25cb628005191ab9a1505358c5069ceea9ce993ec59f943",
+        "dependencies": [
+          5,
+          20
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/fontMetrics.lil",
+        "bytes": 4954,
+        "sha256": "19c1a520a5720b8bec9ff03e199ef537d047b85243ad661e371e31967a1920f8",
+        "dependencies": [
+          5,
+          15,
+          21
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/data.lil",
+        "bytes": 97168,
+        "sha256": "3bbda8cf14b80cbf83efaba0fb598133238cfff83bc9ed7f0b80def39b693265",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/symbols.lil",
+        "bytes": 51659,
+        "sha256": "324176d25ece7e16a84583bcdb8aec57269ca6543bd1c3c84dff1d07a1a81ffe",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/wide-character.lil",
+        "bytes": 2400,
+        "sha256": "3deafd83cc7039b338512e0ea4448a2d1bee7d98247393ac94a79a711cf07dda",
+        "dependencies": [
+          5,
+          4
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/spacingData.lil",
+        "bytes": 2486,
+        "sha256": "676f36bb2dd416453b49495096bc483726785db83b2f104c03a171482633425b",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/defineFunction.lil",
+        "bytes": 3675,
+        "sha256": "6aa2adcacbd76b8c5ca7c878edb4bea54a9eea2aec06b9b4696fcef15e1976b4",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/buildMathML.lil",
+        "bytes": 12798,
+        "sha256": "e81539abef08d81bacf4a0b7c1a9c439f07f83912bd9eaeb39176efcc8fed4d8",
+        "dependencies": [
+          5,
+          13,
+          20,
+          27,
+          4,
+          22,
+          9,
+          25,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/mathMLTree.lil",
+        "bytes": 7560,
+        "sha256": "5fe140900e0e707cf33217360956ab82b1705167f31e31651c0b943c758a149a",
+        "dependencies": [
+          5,
+          9,
+          17,
+          14,
+          18
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/parseTree.lil",
+        "bytes": 1835,
+        "sha256": "85a288f10cccae41b0fb7e46de048c0d42bb225a153d2a6e08d05c65517ceac7",
+        "dependencies": [
+          5,
+          29,
+          4,
+          6
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Parser.lil",
+        "bytes": 27580,
+        "sha256": "b2cf2eb7fe108081a4877a1bad70f2a8832a4faa20122e818025e0d98374a429",
+        "dependencies": [
+          5,
+          30,
+          85,
+          22,
+          18,
+          15,
+          4,
+          86,
+          8,
+          7,
+          89,
+          6,
+          90,
+          91
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions.lil",
+        "bytes": 2236,
+        "sha256": "eb105bbe59bb5a4c0ce43ae24cf26646c67bad28e530f50bc13a6dc2f34935e2",
+        "dependencies": [
+          5,
+          25,
+          31,
+          34,
+          35,
+          36,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          45,
+          46,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          37,
+          63,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/accent.lil",
+        "bytes": 8751,
+        "sha256": "12c9e013672e147a04ba4268794980f26c7bba92c2752e03c60ab67e06aa3df4",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          9,
+          32,
+          33,
+          14,
+          18,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/stretchy.lil",
+        "bytes": 13112,
+        "sha256": "d829013395a65e801728810ec2624cc0858f8a53480996c9fa96819e9af6a1e8",
+        "dependencies": [
+          5,
+          14,
+          13,
+          27,
+          9,
+          18,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/parseNode.lil",
+        "bytes": 1883,
+        "sha256": "45414e9d740cbbbff4d1ce0c83c86532195154076c54c63fa1871e9f44f3ed30",
+        "dependencies": [
+          5,
+          22
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/accentunder.lil",
+        "bytes": 2763,
+        "sha256": "05ef7e88d0d9a771fe9e37525de13198c08fdc513f0196a3b09525e3a29565aa",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          32,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/arrow.lil",
+        "bytes": 6742,
+        "sha256": "50249987655f7c736f9e9cdaa28f8b18c9e887da880e83b216caa57b743bc4de",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          32,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/pmb.lil",
+        "bytes": 2101,
+        "sha256": "ff422333f7d8844312084e6009537e9f36eadebfc9df196cf10564a0559a4291",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          37,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/mclass.lil",
+        "bytes": 6410,
+        "sha256": "779363a214c9cd39613fc095587252add8b873f7696b31cca2ee3bb8b2082bfa",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          9,
+          11,
+          26,
+          27
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/environments/cd.lil",
+        "bytes": 11799,
+        "sha256": "ab9fdf42d4999e2609c4e4377fdd56c6114b18c42059f44ef91ff99ad813005a",
+        "dependencies": [
+          5,
+          13,
+          25,
+          27,
+          33,
+          4,
+          18,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/char.lil",
+        "bytes": 2167,
+        "sha256": "a1462b99d68880542b96e1b813d0d80d093a71494641f4cc7b67cbbaac91d82f",
+        "dependencies": [
+          5,
+          25,
+          4,
+          33
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/color.lil",
+        "bytes": 3159,
+        "sha256": "7311d64d845a614a025577d423506c2864eb024574b6efdac5dc3ea89e294845",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          33,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/cr.lil",
+        "bytes": 2860,
+        "sha256": "a1250131ba471d415ad522453d0b65b5780c907f1b83ceb6d8dcfed523bbf4c5",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          18,
+          33,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/def.lil",
+        "bytes": 7352,
+        "sha256": "4a506f0d04b67bfe2480d7fed2d239e9aca84a0870241be06af6e325e4c1f338",
+        "dependencies": [
+          5,
+          25,
+          4,
+          33
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/delimsizing.lil",
+        "bytes": 12664,
+        "sha256": "ee84d0ae03a22c6806994eec21988500c94a14f5bb598b853dc164ddd5af3969",
+        "dependencies": [
+          5,
+          13,
+          25,
+          44,
+          27,
+          4,
+          9,
+          33,
+          18,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/delimiter.lil",
+        "bytes": 28462,
+        "sha256": "ac50e83378df73f1d991fa970699dceadef5b441933bcb8ce991105dc7a96fb1",
+        "dependencies": [
+          5,
+          4,
+          12,
+          14,
+          16,
+          13,
+          20,
+          22,
+          9,
+          18,
+          21,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/enclose.lil",
+        "bytes": 13084,
+        "sha256": "d035bf4499c15b57edb883f958db9da3893e3394f36c4ac3e7c2b33c59fa2ed3",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          9,
+          32,
+          16,
+          14,
+          18,
+          33,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/environment.lil",
+        "bytes": 2676,
+        "sha256": "ad14756d979be5ed2eb5f21e4202fb98a6a056e8ceb688f24a7cd15760010b4c",
+        "dependencies": [
+          5,
+          25,
+          4,
+          33,
+          47
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/environments.lil",
+        "bytes": 759,
+        "sha256": "3533530820f857a5f5624b8acad86e1e84c43a3d0e419e04abbe8324e9ac7933",
+        "dependencies": [
+          5,
+          48,
+          49
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/defineEnvironment.lil",
+        "bytes": 1681,
+        "sha256": "ab0d53a09880e24aff6c5748da113e89851d13de2f7d3e0a8f6a92252d73e1c3",
+        "dependencies": [
+          5,
+          25
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/environments/array.lil",
+        "bytes": 33216,
+        "sha256": "310c23a5cd303f8de89c2bd43aa9024aa6d37898c6d3856d3edc0e090696db42",
+        "dependencies": [
+          5,
+          13,
+          12,
+          48,
+          38,
+          25,
+          50,
+          27,
+          4,
+          33,
+          33,
+          6,
+          18,
+          9,
+          11,
+          26,
+          27,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/defineMacro.lil",
+        "bytes": 859,
+        "sha256": "bae9c8030104665b5c7144909c2b98ae6003c61c63d1598ada29fecbdeb8ff14",
+        "dependencies": [
+          5,
+          6
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/font.lil",
+        "bytes": 3991,
+        "sha256": "bf8f1e518db2ae8aca8928a0a1e96dbfc43ab84ebfce00489224822b714a76ee",
+        "dependencies": [
+          5,
+          37,
+          25,
+          9,
+          11,
+          26
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/genfrac.lil",
+        "bytes": 17340,
+        "sha256": "ff3d54057548a3be8aa2f3d0aa9f07c31f4639959cb322d194f1e805c338d7e2",
+        "dependencies": [
+          5,
+          25,
+          13,
+          44,
+          27,
+          12,
+          33,
+          9,
+          18,
+          11,
+          26,
+          27,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/horizBrace.lil",
+        "bytes": 5293,
+        "sha256": "c6c3f7e918ba0c67be42f51365110eb6e255fb81e1ef51e61355901c5ab93755",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          32,
+          12,
+          33,
+          11,
+          26,
+          27,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/href.lil",
+        "bytes": 3533,
+        "sha256": "24930053465e9383ae1c5fded736de6a0c5addf7d37b6ca0ed888781b6a8a5e4",
+        "dependencies": [
+          5,
+          25,
+          13,
+          33,
+          27,
+          11,
+          26,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/hbox.lil",
+        "bytes": 1800,
+        "sha256": "cd2b4edcf7446d0971c821fe5774de1cd91ea394b46b0fb0589a9e7ed14e6397",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/html.lil",
+        "bytes": 4107,
+        "sha256": "228dfa835090655735710a0de182b61a846323c51b2bbdafb85ca74ce01a557f",
+        "dependencies": [
+          5,
+          25,
+          13,
+          33,
+          4,
+          11,
+          26,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/htmlmathml.lil",
+        "bytes": 1674,
+        "sha256": "7222400f081102c9be7e0542e298237a8dbfae74bdd9a4989e5bebb56c0b3376",
+        "dependencies": [
+          5,
+          25,
+          13,
+          11,
+          26,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/includegraphics.lil",
+        "bytes": 6101,
+        "sha256": "65e09a09a77255f33c2daaa368826b182b4c36c86a3f12ea96e7f1b47adc1a86",
+        "dependencies": [
+          5,
+          25,
+          18,
+          4,
+          14,
+          27,
+          33,
+          27
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/kern.lil",
+        "bytes": 2691,
+        "sha256": "0b3dc615b1f71ecb0a91ecefc4c2d67e83a55c72742c57d62e719c38607e1d28",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          18,
+          33,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/lap.lil",
+        "bytes": 3549,
+        "sha256": "d20d8f9c8784f0ba90a3f806e64610602d5804358acdc0f4a58b627176f62d2e",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          18,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/math.lil",
+        "bytes": 1883,
+        "sha256": "2187fc8108f3f4428a6192ea02219b067ab60487c8bf00179e774f1db79e612e",
+        "dependencies": [
+          5,
+          25,
+          4
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/mathchoice.lil",
+        "bytes": 2525,
+        "sha256": "4b16d14453b13d0268ecb1713a02e9b88b6ef072aca69569fa2b1e79e7ebe8d6",
+        "dependencies": [
+          5,
+          25,
+          13,
+          12,
+          11,
+          26,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/op.lil",
+        "bytes": 11071,
+        "sha256": "f79ce0a1477dc761b9848fbb92fd165f621d5d61e6256167681fcf55e5a9d1ea",
+        "dependencies": [
+          5,
+          25,
+          13,
+          14,
+          9,
+          12,
+          64,
+          33,
+          18,
+          27,
+          11,
+          26,
+          27,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/utils/assembleSupSub.lil",
+        "bytes": 4187,
+        "sha256": "d5d14ee62c907313d9e04fd202a4f52988e334789c5b60fab63bad239de4d4b7",
+        "dependencies": [
+          5,
+          13,
+          9,
+          18,
+          11,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/operatorname.lil",
+        "bytes": 5838,
+        "sha256": "aa773def2fc959aec9631b29b5be765b5ca75cc945aaa706197fc693cc555a10",
+        "dependencies": [
+          5,
+          25,
+          50,
+          13,
+          27,
+          14,
+          64,
+          33,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/ordgroup.lil",
+        "bytes": 1430,
+        "sha256": "a9655a2716d336549858c8781ae93dbeee9c8cd65002e720dc66a884e04e5b24",
+        "dependencies": [
+          5,
+          25,
+          13,
+          11,
+          26,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/overline.lil",
+        "bytes": 2869,
+        "sha256": "f53affead061d054809d476a768823e13b20f0c76e125cf258e3a6b6a1928cff",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/phantom.lil",
+        "bytes": 4968,
+        "sha256": "1070fb99ce18e8997cd1937393acee5acc2b8781dc7e74b24605fd070fed46d7",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/raisebox.lil",
+        "bytes": 2465,
+        "sha256": "470eae4f744aa5c66dfee7d111459aadf2bc07f40fb77c6874c061eaf7dade25",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          33,
+          18,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/relax.lil",
+        "bytes": 1008,
+        "sha256": "0b49b19114da590bd582155738f2e30af68b519ed80be28e5924ae5ab38b9bf7",
+        "dependencies": [
+          5,
+          25
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/rule.lil",
+        "bytes": 3988,
+        "sha256": "d6934078d74855ab6a49328f6698a10638c8ce561780e8f8997084fddefb4874",
+        "dependencies": [
+          5,
+          13,
+          25,
+          27,
+          33,
+          18,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/sizing.lil",
+        "bytes": 3416,
+        "sha256": "b7548ecb8b7cf4a135f9ce44f5ac0d1c9cfd0e5f23fcac7af0e01da697f3e17b",
+        "dependencies": [
+          5,
+          13,
+          25,
+          27,
+          18,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/smash.lil",
+        "bytes": 3833,
+        "sha256": "db76426e49a6fef9533655edf29818fc8fd8459964d08f454813de7244a50790",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          33,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/sqrt.lil",
+        "bytes": 4601,
+        "sha256": "969b4dbbd54f381c37fa05e3087c6fd17e56989841c949ab09a2e1d8de3df88e",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          44,
+          12,
+          18,
+          11,
+          26,
+          27,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/styling.lil",
+        "bytes": 2953,
+        "sha256": "8590c5e7d73458bf0ed866b0779392c8f511bcaa147539f1932b57a0b9041d00",
+        "dependencies": [
+          5,
+          25,
+          27,
+          12,
+          72,
+          26,
+          27,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/supsub.lil",
+        "bytes": 10915,
+        "sha256": "8e268c068361deed51709015f5c3f88b73cc0ee97032b816fc9a84063ea506c2",
+        "dependencies": [
+          5,
+          25,
+          13,
+          14,
+          27,
+          9,
+          18,
+          12,
+          11,
+          26,
+          31,
+          53,
+          63,
+          65,
+          27,
+          13,
+          12
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/symbolsOp.lil",
+        "bytes": 1911,
+        "sha256": "9b349fd66609cc41f45fad4c528189cd049de5c6160950952cfee549e4a8aa02",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/symbolsOrd.lil",
+        "bytes": 2985,
+        "sha256": "6c0da9598b15bcd056d31fe3cc24963e80dc4efae7bba07e6f9d90f885c77a66",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/symbolsSpacing.lil",
+        "bytes": 2921,
+        "sha256": "036d7b790d12ef44ef3c093b3c67128b35cbab01e27f9f4c8256edfd47daaf4e",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          4,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/tag.lil",
+        "bytes": 1714,
+        "sha256": "7fa65638c1afd56a21319c8b415678bbfb8fd9cf704d58808b002a158e635840",
+        "dependencies": [
+          5,
+          25,
+          27,
+          26,
+          27
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/text.lil",
+        "bytes": 3436,
+        "sha256": "1e4b1cb541a66836de81a2812ad0d58d24850de96c0dacb2f963f33ded5755cf",
+        "dependencies": [
+          5,
+          25,
+          13,
+          11,
+          26,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/underline.lil",
+        "bytes": 2882,
+        "sha256": "1fd9407fdaa2cded6eaa01dbbfef5782c2b94562aac90d20704793a1b146ef9a",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/vcenter.lil",
+        "bytes": 2255,
+        "sha256": "79658a4995f85f28f9b9589faebc98a05b1e00ab92be8bf659c4448273c8a0bf",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          11,
+          26,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/functions/verb.lil",
+        "bytes": 2622,
+        "sha256": "0a6c5b7640db0606641b130a2268c2f909a8fa04cbed8460f518121bfa164ebb",
+        "dependencies": [
+          5,
+          25,
+          13,
+          27,
+          4,
+          27,
+          13
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/MacroExpander.lil",
+        "bytes": 14602,
+        "sha256": "68d22b744e2d5238a2fe1933a12d5a152f6c065ca3ef13d945eb66ef589774e9",
+        "dependencies": [
+          5,
+          30,
+          22,
+          86,
+          6,
+          4,
+          87,
+          88
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Lexer.lil",
+        "bytes": 4261,
+        "sha256": "44a78d3b1007fa87f8a8d91fa2f31159db1d1ea8c3042fde4d47afe170383202",
+        "dependencies": [
+          5,
+          4,
+          7,
+          6
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/Namespace.lil",
+        "bytes": 3354,
+        "sha256": "ca5102814783aa82514e02cc47c8c48300b12aedcf4f0af1d3532b5e5cd411b2",
+        "dependencies": [
+          5,
+          4
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/macros.lil",
+        "bytes": 37936,
+        "sha256": "c42e10b997a447e545486a107e1d4559a5afe909ed4a7b22bac193d04d9b63a3",
+        "dependencies": [
+          5,
+          50,
+          21,
+          30,
+          22,
+          9,
+          18,
+          4
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/unicodeSupOrSub.lil",
+        "bytes": 2141,
+        "sha256": "41b65488735bd1c02a6712eae65304fdeef7d60553f2dd2981c7a34d6a49dc9b",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/unicodeAccents.lil",
+        "bytes": 1653,
+        "sha256": "ceb5f221f3b36ab7076f3f8f81ad568a3b098f9a8add2fd1c1c92d59927522e4",
+        "dependencies": [
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/src/unicodeSymbols.lil",
+        "bytes": 1560,
+        "sha256": "9091e5d368de49d94e7a798ad6aeaa5b1d73f04fe4583ab8e48814960ebaef00",
+        "dependencies": [
+          90,
+          5
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/test/metrics.lil",
+        "bytes": 75,
+        "sha256": "72916c15ea33ee2785408aaa22b4a3a312713c2af2163d28b38353095e4727be",
+        "dependencies": [
+          21
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/test/katex.lil",
+        "bytes": 1409,
+        "sha256": "32f4d86d019601d3e57dff15383daa0944d362be220c7c06a952d3e23aff5f1b",
+        "dependencies": [
+          3,
+          28,
+          8,
+          19,
+          12,
+          10,
+          26,
+          22,
+          88,
+          86,
+          15
+        ],
+        "dynamic_dependencies": []
+      }
+    ],
+    "host_modules": [],
+    "host_reserved": []
+  },
+  "outputs": [
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.esm.js",
+          "dynamic": false,
+          "closure": [
+            "katex.esm.js"
+          ],
+          "row": 61526,
+          "raw_row": 248330
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.esm.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 248330,
+          "codec_bytes": 61526,
+          "sha256": "27384ae9a93898b14d877b35130008a20323dc9f2dd4512dd1093a4b18a0d0dd"
+        }
+      ],
+      "side_effects": [
+        "katex.esm.js"
+      ],
+      "codec_total": 61526,
+      "rows_total": 61526,
+      "setters": 0,
+      "output": "primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        98,
+        164,
+        186,
+        33,
+        149,
+        104,
+        170,
+        184,
+        38,
+        242,
+        95,
+        205,
+        0,
+        154,
+        241,
+        74,
+        68,
+        36,
+        20,
+        170,
+        33,
+        112,
+        254,
+        64,
+        19,
+        218,
+        162,
+        85,
+        81,
+        19,
+        209,
+        24
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "default",
+          "file": "katex.umd.js",
+          "dynamic": false,
+          "closure": [
+            "katex.umd.js"
+          ],
+          "row": 61522,
+          "raw_row": 247126
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.umd.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "default"
+          ],
+          "modules": [
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 247126,
+          "codec_bytes": 61522,
+          "sha256": "b637a7ca9d650f592129f90ae03c5eda26cabfd64d3f0e03857b6e0aa4d01e8a"
+        }
+      ],
+      "side_effects": [
+        "katex.umd.js"
+      ],
+      "codec_total": 61522,
+      "rows_total": 61522,
+      "setters": 0,
+      "output": "browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        119,
+        13,
+        234,
+        238,
+        86,
+        91,
+        134,
+        28,
+        213,
+        10,
+        180,
+        212,
+        162,
+        81,
+        188,
+        177,
+        153,
+        7,
+        106,
+        173,
+        25,
+        242,
+        178,
+        140,
+        205,
+        70,
+        32,
+        131,
+        255,
+        216,
+        20,
+        100
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "default",
+          "file": "katex.cjs",
+          "dynamic": false,
+          "closure": [
+            "katex.cjs"
+          ],
+          "row": 61475,
+          "raw_row": 246665
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "default"
+          ],
+          "modules": [
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 246665,
+          "codec_bytes": 61475,
+          "sha256": "2d1488c20473874771781fbf3503097b25ece7c8246f89bfd06270096feba402"
+        }
+      ],
+      "side_effects": [
+        "katex.cjs"
+      ],
+      "codec_total": 61475,
+      "rows_total": 61475,
+      "setters": 0,
+      "output": "cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        193,
+        140,
+        16,
+        227,
+        64,
+        51,
+        103,
+        119,
+        194,
+        47,
+        75,
+        183,
+        144,
+        9,
+        0,
+        86,
+        221,
+        18,
+        19,
+        242,
+        93,
+        22,
+        25,
+        136,
+        159,
+        141,
+        107,
+        105,
+        239,
+        218,
+        151,
+        161
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.contrib-test.js",
+          "dynamic": false,
+          "closure": [
+            "katex.contrib-test.js"
+          ],
+          "row": 382,
+          "raw_row": 732
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.contrib-test.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 732,
+          "codec_bytes": 382,
+          "sha256": "64c410bc497df19d4d01c2c3eba5fca6307cb469739d438b0a7863952f4ab5cd"
+        }
+      ],
+      "side_effects": [
+        "katex.contrib-test.js"
+      ],
+      "codec_total": 382,
+      "rows_total": 382,
+      "setters": 0,
+      "output": "contrib-test",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        170,
+        175,
+        255,
+        146,
+        198,
+        65,
+        53,
+        51,
+        146,
+        100,
+        223,
+        112,
+        85,
+        211,
+        114,
+        8,
+        23,
+        213,
+        244,
+        105,
+        111,
+        80,
+        231,
+        243,
+        199,
+        220,
+        226,
+        28,
+        72,
+        91,
+        175,
+        185
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.metrics.mjs",
+          "dynamic": false,
+          "closure": [
+            "katex.metrics.mjs"
+          ],
+          "row": 6787,
+          "raw_row": 46096
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.metrics.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 46096,
+          "codec_bytes": 6787,
+          "sha256": "418fe14fdcaeb09d9998ee5241d89d0695b6299b07ca26dc0acba645c82e431b"
+        }
+      ],
+      "side_effects": [
+        "katex.metrics.mjs"
+      ],
+      "codec_total": 6787,
+      "rows_total": 6787,
+      "setters": 0,
+      "output": "metrics",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        30,
+        96,
+        22,
+        121,
+        247,
+        38,
+        34,
+        101,
+        46,
+        228,
+        135,
+        246,
+        77,
+        56,
+        159,
+        221,
+        102,
+        35,
+        234,
+        155,
+        32,
+        49,
+        131,
+        2,
+        205,
+        62,
+        195,
+        196,
+        14,
+        27,
+        127,
+        11
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.test.js",
+          "dynamic": false,
+          "closure": [
+            "katex.test.js"
+          ],
+          "row": 61604,
+          "raw_row": 248234
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.test.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 248234,
+          "codec_bytes": 61604,
+          "sha256": "9e942c641fdd90378f352ba0000bc0f897d78f8a60d4ab38ac7091daede4e9ad"
+        }
+      ],
+      "side_effects": [
+        "katex.test.js"
+      ],
+      "codec_total": 61604,
+      "rows_total": 61604,
+      "setters": 0,
+      "output": "test",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        35,
+        98,
+        52,
+        90,
+        4,
+        47,
+        162,
+        211,
+        254,
+        105,
+        51,
+        1,
+        173,
+        210,
+        203,
+        112,
+        50,
+        117,
+        227,
+        69,
+        68,
+        77,
+        14,
+        20,
+        87,
+        174,
+        25,
+        10,
+        219,
+        35,
+        158,
+        87
+      ]
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "version": 5,
+  "source_sha256": "2485a49f0b19898ee3004606789003c72af85eec864c0748527fb0d207d5513e",
+  "inputs": {
+    "root": 0,
+    "entries": [
+      {
+        "name": "entry",
+        "module": 0
+      }
+    ],
+    "modules": [
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/contrib/copy-tex/copy-tex.lil",
+        "bytes": 1681,
+        "sha256": "9dea204b17c81440b5d3e3df8faedd8f7f14dd155a6d95ce7d1eedf9ab1cea43",
+        "dependencies": [
+          1
+        ],
+        "dynamic_dependencies": []
+      },
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/contrib/copy-tex/katex2tex.lil",
+        "bytes": 1984,
+        "sha256": "0383603937129b642f7702b6aff68d57ddfef7ab9cd0647b571864b50dcbd778",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      }
+    ],
+    "host_modules": [
+      {
+        "specifier": "./instanceof.js",
+        "stem": "instanceof",
+        "delivered_bytes": 76,
+        "sha256": "72ac044fe6e3dc427ba5761ad2bf6f64baa9a57c913aed86370260653c023375",
+        "exports": [
+          [
+            "isInstance",
+            "isInstance"
+          ]
+        ],
+        "imports": []
+      }
+    ],
+    "host_reserved": []
+  },
+  "outputs": [
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/copy-tex.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/copy-tex.mjs"
+          ],
+          "row": 522,
+          "raw_row": 1283
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/copy-tex.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "copy-tex.lil",
+            "katex2tex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 1283,
+          "codec_bytes": 522,
+          "sha256": "830c9fb3e94f2d833d71754b71cda0296b4588b95eaeb2f8f9b1bc8ef13f9cec"
+        }
+      ],
+      "side_effects": [
+        "contrib/copy-tex.mjs"
+      ],
+      "codec_total": 522,
+      "rows_total": 522,
+      "setters": 0,
+      "output": "primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        61,
+        30,
+        30,
+        130,
+        68,
+        9,
+        0,
+        87,
+        148,
+        27,
+        1,
+        150,
+        56,
+        170,
+        16,
+        131,
+        100,
+        23,
+        165,
+        139,
+        78,
+        115,
+        194,
+        167,
+        196,
+        188,
+        200,
+        181,
+        184,
+        145,
+        108,
+        12
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/copy-tex.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/copy-tex.min.js"
+          ],
+          "row": 600,
+          "raw_row": 1452
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/copy-tex.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "copy-tex.lil",
+            "katex2tex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 1452,
+          "codec_bytes": 600,
+          "sha256": "9ca612feed5d57226fbbdccdadb265697bdcf4af698c80115bbd62a06ee1bc21"
+        }
+      ],
+      "side_effects": [
+        "contrib/copy-tex.min.js"
+      ],
+      "codec_total": 600,
+      "rows_total": 600,
+      "setters": 0,
+      "output": "browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        25,
+        184,
+        252,
+        34,
+        50,
+        169,
+        85,
+        161,
+        236,
+        219,
+        25,
+        8,
+        72,
+        206,
+        205,
+        56,
+        177,
+        74,
+        5,
+        74,
+        103,
+        132,
+        246,
+        31,
+        232,
+        8,
+        220,
+        208,
+        60,
+        205,
+        215,
+        33
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/copy-tex.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/copy-tex.cjs"
+          ],
+          "row": 554,
+          "raw_row": 1345
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/copy-tex.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "copy-tex.lil",
+            "katex2tex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 1345,
+          "codec_bytes": 554,
+          "sha256": "6e0ec71b7822260313f4b424860777d5cfcd7bf7cbf6e69a026faaf40d81f813"
+        }
+      ],
+      "side_effects": [
+        "contrib/copy-tex.cjs"
+      ],
+      "codec_total": 554,
+      "rows_total": 554,
+      "setters": 0,
+      "output": "cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        121,
+        156,
+        255,
+        3,
+        152,
+        127,
+        195,
+        104,
+        31,
+        177,
+        102,
+        210,
+        97,
+        122,
+        29,
+        85,
+        87,
+        59,
+        30,
+        186,
+        208,
+        220,
+        132,
+        154,
+        241,
+        213,
+        66,
+        39,
+        72,
+        31,
+        153,
+        190
+      ]
+    }
+  ]
+}

@@ -27,3 +27,9 @@ mode = "single"
 entry_names = "katex.closed.js"
 [delivery.entries]
 katex = "src/entry.lil"
+
+[policy.resources]
+logical_work = 16000000000
+
+[execution]
+jobs = 1

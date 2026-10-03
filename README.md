@@ -15,12 +15,9 @@ Two compiles ship from the same `.lil` source:
 | Lane | Config | Meaning |
 | --- | --- | --- |
 | **open world** (npm) | `lilscript.toml` · `--target js-module` | reusable ESM. Export names, option keys and `extern class` fields stay as written. |
-| **closed world** | `lilscript.closed.toml` · `--target js-module` | the lane where fields the compiler owns may rename. ESM export names stay so the lane is testable. |
+| **closed world** | `lilscript.closed.toml` · `--target js-module` | diagnostic configuration, presently equivalent to the npm lane. ESM export names stay as written. |
 
-You publish the open-world lane. The closed lane is byte-identical to it: the one LilScript compiler
-renames no property yet, so `extern_fields` has no effect and the closed config is the open one.
-The port would give it little to rename anyway, since its objects are mostly `JsValue` bags carried
-over from the JavaScript.
+The package exports the open-world library. The diagnostic closed build is measured separately; public API and option keys remain callable from JavaScript.
 
 The LilScript compiler lives next door at `../lilscript`.
 
@@ -33,8 +30,7 @@ See [COMPARISON.md](COMPARISON.md) for current raw-, gzip- and Brotli-objective 
 The root API, CLI, TypeScript declarations, CSS, 60 font files, and all five
 official contrib subpaths mirror KaTeX 0.16.22. The font metrics are LilScript
 data: `src/data.lil` holds upstream's generated table as an object literal, and the
-compiler chooses its encoding against the codec (under Brotli, for this release,
-columns of integers scaled by 10^5 with delta-coded keys). `src/fontMetricsData.js`,
+compiler chooses its encoding against the configured compression objective. `src/fontMetricsData.js`,
 upstream's generated module, stays as the reference: `npm run audit` checks it
 against `katex@0.16.22` and `scripts/attribute-core.mjs` reads it. What ships is
 the table the built artifact decodes, so `test/font-metrics.test.mjs` (part of
@@ -59,11 +55,6 @@ typed at the LilScript boundary.
 Run `npm run check` for build, TypeScript, official and differential tests,
 package, site, and parity checks. `npm run audit` reports the complete
 upstream-module to `.lil` map, generated-data and asset hashes, declaration/export checks, and raw,
-gzip-9, and Brotli-11 sizes for core and contrib artifacts. The library and
-closed artifacts are the compiler's output with no post-compilation minifier;
-`src/entry.lil` exports the public API only (the Jest suites' internal modules come
-from the test entry, `test/katex.lil`), and the build adds a licence banner and
-concatenates nothing onto it. `katex.cjs`, `katex.umd.js`, `katex.min.js` and the contrib `.cjs`
-and `.min.js` files are esbuild re-bundles of the compiler's ESM (the compiler
-writes ES modules and closed scripts, not CommonJS or IIFE bundles), and they are
-labelled as such wherever they are measured.
+gzip-9, and Brotli-11 sizes for core and contrib artifacts. ESM, CommonJS and browser-global JavaScript files are written by the compiler’s delivery pipeline. Contrib entries, aliases and external host assets are recorded in [the checked package build](site/package-build.json); no JavaScript post-minifier runs over compiler output.
+
+[Download the checked repository package](https://yeargun.github.io/katexlil/downloads/package.tgz) · [Package files, hashes and validation](https://yeargun.github.io/katexlil/package-build.json). npm publication is independent.

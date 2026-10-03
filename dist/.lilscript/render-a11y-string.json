@@ -1,0 +1,293 @@
+{
+  "version": 5,
+  "source_sha256": "97028ac8ba3b9cdbbf2146566d890fbda3c3479cc7ff2041cce68cafec35fb28",
+  "inputs": {
+    "root": 0,
+    "entries": [
+      {
+        "name": "entry",
+        "module": 0
+      }
+    ],
+    "modules": [
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/contrib/render-a11y-string/render-a11y-string.lil",
+        "bytes": 14242,
+        "sha256": "25153223237110ca63a1e5266b6fbbb69a0bb2ec17a41431a3d3565a8bae869a",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      }
+    ],
+    "host_modules": [],
+    "host_reserved": []
+  },
+  "outputs": [
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/render-a11y-string.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/render-a11y-string.mjs"
+          ],
+          "row": 2139,
+          "raw_row": 6840
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/render-a11y-string.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "render-a11y-string.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 6840,
+          "codec_bytes": 2139,
+          "sha256": "e1a652c2a48ff602bbe9502b5f4ccad524735450eb0877f42b0fbf65c83909a8"
+        }
+      ],
+      "side_effects": [
+        "contrib/render-a11y-string.mjs"
+      ],
+      "codec_total": 2139,
+      "rows_total": 2139,
+      "setters": 0,
+      "output": "primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        27,
+        230,
+        63,
+        114,
+        146,
+        183,
+        111,
+        197,
+        228,
+        63,
+        172,
+        159,
+        172,
+        20,
+        16,
+        204,
+        227,
+        13,
+        111,
+        144,
+        133,
+        111,
+        13,
+        73,
+        56,
+        176,
+        163,
+        5,
+        56,
+        78,
+        113,
+        187
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/render-a11y-string.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/render-a11y-string.min.js"
+          ],
+          "row": 2256,
+          "raw_row": 7198
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/render-a11y-string.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "render-a11y-string.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 7198,
+          "codec_bytes": 2256,
+          "sha256": "a32895acc07c4357e7db839648f5c1821a0b093017491237b3844ee4dca20581"
+        }
+      ],
+      "side_effects": [
+        "contrib/render-a11y-string.min.js"
+      ],
+      "codec_total": 2256,
+      "rows_total": 2256,
+      "setters": 0,
+      "output": "browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        103,
+        59,
+        131,
+        54,
+        78,
+        192,
+        99,
+        141,
+        25,
+        83,
+        29,
+        21,
+        255,
+        102,
+        179,
+        218,
+        44,
+        150,
+        227,
+        87,
+        242,
+        100,
+        226,
+        217,
+        140,
+        103,
+        151,
+        124,
+        125,
+        31,
+        97,
+        102
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/render-a11y-string.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/render-a11y-string.cjs"
+          ],
+          "row": 2208,
+          "raw_row": 7068
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/render-a11y-string.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "render-a11y-string.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 7068,
+          "codec_bytes": 2208,
+          "sha256": "59ec6805351a320a8055d2b01d26084c04af85fd67bfded68f0ccf66df39191a"
+        }
+      ],
+      "side_effects": [
+        "contrib/render-a11y-string.cjs"
+      ],
+      "codec_total": 2208,
+      "rows_total": 2208,
+      "setters": 0,
+      "output": "cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        128,
+        248,
+        147,
+        76,
+        67,
+        63,
+        102,
+        186,
+        144,
+        162,
+        126,
+        136,
+        172,
+        74,
+        8,
+        199,
+        152,
+        248,
+        94,
+        110,
+        167,
+        222,
+        154,
+        120,
+        165,
+        114,
+        75,
+        78,
+        168,
+        91,
+        148,
+        201
+      ]
+    }
+  ]
+}

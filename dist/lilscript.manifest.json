@@ -1,0 +1,2600 @@
+{
+  "version": 5,
+  "outputs": [
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.esm.js",
+          "dynamic": false,
+          "closure": [
+            "katex.esm.js"
+          ],
+          "row": 61526,
+          "raw_row": 248330
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.esm.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 248330,
+          "codec_bytes": 61526,
+          "sha256": "27384ae9a93898b14d877b35130008a20323dc9f2dd4512dd1093a4b18a0d0dd"
+        }
+      ],
+      "side_effects": [
+        "katex.esm.js"
+      ],
+      "codec_total": 61526,
+      "rows_total": 61526,
+      "setters": 0,
+      "output": "public/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        98,
+        164,
+        186,
+        33,
+        149,
+        104,
+        170,
+        184,
+        38,
+        242,
+        95,
+        205,
+        0,
+        154,
+        241,
+        74,
+        68,
+        36,
+        20,
+        170,
+        33,
+        112,
+        254,
+        64,
+        19,
+        218,
+        162,
+        85,
+        81,
+        19,
+        209,
+        24
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "default",
+          "file": "katex.umd.js",
+          "dynamic": false,
+          "closure": [
+            "katex.umd.js"
+          ],
+          "row": 61522,
+          "raw_row": 247126
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.umd.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "default"
+          ],
+          "modules": [
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 247126,
+          "codec_bytes": 61522,
+          "sha256": "b637a7ca9d650f592129f90ae03c5eda26cabfd64d3f0e03857b6e0aa4d01e8a"
+        }
+      ],
+      "side_effects": [
+        "katex.umd.js"
+      ],
+      "codec_total": 61522,
+      "rows_total": 61522,
+      "setters": 0,
+      "output": "public/browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        119,
+        13,
+        234,
+        238,
+        86,
+        91,
+        134,
+        28,
+        213,
+        10,
+        180,
+        212,
+        162,
+        81,
+        188,
+        177,
+        153,
+        7,
+        106,
+        173,
+        25,
+        242,
+        178,
+        140,
+        205,
+        70,
+        32,
+        131,
+        255,
+        216,
+        20,
+        100
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "default",
+          "file": "katex.cjs",
+          "dynamic": false,
+          "closure": [
+            "katex.cjs"
+          ],
+          "row": 61475,
+          "raw_row": 246665
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "default"
+          ],
+          "modules": [
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 246665,
+          "codec_bytes": 61475,
+          "sha256": "2d1488c20473874771781fbf3503097b25ece7c8246f89bfd06270096feba402"
+        }
+      ],
+      "side_effects": [
+        "katex.cjs"
+      ],
+      "codec_total": 61475,
+      "rows_total": 61475,
+      "setters": 0,
+      "output": "public/cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        193,
+        140,
+        16,
+        227,
+        64,
+        51,
+        103,
+        119,
+        194,
+        47,
+        75,
+        183,
+        144,
+        9,
+        0,
+        86,
+        221,
+        18,
+        19,
+        242,
+        93,
+        22,
+        25,
+        136,
+        159,
+        141,
+        107,
+        105,
+        239,
+        218,
+        151,
+        161
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.contrib-test.js",
+          "dynamic": false,
+          "closure": [
+            "katex.contrib-test.js"
+          ],
+          "row": 382,
+          "raw_row": 732
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.contrib-test.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 732,
+          "codec_bytes": 382,
+          "sha256": "64c410bc497df19d4d01c2c3eba5fca6307cb469739d438b0a7863952f4ab5cd"
+        }
+      ],
+      "side_effects": [
+        "katex.contrib-test.js"
+      ],
+      "codec_total": 382,
+      "rows_total": 382,
+      "setters": 0,
+      "output": "public/contrib-test",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        170,
+        175,
+        255,
+        146,
+        198,
+        65,
+        53,
+        51,
+        146,
+        100,
+        223,
+        112,
+        85,
+        211,
+        114,
+        8,
+        23,
+        213,
+        244,
+        105,
+        111,
+        80,
+        231,
+        243,
+        199,
+        220,
+        226,
+        28,
+        72,
+        91,
+        175,
+        185
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.metrics.mjs",
+          "dynamic": false,
+          "closure": [
+            "katex.metrics.mjs"
+          ],
+          "row": 6787,
+          "raw_row": 46096
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.metrics.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 46096,
+          "codec_bytes": 6787,
+          "sha256": "418fe14fdcaeb09d9998ee5241d89d0695b6299b07ca26dc0acba645c82e431b"
+        }
+      ],
+      "side_effects": [
+        "katex.metrics.mjs"
+      ],
+      "codec_total": 6787,
+      "rows_total": 6787,
+      "setters": 0,
+      "output": "public/metrics",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        30,
+        96,
+        22,
+        121,
+        247,
+        38,
+        34,
+        101,
+        46,
+        228,
+        135,
+        246,
+        77,
+        56,
+        159,
+        221,
+        102,
+        35,
+        234,
+        155,
+        32,
+        49,
+        131,
+        2,
+        205,
+        62,
+        195,
+        196,
+        14,
+        27,
+        127,
+        11
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "contrib-test",
+          "file": "katex.test.js",
+          "dynamic": false,
+          "closure": [
+            "katex.test.js"
+          ],
+          "row": 61604,
+          "raw_row": 248234
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.test.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "contrib-test"
+          ],
+          "modules": [
+            "support.lil",
+            "../contrib/auto-render/splitAtDelimiters.lil",
+            "../src/package-default.lil",
+            "../src/entry.lil",
+            "../src/ParseError.lil",
+            "../src/host.lil",
+            "../src/Token.lil",
+            "../src/SourceLocation.lil",
+            "../src/Settings.lil",
+            "../src/utils.lil",
+            "../src/buildTree.lil",
+            "../src/buildHTML.lil",
+            "../src/Style.lil",
+            "../src/buildCommon.lil",
+            "../src/domTree.lil",
+            "../src/unicodeScripts.lil",
+            "../src/svgGeometry.lil",
+            "../src/tree.lil",
+            "../src/units.lil",
+            "../src/Options.lil",
+            "../src/fontMetrics.lil",
+            "../src/data.lil",
+            "../src/symbols.lil",
+            "../src/wide-character.lil",
+            "../src/spacingData.lil",
+            "../src/defineFunction.lil",
+            "../src/buildMathML.lil",
+            "../src/mathMLTree.lil",
+            "../src/parseTree.lil",
+            "../src/Parser.lil",
+            "../src/functions.lil",
+            "../src/functions/accent.lil",
+            "../src/stretchy.lil",
+            "../src/parseNode.lil",
+            "../src/functions/accentunder.lil",
+            "../src/functions/arrow.lil",
+            "../src/functions/pmb.lil",
+            "../src/functions/mclass.lil",
+            "../src/environments/cd.lil",
+            "../src/functions/char.lil",
+            "../src/functions/color.lil",
+            "../src/functions/cr.lil",
+            "../src/functions/def.lil",
+            "../src/functions/delimsizing.lil",
+            "../src/delimiter.lil",
+            "../src/functions/enclose.lil",
+            "../src/functions/environment.lil",
+            "../src/environments.lil",
+            "../src/defineEnvironment.lil",
+            "../src/environments/array.lil",
+            "../src/defineMacro.lil",
+            "../src/functions/font.lil",
+            "../src/functions/genfrac.lil",
+            "../src/functions/horizBrace.lil",
+            "../src/functions/href.lil",
+            "../src/functions/hbox.lil",
+            "../src/functions/html.lil",
+            "../src/functions/htmlmathml.lil",
+            "../src/functions/includegraphics.lil",
+            "../src/functions/kern.lil",
+            "../src/functions/lap.lil",
+            "../src/functions/math.lil",
+            "../src/functions/mathchoice.lil",
+            "../src/functions/op.lil",
+            "../src/functions/utils/assembleSupSub.lil",
+            "../src/functions/operatorname.lil",
+            "../src/functions/ordgroup.lil",
+            "../src/functions/overline.lil",
+            "../src/functions/phantom.lil",
+            "../src/functions/raisebox.lil",
+            "../src/functions/relax.lil",
+            "../src/functions/rule.lil",
+            "../src/functions/sizing.lil",
+            "../src/functions/smash.lil",
+            "../src/functions/sqrt.lil",
+            "../src/functions/styling.lil",
+            "../src/functions/supsub.lil",
+            "../src/functions/symbolsOp.lil",
+            "../src/functions/symbolsOrd.lil",
+            "../src/functions/symbolsSpacing.lil",
+            "../src/functions/tag.lil",
+            "../src/functions/text.lil",
+            "../src/functions/underline.lil",
+            "../src/functions/vcenter.lil",
+            "../src/functions/verb.lil",
+            "../src/MacroExpander.lil",
+            "../src/Lexer.lil",
+            "../src/Namespace.lil",
+            "../src/macros.lil",
+            "../src/unicodeSupOrSub.lil",
+            "../src/unicodeAccents.lil",
+            "../src/unicodeSymbols.lil",
+            "metrics.lil",
+            "katex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 248234,
+          "codec_bytes": 61604,
+          "sha256": "9e942c641fdd90378f352ba0000bc0f897d78f8a60d4ab38ac7091daede4e9ad"
+        }
+      ],
+      "side_effects": [
+        "katex.test.js"
+      ],
+      "codec_total": 61604,
+      "rows_total": 61604,
+      "setters": 0,
+      "output": "public/test",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        35,
+        98,
+        52,
+        90,
+        4,
+        47,
+        162,
+        211,
+        254,
+        105,
+        51,
+        1,
+        173,
+        210,
+        203,
+        112,
+        50,
+        117,
+        227,
+        69,
+        68,
+        77,
+        14,
+        20,
+        87,
+        174,
+        25,
+        10,
+        219,
+        35,
+        158,
+        87
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "katex",
+          "file": "katex.closed.js",
+          "dynamic": false,
+          "closure": [
+            "katex.closed.js"
+          ],
+          "row": 63033,
+          "raw_row": 266817
+        }
+      ],
+      "files": [
+        {
+          "file": "katex.closed.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "katex"
+          ],
+          "modules": [
+            "entry.lil",
+            "ParseError.lil",
+            "host.lil",
+            "Token.lil",
+            "SourceLocation.lil",
+            "Settings.lil",
+            "utils.lil",
+            "buildTree.lil",
+            "buildHTML.lil",
+            "Style.lil",
+            "buildCommon.lil",
+            "domTree.lil",
+            "unicodeScripts.lil",
+            "svgGeometry.lil",
+            "tree.lil",
+            "units.lil",
+            "Options.lil",
+            "fontMetrics.lil",
+            "data.lil",
+            "symbols.lil",
+            "wide-character.lil",
+            "spacingData.lil",
+            "defineFunction.lil",
+            "buildMathML.lil",
+            "mathMLTree.lil",
+            "parseTree.lil",
+            "Parser.lil",
+            "functions.lil",
+            "functions/accent.lil",
+            "stretchy.lil",
+            "parseNode.lil",
+            "functions/accentunder.lil",
+            "functions/arrow.lil",
+            "functions/pmb.lil",
+            "functions/mclass.lil",
+            "environments/cd.lil",
+            "functions/char.lil",
+            "functions/color.lil",
+            "functions/cr.lil",
+            "functions/def.lil",
+            "functions/delimsizing.lil",
+            "delimiter.lil",
+            "functions/enclose.lil",
+            "functions/environment.lil",
+            "environments.lil",
+            "defineEnvironment.lil",
+            "environments/array.lil",
+            "defineMacro.lil",
+            "functions/font.lil",
+            "functions/genfrac.lil",
+            "functions/horizBrace.lil",
+            "functions/href.lil",
+            "functions/hbox.lil",
+            "functions/html.lil",
+            "functions/htmlmathml.lil",
+            "functions/includegraphics.lil",
+            "functions/kern.lil",
+            "functions/lap.lil",
+            "functions/math.lil",
+            "functions/mathchoice.lil",
+            "functions/op.lil",
+            "functions/utils/assembleSupSub.lil",
+            "functions/operatorname.lil",
+            "functions/ordgroup.lil",
+            "functions/overline.lil",
+            "functions/phantom.lil",
+            "functions/raisebox.lil",
+            "functions/relax.lil",
+            "functions/rule.lil",
+            "functions/sizing.lil",
+            "functions/smash.lil",
+            "functions/sqrt.lil",
+            "functions/styling.lil",
+            "functions/supsub.lil",
+            "functions/symbolsOp.lil",
+            "functions/symbolsOrd.lil",
+            "functions/symbolsSpacing.lil",
+            "functions/tag.lil",
+            "functions/text.lil",
+            "functions/underline.lil",
+            "functions/vcenter.lil",
+            "functions/verb.lil",
+            "MacroExpander.lil",
+            "Lexer.lil",
+            "Namespace.lil",
+            "macros.lil",
+            "unicodeSupOrSub.lil",
+            "unicodeAccents.lil",
+            "unicodeSymbols.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 266817,
+          "codec_bytes": 63033,
+          "sha256": "790c5fe12831ba88576089fe95fdeab3cbc431efebae2da6ef24f07da917ccd5"
+        }
+      ],
+      "side_effects": [
+        "katex.closed.js"
+      ],
+      "codec_total": 63033,
+      "rows_total": 63033,
+      "setters": 0,
+      "output": "closed/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        2,
+        148,
+        142,
+        89,
+        1,
+        118,
+        213,
+        22,
+        30,
+        43,
+        71,
+        160,
+        188,
+        44,
+        167,
+        86,
+        65,
+        139,
+        124,
+        98,
+        179,
+        167,
+        219,
+        223,
+        46,
+        166,
+        12,
+        153,
+        215,
+        92,
+        13,
+        192
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/auto-render.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/auto-render.mjs"
+          ],
+          "row": 1077,
+          "raw_row": 2672
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/auto-render.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "auto-render.lil",
+            "splitAtDelimiters.lil",
+            "module-2"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 2672,
+          "codec_bytes": 1077,
+          "sha256": "b796ea2da38589f3cfade8e20d025f302856341dd1b0e78d08aa5a28b7c03d74"
+        }
+      ],
+      "side_effects": [
+        "contrib/auto-render.mjs"
+      ],
+      "codec_total": 1077,
+      "rows_total": 1077,
+      "setters": 0,
+      "output": "auto-render/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        133,
+        232,
+        238,
+        96,
+        73,
+        62,
+        88,
+        143,
+        222,
+        119,
+        51,
+        127,
+        66,
+        98,
+        181,
+        176,
+        220,
+        127,
+        64,
+        149,
+        202,
+        10,
+        107,
+        58,
+        56,
+        177,
+        119,
+        129,
+        225,
+        165,
+        107,
+        155
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/auto-render.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/auto-render.min.js"
+          ],
+          "row": 1186,
+          "raw_row": 3000
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/auto-render.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "auto-render.lil",
+            "splitAtDelimiters.lil",
+            "module-2"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 3000,
+          "codec_bytes": 1186,
+          "sha256": "69f30160dbcd8ba4ce29b95a96c7fdaa8ded96a667b9c21348db13f90761e8cd"
+        }
+      ],
+      "side_effects": [
+        "contrib/auto-render.min.js"
+      ],
+      "codec_total": 1186,
+      "rows_total": 1186,
+      "setters": 0,
+      "output": "auto-render/browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        132,
+        159,
+        214,
+        2,
+        194,
+        167,
+        150,
+        105,
+        23,
+        47,
+        126,
+        240,
+        84,
+        67,
+        139,
+        12,
+        200,
+        56,
+        104,
+        170,
+        27,
+        67,
+        83,
+        117,
+        51,
+        192,
+        84,
+        166,
+        165,
+        233,
+        219,
+        176
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/auto-render.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/auto-render.cjs"
+          ],
+          "row": 1132,
+          "raw_row": 2787
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/auto-render.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "auto-render.lil",
+            "splitAtDelimiters.lil",
+            "module-2"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 2787,
+          "codec_bytes": 1132,
+          "sha256": "b31a19d49a01cb7dfbc1b721c0780795a7f52b07d2a029f79d7bc15e76a329aa"
+        }
+      ],
+      "side_effects": [
+        "contrib/auto-render.cjs"
+      ],
+      "codec_total": 1132,
+      "rows_total": 1132,
+      "setters": 0,
+      "output": "auto-render/cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        231,
+        171,
+        30,
+        202,
+        147,
+        149,
+        133,
+        41,
+        23,
+        65,
+        34,
+        233,
+        167,
+        111,
+        3,
+        221,
+        101,
+        63,
+        221,
+        29,
+        160,
+        111,
+        96,
+        65,
+        123,
+        191,
+        169,
+        94,
+        73,
+        10,
+        178,
+        109
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/copy-tex.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/copy-tex.mjs"
+          ],
+          "row": 522,
+          "raw_row": 1283
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/copy-tex.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "copy-tex.lil",
+            "katex2tex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 1283,
+          "codec_bytes": 522,
+          "sha256": "830c9fb3e94f2d833d71754b71cda0296b4588b95eaeb2f8f9b1bc8ef13f9cec"
+        }
+      ],
+      "side_effects": [
+        "contrib/copy-tex.mjs"
+      ],
+      "codec_total": 522,
+      "rows_total": 522,
+      "setters": 0,
+      "output": "copy-tex/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        61,
+        30,
+        30,
+        130,
+        68,
+        9,
+        0,
+        87,
+        148,
+        27,
+        1,
+        150,
+        56,
+        170,
+        16,
+        131,
+        100,
+        23,
+        165,
+        139,
+        78,
+        115,
+        194,
+        167,
+        196,
+        188,
+        200,
+        181,
+        184,
+        145,
+        108,
+        12
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/copy-tex.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/copy-tex.min.js"
+          ],
+          "row": 600,
+          "raw_row": 1452
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/copy-tex.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "copy-tex.lil",
+            "katex2tex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 1452,
+          "codec_bytes": 600,
+          "sha256": "9ca612feed5d57226fbbdccdadb265697bdcf4af698c80115bbd62a06ee1bc21"
+        }
+      ],
+      "side_effects": [
+        "contrib/copy-tex.min.js"
+      ],
+      "codec_total": 600,
+      "rows_total": 600,
+      "setters": 0,
+      "output": "copy-tex/browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        25,
+        184,
+        252,
+        34,
+        50,
+        169,
+        85,
+        161,
+        236,
+        219,
+        25,
+        8,
+        72,
+        206,
+        205,
+        56,
+        177,
+        74,
+        5,
+        74,
+        103,
+        132,
+        246,
+        31,
+        232,
+        8,
+        220,
+        208,
+        60,
+        205,
+        215,
+        33
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/copy-tex.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/copy-tex.cjs"
+          ],
+          "row": 554,
+          "raw_row": 1345
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/copy-tex.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "copy-tex.lil",
+            "katex2tex.lil"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 1345,
+          "codec_bytes": 554,
+          "sha256": "6e0ec71b7822260313f4b424860777d5cfcd7bf7cbf6e69a026faaf40d81f813"
+        }
+      ],
+      "side_effects": [
+        "contrib/copy-tex.cjs"
+      ],
+      "codec_total": 554,
+      "rows_total": 554,
+      "setters": 0,
+      "output": "copy-tex/cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        121,
+        156,
+        255,
+        3,
+        152,
+        127,
+        195,
+        104,
+        31,
+        177,
+        102,
+        210,
+        97,
+        122,
+        29,
+        85,
+        87,
+        59,
+        30,
+        186,
+        208,
+        220,
+        132,
+        154,
+        241,
+        213,
+        66,
+        39,
+        72,
+        31,
+        153,
+        190
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mathtex-script-type.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mathtex-script-type.mjs"
+          ],
+          "row": 223,
+          "raw_row": 418
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mathtex-script-type.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mathtex-script-type.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 418,
+          "codec_bytes": 223,
+          "sha256": "f6634352e0499f2bad2cf5ba48bac7ecfaf4c3e81d4ada5bb0c7bd186ea8b58a"
+        }
+      ],
+      "side_effects": [
+        "contrib/mathtex-script-type.mjs"
+      ],
+      "codec_total": 223,
+      "rows_total": 223,
+      "setters": 0,
+      "output": "mathtex-script-type/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        11,
+        240,
+        53,
+        173,
+        138,
+        226,
+        44,
+        50,
+        234,
+        22,
+        4,
+        45,
+        80,
+        133,
+        207,
+        119,
+        65,
+        207,
+        242,
+        52,
+        211,
+        89,
+        250,
+        103,
+        206,
+        237,
+        163,
+        184,
+        60,
+        187,
+        222,
+        86
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mathtex-script-type.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/mathtex-script-type.min.js"
+          ],
+          "row": 322,
+          "raw_row": 712
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mathtex-script-type.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mathtex-script-type.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 712,
+          "codec_bytes": 322,
+          "sha256": "45ea891c4af4b1fb675e41fe586affe28d84356df9751ec1437cacd35330dd5e"
+        }
+      ],
+      "side_effects": [
+        "contrib/mathtex-script-type.min.js"
+      ],
+      "codec_total": 322,
+      "rows_total": 322,
+      "setters": 0,
+      "output": "mathtex-script-type/browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        213,
+        189,
+        243,
+        117,
+        141,
+        62,
+        111,
+        203,
+        27,
+        192,
+        238,
+        167,
+        70,
+        185,
+        42,
+        200,
+        43,
+        250,
+        126,
+        29,
+        126,
+        250,
+        126,
+        102,
+        78,
+        196,
+        10,
+        156,
+        12,
+        200,
+        227,
+        23
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mathtex-script-type.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mathtex-script-type.cjs"
+          ],
+          "row": 260,
+          "raw_row": 480
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mathtex-script-type.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mathtex-script-type.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 480,
+          "codec_bytes": 260,
+          "sha256": "03131e480f86b321278df0884b81accaa90f8b95964c50ec3a59f8d693451e77"
+        }
+      ],
+      "side_effects": [
+        "contrib/mathtex-script-type.cjs"
+      ],
+      "codec_total": 260,
+      "rows_total": 260,
+      "setters": 0,
+      "output": "mathtex-script-type/cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        254,
+        66,
+        43,
+        105,
+        160,
+        157,
+        232,
+        138,
+        53,
+        224,
+        111,
+        241,
+        96,
+        39,
+        146,
+        4,
+        61,
+        131,
+        61,
+        38,
+        88,
+        5,
+        212,
+        164,
+        235,
+        139,
+        152,
+        161,
+        181,
+        93,
+        66,
+        152
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mhchem.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mhchem.mjs"
+          ],
+          "row": 7534,
+          "raw_row": 33296
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mhchem.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mhchem.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 33296,
+          "codec_bytes": 7534,
+          "sha256": "0c2105e3adee2602b8ae517f04f9e6c59855f8f3d8a7ca4be155285acfbee6fa"
+        }
+      ],
+      "side_effects": [
+        "contrib/mhchem.mjs"
+      ],
+      "codec_total": 7534,
+      "rows_total": 7534,
+      "setters": 0,
+      "output": "mhchem/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        4,
+        169,
+        113,
+        11,
+        141,
+        27,
+        195,
+        8,
+        244,
+        118,
+        123,
+        82,
+        225,
+        28,
+        156,
+        116,
+        184,
+        211,
+        148,
+        97,
+        98,
+        3,
+        71,
+        73,
+        48,
+        214,
+        208,
+        171,
+        82,
+        160,
+        252,
+        195
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mhchem.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/mhchem.min.js"
+          ],
+          "row": 7615,
+          "raw_row": 33638
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mhchem.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mhchem.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 33638,
+          "codec_bytes": 7615,
+          "sha256": "46fd0354a2bc09250598ed24ed7147117f3a66be2f853e61955dedee7da70f72"
+        }
+      ],
+      "side_effects": [
+        "contrib/mhchem.min.js"
+      ],
+      "codec_total": 7615,
+      "rows_total": 7615,
+      "setters": 0,
+      "output": "mhchem/browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        237,
+        47,
+        50,
+        159,
+        219,
+        149,
+        185,
+        172,
+        129,
+        214,
+        168,
+        34,
+        26,
+        41,
+        242,
+        130,
+        40,
+        76,
+        233,
+        66,
+        193,
+        59,
+        120,
+        15,
+        164,
+        0,
+        198,
+        30,
+        66,
+        83,
+        214,
+        128
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mhchem.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mhchem.cjs"
+          ],
+          "row": 7558,
+          "raw_row": 33371
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mhchem.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mhchem.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 33371,
+          "codec_bytes": 7558,
+          "sha256": "5116e251046f1534e8a3b26418d6bb6d8f4cca4d4116ab266885b62ae9f6e524"
+        }
+      ],
+      "side_effects": [
+        "contrib/mhchem.cjs"
+      ],
+      "codec_total": 7558,
+      "rows_total": 7558,
+      "setters": 0,
+      "output": "mhchem/cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        208,
+        191,
+        195,
+        155,
+        98,
+        91,
+        159,
+        20,
+        227,
+        162,
+        17,
+        169,
+        65,
+        136,
+        113,
+        227,
+        152,
+        213,
+        63,
+        155,
+        225,
+        250,
+        238,
+        183,
+        123,
+        51,
+        200,
+        105,
+        153,
+        112,
+        91,
+        235
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/render-a11y-string.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/render-a11y-string.mjs"
+          ],
+          "row": 2139,
+          "raw_row": 6840
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/render-a11y-string.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "render-a11y-string.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 6840,
+          "codec_bytes": 2139,
+          "sha256": "e1a652c2a48ff602bbe9502b5f4ccad524735450eb0877f42b0fbf65c83909a8"
+        }
+      ],
+      "side_effects": [
+        "contrib/render-a11y-string.mjs"
+      ],
+      "codec_total": 2139,
+      "rows_total": 2139,
+      "setters": 0,
+      "output": "render-a11y-string/primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        27,
+        230,
+        63,
+        114,
+        146,
+        183,
+        111,
+        197,
+        228,
+        63,
+        172,
+        159,
+        172,
+        20,
+        16,
+        204,
+        227,
+        13,
+        111,
+        144,
+        133,
+        111,
+        13,
+        73,
+        56,
+        176,
+        163,
+        5,
+        56,
+        78,
+        113,
+        187
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/render-a11y-string.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/render-a11y-string.min.js"
+          ],
+          "row": 2256,
+          "raw_row": 7198
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/render-a11y-string.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "render-a11y-string.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 7198,
+          "codec_bytes": 2256,
+          "sha256": "a32895acc07c4357e7db839648f5c1821a0b093017491237b3844ee4dca20581"
+        }
+      ],
+      "side_effects": [
+        "contrib/render-a11y-string.min.js"
+      ],
+      "codec_total": 2256,
+      "rows_total": 2256,
+      "setters": 0,
+      "output": "render-a11y-string/browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        103,
+        59,
+        131,
+        54,
+        78,
+        192,
+        99,
+        141,
+        25,
+        83,
+        29,
+        21,
+        255,
+        102,
+        179,
+        218,
+        44,
+        150,
+        227,
+        87,
+        242,
+        100,
+        226,
+        217,
+        140,
+        103,
+        151,
+        124,
+        125,
+        31,
+        97,
+        102
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/render-a11y-string.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/render-a11y-string.cjs"
+          ],
+          "row": 2208,
+          "raw_row": 7068
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/render-a11y-string.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "render-a11y-string.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 7068,
+          "codec_bytes": 2208,
+          "sha256": "59ec6805351a320a8055d2b01d26084c04af85fd67bfded68f0ccf66df39191a"
+        }
+      ],
+      "side_effects": [
+        "contrib/render-a11y-string.cjs"
+      ],
+      "codec_total": 2208,
+      "rows_total": 2208,
+      "setters": 0,
+      "output": "render-a11y-string/cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        128,
+        248,
+        147,
+        76,
+        67,
+        63,
+        102,
+        186,
+        144,
+        162,
+        126,
+        136,
+        172,
+        74,
+        8,
+        199,
+        152,
+        248,
+        94,
+        110,
+        167,
+        222,
+        154,
+        120,
+        165,
+        114,
+        75,
+        78,
+        168,
+        91,
+        148,
+        201
+      ]
+    }
+  ],
+  "aliases": {
+    "katex.raw.js": "katex.esm.js",
+    "katex.mjs": "katex.esm.js",
+    "katex.min.js": "katex.umd.js",
+    "katex.test.raw.js": "katex.test.js",
+    "katex.closed.raw.js": "katex.closed.js"
+  },
+  "providers": [],
+  "source_sha256": "1893403a9543bd23966c18499bc777d84d87009922a0e191d72d075c4e864edf"
+}

@@ -1,6 +1,14 @@
 # Compiler-owned delivery; no JavaScript post-minifier or export rewriting.
 [policy]
 version = 3
+
+[policy.tactics]
+# Permit one-time constant-table decoding for smaller downloads.
+# Runtime reads must not acquire recurring reconstruction work.
+startup-reconstruction = "on"
+recurring-reconstruction = "off"
+string-array-packing = "off"
+
 [javascript]
 # Plain-data reads must not run getters; disable for effectful accessor integrations.
 assume_pure_property_reads = true
@@ -59,3 +67,9 @@ entry_names = "katex.contrib-test.js"
 name = "metrics"
 entries = ["metrics"]
 entry_names = "katex.metrics.mjs"
+
+[policy.resources]
+logical_work = 16000000000
+
+[execution]
+jobs = 1

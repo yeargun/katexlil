@@ -1,0 +1,293 @@
+{
+  "version": 5,
+  "source_sha256": "9fe276ed03086eaf65737011e17193286da8f1ff75707ed67809d872fc3e3961",
+  "inputs": {
+    "root": 0,
+    "entries": [
+      {
+        "name": "entry",
+        "module": 0
+      }
+    ],
+    "modules": [
+      {
+        "path": "/home/azureuser/lilscript-rebuild-reports/2026-10-03-site-refresh/ports/katexlil/contrib/mhchem/mhchem.lil",
+        "bytes": 73134,
+        "sha256": "59389cf5fcf8e8755687e0f61307d16e68ca7bda385b9dd04f02d1b4179482d1",
+        "dependencies": [],
+        "dynamic_dependencies": []
+      }
+    ],
+    "host_modules": [],
+    "host_reserved": []
+  },
+  "outputs": [
+    {
+      "mode": "single",
+      "format": "esm",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mhchem.mjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mhchem.mjs"
+          ],
+          "row": 7534,
+          "raw_row": 33296
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mhchem.mjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mhchem.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 33296,
+          "codec_bytes": 7534,
+          "sha256": "0c2105e3adee2602b8ae517f04f9e6c59855f8f3d8a7ca4be155285acfbee6fa"
+        }
+      ],
+      "side_effects": [
+        "contrib/mhchem.mjs"
+      ],
+      "codec_total": 7534,
+      "rows_total": 7534,
+      "setters": 0,
+      "output": "primary",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        4,
+        169,
+        113,
+        11,
+        141,
+        27,
+        195,
+        8,
+        244,
+        118,
+        123,
+        82,
+        225,
+        28,
+        156,
+        116,
+        184,
+        211,
+        148,
+        97,
+        98,
+        3,
+        71,
+        73,
+        48,
+        214,
+        208,
+        171,
+        82,
+        160,
+        252,
+        195
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "iife",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mhchem.min.js",
+          "dynamic": false,
+          "closure": [
+            "contrib/mhchem.min.js"
+          ],
+          "row": 7615,
+          "raw_row": 33638
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mhchem.min.js",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mhchem.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 33638,
+          "codec_bytes": 7615,
+          "sha256": "46fd0354a2bc09250598ed24ed7147117f3a66be2f853e61955dedee7da70f72"
+        }
+      ],
+      "side_effects": [
+        "contrib/mhchem.min.js"
+      ],
+      "codec_total": 7615,
+      "rows_total": 7615,
+      "setters": 0,
+      "output": "browser",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        237,
+        47,
+        50,
+        159,
+        219,
+        149,
+        185,
+        172,
+        129,
+        214,
+        168,
+        34,
+        26,
+        41,
+        242,
+        130,
+        40,
+        76,
+        233,
+        66,
+        193,
+        59,
+        120,
+        15,
+        164,
+        0,
+        198,
+        30,
+        66,
+        83,
+        214,
+        128
+      ]
+    },
+    {
+      "mode": "single",
+      "format": "cjs",
+      "entries": [
+        {
+          "name": "entry",
+          "file": "contrib/mhchem.cjs",
+          "dynamic": false,
+          "closure": [
+            "contrib/mhchem.cjs"
+          ],
+          "row": 7558,
+          "raw_row": 33371
+        }
+      ],
+      "files": [
+        {
+          "file": "contrib/mhchem.cjs",
+          "role": "entry",
+          "source_map_for": null,
+          "label": [
+            "entry"
+          ],
+          "modules": [
+            "mhchem.lil",
+            "module-1"
+          ],
+          "anchored": true,
+          "imports": [],
+          "dynamic_imports": [],
+          "bytes": 33371,
+          "codec_bytes": 7558,
+          "sha256": "5116e251046f1534e8a3b26418d6bb6d8f4cca4d4116ab266885b62ae9f6e524"
+        }
+      ],
+      "side_effects": [
+        "contrib/mhchem.cjs"
+      ],
+      "codec_total": 7558,
+      "rows_total": 7558,
+      "setters": 0,
+      "output": "cjs",
+      "codec": "brotli",
+      "codec_settings": {
+        "brotli": {
+          "quality": 11,
+          "window": 22,
+          "mode": "generic"
+        },
+        "gzip": {
+          "level": 9,
+          "window": 15
+        }
+      },
+      "policy_fingerprint": [
+        208,
+        191,
+        195,
+        155,
+        98,
+        91,
+        159,
+        20,
+        227,
+        162,
+        17,
+        169,
+        65,
+        136,
+        113,
+        227,
+        152,
+        213,
+        63,
+        155,
+        225,
+        250,
+        238,
+        183,
+        123,
+        51,
+        200,
+        105,
+        153,
+        112,
+        91,
+        235
+      ]
+    }
+  ]
+}

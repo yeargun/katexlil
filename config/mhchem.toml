@@ -47,3 +47,9 @@ global = "katexMhchem"
 global_binding = "property"
 entry_names = "contrib/mhchem.min.js"
 globals = {"@itslil/katex" = "katex"}
+
+[policy.resources]
+logical_work = 16000000000
+
+[execution]
+jobs = 1
