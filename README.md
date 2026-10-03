@@ -25,6 +25,52 @@ The LilScript compiler lives next door at `../lilscript`.
 
 See [COMPARISON.md](COMPARISON.md) for current raw-, gzip- and Brotli-objective builds, minified upstream comparisons, build times and validation.
 
+## Runtime benchmarks
+
+The [performance section](https://yeargun.github.io/katexlil/#performance) compares
+the original KaTeX with LilScript in Node.js and actual headless Chromium,
+Firefox and WebKit browsers driven by Playwright. Run all four sequentially:
+
+```sh
+npm ci
+npx playwright install chromium firefox webkit
+npm run bench
+npm run check:site
+```
+
+On Linux, use `npx playwright install --with-deps chromium firefox webkit`.
+No LilScript compiler is needed: benchmarks use the checked JavaScript artifacts.
+`npm run bench:node` and `npm run bench:browser` run subsets and save separate
+receipts under `.tmp/`. Customize a run with
+`npm run bench -- --rounds 60 --warmup 15 --batch 50 --output .tmp/performance.json`.
+Only a complete run can replace the published `site/performance.json`.
+
+Each runtime measures the shipped package ESM and the raw, gzip and Brotli
+objective builds. The shipped baseline is upstream KaTeX 0.16.22 minified by
+Terser; each objective uses its original artifact from the size comparison
+(selected for size, not runtime speed). Node and browsers load identical bytes.
+Each comparison gets a fresh Node process or browser, and all comparisons run
+sequentially. Imports, network, DOM insertion, layout and paint are excluded:
+this is warm `renderToString` throughput.
+
+Before timing, every one of the 30 valid formulas must produce identical HTML.
+The default run has 10 warmup rounds followed by 40 measured rounds, each
+rendering the corpus 50 times per implementation to reduce clock quantization.
+The starting implementation
+alternates each round, and output lengths are consumed. Times are normalized to
+one corpus. Receipts include every sample, median, p10/p90, expressions per
+second, LilScript/original time ratio, versions, machine details and artifact
+and harness SHA-256 hashes. The site build rejects stale or incomplete receipts.
+Results describe one machine and workload, not a universal speed guarantee.
+
+The [live benchmark](https://yeargun.github.io/katexlil/bench.html) uses the same
+runner and allows selecting each build. `npm run test:browser` checks every
+comparison in all three browsers and preserves the existing 50% maximum
+regression guard. Override it with
+`KATEXLIL_MAX_REGRESSION_PERCENT=25 npm run test:browser`.
+The Runtime benchmarks GitHub Actions workflow records all four runtimes and
+uploads its fresh receipt without replacing the published machine's results.
+
 ## The site and its receipts
 
 The root API, CLI, TypeScript declarations, CSS, 60 font files, and all five

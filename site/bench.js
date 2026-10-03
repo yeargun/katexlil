@@ -1,55 +1,55 @@
-// Browser benchmark: the same corpus, both lanes, interleaved rounds. Playwright drives this
-// page (test/browser-perf.test.mjs, scripts/measure-site.mjs); people can open it too.
-import { corpus, benchmark, summarize, parity } from "./corpus.js"
+import { defaults, runComparison } from "./runtime-benchmark.js"
 
 const params = new URLSearchParams(location.search)
-const rounds = Number(params.get("rounds") ?? 30)
-const warmup = Number(params.get("warmup") ?? 5)
+const settings = Object.fromEntries(Object.entries(defaults).map(([key, value]) => [key, Number(params.get(key) ?? value)]))
 const status = document.querySelector("#status")
 const table = document.querySelector("#rows")
-const fmt = (n) => `${n.toFixed(2)} ms`
-
-async function loadLanes() {
-  const results = await fetch("./results.json").then((r) => r.json())
-  const lil = await import(`./${results.file}.js`)
-  const official = await import("./official.js")
-  const pick = (mod, name) => (name && mod[name]) || mod.default?.[name] || mod.default || mod
-  return [
-    { id: "itslil", name: results.package, renderToString: pick(lil, results.lilExport) },
-    { id: "official", name: results.pin, renderToString: official.default?.renderToString ?? official.renderToString },
-  ]
-}
+const again = document.querySelector("#again")
+const selector = document.querySelector("#comparison")
+const fmt = n => `${n.toFixed(3)} ms`
+let manifest
 
 export async function run() {
-  status.textContent = `loading both lanes…`
-  const lanes = await loadLanes()
-  status.textContent = `checking parity on ${corpus.length} expressions…`
-  await new Promise((r) => setTimeout(r, 0))
-  const same = parity(lanes)
-  status.textContent = `rendering ${corpus.length} expressions × ${rounds} rounds per lane (interleaved, ${warmup} warmup)…`
-  await new Promise((r) => setTimeout(r, 0))
-  const times = benchmark(lanes, { rounds, warmup })
-  const summary = Object.fromEntries(lanes.map((lane) => [lane.id, { name: lane.name, ...summarize(times[lane.id]) }]))
-  const result = {
-    userAgent: navigator.userAgent,
-    corpus: corpus.length,
-    rounds,
-    warmup,
-    parity: same,
-    lanes: summary,
-    ratio: summary.itslil.median / summary.official.median,
+  again.disabled = true
+  selector.disabled = true
+  window.__benchResult = null
+  window.__benchError = null
+  table.replaceChildren()
+  try {
+    if (!manifest) {
+      const response = await fetch("./runtime-manifest.json")
+      if (!response.ok) throw new Error(`Manifest could not load: ${response.status}`)
+      manifest = await response.json()
+      for (const comparison of manifest.cases) selector.add(new Option(comparison.name, comparison.id))
+      selector.value = params.get("case") ?? "shipped"
+      if (!selector.value) throw new Error("Unknown comparison")
+    }
+    const comparison = manifest.cases.find(row => row.id === selector.value)
+    status.textContent = `Checking parity, then ${settings.rounds} rounds × ${settings.batch} corpus passes per lane, after ${settings.warmup} warmup rounds…`
+    await new Promise(resolve => setTimeout(resolve, 0))
+    const result = await runComparison(comparison, artifact => import(artifact.url), settings)
+    for (const lane of Object.values(result.lanes)) {
+      const tr = document.createElement("tr")
+      for (const [index, value] of [lane.name, fmt(lane.median), fmt(lane.p10), fmt(lane.p90), Math.round(lane.expressionsPerSecond).toLocaleString("en-US")].entries()) {
+        const cell = document.createElement(index === 0 ? "th" : "td")
+        if (index === 0) cell.scope = "row"
+        cell.textContent = value
+        tr.append(cell)
+      }
+      table.append(tr)
+    }
+    status.textContent = `LilScript / original time: ${result.ratio.toFixed(3)}× (lower is better). HTML parity: ${result.parity.compared}/${result.corpus}. Times are per corpus, excluding load, DOM layout and paint.`
+    window.__benchResult = { ...result, userAgent: navigator.userAgent }
+    return window.__benchResult
+  } catch (error) {
+    status.textContent = String(error?.stack ?? error)
+    window.__benchError = String(error)
+  } finally {
+    again.disabled = false
+    selector.disabled = false
   }
-  table.innerHTML = lanes
-    .map((lane) => {
-      const s = summary[lane.id]
-      return `<tr><th scope="row">${lane.name}</th><td>${fmt(s.median)}</td><td>${fmt(s.p10)}</td><td>${fmt(s.p90)}</td></tr>`
-    })
-    .join("")
-  const pct = ((result.ratio - 1) * 100).toFixed(1)
-  status.textContent = `${lanes[0].name} renders the corpus in ${(result.ratio * 100).toFixed(0)}% of ${lanes[1].name}'s time (${pct > 0 ? "+" : ""}${pct}%). Parity: ${same.compared - same.mismatches.length}/${same.compared} identical HTML.`
-  window.__benchResult = result
-  return result
 }
 
-document.querySelector("#again").addEventListener("click", () => { window.__benchResult = null; run() })
-run().catch((error) => { status.textContent = String(error?.stack ?? error); window.__benchError = String(error) })
+again.addEventListener("click", run)
+selector.addEventListener("change", run)
+run()

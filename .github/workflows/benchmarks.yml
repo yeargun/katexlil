@@ -1,0 +1,29 @@
+name: Runtime benchmarks
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run check:site
+      - run: node --test test/runtime-benchmark.test.mjs
+      - name: Measure sequentially in Node and all real browser engines
+        run: npm run bench -- --output .tmp/performance-ci.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: runtime-benchmarks
+          path: .tmp/performance-ci.json
+          if-no-files-found: error

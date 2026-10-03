@@ -21,14 +21,17 @@
       <h1>Same corpus, <em>two runtimes.</em></h1>
       <p class="lede">
         Renders the <a href="https://github.com/yeargun/katexlil/blob/main/site/corpus.js">shared corpus</a> with
-        <code>renderToString</code> in both lanes, interleaved round by round, after warmup. The official lane is
-        <code>katex@0.16.22</code>, bundled with its runtime graph and minified by Terser. Parity checks that every
-        expression renders identical HTML in both lanes first. Query <code>?rounds=N&amp;warmup=M</code> to change the shape.
+        <code>renderToString</code> in both lanes, alternating which runs first, after warmup. Each comparison loads
+        the exact ESM files used by the Node and Playwright measurements. The original is minified
+        <code>katex@0.16.22</code>; its minifier is shown in the results. Every expression must render identical HTML
+        before timing. Query <code>?rounds=40&amp;warmup=10&amp;batch=50&amp;case=shipped</code> to change the run.
+        This measures warm string rendering, excluding imports, network, DOM layout and paint.
       </p>
-      <p id="status" class="perf-note">starting…</p>
+      <p><label for="comparison">Build to compare</label> <select id="comparison"></select></p>
+      <p id="status" class="perf-note" role="status">starting…</p>
       <div class="table-wrap light">
         <table>
-          <thead><tr><th>Lane</th><th>median</th><th>p10</th><th>p90</th></tr></thead>
+          <thead><tr><th>Lane</th><th>median / corpus</th><th>p10</th><th>p90</th><th>expressions/s</th></tr></thead>
           <tbody id="rows"></tbody>
         </table>
       </div>

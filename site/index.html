@@ -19,12 +19,10 @@
 <span>itslil/katex</span>
 </a>
 <nav aria-label="Main navigation">
-<a href="#compiler">build time</a>
-<a href="#compiler">build time</a>
+<a href="#performance">performance</a>
 <a href="#lab">playground</a>
 <a href="#compiler">build time</a>
 <a href="#evidence">size</a>
-<a href="#compiler">build time</a>
 <a href="https://github.com/yeargun/katexlil">GitHub ↗</a>
 </nav>
 </header>
@@ -33,13 +31,13 @@
 <div class="hero-copy">
 <p class="eyebrow"><span class="live-dot"></span> katex@0.16.22 · LilScript port · @itslil/katex</p>
 <h1>TeX,<br/><em>to HTML</em></h1>
-<p class="lede">Official <code>katex@0.16.22</code> algorithms rewritten in LilScript. Official Jest suites <span id="lede-spec">—</span>. Not affiliated with upstream. Every number on this page is written by <a href="https://github.com/yeargun/katexlil/blob/main/scripts/measure-site.mjs">one script</a> you can run; the performance rows come from a <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">Playwright test</a> and the <a href="./bench.html">benchmark page</a> it drives.</p>
+<p class="lede">Official <code>katex@0.16.22</code> algorithms rewritten in LilScript. Not affiliated with upstream. Compare current build sizes and runtime performance in Node.js, Chromium, Firefox and WebKit, with <a href="./performance.json">raw measurements</a> and a <a href="./bench.html">benchmark you can run</a>.</p>
 <div class="install-row">
 <code>npm install @itslil/katex</code>
 <button class="copy" data-copy="npm install @itslil/katex" type="button">copy</button>
 </div>
 <div class="hero-actions">
-<a class="button primary" href="#compiler">build time</a>
+<a class="button primary" href="#performance">runtime performance</a>
 <a class="button secondary" href="https://www.npmjs.com/package/@itslil/katex">npm ↗</a>
 </div>
 </div>
@@ -95,6 +93,11 @@
 </div>
 </section>
 <section class="objective-section shell" id="evidence"><p class="eyebrow">Current library · original minified</p><h2>Three objectives.<br/>Measured separately.</h2><div id="compression-comparison"></div></section><section class="objective-section shell" id="compiler"><p class="eyebrow">Same machine · sequential builds</p><h2>Build time.</h2><div id="objective-build-times"></div></section>
+<section class="objective-section shell" id="performance">
+<p class="eyebrow">Original vs LilScript · Node + real browser engines</p>
+<h2>Runtime performance.</h2>
+<div id="runtime-performance" aria-live="polite">Loading measured results…</div>
+</section>
 <section class="closing shell">
 <p class="eyebrow">Zero runtime dependencies</p>
 <h2>Install the<br/>current port.</h2>

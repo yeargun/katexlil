@@ -4,6 +4,7 @@ import {readFileSync,existsSync} from 'node:fs';
 import {dirname,resolve,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {verifyComparison} from '../scripts/build-comparison.mjs';
+import {verifyPerformance} from '../scripts/lib/runtime-bench.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 test('three independently targeted builds have current artifact and config hashes',()=>{
  const data=verifyComparison(root);
@@ -30,4 +31,14 @@ test('built Pages artifact contains the current data and measured downloads',()=
  assert.equal(readFileSync(join(root,'_site/comparison.json'),'utf8'),readFileSync(join(root,'site/comparison.json'),'utf8'));
  for(const row of data.objectives)for(const item of [row.lilscript,row.original])assert.ok(existsSync(join(root,'_site',item.artifact)));
  for(const file of ['app.js','styles.css','objective-comparison.js','objective-comparison.css','.nojekyll'])assert.ok(existsSync(join(root,'_site',file)),file);
+});
+test('published runtime benchmarks cover current artifacts in Node and three browsers',()=>{
+ const data=verifyPerformance(root);
+ assert.equal(data.runtimes.length,4);
+ assert.equal(data.manifest.cases.length,4);
+ const html=readFileSync(join(root,'_site/index.html'),'utf8');
+ assert.match(html,/id="performance"/);assert.match(html,/id="runtime-performance"/);
+ assert.equal(readFileSync(join(root,'_site/performance.json'),'utf8'),readFileSync(join(root,'site/performance.json'),'utf8'));
+ for(const file of ['performance.js','runtime-benchmark.js','runtime-manifest.json','bench.html','bench.js'])assert.ok(existsSync(join(root,'_site',file)),file);
+ for(const comparison of data.manifest.cases)for(const lane of [comparison.official,comparison.itslil])assert.deepEqual(readFileSync(join(root,'_site',lane.url)),readFileSync(join(root,lane.source)));
 });

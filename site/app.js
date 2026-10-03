@@ -1,4 +1,6 @@
 import {renderComparison} from './objective-comparison.js';
+import { renderPerformance } from './performance.js';
+await renderPerformance();
 const currentComparison=await fetch('./comparison.json').then(response=>{if(!response.ok)throw Error('Comparison could not load');return response.json()});
 renderComparison(currentComparison);
 import { renderDelivery } from "./current-delivery.js"

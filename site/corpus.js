@@ -1,6 +1,6 @@
 // The benchmark corpus: one document of typical KaTeX input, rendered whole per round.
 // Shared by site/bench.js (browser, Playwright) and scripts/measure-site.mjs (Node).
-export const options = { displayMode: true, throwOnError: false }
+export const options = { displayMode: true, throwOnError: true }
 export const corpus = [
   "x^2 + \\frac{a}{b} = \\sqrt{\\alpha}",
   "e^{i\\pi} + 1 = 0",
@@ -20,7 +20,7 @@ export const corpus = [
   "\\overbrace{a + b + c}^{\\text{sum}} + \\underbrace{d \\cdot e}_{\\text{product}}",
   "\\displaystyle \\prod_{i=1}^{n} \\left( 1 + \\frac{1}{i} \\right) = n + 1",
   "\\def\\foo#1{\\mathrm{foo}(#1)} \\foo{x} + \\foo{y}",
-  "\\ce{H2O}\\text{ is water; } \\operatorname{sinc}(x) = \\frac{\\sin x}{x}",
+  "\\mathrm{H_2O}\\text{ is water; } \\operatorname{sinc}(x) = \\frac{\\sin x}{x}",
   "\\begin{array}{c|cc} & 0 & 1 \\\\ \\hline 0 & 0 & 1 \\\\ 1 & 1 & 0 \\end{array}",
   "\\xrightarrow{\\text{heat}} \\quad \\overset{?}{=} \\quad \\underset{n \\to \\infty}{\\to}",
   "\\boxed{E = mc^2} \\qquad \\cancel{x} \\quad \\sout{y}",
@@ -43,20 +43,35 @@ export function renderCorpus(renderToString) {
 
 // Interleaved benchmark: every round renders the corpus once per lane, lanes alternating,
 // so JIT warmth, GC and clock drift fall on both equally. Returns per-lane round times.
-export function benchmark(lanes, { rounds = 30, warmup = 5, now = () => performance.now() } = {}) {
+export function benchmark(lanes, { rounds = 30, warmup = 10, batch = 10, now = () => performance.now() } = {}) {
+  validateSettings({ rounds, warmup, batch })
   const times = Object.fromEntries(lanes.map((lane) => [lane.id, []]))
+  let checksum = 0
   for (let round = -warmup; round < rounds; round++) {
-    for (const lane of lanes) {
+    // Reverse the starting lane each round, including warmup.
+    for (const lane of (round + warmup) % 2 ? [...lanes].reverse() : lanes) {
       const start = now()
-      renderCorpus(lane.renderToString)
+      for (let repeat = 0; repeat < batch; repeat++) {
+        for (const html of renderCorpus(lane.renderToString)) checksum = (checksum + html.length) >>> 0
+      }
       const elapsed = now() - start
-      if (round >= 0) times[lane.id].push(elapsed)
+      if (round >= 0) times[lane.id].push(elapsed / batch)
     }
   }
+  // Consume output in the timed workload and keep it observable.
+  globalThis.__katexBenchChecksum = checksum
   return times
 }
 
+export function validateSettings({ rounds, warmup, batch }) {
+  for (const [key, value, min, max] of [["rounds", rounds, 2, 1000], ["warmup", warmup, 0, 1000], ["batch", batch, 1, 100]]) {
+    if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${key} must be an integer from ${min} to ${max}`)
+  }
+  if ((rounds + warmup) * batch > 10000) throw new Error("Benchmark exceeds 10,000 corpus passes per lane")
+}
+
 export function summarize(samples) {
+  if (!samples.length || samples.some(value => !Number.isFinite(value) || value <= 0)) throw new Error("Expected positive finite timing samples")
   const sorted = [...samples].sort((a, b) => a - b)
   const at = (q) => sorted[Math.min(sorted.length - 1, Math.floor(q * sorted.length))]
   return { median: at(0.5), p10: at(0.1), p90: at(0.9), min: sorted[0], rounds: sorted.length }
