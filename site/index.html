@@ -1,292 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="@itslil/katex is katex@0.16.22 rewritten in LilScript. Size is versus the official runtime graph and its Flow sources minified by Terser, esbuild and SWC." />
-    <meta name="theme-color" content="#c9a227" />
-    <title>itslil/katex — katex@0.16.22 through LilScript</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" />
-    <link rel="stylesheet" href="./styles.css" />
-    <script type="module" src="./app.js"></script>
-  </head>
-  <body>
-    <div class="progress" aria-hidden="true"></div>
-    <header class="nav shell">
-      <a class="wordmark" href="#top" aria-label="itslil/katex home">
-        <span class="mark">kx</span>
-        <span>itslil/katex</span>
-      </a>
-      <nav aria-label="Main navigation">
-        
-        <a href="#release">release</a>
-        <a href="#performance">performance</a>
-        <a href="#lab">playground</a>
-        <a href="#worlds">open / closed</a>
-        <a href="#evidence">size</a>
-        <a href="#bytes">where the bytes go</a>
-        <a href="https://github.com/yeargun/katexlil">GitHub ↗</a>
-      </nav>
-    </header>
-    <main id="top">
-      <section class="hero shell">
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="live-dot"></span> katex@0.16.22 · LilScript port · @itslil/katex</p>
-          <h1>TeX,<br /><em>to HTML</em></h1>
-          <p class="lede">Official <code>katex@0.16.22</code> algorithms rewritten in LilScript. Official Jest suites <span id="lede-spec">—</span>. Not affiliated with upstream. Every number on this page is written by <a href="https://github.com/yeargun/katexlil/blob/main/scripts/measure-site.mjs">one script</a> you can run; the performance rows come from a <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">Playwright test</a> and the <a href="./bench.html">benchmark page</a> it drives.</p>
-          <div class="install-row">
-            <code>npm install @itslil/katex</code>
-            <button class="copy" data-copy="npm install @itslil/katex" type="button">copy</button>
-          </div>
-          <div class="hero-actions">
-            <a class="button primary" href="#performance">Numbers</a>
-            <a class="button secondary" href="https://www.npmjs.com/package/@itslil/katex">npm ↗</a>
-          </div>
-        </div>
-        <div class="scoreboard" aria-label="Compression and performance results">
-          <div class="score-main">
-            <span class="score-label">Bytes over the wire, Brotli-11, open world, against Terser of the official runtime graph</span>
-            <strong id="hero-ratio">—<span>smaller</span></strong>
-            <p id="hero-bytes"></p>
-          </div>
-          <div class="score-grid">
-            <div><strong id="hero-shipped">—</strong><span>Brotli-11 you ship, vs Terser</span></div>
-            <div><strong id="hero-gzip">—</strong><span>gzip-9 vs Terser</span></div>
-            <div><strong id="hero-raw">—</strong><span>raw vs Terser</span></div>
-            <div><strong id="hero-spec">—</strong><span>official jest suite</span></div>
-          </div>
-          <p class="score-note" id="score-note">
-            Official rows are one esbuild bundle of <code>katex@0.16.22</code> plus the packages it needs at runtime, then Terser, esbuild or SWC;
-            the source rows are its Flow sources through esbuild, then Terser or SWC.
-            The LilScript row is the npm ESM, the compiler's own file, not post-minified. The CJS and browser builds are esbuild re-bundles and are labelled below. A loss is printed as a loss.
-          </p>
-        </div>
-      </section>
-      <section class="ticker" aria-label="Supported features">
-        <div>renderToString <span>✦</span> render <span>✦</span> frac <span>✦</span> sqrt <span>✦</span> scripts <span>✦</span> greek <span>✦</span> matrix</div>
-      </section>
-      <section class="release shell" id="release">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">This release · one compiler</p>
-            <h2>What ships,<br />who wrote it.</h2>
-          </div>
-          <p id="release-intro">
-            Every file the package ships, measured with <code>lilscript-codec</code>, against the previous release and against
-            Terser. <strong>Written by</strong> says whether a file is the compiler's output or esbuild re-bundling it; a
-            post-processed file is labelled as such and is not counted as the compiler's result. Compile time is wall clock
-            around each compiler process on the build host, recorded by
-            <a href="https://github.com/yeargun/katexlil/blob/main/scripts/record-compiler.mjs">scripts/record-compiler.mjs</a>.
-          </p>
-        </div>
-        <div class="perf-cards" id="release-cards"></div>
-        <div class="table-wrap light">
-          <table>
-            <thead><tr><th>File</th><th>Written by</th><th>Raw</th><th>gzip-9</th><th>Brotli-11</th><th>Previous release</th><th>vs previous</th><th>Terser bar</th><th>vs Terser</th></tr></thead>
-            <tbody id="release-body"></tbody>
-          </table>
-        </div>
-        <p class="perf-note" id="release-note"></p>
-        <div class="table-wrap light">
-          <table>
-            <thead><tr><th>Compiler invocation</th><th>Config</th><th>Wall time, each build</th><th>Median</th></tr></thead>
-            <tbody id="compile-body"></tbody>
-          </table>
-        </div>
-        <p class="perf-note" id="compile-note"></p>
-      </section>
-      <section class="performance shell" id="performance">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Measured in Chromium, by Playwright</p>
-            <h2>Same work,<br />two runtimes.</h2>
-          </div>
-          <p id="perf-intro">
-            Headless Chromium renders a fixed corpus with <code>renderToString</code> in both lanes, rounds interleaved, after warmup.
-            Both lanes must produce identical HTML for every expression before a time is a claim. The same page runs in your browser:
-            <a href="./bench.html">bench.html</a>. Source: <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">test/browser-perf.test.mjs</a>,
-            <a href="https://github.com/yeargun/katexlil/blob/main/site/corpus.js">site/corpus.js</a>.
-          </p>
-        </div>
-        <div class="perf-cards" id="perf-cards"></div>
-        <div class="table-wrap light">
-          <table>
-            <thead>
-              <tr>
-                <th>Runtime</th>
-                <th>Lane</th>
-                <th>median</th>
-                <th>p10</th>
-                <th>p90</th>
-                <th>vs official</th>
-              </tr>
-            </thead>
-            <tbody id="perf-body"></tbody>
-          </table>
-        </div>
-        <p class="perf-note" id="perf-note"></p>
-      </section>
-      <section class="lab shell" id="lab">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">The compiled runtime, in the browser</p>
-            <h2>Live<br />lab.</h2>
-          </div>
-          <p>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="katexlil: current LilScript raw, gzip and Brotli objective builds versus minified upstream, with build times and live examples." name="description"/>
+<meta content="#c9a227" name="theme-color"/>
+<title>itslil/katex — katex@0.16.22 through LilScript</title>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" rel="stylesheet"/>
+<link href="./styles.css" rel="stylesheet"/>
+<script src="./app.js" type="module"></script>
+<link href="./objective-comparison.css" rel="stylesheet"/></head>
+<body>
+<div aria-hidden="true" class="progress"></div>
+<header class="nav shell">
+<a aria-label="itslil/katex home" class="wordmark" href="#top">
+<span class="mark">kx</span>
+<span>itslil/katex</span>
+</a>
+<nav aria-label="Main navigation">
+<a href="#compiler">build time</a>
+<a href="#compiler">build time</a>
+<a href="#lab">playground</a>
+<a href="#compiler">build time</a>
+<a href="#evidence">size</a>
+<a href="#compiler">build time</a>
+<a href="https://github.com/yeargun/katexlil">GitHub ↗</a>
+</nav>
+</header>
+<main id="top">
+<section class="hero shell">
+<div class="hero-copy">
+<p class="eyebrow"><span class="live-dot"></span> katex@0.16.22 · LilScript port · @itslil/katex</p>
+<h1>TeX,<br/><em>to HTML</em></h1>
+<p class="lede">Official <code>katex@0.16.22</code> algorithms rewritten in LilScript. Official Jest suites <span id="lede-spec">—</span>. Not affiliated with upstream. Every number on this page is written by <a href="https://github.com/yeargun/katexlil/blob/main/scripts/measure-site.mjs">one script</a> you can run; the performance rows come from a <a href="https://github.com/yeargun/katexlil/blob/main/test/browser-perf.test.mjs">Playwright test</a> and the <a href="./bench.html">benchmark page</a> it drives.</p>
+<div class="install-row">
+<code>npm install @itslil/katex</code>
+<button class="copy" data-copy="npm install @itslil/katex" type="button">copy</button>
+</div>
+<div class="hero-actions">
+<a class="button primary" href="#compiler">build time</a>
+<a class="button secondary" href="https://www.npmjs.com/package/@itslil/katex">npm ↗</a>
+</div>
+</div>
+<div aria-label="Compression and performance results" class="scoreboard">
+<div class="score-main">
+<span class="score-label">Current LilScript versus minified original · portable ESM</span>
+<strong id="hero-ratio">—<span>smaller</span></strong>
+<p id="hero-bytes"></p>
+</div>
+<div class="score-grid">
+<div><strong id="hero-shipped">—</strong><span>Brotli-11 you ship, vs Terser</span></div>
+<div><strong id="hero-gzip">—</strong><span>gzip-9 vs Terser</span></div>
+<div><strong id="hero-raw">—</strong><span>raw vs Terser</span></div>
+<div><strong id="hero-spec">—</strong><span>official jest suite</span></div>
+</div>
+<p class="score-note" id="score-note">Raw, gzip and Brotli each use a separate LilScript compilation targeting that objective. The original uses the same export and dependency boundary, then a JavaScript minifier.</p>
+</div>
+</section>
+<section aria-label="Supported features" class="ticker">
+<div>renderToString <span>✦</span> render <span>✦</span> frac <span>✦</span> sqrt <span>✦</span> scripts <span>✦</span> greek <span>✦</span> matrix</div>
+</section>
+<section class="lab shell" id="lab">
+<div class="section-heading">
+<div>
+<p class="eyebrow">The compiled runtime, in the browser</p>
+<h2>Live<br/>lab.</h2>
+</div>
+<p>
             Left is the editor. Right is @itslil/katex HTML, or the official katex@0.16.22 graph when that lane is on.
           </p>
-        </div>
-        <div class="playground">
-          <div class="play-toolbar">
-            <label>
-              <input type="radio" name="engine" value="lil" checked />
+</div>
+<div class="playground">
+<div class="play-toolbar">
+<label>
+<input checked="" name="engine" type="radio" value="lil"/>
               @itslil/katex
             </label>
-            <label>
-              <input type="radio" name="engine" value="official" />
+<label>
+<input name="engine" type="radio" value="official"/>
               official katex@0.16.22
             </label>
-            <button type="button" id="race">race 10×</button>
-            <span id="race-out"></span>
-          </div>
-          <div class="samples" id="samples"></div>
-          <div class="play-grid">
-            <textarea id="source" spellcheck="false" aria-label="Source"></textarea>
-            <div>
-              <iframe id="preview" title="Rendered output" sandbox="allow-same-origin"></iframe>
-              <pre id="output" hidden></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="worlds shell" id="worlds">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Two contracts</p>
-            <h2>Open world,<br />closed world.</h2>
-          </div>
-          <p>
-            <strong>Open world</strong> is the reusable library: the public ESM names, the option-object keys and every
-            JavaScript-visible field stay as written, so <code>renderToString(tex, {displayMode: true})</code> works
-            unchanged. Its fair opponent is Terser, Oxc or esbuild with identifier mangling on and property mangling off.
-            <strong>Closed world</strong> is the lane where fields the compiler owns may be renamed, the way Closure ADVANCED
-            renames an app. The one LilScript compiler renames no property yet, so the closed config is the open one and the
-            two files are the same bytes. Configs:
-            <a href="https://github.com/yeargun/katexlil/blob/main/lilscript.toml">lilscript.toml</a>,
-            <a href="https://github.com/yeargun/katexlil/blob/main/lilscript.closed.toml">lilscript.closed.toml</a>.
-          </p>
-        </div>
-        <div class="table-wrap light">
-          <table>
-            <thead><tr><th>World</th><th>Held fixed</th><th>Raw</th><th>gzip-9</th><th>Brotli-11</th><th>vs Terser</th></tr></thead>
-            <tbody id="worlds-body"></tbody>
-          </table>
-        </div>
-        <p class="perf-note" id="worlds-note"></p>
-      </section>
-      <section class="evidence" id="evidence">
-        <div class="shell">
-          <div class="section-heading inverse">
-            <div>
-              <p class="eyebrow">The receipts</p>
-              <h2>Raw, gzip,<br />and Brotli.</h2>
-            </div>
-            <p>
-              Official katex@0.16.22 bundled with its runtime graph, then Terser (mangle on/off), esbuild minify and SWC; plus the
-              Flow sources themselves through esbuild, then Terser or SWC. The smallest of these under Brotli is the strongest bar, and
-              every lane must import and render a formula before it is measured. The LilScript rows are the compiler's ESM, not post-minified.
-              Encoders: <span id="codec-label"></span>.
-            </p>
-          </div>
-          <div class="codec-block">
-            <h3>Brotli-11</h3>
-            <p class="codec-lead">The wire number. LilScript row is the measured ESM.</p>
-            <div class="total-bar" id="bar-brotli"></div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Lane</th><th>Brotli-11</th><th>vs Terser</th></tr></thead>
-                <tbody id="body-brotli"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="codec-block">
-            <h3>gzip-9</h3>
-            <p class="codec-lead">Same files, gzip-9.</p>
-            <div class="total-bar" id="bar-gzip"></div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Lane</th><th>gzip-9</th><th>vs Terser</th></tr></thead>
-                <tbody id="body-gzip"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="codec-block">
-            <h3>Raw</h3>
-            <p class="codec-lead">Uncompressed bytes.</p>
-            <div class="total-bar" id="bar-raw"></div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Lane</th><th>Raw</th><th>vs Terser</th></tr></thead>
-                <tbody id="body-raw"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="codec-block">
-            <h3>All three</h3>
-            <p class="codec-lead">Every lane, measured three ways.</p>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Lane</th><th>Raw</th><th>gzip-9</th><th>Brotli-11</th><th>Brotli vs Terser</th></tr></thead>
-                <tbody id="body-matched"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="method-note">
-            <p>
-              <strong>Why this surface.</strong> Comparing against a single published file would hide official dependencies.
-              The fair fight is the runtime graph you actually import, then the same minifiers the JS ecosystem ships, and the
-              upstream sources through the best of them. Sizes come from <code>lilscript-codec</code>, the pinned encoders, via
-              <a href="https://github.com/yeargun/katexlil/blob/main/scripts/measure-site.mjs">scripts/measure-site.mjs</a>.
-            </p>
-            <a href="https://github.com/yeargun/katexlil">README ↗</a>
-          </div>
-        </div>
-      </section>
-      <section class="bytes shell" id="bytes">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Per-module attribution</p>
-            <h2>Where the<br />bytes go.</h2>
-          </div>
-          <p id="bytes-intro">
-            Every token on both sides is charged to its module through a source map: the official lane is rebuilt from the Flow
-            sources with esbuild and Terser maps composed, and the LilScript lane needs a Source Map v3 from the compiler that
-            wrote the artifact. Per module: the raw bytes it owns, and its marginal Brotli-11 cost (the artifact minus that
-            module's tokens). Positive is where this port is bigger.
-            Tool: <a href="https://github.com/yeargun/katexlil/blob/main/scripts/attribute-map.mjs">scripts/attribute-map.mjs</a>.
-          </p>
-        </div>
-        <div class="table-wrap light">
-          <table>
-            <thead><tr><th>Module</th><th>LilScript raw</th><th>Terser raw</th><th>Δ raw</th><th>LilScript Brotli</th><th>Terser Brotli</th><th>Δ Brotli</th></tr></thead>
-            <tbody id="bytes-body"></tbody>
-          </table>
-        </div>
-        <p class="perf-note" id="bytes-note"></p>
-      </section>
-      <section class="closing shell">
-        <p class="eyebrow">Zero runtime dependencies</p>
-        <h2>Install the<br />current port.</h2>
-        <div class="install-row large">
-          <code>npm install @itslil/katex</code>
-          <button class="copy" data-copy="npm install @itslil/katex" type="button">copy</button>
-        </div>
-      </section>
-    </main>
-    <footer class="shell">
-      <span>@itslil/katex · MIT</span>
-      <span id="footer-note">official katex@0.16.22 algorithms rewritten in LilScript — not affiliated with upstream</span>
-      <a href="https://github.com/yeargun/katexlil">source ↗</a>
-    </footer>
-  </body>
+<button id="race" type="button">race 10×</button>
+<span id="race-out"></span>
+</div>
+<div class="samples" id="samples"></div>
+<div class="play-grid">
+<textarea aria-label="Source" id="source" spellcheck="false"></textarea>
+<div>
+<iframe id="preview" sandbox="allow-same-origin" title="Rendered output"></iframe>
+<pre hidden="" id="output"></pre>
+</div>
+</div>
+</div>
+</section>
+<section class="objective-section shell" id="evidence"><p class="eyebrow">Current library · original minified</p><h2>Three objectives.<br/>Measured separately.</h2><div id="compression-comparison"></div></section><section class="objective-section shell" id="compiler"><p class="eyebrow">Same machine · sequential builds</p><h2>Build time.</h2><div id="objective-build-times"></div></section>
+<section class="closing shell">
+<p class="eyebrow">Zero runtime dependencies</p>
+<h2>Install the<br/>current port.</h2>
+<div class="install-row large">
+<code>npm install @itslil/katex</code>
+<button class="copy" data-copy="npm install @itslil/katex" type="button">copy</button>
+</div>
+</section>
+</main>
+<footer class="shell">
+<span>@itslil/katex · MIT</span>
+<span id="footer-note">official katex@0.16.22 algorithms rewritten in LilScript — not affiliated with upstream</span>
+<a href="https://github.com/yeargun/katexlil">source ↗</a>
+</footer>
+</body>
 </html>

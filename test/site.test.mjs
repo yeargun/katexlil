@@ -1,47 +1,33 @@
-import assert from "node:assert/strict"
-import { existsSync, readFileSync } from "node:fs"
-import { dirname, resolve } from "node:path"
-import { fileURLToPath } from "node:url"
-import { describe, it } from "node:test"
-
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
-
-describe("site", () => {
-  it("has a markedlil-style lab with receipts", () => {
-    assert.equal(existsSync(resolve(root, "site/index.html")), true)
-    assert.equal(existsSync(resolve(root, "site/app.js")), true)
-    assert.equal(existsSync(resolve(root, "site/results.json")), true)
-    const html = readFileSync(resolve(root, "site/index.html"), "utf8")
-    assert.match(html, /scoreboard/)
-    assert.match(html, /#evidence/)
-    assert.match(html, /#lab/)
-    assert.match(html, /#worlds/)
-    assert.match(html, /#bytes/)
-    assert.match(html, /bench\.html/)
-    assert.match(html, /test\/browser-perf\.test\.mjs/)
-    assert.doesNotMatch(html, /\d+\/\d+/, "test counts come from results.json, never from the HTML")
-  })
-
-  it("ships the benchmark page and the corpus it shares with Node", () => {
-    assert.equal(existsSync(resolve(root, "site/bench.html")), true)
-    assert.equal(existsSync(resolve(root, "site/bench.js")), true)
-    assert.equal(existsSync(resolve(root, "site/corpus.js")), true)
-  })
-
-  it("publishes results that name their sources and both worlds", () => {
-    const results = JSON.parse(readFileSync(resolve(root, "site/results.json"), "utf8"))
-    for (const key of ["measure", "corpus", "benchPage", "browserTest", "attribution"]) assert.ok(results.sources?.[key], `sources.${key}`)
-    const ids = results.size.map((lane) => lane.id)
-    for (const id of ["official-terser-mangle", "official-source-terser", "official-source-swc", "itslil", "itslil-closed"]) assert.ok(ids.includes(id), id)
-    const strongest = results.size.filter((lane) => lane.strongest)
-    assert.equal(strongest.length, 1, "one strongest bar")
-    const bars = results.size.filter((lane) => lane.id.startsWith("official") && lane.id !== "official")
-    assert.equal(strongest[0].brotli11, Math.min(...bars.map((lane) => lane.brotli11)), "the strongest bar is the smallest official lane")
-    assert.equal(results.verdict?.brotli11?.against, strongest[0].id, "the Brotli verdict is judged against the strongest bar")
-    assert.equal(results.size.find((lane) => lane.id === "itslil").world, "open")
-    assert.equal(results.size.find((lane) => lane.id === "itslil-closed").world, "closed")
-    assert.ok(results.browser?.lanes?.itslil?.median > 0, "browser median")
-    assert.equal(results.browser.parity.mismatches.length, 0, "browser parity")
-    assert.ok(results.throughput.find((row) => row.id === "itslil").documentMs > 0)
-  })
-})
+import assert from 'node:assert/strict';
+import {test} from 'node:test';
+import {readFileSync,existsSync} from 'node:fs';
+import {dirname,resolve,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {verifyComparison} from '../scripts/build-comparison.mjs';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+test('three independently targeted builds have current artifact and config hashes',()=>{
+ const data=verifyComparison(root);
+ assert.deepEqual(data.objectives.map(row=>row.objective),['raw','gzip','brotli']);
+ for(const row of data.objectives){
+  assert.equal(row.metric,{raw:'raw',gzip:'gzip9',brotli:'brotli11'}[row.objective]);
+  assert.equal(row.ratio,row.lilscript.sizes[row.metric]/row.original.sizes[row.metric]);
+  assert.equal(row.original.sizes[row.metric],Math.min(...data.minifiers.map(m=>m.sizes[row.metric])));
+  assert.ok(row.lilscript.buildSeconds>0);assert.ok(row.original.buildSeconds>0);
+ }
+});
+test('public comparison describes current versus original and distinguishes build stages',()=>{
+ const html=readFileSync(join(root,'site/index.html'),'utf8');
+ const module=readFileSync(join(root,'site/objective-comparison.js'),'utf8');
+ assert.match(html,/id="compression-comparison"/);assert.match(html,/id="objective-build-times"/);
+ assert.match(module,/separate compilation targeting/);assert.match(module,/upstream package from its original TypeScript sources/);
+ assert.doesNotMatch(html,/previous release|previous version|old compiler|earlier compiler|last release/i);
+ const data=JSON.parse(readFileSync(join(root,'site/comparison.json'),'utf8'));
+ assert.equal(data.schemaVersion,4);assert.ok(data.validation.checks>0);
+ assert.ok(data.upstream.sharedExports.length>0);assert.ok(data.minifiers.length>=2);
+});
+test('built Pages artifact contains the current data and measured downloads',()=>{
+ const data=JSON.parse(readFileSync(join(root,'site/comparison.json'),'utf8'));
+ assert.equal(readFileSync(join(root,'_site/comparison.json'),'utf8'),readFileSync(join(root,'site/comparison.json'),'utf8'));
+ for(const row of data.objectives)for(const item of [row.lilscript,row.original])assert.ok(existsSync(join(root,'_site',item.artifact)));
+ for(const file of ['app.js','styles.css','objective-comparison.js','objective-comparison.css','.nojekyll'])assert.ok(existsSync(join(root,'_site',file)),file);
+});

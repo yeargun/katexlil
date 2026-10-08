@@ -1,9 +1,0 @@
-# Source-build measurements
-
-Measured 2026-09-27T16:21:32Z using LilScript `d1d48c4ca24b5d4ccd3016dc4913d85c6d38a41c` (binary SHA-256 `47048e41164027e92d3bf1d1840d8d83e04c60532c031ceb3346222e194b3041`) and the upstream Git revision recorded in `job.json`. The port source is the tree of the release commit that records this build: base commit `55c34b540abfd36dbfaa575852babe9c17fcb81b` plus that commit's changes, built from a snapshot of the working tree before it was committed. `publicationSourceFingerprint` in `comparison/build-receipt.json` pins its build inputs, and the built `dist/` is byte-identical to the committed one.
-
-`result.json` records the commands, wall time, CPU time, machine and exit codes. `esm.json` records the production ESM assembly and exact input graph. The lockfiles record dependency resolution. The public page uses `source-build.json` for the final consolidated record.
-
-Run the installation and setup commands from `job.json` in the corresponding pinned upstream checkout; they are excluded from build time. Run the recorded build command with Node v24.11.1. Clear the listed generated output directories between repetitions. Install the port dependencies and set `LILSCRIPT_COMPILER`, `LILSCRIPT_ROOT` and `LILSCRIPT_CODEC` to the recorded compiler and codec.
-
-The original repository build and comparison ESM assembly are measured separately. Build output scope can differ between repositories; no build speedup is inferred. Both lanes ran three times, in alternating order, on the same machine: the single LilScript development host, a burstable Azure Standard_B8als_v2 that also ran other compiler sessions. Other sessions were compiling and testing on it throughout this run (one-minute load average 9.2 at the start and 8.5 at the end, on 8 vCPUs), so these wall times are slower than an idle host would give.
